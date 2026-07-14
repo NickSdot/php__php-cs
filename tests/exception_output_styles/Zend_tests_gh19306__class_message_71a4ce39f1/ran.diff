@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -26,7 +26,7 @@
+ try {
+     $a->next();
+ } catch (Throwable $t) {
+-    echo $t::class, ": ", $t->getMessage(), PHP_EOL;
++    echo $t::class, ': ', $t->getMessage(), \PHP_EOL;
+ }
+ echo "Destroying fiber\n";
+ $fiber = null;
