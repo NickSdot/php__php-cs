@@ -1,0 +1,17 @@
+--- old.phpt
++++ new.phpt
+@@ -7,7 +7,7 @@
+     try {
+         Fiber::suspend('test');
+     } catch (Exception $exception) {
+-        var_dump($exception->getMessage());
++        echo $exception::class, ': ', $exception->getMessage(), \PHP_EOL;
+     }
+ });
+ 
+@@ -19,4 +19,4 @@
+ ?>
+ --EXPECT--
+ string(4) "test"
+-string(4) "test"
++Exception: test
