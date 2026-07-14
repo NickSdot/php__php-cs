@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -10,7 +10,7 @@
+     }
+     new C;
+ } catch (Error $e) {
+-    echo $e->getMessage();
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECTF--
