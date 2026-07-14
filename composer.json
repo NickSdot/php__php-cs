@@ -4,7 +4,8 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": ">=8.5"
+        "php": ">=8.5",
+        "nikic/php-parser": "^5.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.0"
@@ -12,11 +13,6 @@
     "autoload": {
         "classmap": [
             "src/"
-        ],
-        "files": [
-            "src/Console/FixCommand.php",
-            "src/ExceptionOutput/FixtureCollectorCommand.php",
-            "src/ExceptionOutput/FixtureValidatorCommand.php"
         ]
     },
     "autoload-dev": {
