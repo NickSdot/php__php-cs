@@ -1,0 +1,35 @@
+--- old.phpt
++++ new.phpt
+@@ -25,7 +25,7 @@
+         try {
+             var_dump($this);
+         } catch (Throwable $e) {
+-            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
++            echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+         }
+     }
+ 
+@@ -63,12 +63,12 @@
+ try {
+     var_dump($staticMethod->invoke());
+ } catch (TypeError $e) {
+-    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ try {
+     var_dump($staticMethod->invoke(true));
+ } catch (TypeError $e) {
+-    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ var_dump($staticMethod->invoke(new stdClass()));
+ 
+@@ -76,7 +76,7 @@
+ try {
+     var_dump($methodThatThrows->invoke($testClassInstance));
+ } catch (Exception $exc) {
+-    echo $exc::class, ": ", $exc->getMessage(), PHP_EOL;
++    echo $exc::class, ': ', $exc->getMessage(), \PHP_EOL;
+ }
+ 
+ ?>
