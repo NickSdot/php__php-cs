@@ -8,16 +8,16 @@ zend.assertions=1
 try {
     assert((fn() => false)());
 } catch (AssertionError $e) {
-    echo 'assert(): ', $e::class . ': ' . $e->getMessage(), ' failed', \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 try {
     assert((fn&(int... $args): ?bool => $args[0])(false));
 } catch (AssertionError $e) {
-    echo 'assert(): ', $e::class . ': ' . $e->getMessage(), ' failed', \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 ?>
 --EXPECT--
-assert(): AssertionError: assert((fn() => false)()) failed
-assert(): AssertionError: assert((fn&(int ...$args): ?bool => $args[0])(false)) failed
+AssertionError: assert((fn() => false)())
+AssertionError: assert((fn&(int ...$args): ?bool => $args[0])(false))
