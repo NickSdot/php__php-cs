@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -16,8 +16,8 @@
+ try {
+     var_dump($b->f());
+ } catch (Throwable $e) {
+-    echo "Exception: ", $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
+-Exception: Call to protected method B::f() from global scope
++Error: Call to protected method B::f() from global scope
