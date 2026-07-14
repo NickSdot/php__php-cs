@@ -1,0 +1,69 @@
+--TEST--
+Bug #26698 (Thrown exceptions while evaluating argument to pass as parameter crash PHP)
+--FILE--
+<?php
+
+class ObjectOne
+{
+    function getNone()
+    {
+        throw new Exception('NONE');
+    }
+}
+
+class Proxy
+{
+    function three($a, $b, $c)
+    {
+    }
+
+    function callOne()
+    {
+        try
+        {
+            $res = new ObjectOne();
+            $this->three($res->getNone());
+        }
+        catch(Exception $e)
+        {
+            echo 'Caught: '.$e::class . ': ' . $e->getMessage().\PHP_EOL;
+        }
+    }
+
+    function callTwo()
+    {
+        try
+        {
+            $res = new ObjectOne();
+            $this->three(1, $res->getNone());
+        }
+        catch(Exception $e)
+        {
+            echo 'Caught: '.$e::class . ': ' . $e->getMessage().\PHP_EOL;
+        }
+    }
+
+    function callThree()
+    {
+        try
+        {
+            $res = new ObjectOne();
+            $this->three(1, 2, $res->getNone());
+        }
+        catch(Exception $e)
+        {
+            echo 'Caught: '.$e::class . ': ' . $e->getMessage().\PHP_EOL;
+        }
+    }
+}
+
+$p = new Proxy();
+
+$p->callOne();
+$p->callTwo();
+$p->callThree();
+?>
+--EXPECT--
+Caught: Exception: NONE
+Caught: Exception: NONE
+Caught: Exception: NONE
