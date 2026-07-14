@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -24,7 +24,7 @@
+     $db->close();
+ }
+ catch(\Exception $e) {
+-    echo "Exception: ".$e->getMessage();
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
