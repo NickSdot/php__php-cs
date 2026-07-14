@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -9,7 +9,7 @@
+             try {
+                 $param->getDefaultValue();
+             } catch (Error $e) {
+-                echo "{$rf->getName()}: {$e->getMessage()}\n";
++                echo $rf->getName(), ": ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
+             }
+         }
+     }
