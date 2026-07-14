@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -14,8 +14,8 @@
+ try {
+     $clonedFormatter = clone $formatter;
+ } catch(Error $error) {
+-    echo $error->getMessage();
++    echo $error::class, ': ', $error->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
+-Trying to clone an uncloneable object of class IntlListFormatter
++Error: Trying to clone an uncloneable object of class IntlListFormatter
