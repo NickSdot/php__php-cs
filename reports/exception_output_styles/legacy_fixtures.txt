@@ -1,0 +1,54 @@
+# Fixture dirs outside the current source-file representative set
+
+These are not deleted automatically.
+
+## Legacy suffixed dirs
+
+## Other extra dirs
+
+- Zend_tests_add_006
+- Zend_tests_assert_disable_assert_function
+- Zend_tests_assert_expect_015
+- Zend_tests_attributes_deprecated_class_constants_deprecated_constant_as_message_002
+- Zend_tests_bug33996
+- Zend_tests_bug76869
+- Zend_tests_bug80972
+- Zend_tests_clone_bug36071
+- Zend_tests_enum_internal_enums
+- Zend_tests_exceptions_bug26698
+- Zend_tests_exceptions_bug31102
+- Zend_tests_exceptions_bug47771
+- Zend_tests_exceptions_bug48428
+- Zend_tests_exit_finally_2
+- Zend_tests_function_arguments_argument_count_incorrect_internal_strict
+- Zend_tests_numeric_strings_invalid_numeric_string_must_generate_warning_assign
+- Zend_tests_offsets_appending_containers_in_fetch
+- Zend_tests_stack_limit_stack_limit_011
+- Zend_tests_throw_001
+- Zend_tests_try_bug72213
+- Zend_tests_try_bug72213_2
+- Zend_tests_type_declarations_internal_function_strict_mode
+- Zend_tests_type_declarations_typed_properties_068
+- ext_date_tests_gh20936
+- ext_dom_tests_DOMElement_className
+- ext_dom_tests_registerNodeClass_abstract_class
+- ext_hash_tests_hash_hkdf_edges
+- ext_hash_tests_new_context
+- ext_intl_tests_listformatter_listformatter_error
+- ext_opcache_tests_jit_fetch_obj_001
+- ext_opcache_tests_jit_mod_001
+- ext_phar_tests_bug65414
+- ext_reflection_tests_ReflectionAttribute_constructor_001
+- ext_reflection_tests_bug74454
+- ext_spl_tests_ArrayObject_arrayObject_exchangeArray_basic3
+- ext_spl_tests_SplFileObject_fileobject_003
+- ext_spl_tests_SplObjectStorage_SplObjectStorage_unset
+- ext_spl_tests_spl_pq_top_error_corrupt
+- ext_sqlite3_tests_bug68760
+- ext_sqlite3_tests_sqlite3_40_setauthorizer
+- ext_standard_tests_array_array_filter_invalid_mode
+- ext_standard_tests_array_bug77135
+- ext_standard_tests_array_gh16649_array_splice_uaf_add_elements
+- ext_standard_tests_file_file_error
+- ext_standard_tests_network_setcookie_array_option_error
+- ext_standard_tests_network_setrawcookie_error

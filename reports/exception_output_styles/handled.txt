@@ -1,0 +1,1141 @@
+# Exception output flavors covered by handled fixtures
+
+ext/intl/tests/calendar_toDateTime_error.phpt:14
+  state: handled
+  fixture: ext_intl_tests_calendar_toDateTime_error
+  fingerprint: class_message:1d7ef669ef048aef465a09203d23aca45ced33cd
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_class(static_class) literal:trash exception_message(previous) newline
+  echo '    ', $previous::class, ': ', $previous->getMessage(), PHP_EOL;
+
+    11 } catch (Throwable $e) {
+    12     echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+    13     $previous = $e->getPrevious();
+>   14     echo '    ', $previous::class, ': ', $previous->getMessage(), PHP_EOL;
+    15 }
+    16 
+    17 try {
+
+Zend/tests/arg_unpack/invalid_type.phpt:13
+  state: handled
+  fixture: Zend_tests_arg_unpack_invalid_type
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class . ": " . $e->getMessage(), "\n";
+
+    10 try {
+    11     test(...null);
+    12 } catch (Error $e) {
+>   13     echo $e::class . ": " . $e->getMessage(), "\n";
+    14 }
+    15 try {
+    16     test(...42);
+
+Zend/tests/attributes/delayed_target_validation/has_runtime_errors.phpt:69
+  state: handled
+  fixture: Zend_tests_attributes_delayed_target_validation_has_runtime_errors
+  fingerprint: class_message:2fc35cc1e6b3638035149fc1ca7e44a1e7055ac1
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:trash exception_message(e) newline
+  echo get_class($e) . ": " . $e->getMessage() . "\n";
+
+    66 	try {
+    67 		$attributes[1]->newInstance();
+    68 	} catch (Error $e) {
+>   69 		echo get_class($e) . ": " . $e->getMessage() . "\n";
+    70 	}
+    71 }
+    72 
+
+Zend/tests/enum/backed-mismatch.phpt:13
+  state: handled
+  fixture: Zend_tests_enum_backed_mismatch
+  fingerprint: class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:trash exception_message(e) newline
+  echo get_class($e), ': ', $e->getMessage(), "\n";
+
+    10 try {
+    11     var_dump(Foo::Bar);
+    12 } catch (Error $e) {
+>   13     echo get_class($e), ': ', $e->getMessage(), "\n";
+    14 }
+    15 
+    16 try {
+
+ext/hash/tests/hash_equals.phpt:12
+  state: handled
+  fixture: ext_hash_tests_hash_equals
+  fingerprint: class_message:be73122ca596a930f5eedf6ca30333ce67d96d35
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_class(get_class) literal:trash exception_message(e) newline
+  echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";
+
+     9             var_dump($test());
+    10         }
+    11         catch (\Error $e) {
+>   12             echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";
+    13         }
+    14     }
+    15 }
+
+ext/spl/tests/SplFixedArray__construct_param_array.phpt:11
+  state: handled
+  fixture: ext_spl_tests_SplFixedArray__construct_param_array
+  fingerprint: message_only:014325f5f2df835466e70b4b11f72ecb5a6c6759
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(iae) newline
+  echo "Ok - ".$iae->getMessage().PHP_EOL;
+
+     8 try {
+     9     $array = new SplFixedArray( array("string", 1) );
+    10 } catch (TypeError $iae) {
+>   11     echo "Ok - ".$iae->getMessage().PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+Zend/tests/gh19306.phpt:29
+  state: handled
+  fixture: Zend_tests_gh19306
+  fingerprint: message_only:071559d44952a98f1694ce78a06002176a7e717e
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(t) newline
+  echo $t->getMessage(), "\n";
+
+    26 try {
+    27     $a->next();
+    28 } catch (Throwable $t) {
+>   29     echo $t->getMessage(), "\n";
+    30 }
+    31 echo "Destroying fiber\n";
+    32 $fiber = null;
+
+ext/reflection/tests/ReflectionExtension_constructor_error.phpt:11
+  state: handled
+  fixture: ext_reflection_tests_ReflectionExtension_constructor_error
+  fingerprint: message_only:092e3fba689f5cec86fdb605895ae5eb8b2955d2
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(re) newline
+  echo "Ok - ".$re->getMessage().PHP_EOL;
+
+     8 try {
+     9     $obj = new ReflectionExtension();
+    10 } catch (TypeError $re) {
+>   11     echo "Ok - ".$re->getMessage().PHP_EOL;
+    12 }
+    13 
+    14 try {
+
+Zend/tests/constants/008.phpt:9
+  state: handled
+  fixture: Zend_tests_constants_008
+  fingerprint: message_only:0edb83bafd3360811d75bf9f7759018bacb32961
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:7c8c86d8799d52f9ebf0ba3014aee505a00913a3 exception_message(e) newline
+  echo "TypeError: ", $e->getMessage(), "\n";
+
+     6 try {
+     7     var_dump(define(array(1,2,3,4,5), 1));
+     8 } catch (TypeError $e) {
+>    9     echo "TypeError: ", $e->getMessage(), "\n";
+    10 }
+    11 
+    12 var_dump(define("TRUE", 1));
+
+ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:23
+  state: handled
+  fixture: ext_reflection_tests_ReflectionProperty_getMangledName_dynamic
+  fingerprint: message_only:10f714c5688b050597b07e6002cfdfa46678205f
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECTF
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_Variable) literal:trash exception_message(e) literal:trash
+  echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
+
+    20         echo "  Found in array cast: " . (array_key_exists($reflection->getMangledName(), $array) ? "yes" : "no") . "\n";
+    21         echo "\n";
+    22     } catch (ReflectionException $e) {
+>   23         echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
+    24     }
+    25 }
+    26 
+
+Zend/tests/closures/closure_031.phpt:14
+  state: handled
+  fixture: Zend_tests_closures_closure_031
+  fingerprint: message_only:11953960811bf83c1eb14f48a27257319c381c67
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(ex) newline
+  echo "Error: {$ex->getMessage()}\n";
+
+    11 try {
+    12     var_dump($foo->a);
+    13 } catch (Error $ex) {
+>   14     echo "Error: {$ex->getMessage()}\n";
+    15 }
+    16 ?>
+    17 
+
+ext/spl/tests/iterator_047.phpt:51
+  state: handled
+  fixture: ext_spl_tests_iterator_047
+  fingerprint: message_only:133cd1f32b27fee649b6825086d06f0e47e63acf
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:in_separator exception_file(e) literal:on_line_separator exception_line(e) newline
+  echo "Exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\n";
+
+    48             }
+    49             catch (Exception $e)
+    50             {
+>   51                 echo "Exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\n";
+    52             }
+    53             MyRecursiveArrayIterator::$fail++;
+    54         }
+
+ext/reflection/tests/004.phpt:21
+  state: handled
+  fixture: ext_reflection_tests_004
+  fingerprint: message_only:19bbe441279109a3f55eb81a5176711ff20b5ee1
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(E) newline
+  echo $E->getMessage()."\n";
+
+    18 try {
+    19         $m->invoke(null);
+    20 } catch (ReflectionException $E) {
+>   21         echo $E->getMessage()."\n";
+    22 }
+    23 
+    24 
+
+ext/spl/tests/SplHeap_serialize_error_handling.phpt:40
+  state: handled
+  fixture: ext_spl_tests_SplHeap_serialize_error_handling
+  fingerprint: message_only:1d2245c46c72fd8f1152271f9782ab9e033d492c
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:c5709de96362743e4de06cf361b5fa8b92c3a891 unknown(Expr_Variable) literal:trash exception_message(e) newline
+  echo "Case $i: " . $e->getMessage() . "\n";
+
+    37         $heap->__unserialize($case);
+    38         echo "Case $i: UNEXPECTED SUCCESS\n";
+    39     } catch (Exception $e) {
+>   40         echo "Case $i: " . $e->getMessage() . "\n";
+    41     }
+    42 }
+    43 
+
+Zend/tests/array_literal_next_element_error.phpt:11
+  state: handled
+  fixture: Zend_tests_array_literal_next_element_error
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+     8     $array = [$i => 42, new stdClass];
+     9     var_dump($array);
+    10 } catch (Error $e) {
+>   11     echo $e->getMessage(), "\n";
+    12 }
+    13 
+    14 function test($x = [PHP_INT_MAX => 42, "foo"]) {}
+
+ext/date/tests/bug72963.phpt:19
+  state: handled
+  fixture: ext_date_tests_bug72963
+  fingerprint: message_only:2c06d1e93da8f001a7687d431d6f1633faffdd6e
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(v) newline
+  echo $v->getMessage(), "\n";
+
+    16 	try {
+    17 		$d1 = DateTime::createFromFormat('!m/d/Y', $string);
+    18 	} catch (ValueError $v) {
+>   19 		echo $v->getMessage(), "\n";
+    20 	}
+    21 
+    22 	try {
+
+Zend/tests/fibers/fiber-error-construct.phpt:9
+  state: handled
+  fixture: Zend_tests_fibers_fiber_error_construct
+  fingerprint: message_only:3fd28b152899602236338841b4e8420dd396ce58
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(exception) newline
+  echo $exception->getMessage(), "\n";
+
+     6 try {
+     7     new FiberError;
+     8 } catch (Error $exception) {
+>    9     echo $exception->getMessage(), "\n";
+    10 }
+    11 
+    12 ?>
+
+tests/classes/destructor_and_exceptions.phpt:45
+  state: handled
+  fixture: tests_classes_destructor_and_exceptions
+  fingerprint: message_only:4601f27a85609651b86688b00ac27704447a5459
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:977d001bd2dd4941631f3966cb77c109aac69731 exception_message(e) newline
+  echo "Caught Exception: " . $e->getMessage() . "\n";
+
+    42 }
+    43 catch(Exception $e)
+    44 {
+>   45     echo "Caught Exception: " . $e->getMessage() . "\n";
+    46 }
+    47 catch(FatalException $e)
+    48 {
+
+Zend/tests/fibers/catch.phpt:10
+  state: handled
+  fixture: Zend_tests_fibers_catch
+  fingerprint: message_only:4716fab5925de68b63b10b24548d317483ccc799
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(exception)
+  var_dump($exception->getMessage());
+
+     7     try {
+     8         Fiber::suspend('test');
+     9     } catch (Exception $exception) {
+>   10         var_dump($exception->getMessage());
+    11     }
+    12 });
+    13 
+
+ext/ldap/tests/gh21262.phpt:35
+  state: handled
+  fixture: ext_ldap_tests_gh21262
+  fingerprint: message_only:4c9e2c56acaa2a198559ebeec847927b8322c01d
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:0347197eb00aca0e1dd22f6334589d0eda9eedb0 exception_message(e) newline
+  echo "ldap_modify: UNEXPECTED ValueError: ", $e->getMessage(), PHP_EOL;
+
+    32 	@ldap_modify($ldap, $valid_dn, $entry_with_empty_array);
+    33 	echo "ldap_modify: no ValueError thrown", PHP_EOL;
+    34 } catch (ValueError $e) {
+>   35 	echo "ldap_modify: UNEXPECTED ValueError: ", $e->getMessage(), PHP_EOL;
+    36 }
+    37 
+    38 // ldap_mod_del() should accept empty arrays (delete attribute)
+
+ext/hash/tests/hash_serialize_003.phpt:240
+  state: handled
+  fixture: ext_hash_tests_hash_serialize_003
+  fingerprint: message_only:560dbf5b62f6eeca246c8f55d855ac7187cec121
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECT
+  reason: contains an unsupported expression shape
+  parts: literal:trash exception_message(e) newline unknown(Expr_MethodCall)
+  echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();
+
+   237         }
+   238     } catch (Throwable $e) {
+   239         echo "$algo: problem with serialization {$serial}\n";
+>  240         echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();
+   241     }
+   242 }
+   243 
+
+Zend/tests/constant_arrays.phpt:37
+  state: handled
+  fixture: Zend_tests_constant_arrays
+  fingerprint: message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(exception) newline
+  echo $exception->getMessage() . "\n";
+
+    34 try {
+    35     define('RECURSION', $recursive);
+    36 } catch (ValueError $exception) {
+>   37     echo $exception->getMessage() . "\n";
+    38 }
+    39 ?>
+    40 
+
+ext/spl/tests/heap_corruption.phpt:58
+  state: handled
+  fixture: ext_spl_tests_heap_corruption
+  fingerprint: message_only:6689e3676c135dafb7312f39ec62473546464a72
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:e2d506e405db720b3fdd7bcadad47935fd9691ca exception_message(e) newline
+  echo "Corruption Exception: " . $e->getMessage() . PHP_EOL;
+
+    55     $heap->top();
+    56 }
+    57 catch (Exception $e) {
+>   58     echo "Corruption Exception: " . $e->getMessage() . PHP_EOL;
+    59 }
+    60 
+    61 var_dump($heap->isCorrupted());
+
+ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:52
+  state: handled
+  fixture: ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
+  fingerprint: message_only:6853fa0c8ab6716dc6d10447a9b13925a3a9389e
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:14ebfad3f66e20e288f2aa7570055269cfc6c852 exception_message(e) newline
+  echo "Object-based creation failed as expected: " . $e->getMessage() . "\n";
+
+    49     $reflection = new ReflectionProperty($obj, 'parentOnly');
+    50     echo "ERROR: Should have failed\n";
+    51 } catch (ReflectionException $e) {
+>   52     echo "Object-based creation failed as expected: " . $e->getMessage() . "\n";
+    53 }
+    54 
+    55 ?>
+
+Zend/tests/arg_unpack/non_integer_keys.phpt:16
+  state: handled
+  fixture: Zend_tests_arg_unpack_non_integer_keys
+  fingerprint: message_only:6aad370bb56dc0760c2ad93c8ec22e95876a0175
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(ex) newline
+  echo "Exception: " . $ex->getMessage() . "\n";
+
+    13 try {
+    14     foo(...gen());
+    15 } catch (Error $ex) {
+>   16     echo "Exception: " . $ex->getMessage() . "\n";
+    17 }
+    18 
+    19 ?>
+
+Zend/tests/ast/gh21072.phpt:13
+  state: handled
+  fixture: Zend_tests_ast_gh21072
+  fingerprint: message_only:6ac8e2e2b0f7cd785af81086faa8d32ab1d57e7e
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e)
+  echo $e->getMessage();
+
+    10     }
+    11     new C;
+    12 } catch (Error $e) {
+>   13     echo $e->getMessage();
+    14 }
+    15 ?>
+    16 
+
+ext/spl/tests/SplHeap_serialize_corrupted.phpt:31
+  state: handled
+  fixture: ext_spl_tests_SplHeap_serialize_corrupted
+  fingerprint: message_only:6b06435b5be6abcc662b2f95ff5574978c706fd6
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:f35571ac1986926e9d9b0fb6f2d5486a0928cb29 exception_message(e) newline
+  echo "Serialization failed: " . $e->getMessage() . "\n";
+
+    28     serialize($heap);
+    29     echo "FAIL: Serialization should have thrown\n";
+    30 } catch (Exception $e) {
+>   31     echo "Serialization failed: " . $e->getMessage() . "\n";
+    32 }
+    33 
+    34 class ThrowingPQ extends SplPriorityQueue {
+
+ext/date/tests/bug51819.phpt:26
+  state: handled
+  fixture: ext_date_tests_bug51819
+  fingerprint: message_only:6bb8a7d1c377a9281057d573ab32999d3f3aeb31
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(oException)
+  var_dump($oException->getMessage());
+
+    23     try {
+    24         $oDateTime = new DateTime($sDate);
+    25     } catch (Exception $oException) {
+>   26         var_dump($oException->getMessage());
+    27         print_r(DateTime::getLastErrors());
+    28     }
+    29 }
+
+ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:64
+  state: handled
+  fixture: ext_reflection_tests_ReflectionProperty_getMangledName_dynamic
+  fingerprint: message_only:6c6da67cc987f3bd63ad897aaab9cf8a3bcb4729
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:d470504916d3145bc79d1746324ab5eafb34883e exception_message(e) newline
+  echo "Expected exception for class-based reflection: " . $e->getMessage() . "\n";
+
+    61     $reflection = new ReflectionProperty('TestClass', 'dynamic');
+    62     echo "This should not be reached\n";
+    63 } catch (ReflectionException $e) {
+>   64     echo "Expected exception for class-based reflection: " . $e->getMessage() . "\n";
+    65 }
+    66 
+    67 try {
+
+tests/classes/destructor_and_exceptions.phpt:49
+  state: handled
+  fixture: tests_classes_destructor_and_exceptions
+  fingerprint: message_only:7fec8a735304fdc8b2c675440e6316a831aeb826
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:f52d65529ff1f7f029490318f34c58535f84a5b6 exception_message(e) newline
+  echo "Caught FatalException: " . $e->getMessage() . "\n";
+
+    46 }
+    47 catch(FatalException $e)
+    48 {
+>   49     echo "Caught FatalException: " . $e->getMessage() . "\n";
+    50 }
+    51 
+    52 ?>
+
+ext/reflection/tests/internal_parameter_default_value/check_all.phpt:12
+  state: handled
+  fixture: ext_reflection_tests_internal_parameter_default_value_check_all
+  fingerprint: message_only:81e8a1f089550d781796142978893b1553c23374
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECTF
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_MethodCall) literal:trash exception_message(e) newline
+  echo "{$rf->getName()}: {$e->getMessage()}\n";
+
+     9             try {
+    10                 $param->getDefaultValue();
+    11             } catch (Error $e) {
+>   12                 echo "{$rf->getName()}: {$e->getMessage()}\n";
+    13             }
+    14         }
+    15     }
+
+ext/bcmath/tests/bcdiv_error1.phpt:14
+  state: handled
+  fixture: ext_bcmath_tests_bcdiv_error1
+  fingerprint: message_only:85d337243459d4fbaea6c0d45768eb582d1664bf
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(ex) newline
+  echo $ex->getMessage(), PHP_EOL;
+
+    11 try {
+    12     bcdiv('10.99', '0');
+    13 } catch (DivisionByZeroError $ex) {
+>   14     echo $ex->getMessage(), PHP_EOL;
+    15 }
+    16 
+    17 try {
+
+ext/calendar/tests/cal_days_in_month_error1.phpt:12
+  state: handled
+  fixture: ext_calendar_tests_cal_days_in_month_error1
+  fingerprint: message_only:863ed9a9ef8d6fd4669a2c2bd9e6e4893e5606ac
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(ex) newline
+  echo "{$ex->getMessage()}\n";
+
+     9 try {
+    10     cal_days_in_month(-1, 4, 2017);
+    11 } catch (ValueError $ex) {
+>   12     echo "{$ex->getMessage()}\n";
+    13 }
+    14 try{
+    15     cal_days_in_month(CAL_GREGORIAN,20, 2009);
+
+Zend/tests/match/043.phpt:12
+  state: handled
+  fixture: Zend_tests_match_043
+  fingerprint: message_only:8b426706a49a969f0148da2afee59513f61861f6
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  print $e->getMessage() . PHP_EOL;
+
+     9     try {
+    10         match($var) {};
+    11     } catch (UnhandledMatchError $e) {
+>   12         print $e->getMessage() . PHP_EOL;
+    13     }
+    14 }
+    15 
+
+ext/spl/tests/SplHeap_serialize_error_handling.phpt:63
+  state: handled
+  fixture: ext_spl_tests_SplHeap_serialize_error_handling
+  fingerprint: message_only:8df574e7d8c600504be4abeb2b126e3b9826e0fb
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:3af2ce3560628311e5e6076176bfb18a3b4ae879 unknown(Expr_Variable) literal:trash exception_message(e) newline
+  echo "PQ Case $i: " . $e->getMessage() . "\n";
+
+    60         $pq->__unserialize($case);
+    61         echo "PQ Case $i: UNEXPECTED SUCCESS\n";
+    62     } catch (Exception $e) {
+>   63         echo "PQ Case $i: " . $e->getMessage() . "\n";
+    64     }
+    65 }
+    66 
+
+Zend/tests/exception_set_previous_leak.phpt:15
+  state: handled
+  fixture: Zend_tests_exception_set_previous_leak
+  fingerprint: message_only:9112324c182f44b842d22cf66a33c2f61eb6b6bd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e2) newline
+  echo $e2->getMessage(), "\n";
+
+    12         throw $e;
+    13     }
+    14 } catch (Exception $e2) {
+>   15     echo $e2->getMessage(), "\n";
+    16 }
+    17 
+    18 ?>
+
+ext/dom/tests/modern/xml/XMLDocument_xpath.phpt:49
+  state: handled
+  fixture: ext_dom_tests_modern_xml_XMLDocument_xpath
+  fingerprint: message_only:9ca93a3260e3046a2ed62c475b0c6cf774bc4546
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECT
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_MethodCall) literal:trash exception_message(e) newline
+  echo $e->getCode(), ": ", $e->getMessage(), "\n";
+
+    46 try {
+    47     var_dump($xpath->evaluate("//*/namespace::*"));
+    48 } catch (DOMException $e) {
+>   49     echo $e->getCode(), ": ", $e->getMessage(), "\n";
+    50 }
+    51 
+    52 ?>
+
+Zend/tests/require_parse_exception.phpt:12
+  state: handled
+  fixture: Zend_tests_require_parse_exception
+  fingerprint: message_only:a72f63c4799eb92de7e43e492194e7d22662fd52
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) literal:on_line_separator exception_line(e) newline
+  echo $e->getMessage(), " on line ", $e->getLine(), "\n";
+
+     9     try {
+    10         require 'data://text/plain;base64,' . base64_encode($code);
+    11     } catch (ParseError $e) {
+>   12         echo $e->getMessage(), " on line ", $e->getLine(), "\n";
+    13     }
+    14 }
+    15 
+
+tests/classes/type_hinting_004.phpt:17
+  state: handled
+  fixture: tests_classes_type_hinting_004
+  fingerprint: message_only:b6d3bac07898ac9852baeb0863131368e15af781
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECTF
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_MethodCall) literal:trash exception_message(ex) literal:trash exception_file(ex) literal:trash exception_line(ex) literal:trash
+  echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
+
+    14   try {
+    15     call_user_func('f1', 1);
+    16   } catch (Error $ex) {
+>   17     echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
+    18   }
+    19   try {
+    20     call_user_func('f1', new A);
+
+ext/standard/tests/strings/vfprintf_error4.phpt:22
+  state: handled
+  fixture: ext_standard_tests_strings_vfprintf_error4
+  fingerprint: message_only:b96a4692463bf2450726d04083172fc132f1f893
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:trash
+  print('Error found: '.$e->getMessage().".\n");
+
+    19 try {
+    20     var_dump( vfprintf( $fp, 'Foo %$c-0202Sd', array( 2 ) ) );
+    21 } catch(\ValueError $e) {
+>   22     print('Error found: '.$e->getMessage().".\n");
+    23 }
+    24 // Close handle
+    25 fclose( $fp );
+
+Zend/tests/readonly_props/visibility_change.phpt:21
+  state: handled
+  fixture: Zend_tests_readonly_props_visibility_change
+  fingerprint: message_only:ba2024ac5bbf2905256f2b77ad1b5cecce2aefdc
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(error) newline
+  echo $error->getMessage() . "\n";
+
+    18 try {
+    19     var_dump($a->prop);
+    20 } catch (Error $error) {
+>   21     echo $error->getMessage() . "\n";
+    22 }
+    23 
+    24 $b = new B();
+
+ext/ldap/tests/gh21262.phpt:43
+  state: handled
+  fixture: ext_ldap_tests_gh21262
+  fingerprint: message_only:bd940d349f94398c01a441728374595abafa9d90
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:aeb721d2842fdce65baef58de3480970e0402056 exception_message(e) newline
+  echo "ldap_mod_del: UNEXPECTED ValueError: ", $e->getMessage(), PHP_EOL;
+
+    40 	@ldap_mod_del($ldap, $valid_dn, $entry_with_empty_array);
+    41 	echo "ldap_mod_del: no ValueError thrown", PHP_EOL;
+    42 } catch (ValueError $e) {
+>   43 	echo "ldap_mod_del: UNEXPECTED ValueError: ", $e->getMessage(), PHP_EOL;
+    44 }
+    45 ?>
+    46 
+
+Zend/tests/in-de-crement/overloaded_access.phpt:25
+  state: handled
+  fixture: Zend_tests_in_de_crement_overloaded_access
+  fingerprint: message_only:c0955f6fe6074189cf9524be8acf479440287d63
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(ex) newline
+  echo $ex->getMessage() . "\n";
+
+    22 try {
+    23 	$foo[0]++;
+    24 } catch (Throwable $ex) {
+>   25 	echo $ex->getMessage() . "\n";
+    26 }
+    27 $foo = new Foo;
+    28 try {
+
+Zend/tests/type_declarations/typed_properties_076.phpt:40
+  state: handled
+  fixture: Zend_tests_type_declarations_typed_properties_076
+  fingerprint: message_only:c2ddb4c911929e8fafe70c7773be9d201e5ff62a
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:e871041d84875d6279a81f4cce33f613fd059680 unknown(Expr_Variable) literal:4eee2afb97c4990115f7125987181035faa8da3a unknown(Expr_Variable) literal:7a199e96201dea624fe45aa523d67a330160f635 exception_message(e) newline
+  echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";
+
+    37         $test->$prop2 = $value;
+    38         $test->$prop1 =& $test->$prop2;
+    39     } catch (TypeError $e) {
+>   40         echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";
+    41     }
+    42     try {
+    43         $test->$prop1 = $value;
+
+Zend/tests/arrow_functions/007.phpt:11
+  state: handled
+  fixture: Zend_tests_arrow_functions_007
+  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
+
+     8 try {
+     9     assert((fn() => false)());
+    10 } catch (AssertionError $e) {
+>   11     echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
+    12 }
+    13 
+    14 try {
+
+ext/spl/tests/heap_corruption.phpt:51
+  state: handled
+  fixture: ext_spl_tests_heap_corruption
+  fingerprint: message_only:c4657791ba2d961de0381cc5a451f0f6aabe8157
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:da6508a2dbd49facc3fc23d6563edc39ba079fd5 exception_message(e) newline
+  echo "Compare Exception: " . $e->getMessage() . PHP_EOL;
+
+    48     $heap->extract();
+    49 }
+    50 catch (Exception $e) {
+>   51     echo "Compare Exception: " . $e->getMessage() . PHP_EOL;
+    52 }
+    53 
+    54 try {
+
+Zend/tests/generators/throw_into_yield_from_array.phpt:23
+  state: handled
+  fixture: Zend_tests_generators_throw_into_yield_from_array
+  fingerprint: message_only:c67ffa5ef3e250f1b1b565aa37ab24170abc42f6
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo "{$e->getMessage()}\n";
+
+    20     try {
+    21         $g->throw(new Exception("Exception!"));
+    22     } catch (Exception $e) {
+>   23         echo "{$e->getMessage()}\n";
+    24     }
+    25     var_dump($g->current());
+    26 }
+
+ext/spl/tests/SplHeap_serialize_corrupted.phpt:59
+  state: handled
+  fixture: ext_spl_tests_SplHeap_serialize_corrupted
+  fingerprint: message_only:c86a2b1c3dc1f116b2ff4deedd09923cd4087f22
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:34cbd59a1fd9fa1af7f7964141b36fd440b4638e exception_message(e) newline
+  echo "PQ Serialization failed: " . $e->getMessage() . "\n";
+
+    56     serialize($pq);
+    57     echo "FAIL: PQ Serialization should have thrown\n";
+    58 } catch (Exception $e) {
+>   59     echo "PQ Serialization failed: " . $e->getMessage() . "\n";
+    60 }
+    61 
+    62 ?>
+
+ext/spl/tests/bug73629.phpt:14
+  state: handled
+  fixture: ext_spl_tests_bug73629
+  fingerprint: message_only:ce21b70d37e83e5f0615d484b44af07c0de90deb
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:c0d8931290bb8cb1b3d11391c78e765c463a1ea4 exception_message(e) newline
+  echo 'expected exception: ' . $e->getMessage() . "\n";
+
+    11 try {
+    12     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
+    13 } catch (Exception $e) {
+>   14     echo 'expected exception: ' . $e->getMessage() . "\n";
+    15 }
+    16 ?>
+    17 
+
+tests/classes/array_access_013.phpt:22
+  state: handled
+  fixture: tests_classes_array_access_013
+  fingerprint: message_only:cee8d304aae96d60e8c8bc9f4c4ec27c2bc4e8d0
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:trash
+  echo "Caught in " . $e->getMessage() . "()\n";
+
+    19 }
+    20 catch(Exception $e)
+    21 {
+>   22     echo "Caught in " . $e->getMessage() . "()\n";
+    23 }
+    24 
+    25 try
+
+Zend/tests/assert/bug71922.phpt:14
+  state: handled
+  fixture: Zend_tests_assert_bug71922
+  fingerprint: message_only:d1406d81384fa1556ab6b3df04ed402a32b50746
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
+  echo "Assertion failure: ", $e->getMessage(), "\n";
+
+    11     } && new class(42) extends stdclass {
+    12     });
+    13 } catch (AssertionError $e) {
+>   14     echo "Assertion failure: ", $e->getMessage(), "\n";
+    15 }
+    16 
+    17 ?>
+
+ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt:18
+  state: handled
+  fixture: ext_tokenizer_tests_token_get_all_heredoc_nowdoc
+  fingerprint: message_only:d3e34e5a1dadcc3ebfd22839cdcf42cacd0dc07c
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:on_line_separator exception_line(e) newline
+  echo "Parse error: {$e->getMessage()} on line {$e->getLine()}\n";
+
+    15             }
+    16         }
+    17     } catch (ParseError $e) {
+>   18         echo "Parse error: {$e->getMessage()} on line {$e->getLine()}\n";
+    19     }
+    20 }
+    21 
+
+ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:44
+  state: handled
+  fixture: ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
+  fingerprint: message_only:d43cb9ed24c67c7237dc34068296786c0b0aa035
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:f306820f082f5ca7cc9e9e17bf6896b87b559eeb exception_message(e) newline
+  echo "Instance-based creation failed as expected: " . $e->getMessage() . "\n";
+
+    41     $reflection = new ReflectionProperty('ChildClass', 'parentOnly');
+    42     echo "ERROR: Should have failed\n";
+    43 } catch (ReflectionException $e) {
+>   44     echo "Instance-based creation failed as expected: " . $e->getMessage() . "\n";
+    45 }
+    46 
+    47 try {
+
+Zend/tests/access_modifiers/access_modifiers_008.phpt:36
+  state: handled
+  fixture: Zend_tests_access_modifiers_access_modifiers_008
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    33         try {
+    34             echo A::mp() . "\n";
+    35         } catch (\Throwable $e) {
+>   36             echo $e->getMessage() . "\n";
+    37         }
+    38         echo B1::ma() . "\n"; // protected method defined also in A
+    39         try {
+
+ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:48
+  state: handled
+  fixture: ext_reflection_tests_ReflectionProperty_getMangledName_instance
+  fingerprint: message_only:e20bd9eaadb85ebe935c27683b4eea38f5ee8457
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:84a6235784fcced38ac73d40c3f97ed8fe185ef3 unknown(Expr_Variable) literal:f0c279909b702a506f0d4a6d3ae098675f773635 exception_message(e) literal:trash
+  echo "Property $property from instance: EXCEPTION - " . $e->getMessage() . "\n\n";
+
+    45         echo "  Found in array cast: " . (array_key_exists($reflection->getMangledName(), $array) ? "yes" : "no") . "\n";
+    46         echo "\n";
+    47     } catch (ReflectionException $e) {
+>   48         echo "Property $property from instance: EXCEPTION - " . $e->getMessage() . "\n\n";
+    49     }
+    50 }
+    51 
+
+ext/dom/tests/DOMNode_removeChild_error1.phpt:17
+  state: handled
+  fixture: ext_dom_tests_DOMNode_removeChild_error1
+  fingerprint: message_only:e4d48fff0b563ce1439511df87e5a014e8dc4766
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:2d914783bd28a72f66bfbe974402f05ede16ed6c exception_message(e)
+  echo "DOMException: " . $e->getMessage();
+
+    14 try {
+    15 	$parent->removeChild($child1);
+    16 } catch (DOMException $e) {
+>   17 	echo "DOMException: " . $e->getMessage();
+    18 }
+    19 ?>
+    20 
+
+Zend/tests/generators/generator_throwing_during_function_call.phpt:23
+  state: handled
+  fixture: Zend_tests_generators_generator_throwing_during_function_call
+  fingerprint: message_only:e4e5dbbc9537249f02080808ce2c2887486f40c6
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:trash newline
+  echo 'Caught exception with message "', $e->getMessage(), '"', "\n";
+
+    20 try {
+    21     $gen->next();
+    22 } catch (Exception $e) {
+>   23     echo 'Caught exception with message "', $e->getMessage(), '"', "\n";
+    24 }
+    25 
+    26 var_dump($gen->current());
+
+ext/intl/tests/listformatter/listformatter_clone.phpt:17
+  state: handled
+  fixture: ext_intl_tests_listformatter_listformatter_clone
+  fingerprint: message_only:f5a67865168f7bf6f4636f47c4bc64ffc72e7787
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(error)
+  echo $error->getMessage();
+
+    14 try {
+    15     $clonedFormatter = clone $formatter;
+    16 } catch(Error $error) {
+>   17     echo $error->getMessage();
+    18 }
+    19 ?>
+    20 
+
+ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:26
+  state: handled
+  fixture: ext_reflection_tests_ReflectionProperty_getMangledName_instance
+  fingerprint: message_only:f650c83eb49d0af9f854d2435e12ac51927b80ea
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:84a6235784fcced38ac73d40c3f97ed8fe185ef3 unknown(Expr_Variable) literal:3cf67e0a93956075ae2b88a13028f336b7a35b9d exception_message(e) literal:trash
+  echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
+
+    23         echo "  getMangledName(): " . $reflection->getMangledName() . "\n";
+    24         echo "\n";
+    25     } catch (ReflectionException $e) {
+>   26         echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
+    27     }
+    28 }
+    29 
+
+tests/lang/foreachLoopIteratorAggregate.002.phpt:41
+  state: handled
+  fixture: tests_lang_foreachLoopIteratorAggregate_002
+  fingerprint: message_only:fed0ec03c71480ae0b17c9f381d9abe6ab4c768e
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_line(e) literal:trash exception_message(e) newline
+  echo $e->getLine() . ": " . $e->getMessage() ."\n";
+
+    38             echo "$k => $v\n";
+    39         }
+    40     } catch (Exception $e) {
+>   41             echo $e->getLine() . ": " . $e->getMessage() ."\n";
+    42     }
+    43 }
+    44 
