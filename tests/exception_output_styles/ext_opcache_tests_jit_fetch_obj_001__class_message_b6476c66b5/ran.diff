@@ -1,0 +1,29 @@
+--- old.phpt
++++ new.phpt
+@@ -51,7 +51,7 @@
+     try {
+         foo($d->{"ab" ."c"});
+     } catch (Error $err) {
+-        echo $err::class, ": ", $err->getMessage(), PHP_EOL;
++        echo $err::class, ': ', $err->getMessage(), \PHP_EOL;
+     }
+     var_dump($d);
+ 
+@@ -59,7 +59,7 @@
+     try {
+         foo($e->{"ab" ."c"});
+     } catch (Error $err) {
+-        echo $err::class, ": ", $err->getMessage(), PHP_EOL;
++        echo $err::class, ': ', $err->getMessage(), \PHP_EOL;
+     }
+     var_dump($e);
+ 
+@@ -67,7 +67,7 @@
+     try {
+         foo($f->{"ab" ."c"});
+     } catch (Error $err) {
+-        echo $err::class, ": ", $err->getMessage(), PHP_EOL;
++        echo $err::class, ': ', $err->getMessage(), \PHP_EOL;
+     }
+     var_dump($f);
+ }
