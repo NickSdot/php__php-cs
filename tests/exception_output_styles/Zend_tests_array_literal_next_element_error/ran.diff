@@ -1,0 +1,24 @@
+--- old.phpt
++++ new.phpt
+@@ -8,17 +8,17 @@
+     $array = [$i => 42, new stdClass];
+     var_dump($array);
+ } catch (Error $e) {
+-    echo $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ function test($x = [PHP_INT_MAX => 42, "foo"]) {}
+ try {
+     test();
+ } catch (Error $e) {
+-    echo $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ ?>
+ --EXPECT--
+-Cannot add element to the array as the next element is already occupied
+-Cannot add element to the array as the next element is already occupied
++Error: Cannot add element to the array as the next element is already occupied
++Error: Cannot add element to the array as the next element is already occupied
