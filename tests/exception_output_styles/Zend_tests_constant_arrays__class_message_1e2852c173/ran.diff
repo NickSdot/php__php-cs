@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -34,7 +34,7 @@
+ try {
+     define('RECURSION', $recursive);
+ } catch (ValueError $exception) {
+-    echo $exception::class, ": ", $exception->getMessage(), PHP_EOL;
++    echo $exception::class, ': ', $exception->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
