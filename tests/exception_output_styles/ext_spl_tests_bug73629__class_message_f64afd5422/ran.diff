@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -6,7 +6,7 @@
+ try {
+     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_FIFO);
+ } catch (Exception $e) {
+-    echo 'unexpected exception: ' . $e::class . ": " . $e->getMessage() . PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ try {
+     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
