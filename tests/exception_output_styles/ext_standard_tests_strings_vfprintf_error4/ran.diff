@@ -1,0 +1,25 @@
+--- old.phpt
++++ new.phpt
+@@ -14,12 +14,12 @@
+ try {
+     var_dump( vfprintf( 'foo', 'bar', array( 'baz' ) ) );
+ } catch (TypeError $e) {
+-    echo $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ try {
+     var_dump( vfprintf( $fp, 'Foo %$c-0202Sd', array( 2 ) ) );
+ } catch(\ValueError $e) {
+-    print('Error found: '.$e->getMessage().".\n");
++    print('Error found: '.$e::class . ': ' . $e->getMessage().".\n");
+ }
+ // Close handle
+ fclose( $fp );
+@@ -34,5 +34,5 @@
+ ?>
+ --EXPECT--
+ -- Testing vfprintf() function with other strangeties  --
+-vfprintf(): Argument #1 ($stream) must be of type resource, string given
+-Error found: Argument number specifier must be greater than zero and less than 2147483647.
++TypeError: vfprintf(): Argument #1 ($stream) must be of type resource, string given
++Error found: ValueError: Argument number specifier must be greater than zero and less than 2147483647.
