@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -6,8 +6,8 @@
+ try {
+   new HashContext;
+ } catch (Error $e) {
+-  echo "Exception: {$e->getMessage()}\n";
++  echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
+-Exception: Call to private HashContext::__construct() from global scope
++Error: Call to private HashContext::__construct() from global scope
