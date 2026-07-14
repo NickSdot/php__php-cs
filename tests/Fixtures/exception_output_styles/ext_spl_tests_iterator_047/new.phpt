@@ -48,7 +48,7 @@ class MyRecursiveCachingIterator extends RecursiveCachingIterator
             }
             catch (Exception $e)
             {
-                echo "Exception: " . $e::class . ': ' . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . \PHP_EOL;
+                echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), \PHP_EOL;
             }
             MyRecursiveArrayIterator::$fail++;
         }
@@ -88,14 +88,14 @@ int(4)
 int(4)
 ===1===
 MyRecursiveArrayIterator::hasChildren()
-Exception: Exception: State 1: MyRecursiveArrayIterator::hasChildren() in %s on line %d
+Exception: State 1: MyRecursiveArrayIterator::hasChildren() in %s on line %d
 ===2===
 MyRecursiveArrayIterator::hasChildren()
 int(0)
 int(0)
 MyRecursiveArrayIterator::hasChildren()
 MyRecursiveArrayIterator::getChildren()
-Exception: Exception: State 2: MyRecursiveArrayIterator::getChildren() in %s on line %d
+Exception: State 2: MyRecursiveArrayIterator::getChildren() in %s on line %d
 ===3===
 MyRecursiveArrayIterator::hasChildren()
 int(0)
