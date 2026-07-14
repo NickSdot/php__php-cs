@@ -2,7 +2,7 @@
 <phpunit
     bootstrap="vendor/autoload.php"
     colors="true"
-    cacheDirectory=".phpunit.cache"
+    cacheDirectory="var/.phpunit.cache"
 >
     <testsuites>
         <testsuite name="unit">
