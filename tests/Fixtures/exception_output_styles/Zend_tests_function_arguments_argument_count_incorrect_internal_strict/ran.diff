@@ -1,9 +1,10 @@
 --- old.phpt
 +++ new.phpt
-@@ -7,18 +7,18 @@
+@@ -6,19 +6,15 @@
+ try {
      substr("foo");
  } catch (ArgumentCountError $e) {
-     echo get_class($e) . PHP_EOL;
+-    echo get_class($e) . PHP_EOL;
 -    echo $e->getMessage() . PHP_EOL;
 +    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
  }
@@ -11,15 +12,15 @@
  try {
      array_diff();
  } catch (ArgumentCountError $e) {
-     echo get_class($e) . PHP_EOL;
+-    echo get_class($e) . PHP_EOL;
 -    echo $e->getMessage(), "\n";
 +    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
  }
  ?>
  --EXPECT--
- ArgumentCountError
+-ArgumentCountError
 -substr() expects at least 2 arguments, 1 given
-+ArgumentCountError: substr() expects at least 2 arguments, 1 given
- ArgumentCountError
+-ArgumentCountError
 -array_diff() expects at least 1 argument, 0 given
++ArgumentCountError: substr() expects at least 2 arguments, 1 given
 +ArgumentCountError: array_diff() expects at least 1 argument, 0 given
