@@ -19,7 +19,7 @@ try {
 try {
     var_dump( vfprintf( $fp, 'Foo %$c-0202Sd', array( 2 ) ) );
 } catch(\ValueError $e) {
-    print('Error found: '.$e::class . ': ' . $e->getMessage().".\n");
+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 // Close handle
 fclose( $fp );
@@ -35,4 +35,4 @@ unlink( $file );
 --EXPECT--
 -- Testing vfprintf() function with other strangeties  --
 TypeError: vfprintf(): Argument #1 ($stream) must be of type resource, string given
-Error found: ValueError: Argument number specifier must be greater than zero and less than 2147483647.
+ValueError: Argument number specifier must be greater than zero and less than 2147483647
