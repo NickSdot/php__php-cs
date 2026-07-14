@@ -21,16 +21,16 @@ class Clazz {
 try {
 	Clazz::TEST;
 } catch (ErrorException $e) {
-	echo "Caught: ", $e::class . ': ' . $e->getMessage(), \PHP_EOL;
+	echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 try {
 	Clazz::TEST3;
 } catch (ErrorException $e) {
-	echo "Caught: ", $e::class . ': ' . $e->getMessage(), \PHP_EOL;
+	echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Caught: ErrorException: Constant Clazz::TEST is deprecated, from itself
-Caught: ErrorException: Constant Clazz::TEST2 is deprecated
+ErrorException: Constant Clazz::TEST is deprecated, from itself
+ErrorException: Constant Clazz::TEST2 is deprecated
