@@ -5,7 +5,7 @@
          }
      } catch (ParseError $e) {
 -        echo "Parse error: {$e->getMessage()} on line {$e->getLine()}\n";
-+        echo "Parse error: ", $e::class, ': ', $e->getMessage(), " on line ", $e->getLine(), \PHP_EOL;
++        echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), \PHP_EOL;
      }
  }
  
@@ -14,12 +14,12 @@
  Test case 5
  
 -Parse error: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 2
-+Parse error: ParseError: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 2
++ParseError: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 2
  
  Test case 6
  
 -Parse error: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 2
-+Parse error: ParseError: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 2
++ParseError: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 2
  
  Test case 7
  
@@ -28,7 +28,7 @@
  Test case 8
  
 -Parse error: Invalid indentation - tabs and spaces cannot be mixed on line 3
-+Parse error: ParseError: Invalid indentation - tabs and spaces cannot be mixed on line 3
++ParseError: Invalid indentation - tabs and spaces cannot be mixed on line 3
  
  Test case 9
  
@@ -37,7 +37,7 @@
  Test case 11
  
 -Parse error: Invalid body indentation level (expecting an indentation level of at least 3) on line 2
-+Parse error: ParseError: Invalid body indentation level (expecting an indentation level of at least 3) on line 2
++ParseError: Invalid body indentation level (expecting an indentation level of at least 3) on line 2
  
  Test case 12
  
@@ -46,7 +46,7 @@
  Test case 15
  
 -Parse error: Invalid body indentation level (expecting an indentation level of at least 3) on line 2
-+Parse error: ParseError: Invalid body indentation level (expecting an indentation level of at least 3) on line 2
++ParseError: Invalid body indentation level (expecting an indentation level of at least 3) on line 2
  
  Test case 16
  
@@ -55,9 +55,9 @@
  Test case 17
  
 -Parse error: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 4
-+Parse error: ParseError: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 4
++ParseError: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 4
  
  Test case 18
  
 -Parse error: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 4
-+Parse error: ParseError: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 4
++ParseError: syntax error, unexpected end of file, expecting variable or heredoc end or "${" or "{$" on line 4
