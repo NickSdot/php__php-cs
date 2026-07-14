@@ -1,0 +1,29 @@
+--- old.phpt
++++ new.phpt
+@@ -23,7 +23,7 @@
+         echo "  getMangledName(): " . $reflection->getMangledName() . "\n";
+         echo "\n";
+     } catch (ReflectionException $e) {
+-        echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
++        echo "Property $property from class: EXCEPTION - " . $e::class . ': ' . $e->getMessage() . "\n\n";
+     }
+ }
+ 
+@@ -45,7 +45,7 @@
+         echo "  Found in array cast: " . (array_key_exists($reflection->getMangledName(), $array) ? "yes" : "no") . "\n";
+         echo "\n";
+     } catch (ReflectionException $e) {
+-        echo "Property $property from instance: EXCEPTION - " . $e->getMessage() . "\n\n";
++        echo "Property $property from instance: EXCEPTION - " . $e::class . ': ' . $e->getMessage() . "\n\n";
+     }
+ }
+ 
+@@ -74,7 +74,7 @@
+   getName(): private
+   getMangledName(): %0TestClass%0private
+ 
+-Property dynamic from class: EXCEPTION - Property TestClass::$dynamic does not exist
++Property dynamic from class: EXCEPTION - ReflectionException: Property TestClass::$dynamic does not exist
+ 
+ === Testing ReflectionProperty from INSTANCE ===
+ Property public from instance:
