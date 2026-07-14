@@ -1,0 +1,32 @@
+--- old.phpt
++++ new.phpt
+@@ -10,25 +10,25 @@
+ try {
+     var_dump(Foo::Bar);
+ } catch (Error $e) {
+-    echo get_class($e), ': ', $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ try {
+     var_dump(Foo::Bar);
+ } catch (Error $e) {
+-    echo get_class($e), ': ', $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ try {
+     var_dump(Foo::from(42));
+ } catch (Error $e) {
+-    echo get_class($e), ': ', $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ try {
+     var_dump(Foo::from('bar'));
+ } catch (Error $e) {
+-    echo get_class($e), ': ', $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ ?>
