@@ -1,0 +1,17 @@
+--- old.phpt
++++ new.phpt
+@@ -16,12 +16,12 @@
+ try {
+     var_dump($m->current());
+ } catch (RuntimeException $e) {
+-    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ try {
+     var_dump($m->key());
+ } catch (RuntimeException $e) {
+-    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ $m->attachIterator($iter1);
