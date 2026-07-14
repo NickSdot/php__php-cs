@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -11,7 +11,7 @@
+ try {
+     var_dump($a + $o);
+ } catch (Error $e) {
+-    echo PHP_EOL, $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ $c = $a + $o;
