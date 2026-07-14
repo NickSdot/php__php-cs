@@ -1,0 +1,17 @@
+--- old.phpt
++++ new.phpt
+@@ -34,7 +34,7 @@
+ try {
+     define('RECURSION', $recursive);
+ } catch (ValueError $exception) {
+-    echo $exception->getMessage() . "\n";
++    echo $exception::class, ': ', $exception->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
+@@ -104,4 +104,4 @@
+   object(stdClass)#1 (0) {
+   }
+ }
+-define(): Argument #2 ($value) cannot be a recursive array
++ValueError: define(): Argument #2 ($value) cannot be a recursive array
