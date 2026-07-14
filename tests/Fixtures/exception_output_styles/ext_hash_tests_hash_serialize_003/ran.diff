@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -237,7 +237,7 @@
+         }
+     } catch (Throwable $e) {
+         echo "$algo: problem with serialization {$serial}\n";
+-        echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();
++        echo "  ", $e::class . ': ' . $e->getMessage(), \PHP_EOL, $e->getTraceAsString();
+     }
+ }
+ 
