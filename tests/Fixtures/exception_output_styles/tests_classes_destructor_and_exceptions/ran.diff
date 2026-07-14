@@ -14,12 +14,12 @@
  catch(Exception $e)
  {
 -    echo "Caught Exception: " . $e->getMessage() . "\n";
-+    echo "Caught Exception: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
  }
  catch(FatalException $e)
  {
 -    echo "Caught FatalException: " . $e->getMessage() . "\n";
-+    echo "Caught FatalException: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
  }
  
  ?>
@@ -30,4 +30,4 @@
  FatalException::__construct
  FailClass::__destruct
 -Caught Exception: FailClass
-+Caught Exception: Exception: FailClass
++Exception: FailClass

@@ -42,11 +42,11 @@ try
 }
 catch(Exception $e)
 {
-    echo "Caught Exception: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 catch(FatalException $e)
 {
-    echo "Caught FatalException: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 ?>
@@ -55,4 +55,4 @@ FailClass::__destruct
 Exception: FailClass
 FatalException::__construct
 FailClass::__destruct
-Caught Exception: Exception: FailClass
+Exception: FailClass
