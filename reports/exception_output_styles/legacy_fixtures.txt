@@ -52,3 +52,4 @@ These are not deleted automatically.
 - ext_standard_tests_file_file_error
 - ext_standard_tests_network_setcookie_array_option_error
 - ext_standard_tests_network_setrawcookie_error
+- tests_classes_destructor_and_exceptions

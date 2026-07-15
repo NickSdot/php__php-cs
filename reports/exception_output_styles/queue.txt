@@ -133,6 +133,25 @@ ext/pcntl/tests/bug81577.phpt:22
     24 }
     25 ?>
 
+ext/hash/tests/hash_equals.phpt:12
+  state: old_only
+  fixture: ext_hash_tests_hash_equals
+  fingerprint: class_message:be73122ca596a930f5eedf6ca30333ce67d96d35
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_class(get_class) literal:trash exception_message(e) newline
+  echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";
+
+     9             var_dump($test());
+    10         }
+    11         catch (\Error $e) {
+>   12             echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";
+    13         }
+    14     }
+    15 }
+
 ext/ldap/tests/ldap_set_option_error.phpt:32
   state: old_only
   fixture: ext_ldap_tests_ldap_set_option_error
@@ -1387,25 +1406,6 @@ Zend/tests/return_types/028.phpt:15
     17 
     18 ?>
 
-ext/standard/tests/array/bug42177.phpt:24
-  state: old_only
-  fixture: ext_standard_tests_array_bug42177
-  fingerprint: message_only:e1134cf17bad05b90d123e3c777e5523d2252b8c
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) literal:on_line_separator exception_line(e) newline
-  echo $e->getMessage() . " on line " . $e->getLine() . "\n";
-
-    21 try {
-    22     $a1 = array_merge_recursive( $a1, $a2 );
-    23 } catch (\Error $e) {
->   24     echo $e->getMessage() . " on line " . $e->getLine() . "\n";
-    25 }
-    26 unset( $a1, $a2 );
-    27 
-
 Zend/tests/attributes/005_objects.phpt:82
   state: old_only
   fixture: Zend_tests_attributes_005_objects
@@ -1443,6 +1443,25 @@ ext/pdo/tests/pecl_bug_5217.phpt:23
     24 }
     25 
     26 echo "PHP Didn't crash!\n";
+
+tests/lang/foreachLoopIteratorAggregate.002.phpt:41
+  state: old_only
+  fixture: tests_lang_foreachLoopIteratorAggregate_002
+  fingerprint: message_only:fed0ec03c71480ae0b17c9f381d9abe6ab4c768e
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_line(e) literal:trash exception_message(e) newline
+  echo $e->getLine() . ": " . $e->getMessage() ."\n";
+
+    38             echo "$k => $v\n";
+    39         }
+    40     } catch (Exception $e) {
+>   41             echo $e->getLine() . ": " . $e->getMessage() ."\n";
+    42     }
+    43 }
+    44 
 
 ext/pdo_sqlite/tests/subclasses/pdosqlite_load_extension_failure.phpt:25
   state: old_only

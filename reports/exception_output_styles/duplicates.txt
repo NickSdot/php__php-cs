@@ -831,8 +831,36 @@ message_only:8b426706a49a969f0148da2afee59513f61861f6
     - ext/dom/tests/dom_create_element.phpt:77
     - +45 more
 
+message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
+  count: 21
+  representative: Zend/tests/arrow_functions/007.phpt:11
+  family: message_only
+  safety: canonicalizable
+  first statement: echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
+  duplicates:
+    - Zend/tests/arrow_functions/007.phpt:17
+    - Zend/tests/assert/bug70528.phpt:15
+    - Zend/tests/assert/bug70528.phpt:20
+    - Zend/tests/assert/bug70528.phpt:25
+    - Zend/tests/assert/expect_016.phpt:14
+    - Zend/tests/assert/expect_018.phpt:18
+    - Zend/tests/assert/expect_018.phpt:24
+    - Zend/tests/assert/expect_020.phpt:13
+    - Zend/tests/ast/ast_serialize_backtick_literal.phpt:11
+    - Zend/tests/ast/ast_serialize_floats.phpt:10
+    - Zend/tests/ast/ast_serialize_floats.phpt:15
+    - Zend/tests/ast/ast_serialize_floats.phpt:20
+    - Zend/tests/ast/zend-pow-assign.phpt:11
+    - Zend/tests/attributes/012_ast_export.phpt:11
+    - Zend/tests/attributes/012_ast_export.phpt:17
+    - Zend/tests/attributes/012_ast_export.phpt:27
+    - Zend/tests/attributes/012_ast_export.phpt:37
+    - Zend/tests/functions/007.phpt:11
+    - Zend/tests/match/009_ast_export.phpt:17
+    - Zend/tests/type_declarations/types_in_ast.phpt:16
+
 message_only:8caf988c4ab167235f10422b331605565cc98857
-  count: 192
+  count: 194
   representative: Zend/tests/add_002.phpt:14
   family: message_only
   safety: canonicalizable
@@ -858,7 +886,7 @@ message_only:8caf988c4ab167235f10422b331605565cc98857
     - Zend/tests/exceptions/bug26698.phpt:55
     - Zend/tests/exceptions/bug31102.phpt:34
     - Zend/tests/exceptions/bug47771.phpt:26
-    - +171 more
+    - +173 more
 
 message_only:959363ad7d6d9fb7b60cf5504e5daf3043116073
   count: 2
@@ -968,34 +996,6 @@ message_only:c2ddb4c911929e8fafe70c7773be9d201e5ff62a
   first statement: echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";
   duplicates:
     - Zend/tests/type_declarations/typed_properties_076.phpt:46
-
-message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
-  count: 21
-  representative: Zend/tests/arrow_functions/007.phpt:11
-  family: message_only
-  safety: descriptive_context
-  first statement: echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
-  duplicates:
-    - Zend/tests/arrow_functions/007.phpt:17
-    - Zend/tests/assert/bug70528.phpt:15
-    - Zend/tests/assert/bug70528.phpt:20
-    - Zend/tests/assert/bug70528.phpt:25
-    - Zend/tests/assert/expect_016.phpt:14
-    - Zend/tests/assert/expect_018.phpt:18
-    - Zend/tests/assert/expect_018.phpt:24
-    - Zend/tests/assert/expect_020.phpt:13
-    - Zend/tests/ast/ast_serialize_backtick_literal.phpt:11
-    - Zend/tests/ast/ast_serialize_floats.phpt:10
-    - Zend/tests/ast/ast_serialize_floats.phpt:15
-    - Zend/tests/ast/ast_serialize_floats.phpt:20
-    - Zend/tests/ast/zend-pow-assign.phpt:11
-    - Zend/tests/attributes/012_ast_export.phpt:11
-    - Zend/tests/attributes/012_ast_export.phpt:17
-    - Zend/tests/attributes/012_ast_export.phpt:27
-    - Zend/tests/attributes/012_ast_export.phpt:37
-    - Zend/tests/functions/007.phpt:11
-    - Zend/tests/match/009_ast_export.phpt:17
-    - Zend/tests/type_declarations/types_in_ast.phpt:16
 
 message_only:cae59b7e459ed5075e975b172a778431571ddab9
   count: 6

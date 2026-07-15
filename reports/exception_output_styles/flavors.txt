@@ -919,23 +919,6 @@ ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt:11
     13 
     14 echo "Non-existent class:\n";
 
-tests/classes/destructor_and_exceptions.phpt:45
-  fingerprint: message_only:4601f27a85609651b86688b00ac27704447a5459
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:977d001bd2dd4941631f3966cb77c109aac69731 exception_message(e) newline
-  echo "Caught Exception: " . $e->getMessage() . "\n";
-
-    42 }
-    43 catch(Exception $e)
-    44 {
->   45     echo "Caught Exception: " . $e->getMessage() . "\n";
-    46 }
-    47 catch(FatalException $e)
-    48 {
-
 Zend/tests/fibers/catch.phpt:10
   fingerprint: message_only:4716fab5925de68b63b10b24548d317483ccc799
   family: message_only
@@ -1446,23 +1429,6 @@ ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:53
     55 $stmt = null;
     56 
 
-tests/classes/destructor_and_exceptions.phpt:49
-  fingerprint: message_only:7fec8a735304fdc8b2c675440e6316a831aeb826
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:f52d65529ff1f7f029490318f34c58535f84a5b6 exception_message(e) newline
-  echo "Caught FatalException: " . $e->getMessage() . "\n";
-
-    46 }
-    47 catch(FatalException $e)
-    48 {
->   49     echo "Caught FatalException: " . $e->getMessage() . "\n";
-    50 }
-    51 
-    52 ?>
-
 ext/reflection/tests/internal_parameter_default_value/check_all.phpt:12
   fingerprint: message_only:81e8a1f089550d781796142978893b1553c23374
   family: message_only
@@ -1546,6 +1512,23 @@ Zend/tests/match/043.phpt:12
     13     }
     14 }
     15 
+
+Zend/tests/arrow_functions/007.phpt:11
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
+
+     8 try {
+     9     assert((fn() => false)());
+    10 } catch (AssertionError $e) {
+>   11     echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
+    12 }
+    13 
+    14 try {
 
 Zend/tests/add_002.phpt:14
   fingerprint: message_only:8caf988c4ab167235f10422b331605565cc98857
@@ -1869,23 +1852,6 @@ Zend/tests/type_declarations/typed_properties_076.phpt:40
     41     }
     42     try {
     43         $test->$prop1 = $value;
-
-Zend/tests/arrow_functions/007.phpt:11
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
-  echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
-
-     8 try {
-     9     assert((fn() => false)());
-    10 } catch (AssertionError $e) {
->   11     echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
-    12 }
-    13 
-    14 try {
 
 ext/spl/tests/heap_corruption.phpt:51
   fingerprint: message_only:c4657791ba2d961de0381cc5a451f0f6aabe8157

@@ -613,12 +613,12 @@ Zend/tests/arrow_functions/006.phpt:28
     31 ?>
 
 Zend/tests/arrow_functions/007.phpt:11
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
      8 try {
@@ -630,12 +630,12 @@ Zend/tests/arrow_functions/007.phpt:11
     14 try {
 
 Zend/tests/arrow_functions/007.phpt:17
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     14 try {
@@ -681,12 +681,12 @@ Zend/tests/arrow_functions/gh7900.phpt:20
     23 ?>
 
 Zend/tests/assert/bug70528.phpt:15
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     12 try {
@@ -698,12 +698,12 @@ Zend/tests/assert/bug70528.phpt:15
     18     assert(new \stdClass instanceof Bar);
 
 Zend/tests/assert/bug70528.phpt:20
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     17 try {
@@ -715,12 +715,12 @@ Zend/tests/assert/bug70528.phpt:20
     23     assert(new \stdClass instanceof \Foo\Bar);
 
 Zend/tests/assert/bug70528.phpt:25
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     22 try {
@@ -919,12 +919,12 @@ Zend/tests/assert/expect_015.phpt:169
    172 ?>
 
 Zend/tests/assert/expect_016.phpt:14
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     11 try {
@@ -936,12 +936,12 @@ Zend/tests/assert/expect_016.phpt:14
     17 ini_set("zend.assertions", -1);
 
 Zend/tests/assert/expect_018.phpt:18
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     15 try {
@@ -953,12 +953,12 @@ Zend/tests/assert/expect_018.phpt:18
     21 try {
 
 Zend/tests/assert/expect_018.phpt:24
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     21 try {
@@ -970,12 +970,12 @@ Zend/tests/assert/expect_018.phpt:24
     27 ?>
 
 Zend/tests/assert/expect_020.phpt:13
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     10     $str = "$var, $var[1], {$var}[], {$var[1]}[], ${var}[], ${var[1]}[]";
@@ -1361,12 +1361,12 @@ Zend/tests/assign_to_obj_002.phpt:8
     11 
 
 Zend/tests/ast/ast_serialize_backtick_literal.phpt:11
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
      8 try {
@@ -1378,12 +1378,12 @@ Zend/tests/ast/ast_serialize_backtick_literal.phpt:11
     14 ?>
 
 Zend/tests/ast/ast_serialize_floats.phpt:10
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
      7 try {
@@ -1395,12 +1395,12 @@ Zend/tests/ast/ast_serialize_floats.phpt:10
     13     assert(!is_float(1.1));
 
 Zend/tests/ast/ast_serialize_floats.phpt:15
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     12 try {
@@ -1412,12 +1412,12 @@ Zend/tests/ast/ast_serialize_floats.phpt:15
     18     assert(!is_float(1234.5678));
 
 Zend/tests/ast/ast_serialize_floats.phpt:20
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     17 try {
@@ -1446,12 +1446,12 @@ Zend/tests/ast/gh21072.phpt:13
     16 
 
 Zend/tests/ast/zend-pow-assign.phpt:11
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
      8 try {
@@ -2262,12 +2262,12 @@ Zend/tests/attributes/006_filter.phpt:68
     71 ?>
 
 Zend/tests/attributes/012_ast_export.phpt:11
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
      8 try {
@@ -2279,12 +2279,12 @@ Zend/tests/attributes/012_ast_export.phpt:11
     14 try {
 
 Zend/tests/attributes/012_ast_export.phpt:17
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     14 try {
@@ -2296,12 +2296,12 @@ Zend/tests/attributes/012_ast_export.phpt:17
     20 try {
 
 Zend/tests/attributes/012_ast_export.phpt:27
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     24     #[A3] function a() { }
@@ -2313,12 +2313,12 @@ Zend/tests/attributes/012_ast_export.phpt:27
     30 try {
 
 Zend/tests/attributes/012_ast_export.phpt:37
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     34     #[A3] trait Test3 { }
@@ -10246,12 +10246,12 @@ Zend/tests/function_arguments/variadic_argument_type_error.phpt:17
     20 ?>
 
 Zend/tests/functions/007.phpt:11
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
      8 try {
@@ -12558,12 +12558,12 @@ Zend/tests/magic_methods/bug76667.phpt:22
     25 
 
 Zend/tests/match/009_ast_export.phpt:17
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     14     };
@@ -22707,12 +22707,12 @@ Zend/tests/type_declarations/typed_properties_magic_set.phpt:28
     31 $test->foo = 42;
 
 Zend/tests/type_declarations/types_in_ast.phpt:16
-  fingerprint: message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+  fingerprint: message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:267f22c039eb474a659fdde42ae574f4655e1404 exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) literal:524a7d520f53e851e22833ecb3358da7f5b31a2d newline
   echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
 
     13     };
@@ -116490,12 +116490,12 @@ tests/classes/destructor_and_exceptions.phpt:25
     28 class FatalException extends Exception
 
 tests/classes/destructor_and_exceptions.phpt:45
-  fingerprint: message_only:4601f27a85609651b86688b00ac27704447a5459
+  fingerprint: message_only:8caf988c4ab167235f10422b331605565cc98857
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:977d001bd2dd4941631f3966cb77c109aac69731 exception_message(e) newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
   echo "Caught Exception: " . $e->getMessage() . "\n";
 
     42 }
@@ -116507,12 +116507,12 @@ tests/classes/destructor_and_exceptions.phpt:45
     48 {
 
 tests/classes/destructor_and_exceptions.phpt:49
-  fingerprint: message_only:7fec8a735304fdc8b2c675440e6316a831aeb826
+  fingerprint: message_only:8caf988c4ab167235f10422b331605565cc98857
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:f52d65529ff1f7f029490318f34c58535f84a5b6 exception_message(e) newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
   echo "Caught FatalException: " . $e->getMessage() . "\n";
 
     46 }

@@ -67,8 +67,8 @@ Zend/tests/arrow_functions/007.phpt
   fixture: Zend_tests_arrow_functions_007
   first line: 11
   flavors covered: 1
-    - line 11: message_only message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
-    - line 17: message_only message_only:c3eeecd0cf473f2ebca9d60e304a802ad71dfa5f
+    - line 11: message_only message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
+    - line 17: message_only message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
 
 Zend/tests/assert/bug71922.phpt
   state: handled
@@ -446,7 +446,7 @@ ext/ffi/tests/gh9698.phpt
     - line 14: message_only message_only:5c6d8344bf490e30371878613f566ae255c1d460
 
 ext/hash/tests/hash_equals.phpt
-  state: handled
+  state: old_only
   fixture: ext_hash_tests_hash_equals
   first line: 12
   flavors covered: 1
@@ -823,7 +823,7 @@ ext/spl/tests/multiple_iterator_001.phpt
     - line 100: message_only message_only:d3d598729db7aa680ac063c02a7910d5c33befbe
 
 ext/standard/tests/array/bug42177.phpt
-  state: old_only
+  state: handled
   fixture: ext_standard_tests_array_bug42177
   first line: 24
   flavors covered: 1
@@ -897,15 +897,6 @@ tests/classes/ctor_failure.phpt
   flavors covered: 1
     - line 25: class_message class_message:8b2f4bf66810d53254f570075abfd26da4777bf6
 
-tests/classes/destructor_and_exceptions.phpt
-  state: handled
-  fixture: tests_classes_destructor_and_exceptions
-  first line: 25
-  flavors covered: 3
-    - line 25: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
-    - line 45: message_only message_only:4601f27a85609651b86688b00ac27704447a5459
-    - line 49: message_only message_only:7fec8a735304fdc8b2c675440e6316a831aeb826
-
 tests/classes/interfaces_001.phpt
   state: old_only
   fixture: tests_classes_interfaces_001
@@ -945,7 +936,7 @@ tests/classes/type_hinting_004.phpt
     - line 141: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
 
 tests/lang/foreachLoopIteratorAggregate.002.phpt
-  state: handled
+  state: old_only
   fixture: tests_lang_foreachLoopIteratorAggregate_002
   first line: 41
   flavors covered: 1
