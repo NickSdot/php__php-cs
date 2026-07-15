@@ -11,8 +11,8 @@ try {
 try {
     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
 } catch (Exception $e) {
-    echo 'expected exception: ' . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 ?>
 --EXPECT--
-expected exception: RuntimeException: Iterators' LIFO/FIFO modes for SplStack/SplQueue objects are frozen
+RuntimeException: Iterators' LIFO/FIFO modes for SplStack/SplQueue objects are frozen
