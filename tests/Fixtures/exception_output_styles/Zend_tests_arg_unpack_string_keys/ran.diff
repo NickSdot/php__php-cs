@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -10,9 +10,9 @@
+ try {
+     var_dump(...new ArrayIterator([1, 2, "foo" => 3, 4]));
+ } catch (Error $ex) {
+-    var_dump($ex->getMessage());
++    echo $ex::class, ': ', $ex->getMessage(), \PHP_EOL;
+ }
+ 
+ ?>
+ --EXPECT--
+-string(68) "Cannot use positional argument after named argument during unpacking"
++Error: Cannot use positional argument after named argument during unpacking
