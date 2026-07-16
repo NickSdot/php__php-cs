@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace InternalsCS\Fixture;
+
+interface FixtureReporter
+{
+    /**
+     * @param list<FixtureCandidate> $candidates
+     * @param array<string, FixtureWriteResult> $writeResults
+     */
+    public function write(
+        string $reportsDir,
+        string $fixturesDir,
+        FixtureGenerationResult $result,
+        array $candidates,
+        FixtureSelection $selection,
+        array $writeResults,
+    ): void;
+}

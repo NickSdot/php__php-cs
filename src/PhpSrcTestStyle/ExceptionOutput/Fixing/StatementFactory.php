@@ -1,0 +1,56 @@
+<?php
+
+declare(strict_types=1);
+
+namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing;
+
+use InternalsCS\PhpAst;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\Classifier;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputStatementParser;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\Window;
+use PhpParser\Node\Stmt;
+
+use function mb_substr;
+use function mb_trim;
+
+final readonly class StatementFactory
+{
+    public function __construct(
+        private OutputStatementParser $outputs = new OutputStatementParser(),
+        private Classifier $classifier = new Classifier(),
+        private PhpAst $ast = new PhpAst(),
+    ) {}
+
+    public function fromStatement(Stmt $statement, string $code, int $offsetDelta): ?Statement
+    {
+        $parts = $this->outputs->parts($statement);
+
+        if (null === $parts) {
+            return null;
+        }
+
+        $start = $this->ast->filePosition($statement, 'startFilePos', $offsetDelta);
+        $end = $this->ast->filePosition($statement, 'endFilePos', $offsetDelta);
+
+        if (null === $start || null === $end || $start < 0 || $end < $start) {
+            return null;
+        }
+
+        $classification = $this->classifier->classify(new Window(
+            startOffset: $start,
+            endOffset: $end,
+            startLine: $statement->getStartLine(),
+            endLine: $statement->getEndLine(),
+            statement: mb_trim(mb_substr($code, $start, $end - $start + 1)),
+            parts: $parts,
+        ));
+
+        return new Statement(
+            startOffset: $start,
+            endOffset: $end + 1,
+            line: $statement->getStartLine(),
+            parts: $parts,
+            classification: $classification,
+        );
+    }
+}

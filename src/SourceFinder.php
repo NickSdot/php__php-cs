@@ -1,0 +1,123 @@
+<?php
+
+declare(strict_types=1);
+
+namespace InternalsCS;
+
+use InternalsCS\Support\Paths;
+
+use function array_any;
+use function array_unique;
+use function array_values;
+use function is_dir;
+use function is_file;
+use function mb_ltrim;
+use function mb_strtolower;
+use function pathinfo;
+use function realpath;
+use function sort;
+use function str_starts_with;
+
+final readonly class SourceFinder
+{
+    public function __construct(
+        private Paths $paths = new Paths(),
+    ) {}
+
+    /**
+     * @param list<string> $scanPaths
+     * @param list<string> $excludedRoots
+     * @param list<string> $extensions
+     * @return list<string>
+     */
+    public function find(string $rootDir, array $scanPaths, array $excludedRoots, array $extensions = []): array
+    {
+        $scanPaths = [] === $scanPaths ? [$rootDir] : $scanPaths;
+        $files = [];
+
+        foreach ($scanPaths as $path) {
+            $path = $this->paths->absolute($path, $rootDir);
+
+            if (is_file($path)) {
+                $realPath = realpath($path) ?: $path;
+
+                if ($this->hasAllowedExtension($realPath, $extensions) && !$this->isExcluded($realPath, $excludedRoots)) {
+                    $files[] = $realPath;
+                }
+
+                continue;
+            }
+
+            if (!is_dir($path)) {
+                throw new \InvalidArgumentException('Path does not exist: ' . $path);
+            }
+
+            foreach ($this->directoryFiles($path, $excludedRoots, $extensions) as $file) {
+                $files[] = $file;
+            }
+        }
+
+        sort($files);
+
+        return array_values(array_unique($files));
+    }
+
+    /**
+     * @param list<string> $excludedRoots
+     * @param list<string> $extensions
+     * @return list<string>
+     */
+    private function directoryFiles(string $path, array $excludedRoots, array $extensions): array
+    {
+        $files = [];
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::LEAVES_ONLY,
+        );
+
+        foreach ($iterator as $file) {
+            if (!$file->isFile()) {
+                continue;
+            }
+
+            $realPath = realpath($file->getPathname()) ?: $file->getPathname();
+
+            if (!$this->hasAllowedExtension($realPath, $extensions)) {
+                continue;
+            }
+
+            if ($this->isExcluded($realPath, $excludedRoots)) {
+                continue;
+            }
+
+            $files[] = $realPath;
+        }
+
+        return $files;
+    }
+
+    /** @param list<string> $excludedRoots */
+    private function isExcluded(string $path, array $excludedRoots): bool
+    {
+        foreach ($excludedRoots as $root) {
+            $realRoot = realpath($root) ?: $root;
+
+            if ($path === $realRoot || str_starts_with($path, $realRoot . DIRECTORY_SEPARATOR)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** @param list<string> $extensions */
+    private function hasAllowedExtension(string $path, array $extensions): bool
+    {
+        if ([] === $extensions) {
+            return true;
+        }
+
+        $extension = mb_strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        return array_any($extensions, fn($allowed) => $extension === mb_strtolower(mb_ltrim($allowed, '.')));
+    }
+}
