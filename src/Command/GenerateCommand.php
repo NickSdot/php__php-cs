@@ -11,6 +11,7 @@ use InternalsCS\PhpSrc\PhpBuild;
 use InternalsCS\PhpSrc\PhpBuildPaths;
 use InternalsCS\PhpSrc\PhpSrcRoot;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Command\ExceptionOutputGenerateTarget;
+use InternalsCS\Support\GitStatus;
 use InternalsCS\Support\Paths;
 
 use function array_find;
@@ -31,6 +32,7 @@ final readonly class GenerateCommand implements Command
         ],
         private Paths $paths = new Paths(),
         private PhpBuild $phpBuild = new PhpBuild(),
+        private GitStatus $git = new GitStatus(),
     ) {}
 
     public function run(string $script, array $args, ConsoleIo $io): int
@@ -63,6 +65,11 @@ final readonly class GenerateCommand implements Command
         } catch (\Throwable $e) {
             $io->err($e->getMessage() . "\n");
             return 2;
+        }
+
+        if (!$options->allowDirty && $this->git->isDirty($options->phpSrcRoot->path)) {
+            $io->err("source checkout is dirty; pass --allow-dirty to generate anyway\n");
+            return 1;
         }
 
         if ($options->write && $target->requiresPhpTestRuntime()) {
