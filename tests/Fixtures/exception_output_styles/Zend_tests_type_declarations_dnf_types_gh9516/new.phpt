@@ -139,19 +139,19 @@ try {
 
 ?>
 --EXPECTF--
-TypeError: T::method1(): Argument #1 ($arg) must be of type (A&B)|D, A_ given, called in /Users/Nick/Code/nicksdot/php__internals-cs/tests/Fixtures/exception_output_styles/Zend_tests_type_declarations_dnf_types_gh9516/old.php on line 22
-TypeError: T::method1(): Argument #1 ($arg) must be of type (A&B)|D, B_ given, called in /Users/Nick/Code/nicksdot/php__internals-cs/tests/Fixtures/exception_output_styles/Zend_tests_type_declarations_dnf_types_gh9516/old.php on line 29
+TypeError: T::method1(): Argument #1 ($arg) must be of type (A&B)|D, A_ given, called in %s on line %d
+TypeError: T::method1(): Argument #1 ($arg) must be of type (A&B)|D, B_ given, called in %s on line %d
 Pass
 Pass
-TypeError: T::method2(): Argument #1 ($arg) must be of type (B&A)|D, A_ given, called in /Users/Nick/Code/nicksdot/php__internals-cs/tests/Fixtures/exception_output_styles/Zend_tests_type_declarations_dnf_types_gh9516/old.php on line 51
-TypeError: T::method2(): Argument #1 ($arg) must be of type (B&A)|D, B_ given, called in /Users/Nick/Code/nicksdot/php__internals-cs/tests/Fixtures/exception_output_styles/Zend_tests_type_declarations_dnf_types_gh9516/old.php on line 58
+TypeError: T::method2(): Argument #1 ($arg) must be of type (B&A)|D, A_ given, called in %s on line %d
+TypeError: T::method2(): Argument #1 ($arg) must be of type (B&A)|D, B_ given, called in %s on line %d
 Pass
 Pass
-TypeError: T::method3(): Argument #1 ($arg) must be of type D|(A&B), A_ given, called in /Users/Nick/Code/nicksdot/php__internals-cs/tests/Fixtures/exception_output_styles/Zend_tests_type_declarations_dnf_types_gh9516/old.php on line 80
-TypeError: T::method3(): Argument #1 ($arg) must be of type D|(A&B), B_ given, called in /Users/Nick/Code/nicksdot/php__internals-cs/tests/Fixtures/exception_output_styles/Zend_tests_type_declarations_dnf_types_gh9516/old.php on line 87
+TypeError: T::method3(): Argument #1 ($arg) must be of type D|(A&B), A_ given, called in %s on line %d
+TypeError: T::method3(): Argument #1 ($arg) must be of type D|(A&B), B_ given, called in %s on line %d
 Pass
 Pass
-TypeError: T::method4(): Argument #1 ($arg) must be of type D|(B&A), A_ given, called in /Users/Nick/Code/nicksdot/php__internals-cs/tests/Fixtures/exception_output_styles/Zend_tests_type_declarations_dnf_types_gh9516/old.php on line 109
-TypeError: T::method4(): Argument #1 ($arg) must be of type D|(B&A), B_ given, called in /Users/Nick/Code/nicksdot/php__internals-cs/tests/Fixtures/exception_output_styles/Zend_tests_type_declarations_dnf_types_gh9516/old.php on line 116
+TypeError: T::method4(): Argument #1 ($arg) must be of type D|(B&A), A_ given, called in %s on line %d
+TypeError: T::method4(): Argument #1 ($arg) must be of type D|(B&A), B_ given, called in %s on line %d
 Pass
 Pass
