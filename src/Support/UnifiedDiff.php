@@ -92,6 +92,8 @@ final readonly class UnifiedDiff
             return [];
         }
 
-        return preg_split('/(?<=\n)/', $contents, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $lines = preg_split('/(?<=\n)/', $contents, -1, PREG_SPLIT_NO_EMPTY);
+
+        return false === $lines ? [] : $lines;
     }
 }

@@ -57,7 +57,7 @@ final readonly class StatementWindowFinder
         $outputs = [];
 
         foreach ($this->ast->catchBlocks($statements) as $catch) {
-            foreach ($this->outputStatements($catch->stmts) as $statement) {
+            foreach ($this->outputStatements(array_values($catch->stmts)) as $statement) {
                 $key = $statement->getStartFilePos() . ':' . $statement->getEndFilePos();
                 $outputs[$key] = $statement;
             }
@@ -77,8 +77,15 @@ final readonly class StatementWindowFinder
             fn(Node $node): bool => $node instanceof Stmt
                 && $this->outputs->isOutputStatement($node),
         );
+        $statements = [];
 
-        return array_values($nodes);
+        foreach ($nodes as $node) {
+            if ($node instanceof Stmt) {
+                $statements[] = $node;
+            }
+        }
+
+        return $statements;
     }
 
     private function window(Stmt $statement, string $code, int $offsetDelta): ?Window

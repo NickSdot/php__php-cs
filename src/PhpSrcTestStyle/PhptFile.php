@@ -200,7 +200,7 @@ final class PhptFile
 
         $output = $stdout . $stderr;
         $status = 'unknown';
-        if (preg_match('/^(PASS|SKIP|FAIL|BORK|WARN|XFAIL|XLEAK|LEAK) /m', $output, $matches)) {
+        if (1 === preg_match('/^(PASS|SKIP|FAIL|BORK|WARN|XFAIL|XLEAK|LEAK) /m', $output, $matches)) {
             $status = $matches[1];
         }
 
@@ -235,7 +235,9 @@ final class PhptFile
     private function parse(string $contents): void
     {
         $this->sections = [];
-        if (!preg_match_all('/^--([_A-Z]+)--[ \t]*(?:\r\n|\n|\r|$)/m', $contents, $matches, PREG_OFFSET_CAPTURE)) {
+        $matched = preg_match_all('/^--([_A-Z]+)--[ \t]*(?:\r\n|\n|\r|$)/m', $contents, $matches, PREG_OFFSET_CAPTURE);
+
+        if (false === $matched || 0 === $matched) {
             $this->prefix = $contents;
             return;
         }

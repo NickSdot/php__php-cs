@@ -12,6 +12,8 @@ use PhpParser\Parser;
 use PhpParser\ParserFactory;
 
 use function array_push;
+use function array_values;
+use function get_object_vars;
 use function is_array;
 use function is_int;
 use function mb_strlen;
@@ -32,8 +34,10 @@ final readonly class PhpAst
         $prefix = str_contains($code, '<?') ? '' : "<?php\n";
 
         try {
+            $statements = $this->parser->parse($prefix . $code) ?? [];
+
             return new ParsedPhpCode(
-                statements: $this->parser->parse($prefix . $code) ?? [],
+                statements: array_values($statements),
                 offsetDelta: mb_strlen($prefix),
             );
         } catch (Error) {
@@ -59,8 +63,11 @@ final readonly class PhpAst
                 $catches[] = $catch;
             }
 
-            array_push($catches, ...$this->catchBlocks($statement->stmts));
-            array_push($catches, ...$this->catchBlocks($statement->finally?->stmts ?? []));
+            array_push($catches, ...$this->catchBlocks(array_values($statement->stmts)));
+
+            if (null !== $statement->finally) {
+                array_push($catches, ...$this->catchBlocks(array_values($statement->finally->stmts)));
+            }
         }
 
         return $catches;
@@ -71,8 +78,8 @@ final readonly class PhpAst
     {
         $children = [];
 
-        foreach ($statement->getSubNodeNames() as $name) {
-            $this->appendChildStatements($children, $statement->$name);
+        foreach (get_object_vars($statement) as $value) {
+            $this->appendChildStatements($children, $value);
         }
 
         return $children;
@@ -104,8 +111,8 @@ final readonly class PhpAst
         }
 
         if ($value instanceof Node) {
-            foreach ($value->getSubNodeNames() as $name) {
-                $this->appendChildStatements($children, $value->$name);
+            foreach (get_object_vars($value) as $child) {
+                $this->appendChildStatements($children, $child);
             }
 
             return;

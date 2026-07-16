@@ -37,7 +37,8 @@ final readonly class FixerRunner
                 $path = $this->rootDir . DIRECTORY_SEPARATOR . $path;
             }
             if (is_file($path)) {
-                $files[] = realpath($path) ?: $path;
+                $realPath = realpath($path);
+                $files[] = false === $realPath ? $path : $realPath;
                 continue;
             }
             if (!is_dir($path)) {
@@ -49,6 +50,11 @@ final readonly class FixerRunner
                 \RecursiveIteratorIterator::LEAVES_ONLY
             );
             foreach ($iterator as $file) {
+
+                if (!$file instanceof \SplFileInfo) {
+                    continue;
+                }
+
                 if ($file->isFile()) {
                     $files[] = $file->getPathname();
                 }

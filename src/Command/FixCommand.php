@@ -38,7 +38,6 @@ final readonly class FixCommand implements Command
 
         try {
             $options = $this->options($args, $script, $io);
-            $result = $this->runFixer($options, $io);
         } catch (CommandExit $exit) {
             return $exit->exitCode;
         } catch (\Throwable $e) {
@@ -47,8 +46,12 @@ final readonly class FixCommand implements Command
         }
 
         if ($options->print) {
+            $result = $this->runPrintFixer($options, $io);
+
             return $this->printResult($result, $io);
         }
+
+        $result = $this->runFixer($options, $io);
 
         if ($options->check && $result['changed'] > 0) {
             return 1;
@@ -57,9 +60,15 @@ final readonly class FixCommand implements Command
         return $result['failed'] > 0 ? 1 : 0;
     }
 
+    /** @param list<string> $args */
     private function options(array $args, string $script, ConsoleIo $io): FixOptions
     {
         $workingDir = getcwd();
+
+        if (false === $workingDir) {
+            throw new CommandFailure('Cannot determine current working directory');
+        }
+
         $phpSrcDir = null;
         $check = false;
         $print = false;
@@ -94,12 +103,12 @@ final readonly class FixCommand implements Command
                 continue;
             }
 
-            if (str_starts_with((string) $arg, '--php-src-dir=')) {
-                $phpSrcDir = mb_substr((string) $arg, mb_strlen('--php-src-dir='));
+            if (str_starts_with($arg, '--php-src-dir=')) {
+                $phpSrcDir = mb_substr($arg, mb_strlen('--php-src-dir='));
                 continue;
             }
 
-            if (str_starts_with((string) $arg, '-')) {
+            if (str_starts_with($arg, '-')) {
                 throw new CommandFailure('Unknown option: ' . $arg);
             }
 
@@ -123,7 +132,7 @@ final readonly class FixCommand implements Command
         );
     }
 
-    /** @return array{changed: int, failed: int}|array{changed: bool, failed: bool, output: string, failure: string|null} */
+    /** @return array{changed: int, failed: int} */
     private function runFixer(FixOptions $options, ConsoleIo $io): array
     {
         if (!$options->check) {
@@ -131,7 +140,7 @@ final readonly class FixCommand implements Command
                 root: $options->phpSrcRoot,
                 paths: PhpBuildPaths::default(dirname(__DIR__, 2)),
                 force: $options->forcePhpBinaryRebuild,
-                io: $options->print ? new StderrConsoleIo($io) : $io,
+                io: $io,
             );
         }
 
@@ -140,11 +149,24 @@ final readonly class FixCommand implements Command
         ]);
         $files = $runner->collectFiles($options->targets);
 
-        if ($options->print) {
-            return $runner->print($files);
-        }
-
         return $runner->run($files, $options->check);
+    }
+
+    /** @return array{changed: bool, failed: bool, output: string, failure: string|null} */
+    private function runPrintFixer(FixOptions $options, ConsoleIo $io): array
+    {
+        $this->phpBuild->ensure(
+            root: $options->phpSrcRoot,
+            paths: PhpBuildPaths::default(dirname(__DIR__, 2)),
+            force: $options->forcePhpBinaryRebuild,
+            io: new StderrConsoleIo($io),
+        );
+
+        $runner = new FixerRunner($options->phpSrcRoot->path, [
+            CanonicalFixer::class,
+        ]);
+
+        return $runner->print($runner->collectFiles($options->targets));
     }
 
     /** @param array{changed: bool, failed: bool, output: string, failure: string|null} $result */
@@ -160,6 +182,7 @@ final readonly class FixCommand implements Command
         return 0;
     }
 
+    /** @param list<string> $args */
     private function value(array $args, int $index, string $option): string
     {
         return $args[$index] ?? throw new CommandFailure($option . ' requires a value');

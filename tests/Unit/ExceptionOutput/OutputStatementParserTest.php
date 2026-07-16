@@ -21,11 +21,17 @@ final class OutputStatementParserTest extends TestCase
             PHP);
 
         $parser = new OutputStatementParser();
+        $echo = $parser->parts($statements[0]);
+        $print = $parser->parts($statements[1]);
+        $varDump = $parser->parts($statements[2]);
 
-        self::assertTrue($parser->parts($statements[0])?->has(OutputPartKind::ExceptionMessage));
-        self::assertTrue($parser->parts($statements[0])?->has(OutputPartKind::Newline));
-        self::assertTrue($parser->parts($statements[1])?->has(OutputPartKind::ExceptionMessage));
-        self::assertTrue($parser->parts($statements[2])?->has(OutputPartKind::ExceptionMessage));
+        self::assertNotNull($echo);
+        self::assertNotNull($print);
+        self::assertNotNull($varDump);
+        self::assertTrue($echo->has(OutputPartKind::ExceptionMessage));
+        self::assertTrue($echo->has(OutputPartKind::Newline));
+        self::assertTrue($print->has(OutputPartKind::ExceptionMessage));
+        self::assertTrue($varDump->has(OutputPartKind::ExceptionMessage));
     }
 
     public function testReturnsNullForNonOutputStatements(): void

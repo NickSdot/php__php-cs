@@ -186,14 +186,20 @@ abstract class VerifiedPhptFixer implements Fixer
     protected function runSummary(array $run): string
     {
         $status = $run['status'];
-        if (preg_match('/^SKIP .* reason: (.+)$/m', $run['output'], $matches)) {
+        if (1 === preg_match('/^SKIP .* reason: (.+)$/m', $run['output'], $matches)) {
             return $status . ': ' . $this->shorten(mb_trim($matches[1]));
         }
-        if (preg_match('/^(PASS|SKIP|FAIL|BORK|WARN|XFAIL|XLEAK|LEAK) .+$/m', $run['output'], $matches)) {
+        if (1 === preg_match('/^(PASS|SKIP|FAIL|BORK|WARN|XFAIL|XLEAK|LEAK) .+$/m', $run['output'], $matches)) {
             return $this->shorten(mb_trim($matches[0]));
         }
 
-        foreach (preg_split('/\R/', $run['output']) as $line) {
+        $lines = preg_split('/\R/', $run['output']);
+
+        if (false === $lines) {
+            $lines = [];
+        }
+
+        foreach ($lines as $line) {
             $line = mb_trim($line);
             if ('' !== $line && !str_starts_with($line, '=')) {
                 return $status . ': ' . $this->shorten($line);

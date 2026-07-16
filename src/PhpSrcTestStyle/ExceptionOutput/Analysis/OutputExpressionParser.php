@@ -79,11 +79,15 @@ final readonly class OutputExpressionParser
             return [OutputPart::newline()];
         }
 
-        if ($part = $this->exceptionClassPart($expr)) {
+        $part = $this->exceptionClassPart($expr);
+
+        if (null !== $part) {
             return [$part];
         }
 
-        if ($part = $this->exceptionMethodPart($expr)) {
+        $part = $this->exceptionMethodPart($expr);
+
+        if (null !== $part) {
             return [$part];
         }
 

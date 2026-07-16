@@ -39,7 +39,9 @@ final readonly class SourceFinder
             $path = $this->paths->absolute($path, $rootDir);
 
             if (is_file($path)) {
-                $realPath = realpath($path) ?: $path;
+
+                $realPath = realpath($path);
+                $realPath = false === $realPath ? $path : $realPath;
 
                 if ($this->hasAllowedExtension($realPath, $extensions) && !$this->isExcluded($realPath, $excludedRoots)) {
                     $files[] = $realPath;
@@ -76,11 +78,17 @@ final readonly class SourceFinder
         );
 
         foreach ($iterator as $file) {
+            if (!$file instanceof \SplFileInfo) {
+                continue;
+            }
+
             if (!$file->isFile()) {
                 continue;
             }
 
-            $realPath = realpath($file->getPathname()) ?: $file->getPathname();
+            $pathName = $file->getPathname();
+            $realPath = realpath($pathName);
+            $realPath = false === $realPath ? $pathName : $realPath;
 
             if (!$this->hasAllowedExtension($realPath, $extensions)) {
                 continue;
@@ -100,7 +108,8 @@ final readonly class SourceFinder
     private function isExcluded(string $path, array $excludedRoots): bool
     {
         foreach ($excludedRoots as $root) {
-            $realRoot = realpath($root) ?: $root;
+            $realRoot = realpath($root);
+            $realRoot = false === $realRoot ? $root : $realRoot;
 
             if ($path === $realRoot || str_starts_with($path, $realRoot . DIRECTORY_SEPARATOR)) {
                 return true;

@@ -31,8 +31,9 @@ final readonly class PhpBuild
 
         $current = $this->state->current($root, $this->profile);
         $existing = PhpBuildMetadata::read($paths->metadata());
+        $isCurrent = null !== $existing && $existing->matches($current);
 
-        if (!$force && $existing?->matches($current) && $paths->hasRunnableBinaries()) {
+        if (!$force && $isCurrent && $paths->hasRunnableBinaries()) {
             $io->out('PHP test binaries are current in ' . $paths->outputDir . "\n");
             return;
         }

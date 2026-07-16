@@ -15,7 +15,8 @@ final readonly class PhpSrcRoot
 
     public static function fromPath(string $path): self
     {
-        $realPath = realpath($path) ?: $path;
+        $realPath = realpath($path);
+        $realPath = false === $realPath ? $path : $realPath;
 
         if (!is_file($realPath . DIRECTORY_SEPARATOR . 'run-tests.php')) {
             throw new \InvalidArgumentException(

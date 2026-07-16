@@ -17,7 +17,7 @@ final readonly class FixtureSource
     public function __construct(
         public array $candidates,
     ) {
-        $first = $candidates[0] ?? throw new \InvalidArgumentException('Fixture source requires at least one candidate');
+        $first = $candidates[0];
 
         $this->sourcePath = $first->sourcePath();
         $this->relativePath = $first->relativePath();

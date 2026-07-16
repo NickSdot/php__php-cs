@@ -52,7 +52,8 @@ final readonly class FixtureValidator
                 continue;
             }
 
-            $rewrite = $options->runner->printFile(realpath($oldPath) ?: $oldPath);
+            $realOldPath = realpath($oldPath);
+            $rewrite = $options->runner->printFile(false === $realOldPath ? $oldPath : $realOldPath);
 
             if ($hasNew) {
                 $this->validateHandled($result, $case, $oldPath, $newPath, $diffPath, $rewrite, $options);
@@ -70,14 +71,20 @@ final readonly class FixtureValidator
     private function fixtureDirs(FixtureValidationOptions $options): array
     {
         if ([] === $options->cases) {
+            $fixtureDirs = glob($options->fixturesDir . '/*', \GLOB_ONLYDIR);
+
+            if (false === $fixtureDirs) {
+                return [];
+            }
+
             $dirs = array_filter(
-                glob($options->fixturesDir . '/*', \GLOB_ONLYDIR) ?: [],
+                $fixtureDirs,
                 static fn(string $dir): bool => new FixturePairFiles($dir)->containsFixtureFiles(),
             );
 
             sort($dirs);
 
-            return array_values($dirs);
+            return $dirs;
         }
 
         $dirs = [];
@@ -89,7 +96,8 @@ final readonly class FixtureValidator
                 throw new \InvalidArgumentException('Fixture case does not exist: ' . $case);
             }
 
-            $dirs[] = realpath($dir) ?: $dir;
+            $realDir = realpath($dir);
+            $dirs[] = false === $realDir ? $dir : $realDir;
         }
 
         sort($dirs);
@@ -113,6 +121,14 @@ final readonly class FixtureValidator
         }
 
         if (!$rewrite['changed']) {
+
+            if ($options->update && $options->refreshPairs) {
+                $this->deletePair($newPath, $diffPath);
+                $result->deletedPairs++;
+                $result->oldOnly++;
+                return;
+            }
+
             $this->fail($result, $case . ': expected handled rewrite, but fixer reported no change', $options->failFast);
             return;
         }
@@ -120,7 +136,7 @@ final readonly class FixtureValidator
         $expected = $this->files->read($newPath, 'fixture');
 
         if ($rewrite['output'] !== $expected) {
-            if (!$options->update || $options->refreshPairs) {
+            if (!$options->update) {
                 $this->fail($result, $case . ': rewritten old.phpt does not match new.phpt', $options->failFast);
                 return;
             }
@@ -180,6 +196,12 @@ final readonly class FixtureValidator
     private function writeDiff(string $diffPath, string $diff): void
     {
         $this->files->write($diffPath, $diff, 'fixture diff');
+    }
+
+    private function deletePair(string $newPath, string $diffPath): void
+    {
+        $this->files->deleteFileIfExists($newPath, 'fixture');
+        $this->files->deleteFileIfExists($diffPath, 'fixture diff');
     }
 
     private function fail(FixtureValidationResult $result, string $message, bool $failFast): void

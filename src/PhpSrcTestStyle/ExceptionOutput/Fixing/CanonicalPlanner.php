@@ -16,6 +16,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 
 use function array_push;
+use function array_values;
 use function count;
 use function is_string;
 use function usort;
@@ -25,6 +26,7 @@ final readonly class CanonicalPlanner
     /** @var list<RewriteRule> */
     private array $rules;
 
+    /** @param list<RewriteRule>|null $rules */
     public function __construct(
         private StatementFactory $statements = new StatementFactory(),
         private PhpAst $ast = new PhpAst(),
@@ -52,7 +54,7 @@ final readonly class CanonicalPlanner
             }
 
             array_push($plans, ...$this->plansForStatements(
-                statements: $catch->stmts,
+                statements: array_values($catch->stmts),
                 catchVariable: $catchVariable,
                 catchTypes: $this->catchTypes($catch),
                 code: $code,

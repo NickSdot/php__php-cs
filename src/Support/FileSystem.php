@@ -11,6 +11,7 @@ use function is_dir;
 use function is_file;
 use function is_readable;
 use function mkdir;
+use function unlink;
 
 final readonly class FileSystem
 {
@@ -55,5 +56,18 @@ final readonly class FileSystem
         }
 
         throw new \RuntimeException('Cannot write ' . $label . ': ' . $path);
+    }
+
+    public function deleteFileIfExists(string $path, string $label = 'file'): bool
+    {
+        if (!is_file($path)) {
+            return false;
+        }
+
+        if (unlink($path)) {
+            return true;
+        }
+
+        throw new \RuntimeException('Cannot delete ' . $label . ': ' . $path);
     }
 }

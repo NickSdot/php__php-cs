@@ -26,7 +26,9 @@ final readonly class PhptSections
     /** @param list<string> $names */
     private function first(string $contents, array $names): ?PhptSection
     {
-        if (!preg_match_all('/^--([_A-Z]+)--[ \t]*(?:\r\n|\n|\r|$)/m', $contents, $matches, PREG_OFFSET_CAPTURE)) {
+        $matched = preg_match_all('/^--([_A-Z]+)--[ \t]*(?:\r\n|\n|\r|$)/m', $contents, $matches, PREG_OFFSET_CAPTURE);
+
+        if (false === $matched || 0 === $matched) {
             return null;
         }
 

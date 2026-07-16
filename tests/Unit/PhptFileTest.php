@@ -30,7 +30,9 @@ final class PhptFileTest extends TestCase
 
         self::assertSame('FILE', $file->codeSectionName());
         self::assertSame('EXPECT', $file->expectedSectionName());
-        self::assertStringContainsString('echo "old\n";', $file->getSection('FILE'));
+        $fileSection = $file->getSection('FILE');
+        self::assertNotNull($fileSection);
+        self::assertStringContainsString('echo "old\n";', $fileSection);
 
         $file->setSection('FILE', "<?php\necho \"new\\n\";\n");
         $file->setExpectedOutput("new\n");

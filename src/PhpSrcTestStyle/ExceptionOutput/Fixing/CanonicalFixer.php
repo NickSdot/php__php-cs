@@ -85,6 +85,10 @@ final class CanonicalFixer extends VerifiedPhptFixer
 
     protected function apply(): void
     {
+        if (null === $this->codeSection || null === $this->newCode) {
+            throw new \LogicException('Canonical fixer was applied before collection completed');
+        }
+
         $this->phptFile()->setSection($this->codeSection, $this->newCode);
     }
 

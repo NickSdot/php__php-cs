@@ -100,6 +100,11 @@ final readonly class GenerateCommand implements Command
     private function options(array $args, GenerateTarget $target): GenerateOptions
     {
         $workingDir = getcwd();
+
+        if (false === $workingDir) {
+            throw new CommandFailure('Cannot determine current working directory');
+        }
+
         $phpSrcDir = null;
         $fixturesDir = $target->defaultFixturesDir($this->toolRoot());
         $reportsDir = $target->defaultReportsDir($this->toolRoot());
@@ -224,6 +229,7 @@ final readonly class GenerateCommand implements Command
         return array_find($this->targets, fn($target) => $target->name() === $name);
     }
 
+    /** @param list<string> $args */
     private function value(array $args, int $index, string $option): string
     {
         return $args[$index] ?? throw new CommandFailure($option . ' requires a value');

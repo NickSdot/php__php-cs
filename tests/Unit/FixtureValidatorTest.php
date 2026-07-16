@@ -93,7 +93,7 @@ final class FixtureValidatorTest extends TestCase
         );
     }
 
-    public function testRefreshDoesNotOverwriteExistingNewFixtureWhenRewriteDiffers(): void
+    public function testRefreshOverwritesExistingNewFixtureWhenVerifiedRewriteDiffers(): void
     {
         $fixtures = $this->fixturesDir();
         mkdir($fixtures . '/drifted', recursive: true);
@@ -108,12 +108,21 @@ final class FixtureValidatorTest extends TestCase
             refreshPairs: true,
         );
 
-        self::assertSame(['drifted: rewritten old.phpt does not match new.phpt'], $result->failures);
-        self::assertSame("expected\n", file_get_contents($fixtures . '/drifted/new.phpt'));
-        self::assertSame("diff\n", file_get_contents($fixtures . '/drifted/ran.diff'));
+        self::assertSame([], $result->failures);
+        self::assertSame(1, $result->updated);
+        self::assertSame("actual\n", file_get_contents($fixtures . '/drifted/new.phpt'));
+        self::assertSame(
+            new UnifiedDiff()->betweenFiles(
+                $fixtures . '/drifted/old.phpt',
+                $fixtures . '/drifted/new.phpt',
+                'old.phpt',
+                'new.phpt',
+            ),
+            file_get_contents($fixtures . '/drifted/ran.diff'),
+        );
     }
 
-    public function testRefreshPreservesGeneratedPairWhenFixerNoLongerChangesOldFixture(): void
+    public function testRefreshDeletesGeneratedPairWhenFixerNoLongerChangesOldFixture(): void
     {
         $fixtures = $this->fixturesDir();
         mkdir($fixtures . '/stale', recursive: true);
@@ -128,12 +137,12 @@ final class FixtureValidatorTest extends TestCase
             refreshPairs: true,
         );
 
-        self::assertSame(['stale: expected handled rewrite, but fixer reported no change'], $result->failures);
-        self::assertSame(0, $result->oldOnly);
-        self::assertSame(0, $result->deletedPairs);
+        self::assertSame([], $result->failures);
+        self::assertSame(1, $result->oldOnly);
+        self::assertSame(1, $result->deletedPairs);
         self::assertFileExists($fixtures . '/stale/old.phpt');
-        self::assertFileExists($fixtures . '/stale/new.phpt');
-        self::assertFileExists($fixtures . '/stale/ran.diff');
+        self::assertFileDoesNotExist($fixtures . '/stale/new.phpt');
+        self::assertFileDoesNotExist($fixtures . '/stale/ran.diff');
     }
 
     public function testRefreshPreservesGeneratedPairWhenRewriteVerificationFails(): void

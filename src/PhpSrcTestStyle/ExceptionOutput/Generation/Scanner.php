@@ -73,7 +73,7 @@ final readonly class Scanner implements FixtureScanner
                 statement: $window->statement,
                 key: $classification->fingerprint->id,
                 classification: $classification,
-                expectedSection: $expected?->name ?? 'UNKNOWN',
+                expectedSection: null === $expected ? 'UNKNOWN' : $expected->name,
                 context: $this->context($code->contents, $window->startLine, $window->endLine, $code->startLine),
             );
         }
@@ -83,7 +83,12 @@ final readonly class Scanner implements FixtureScanner
 
     private function context(string $code, int $startLine, int $endLine, int $sectionStartLine): string
     {
-        $lines = preg_split('/\R/', $code) ?: [];
+        $lines = preg_split('/\R/', $code);
+
+        if (false === $lines) {
+            $lines = [];
+        }
+
         $first = max(1, $startLine - 3);
         $last = min(count($lines), $endLine + 3);
         $context = [];

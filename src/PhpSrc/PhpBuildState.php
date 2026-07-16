@@ -26,8 +26,14 @@ final readonly class PhpBuildState
 
     private function git(PhpSrcRoot $root, string ...$args): string
     {
+        $command = ['git', '-C', $root->path];
+
+        foreach ($args as $arg) {
+            $command[] = $arg;
+        }
+
         $process = proc_open(
-            ['git', '-C', $root->path, ...$args],
+            $command,
             [
                 0 => ['pipe', 'r'],
                 1 => ['pipe', 'w'],

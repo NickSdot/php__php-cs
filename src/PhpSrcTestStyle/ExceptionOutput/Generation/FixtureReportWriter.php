@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation;
 
+use InternalsCS\Fixture\FixtureCandidate;
 use InternalsCS\Fixture\FixtureCaseName;
 use InternalsCS\Fixture\FixtureGenerationResult;
 use InternalsCS\Fixture\FixturePairFiles;
@@ -34,7 +35,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
     ) {}
 
     /**
-     * @param list<Candidate> $candidates
+     * @param list<FixtureCandidate> $candidates
      * @param array<string, FixtureWriteResult> $writeResults
      */
     public function write(
@@ -47,9 +48,11 @@ final readonly class FixtureReportWriter implements FixtureReporter
     ): void {
         $this->files->ensureDirectory($reportsDir, 'report directory');
 
+        $candidates = $this->candidates($candidates);
+        $flavours = $this->candidateGroups($selection->flavours);
         $fixtureStates = $this->fixtureStates($fixturesDir, $selection->fixtures, $writeResults);
-        $flavourStates = $this->flavourStates($selection, $fixtureStates);
-        $duplicateGroups = $this->duplicateGroups($selection->flavours);
+        $flavourStates = $this->flavourStates($selection, $flavours, $fixtureStates);
+        $duplicateGroups = $this->duplicateGroups($flavours);
         $extras = $this->extraFixtureDirs($fixturesDir, $selection->fixtures);
         $legacyDuplicates = $this->legacyDuplicateDirs($extras, $selection->fixtures);
 
@@ -59,7 +62,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
         $this->writeFile($reportsDir . '/duplicates.txt', $this->renderDuplicates($duplicateGroups));
         $this->writeFile($reportsDir . '/legacy_fixtures.txt', $this->renderLegacyFixtures($extras, $legacyDuplicates));
         $this->writeFile($reportsDir . '/fixtures.txt', $this->renderFixtures($fixtureStates));
-        $this->writeFile($reportsDir . '/flavours.txt', $this->renderFlavourCandidates($selection->flavours));
+        $this->writeFile($reportsDir . '/flavours.txt', $this->renderFlavourCandidates($flavours));
         $this->writeFile($reportsDir . '/candidates.txt', $this->renderCandidates($candidates));
         $this->writeFile($reportsDir . '/failures.txt', $this->renderFailures($result, $fixturesDir));
     }
@@ -136,16 +139,17 @@ final readonly class FixtureReportWriter implements FixtureReporter
     }
 
     /**
+     * @param array<string, list<Candidate>> $flavours
      * @param list<array{fixture: FixtureSource, dir: string, state: string}> $fixtureStates
      * @return list<array{candidate: Candidate, dir: string, state: string}>
      */
-    private function flavourStates(FixtureSelection $selection, array $fixtureStates): array
+    private function flavourStates(FixtureSelection $selection, array $flavours, array $fixtureStates): array
     {
         $fixtureByFlavour = $selection->fixtureByFlavour();
         $stateBySource = $this->stateBySource($fixtureStates);
         $states = [];
 
-        foreach ($selection->flavours as $flavourKey => $candidates) {
+        foreach ($flavours as $flavourKey => $candidates) {
             $candidate = $candidates[0];
             $fixture = $fixtureByFlavour[$flavourKey] ?? null;
 
@@ -209,8 +213,13 @@ final readonly class FixtureReportWriter implements FixtureReporter
         }
 
         $extras = [];
+        $fixtureDirs = glob($fixturesDir . '/*', GLOB_ONLYDIR);
 
-        foreach (glob($fixturesDir . '/*', GLOB_ONLYDIR) ?: [] as $dir) {
+        if (false === $fixtureDirs) {
+            return [];
+        }
+
+        foreach ($fixtureDirs as $dir) {
             if (!new FixturePairFiles($dir)->containsFixtureFiles()) {
                 continue;
             }
@@ -453,13 +462,15 @@ final readonly class FixtureReportWriter implements FixtureReporter
 
         foreach ($states as $state) {
             $fixture = $state['fixture'];
+            $firstCandidate = $this->candidate($fixture->firstCandidate());
             $lines[] = $fixture->relativePath;
             $lines[] = '  state: ' . $state['state'];
             $lines[] = '  fixture: ' . $state['dir'];
-            $lines[] = '  first line: ' . $fixture->firstCandidate()->line;
+            $lines[] = '  first line: ' . $firstCandidate->line;
             $lines[] = '  flavours covered: ' . count($fixture->flavourKeys());
 
             foreach ($fixture->candidates as $candidate) {
+                $candidate = $this->candidate($candidate);
                 $lines[] = '    - line ' . $candidate->line . ': ' . $candidate->classification->family->value . ' ' . $candidate->key;
             }
 
@@ -529,5 +540,44 @@ final readonly class FixtureReportWriter implements FixtureReporter
     private function writeFile(string $path, string $contents): void
     {
         $this->files->write($path, $contents, 'report');
+    }
+
+    private function candidate(FixtureCandidate $candidate): Candidate
+    {
+        if (!$candidate instanceof Candidate) {
+            throw new \LogicException('Exception output reports can only render exception output candidates');
+        }
+
+        return $candidate;
+    }
+
+    /**
+     * @param list<FixtureCandidate> $candidates
+     * @return list<Candidate>
+     */
+    private function candidates(array $candidates): array
+    {
+        $typed = [];
+
+        foreach ($candidates as $candidate) {
+            $typed[] = $this->candidate($candidate);
+        }
+
+        return $typed;
+    }
+
+    /**
+     * @param array<string, list<FixtureCandidate>> $groups
+     * @return array<string, list<Candidate>>
+     */
+    private function candidateGroups(array $groups): array
+    {
+        $typed = [];
+
+        foreach ($groups as $key => $candidates) {
+            $typed[$key] = $this->candidates($candidates);
+        }
+
+        return $typed;
     }
 }
