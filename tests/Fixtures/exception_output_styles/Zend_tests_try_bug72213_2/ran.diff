@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -19,8 +19,8 @@
+ try {
+     test();
+ } catch (Exception $e) {
+-    echo "caught {$e->getMessage()}\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
+-caught 1
++Exception: 1
