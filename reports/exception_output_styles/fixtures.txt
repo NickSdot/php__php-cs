@@ -1,989 +1,792 @@
 # Selected source-file fixtures
 
-Zend/tests/ErrorException_construct.phpt
-  state: old_only
-  fixture: Zend_tests_ErrorException_construct
-  first line: 7
-  flavors covered: 1
-    - line 7: message_only message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
-    - line 12: message_only message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
-    - line 17: message_only message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
-    - line 22: message_only message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
-    - line 27: message_only message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
-    - line 32: message_only message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
-    - line 37: message_only message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
-
 Zend/tests/access_modifiers/access_modifiers_008.phpt
   state: handled
   fixture: Zend_tests_access_modifiers_access_modifiers_008
   first line: 36
   flavors covered: 1
-    - line 36: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 42: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 47: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+    - line 36: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
+    - line 42: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
+    - line 47: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
 
 Zend/tests/add_002.phpt
   state: handled
   fixture: Zend_tests_add_002
   first line: 14
   flavors covered: 1
-    - line 14: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
+    - line 14: message_only message_only:7879bc6cbe4e1bfa05781c7d5bf6e1ac22a530cc
 
 Zend/tests/arg_unpack/invalid_type.phpt
   state: handled
   fixture: Zend_tests_arg_unpack_invalid_type
   first line: 13
   flavors covered: 1
-    - line 13: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-    - line 18: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-    - line 23: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-    - line 29: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-    - line 34: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-
-Zend/tests/arg_unpack/non_integer_keys.phpt
-  state: handled
-  fixture: Zend_tests_arg_unpack_non_integer_keys
-  first line: 16
-  flavors covered: 1
-    - line 16: message_only message_only:6aad370bb56dc0760c2ad93c8ec22e95876a0175
+    - line 13: class_message class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be
+    - line 18: class_message class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be
+    - line 23: class_message class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be
+    - line 29: class_message class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be
+    - line 34: class_message class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be
 
 Zend/tests/arg_unpack/string_keys.phpt
   state: handled
   fixture: Zend_tests_arg_unpack_string_keys
   first line: 13
   flavors covered: 1
-    - line 13: message_only message_only:01138cdaa7a1fad6e81ed9e25ff30615f4b902b8
+    - line 13: message_only message_only:a2350f6a03bf223388395898998b6581f0ef7a72
 
 Zend/tests/array_literal_next_element_error.phpt
   state: handled
   fixture: Zend_tests_array_literal_next_element_error
   first line: 11
   flavors covered: 1
-    - line 11: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 18: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+    - line 11: message_only message_only:7a67f09982f6587e881d42ccf6de5b5718e4ef4f
+    - line 18: message_only message_only:7a67f09982f6587e881d42ccf6de5b5718e4ef4f
 
 Zend/tests/arrow_functions/007.phpt
   state: handled
   fixture: Zend_tests_arrow_functions_007
   first line: 11
   flavors covered: 1
-    - line 11: message_only message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
-    - line 17: message_only message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
+    - line 11: message_only message_only:c6cca99ea77fb03e2c6231e996d4c09cc5ec32e3
+    - line 17: message_only message_only:c6cca99ea77fb03e2c6231e996d4c09cc5ec32e3
 
 Zend/tests/assert/bug71922.phpt
   state: handled
   fixture: Zend_tests_assert_bug71922
   first line: 14
   flavors covered: 1
-    - line 14: message_only message_only:d1406d81384fa1556ab6b3df04ed402a32b50746
+    - line 14: message_only message_only:5664320a6860ac8a8e81ba61326b47820d53e4db
 
 Zend/tests/ast/gh21072.phpt
   state: handled
   fixture: Zend_tests_ast_gh21072
   first line: 13
   flavors covered: 1
-    - line 13: message_only message_only:6ac8e2e2b0f7cd785af81086faa8d32ab1d57e7e
+    - line 13: message_only message_only:815c351c0d23adb97c78f1d77844c28a462c3b11
 
 Zend/tests/attributes/005_objects.phpt
   state: old_only
   fixture: Zend_tests_attributes_005_objects
   first line: 34
   flavors covered: 5
-    - line 34: message_only message_only:71023fc0045c94e40eafd6fca373a2159314e496
-    - line 44: message_only message_only:3239e3a91110ab63500d5cb1ea4cf26c30e60100
-    - line 54: message_only message_only:2491daf4d3efd7d293357829d4a62464027ef00c
-    - line 70: message_only message_only:0a4a5c696b8b6dbf71f4fdd79566cf5324886cb0
-    - line 82: message_only message_only:e8ac877551343362201b6ff0a2e0e7ffda915cf3
+    - line 34: message_only message_only:41382eb8418d03b4e3cf7137cd03b45a09663c7d
+    - line 44: message_only message_only:002f36e8d3bf1ac4127f6c6c76bcec58d95fc19a
+    - line 54: message_only message_only:42e56f10b2d781f7fe507a1d1460e2fa7adfcd10
+    - line 70: message_only message_only:77dbb9c209ca81710552611c075f03812d5ccca6
+    - line 82: message_only message_only:e357c0740e03ec3b4d2f4e66ad2531cccd3e9070
 
 Zend/tests/attributes/delayed_target_validation/has_runtime_errors.phpt
   state: handled
   fixture: Zend_tests_attributes_delayed_target_validation_has_runtime_errors
   first line: 69
   flavors covered: 1
-    - line 69: class_message class_message:2fc35cc1e6b3638035149fc1ca7e44a1e7055ac1
+    - line 69: class_message class_message:3542319674ff3f41d91c0fa6a7cf1c89e2d24370
 
-Zend/tests/attributes/deprecated/functions/deprecated_handler_001.phpt
-  state: old_only
-  fixture: Zend_tests_attributes_deprecated_functions_deprecated_handler_001
-  first line: 8
+Zend/tests/attributes/deprecated/class_constants/deprecated_constant_as_message_002.phpt
+  state: handled
+  fixture: Zend_tests_attributes_deprecated_class_constants_deprecated_constant_as_message_002
+  first line: 24
   flavors covered: 1
-    - line 8: message_only message_only:29fa7b2a12d1760180943a1de3da2fa22c4d2155
+    - line 24: message_only message_only:3c307842dfd326bc9be08425eb5957fa4aa69074
+    - line 30: message_only message_only:3c307842dfd326bc9be08425eb5957fa4aa69074
 
 Zend/tests/bug53432.phpt
   state: handled
   fixture: Zend_tests_bug53432
   first line: 22
   flavors covered: 2
-    - line 22: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 30: message_only message_only:120041112a223f231bd28ef4a7369e7c9f3802f8
-    - line 38: message_only message_only:120041112a223f231bd28ef4a7369e7c9f3802f8
-    - line 46: message_only message_only:120041112a223f231bd28ef4a7369e7c9f3802f8
+    - line 22: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
+    - line 30: message_only message_only:9487ef0a1ab8a5fd30e34b5a5e4f4e8ecb04ba47
+    - line 38: message_only message_only:9487ef0a1ab8a5fd30e34b5a5e4f4e8ecb04ba47
+    - line 46: message_only message_only:9487ef0a1ab8a5fd30e34b5a5e4f4e8ecb04ba47
 
-Zend/tests/closures/closure_031.phpt
+Zend/tests/bug76869.phpt
   state: handled
-  fixture: Zend_tests_closures_closure_031
-  first line: 14
+  fixture: Zend_tests_bug76869
+  first line: 19
   flavors covered: 1
-    - line 14: message_only message_only:11953960811bf83c1eb14f48a27257319c381c67
+    - line 19: message_only message_only:ff588169e1221193cbe74e973eaad58421635066
 
 Zend/tests/closures/closure_from_callable_error.phpt
   state: old_only
   fixture: Zend_tests_closures_closure_from_callable_error
   first line: 17
   flavors covered: 1
-    - line 17: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 30: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 42: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 54: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 66: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 78: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 90: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 102: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 114: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 126: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 140: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 153: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 165: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 177: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
-    - line 190: class_message class_message:d1403bb15e05528cba5ccb62a77176e1a7a8c64e
+    - line 17: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 30: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 42: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 54: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 66: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 78: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 90: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 102: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 114: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 126: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 140: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 153: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 165: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 177: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+    - line 190: class_message class_message:c90d594190e5e774e7763a15c090d6630172f9ca
 
 Zend/tests/closures/closure_instantiate.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_closures_closure_instantiate
   first line: 13
-  flavors covered: 1
-    - line 13: message_only message_only:6143644f89a323755555abfb6582e20946095eb5
-    - line 16: message_only message_only:6143644f89a323755555abfb6582e20946095eb5
-
-Zend/tests/constant_arrays.phpt
-  state: handled
-  fixture: Zend_tests_constant_arrays
-  first line: 37
-  flavors covered: 1
-    - line 37: message_only message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
+  flavors covered: 2
+    - line 13: message_only message_only:2d0b5fc7ae3b3bee280433fed22e74761ddc2f6b
+    - line 16: message_only message_only:573f6b3f253c116fa7d892aa35f05ac99c6f4535
 
 Zend/tests/constants/008.phpt
   state: handled
   fixture: Zend_tests_constants_008
   first line: 9
   flavors covered: 1
-    - line 9: message_only message_only:0edb83bafd3360811d75bf9f7759018bacb32961
+    - line 9: message_only message_only:4ff07addcece23a9c3334060683e7718f78cf19d
 
 Zend/tests/constexpr/constant_expressions_exceptions_002.phpt
   state: old_only
   fixture: Zend_tests_constexpr_constant_expressions_exceptions_002
   first line: 8
   flavors covered: 1
-    - line 8: message_only message_only:48e2804f2efe4b8e76f3bf8334db21eca765923f
+    - line 8: message_only message_only:5a40f3590494cba77bfad25c5cdca97caabd6e75
 
 Zend/tests/enum/backed-mismatch.phpt
   state: handled
   fixture: Zend_tests_enum_backed_mismatch
   first line: 13
   flavors covered: 1
-    - line 13: class_message class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
-    - line 19: class_message class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
-    - line 25: class_message class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
-    - line 31: class_message class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
+    - line 13: class_message class_message:6f23330ab30f1789c5dc7b25848b24f5bb3abba0
+    - line 19: class_message class_message:6f23330ab30f1789c5dc7b25848b24f5bb3abba0
+    - line 25: class_message class_message:6f23330ab30f1789c5dc7b25848b24f5bb3abba0
+    - line 31: class_message class_message:6f23330ab30f1789c5dc7b25848b24f5bb3abba0
 
-Zend/tests/exception_set_previous_leak.phpt
+Zend/tests/exceptions/bug26698.phpt
   state: handled
-  fixture: Zend_tests_exception_set_previous_leak
-  first line: 15
+  fixture: Zend_tests_exceptions_bug26698
+  first line: 29
   flavors covered: 1
-    - line 15: message_only message_only:9112324c182f44b842d22cf66a33c2f61eb6b6bd
+    - line 29: message_only message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
+    - line 42: message_only message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
+    - line 55: message_only message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
 
 Zend/tests/exceptions/bug50383.phpt
   state: old_only
   fixture: Zend_tests_exceptions_bug50383
   first line: 26
   flavors covered: 1
-    - line 26: message_only message_only:391cc0c05b69e2005923f52aba81a56fd57c0713
-    - line 33: message_only message_only:391cc0c05b69e2005923f52aba81a56fd57c0713
+    - line 26: message_only message_only:9b34b7ac716be04c0d4c41d7bb0e14a724f7fd27
+    - line 33: message_only message_only:9b34b7ac716be04c0d4c41d7bb0e14a724f7fd27
 
 Zend/tests/exceptions/bug60569.phpt
   state: old_only
   fixture: Zend_tests_exceptions_bug60569
   first line: 9
   flavors covered: 1
-    - line 9: message_only message_only:bc083b691213f6e52d0aad8a3266667825aa78ad
+    - line 9: message_only message_only:f9202729d1b379aa087eae7302d31e65b85c52c9
 
-Zend/tests/exceptions/gh10695_1.phpt
-  state: old_only
-  fixture: Zend_tests_exceptions_gh10695_1
-  first line: 6
-  flavors covered: 1
-    - line 6: message_only message_only:84e22b40a5d9083224a66adcb4adec92880b8c33
-
-Zend/tests/exceptions/gh13446_1.phpt
-  state: old_only
-  fixture: Zend_tests_exceptions_gh13446_1
-  first line: 6
-  flavors covered: 1
-    - line 6: message_only message_only:34010f693c8591703b744269874051b861e9a74a
-
-Zend/tests/fibers/catch.phpt
+Zend/tests/exit_finally_2.phpt
   state: handled
-  fixture: Zend_tests_fibers_catch
-  first line: 10
+  fixture: Zend_tests_exit_finally_2
+  first line: 18
   flavors covered: 1
-    - line 10: message_only message_only:4716fab5925de68b63b10b24548d317483ccc799
-
-Zend/tests/fibers/fiber-error-construct.phpt
-  state: handled
-  fixture: Zend_tests_fibers_fiber_error_construct
-  first line: 9
-  flavors covered: 1
-    - line 9: message_only message_only:3fd28b152899602236338841b4e8420dd396ce58
+    - line 18: message_only message_only:9bc8a6b37b5e50d6864de5f9d4886dbfaeea5aea
 
 Zend/tests/generators/generator_throwing_during_function_call.phpt
   state: handled
   fixture: Zend_tests_generators_generator_throwing_during_function_call
   first line: 23
   flavors covered: 1
-    - line 23: message_only message_only:e4e5dbbc9537249f02080808ce2c2887486f40c6
+    - line 23: message_only message_only:ca50d54cec98e688d056ce74aadd4fd6110b1d87
 
 Zend/tests/generators/throw_into_yield_from_array.phpt
   state: handled
   fixture: Zend_tests_generators_throw_into_yield_from_array
   first line: 23
   flavors covered: 1
-    - line 23: message_only message_only:c67ffa5ef3e250f1b1b565aa37ab24170abc42f6
-
-Zend/tests/gh19306.phpt
-  state: handled
-  fixture: Zend_tests_gh19306
-  first line: 29
-  flavors covered: 1
-    - line 29: message_only message_only:071559d44952a98f1694ce78a06002176a7e717e
-
-Zend/tests/in-de-crement/overloaded_access.phpt
-  state: handled
-  fixture: Zend_tests_in_de_crement_overloaded_access
-  first line: 25
-  flavors covered: 1
-    - line 25: message_only message_only:c0955f6fe6074189cf9524be8acf479440287d63
-    - line 31: message_only message_only:c0955f6fe6074189cf9524be8acf479440287d63
+    - line 23: message_only message_only:67a1601c1f80a58d513ecadef3428abbccae578e
 
 Zend/tests/match/043.phpt
   state: handled
   fixture: Zend_tests_match_043
   first line: 12
   flavors covered: 1
-    - line 12: message_only message_only:8b426706a49a969f0148da2afee59513f61861f6
+    - line 12: message_only message_only:00cf8f17f03acf0e463dfd81c41695aad1a33894
 
 Zend/tests/methods-on-non-objects-catch.phpt
   state: old_only
   fixture: Zend_tests_methods_on_non_objects_catch
   first line: 13
   flavors covered: 1
-    - line 13: message_only message_only:5b9c3e3399d329f8849d15aaaa78230e32f7b9ec
+    - line 13: message_only message_only:0ee545d0d92e5f915dbe3bd1d1d93ab058897975
 
 Zend/tests/pipe_operator/oss_fuzz_427814452.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_pipe_operator_oss_fuzz_427814452
   first line: 9
   flavors covered: 1
-    - line 9: class_message class_message:bd3e43812eb6aff89978af280f0ef426bea48c10
-    - line 14: class_message class_message:bd3e43812eb6aff89978af280f0ef426bea48c10
-    - line 19: class_message class_message:bd3e43812eb6aff89978af280f0ef426bea48c10
-
-Zend/tests/readonly_props/visibility_change.phpt
-  state: handled
-  fixture: Zend_tests_readonly_props_visibility_change
-  first line: 21
-  flavors covered: 1
-    - line 21: message_only message_only:ba2024ac5bbf2905256f2b77ad1b5cecce2aefdc
+    - line 9: class_message class_message:3f6a5cce77799c237ea606a59e07a20f4c2bd022
+    - line 14: class_message class_message:3f6a5cce77799c237ea606a59e07a20f4c2bd022
+    - line 19: class_message class_message:3f6a5cce77799c237ea606a59e07a20f4c2bd022
 
 Zend/tests/require_parse_exception.phpt
   state: handled
   fixture: Zend_tests_require_parse_exception
   first line: 12
   flavors covered: 1
-    - line 12: message_only message_only:a72f63c4799eb92de7e43e492194e7d22662fd52
+    - line 12: message_only message_only:244fa0b331fc840c114855a42a344f58468c1ff2
 
 Zend/tests/return_types/028.phpt
   state: handled
   fixture: Zend_tests_return_types_028
   first line: 15
   flavors covered: 1
-    - line 15: message_only message_only:da586a443f59179d6bae35c3cada1c62186c9024
+    - line 15: message_only message_only:9ae5f3414327c9c3dc3add14be9853efbaff063b
 
 Zend/tests/type_coercion/gh22112.phpt
   state: old_only
   fixture: Zend_tests_type_coercion_gh22112
   first line: 23
   flavors covered: 2
-    - line 23: message_only message_only:f1eb41718480b7a65f05449075c18f2372d8ffbd
-    - line 29: message_only message_only:f12937244b0f4437880f1760fd6d75a81ab2f8aa
+    - line 23: message_only message_only:a736447623bc062609549b57511689aca5964dac
+    - line 29: message_only message_only:8ef6d7177cfdf01d930695a195dc85230c285a08
 
-Zend/tests/type_declarations/dnf_types/gh9516.phpt
-  state: handled
-  fixture: Zend_tests_type_declarations_dnf_types_gh9516
-  first line: 28
+Zend/tests/type_declarations/scalar_return_basic.phpt
+  state: old_only
+  fixture: Zend_tests_type_declarations_scalar_return_basic
+  first line: 58
   flavors covered: 1
-    - line 28: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 35: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 42: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 49: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 57: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 64: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 71: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 78: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 86: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 93: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 100: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 107: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 115: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 122: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 129: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-    - line 136: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
-
-Zend/tests/type_declarations/typed_properties_038.phpt
-  state: handled
-  fixture: Zend_tests_type_declarations_typed_properties_038
-  first line: 13
-  flavors covered: 1
-    - line 13: message_only message_only:7bd1d273514f8013a89b1015b3159f5f3d669563
-    - line 21: message_only message_only:7bd1d273514f8013a89b1015b3159f5f3d669563
-    - line 29: message_only message_only:7bd1d273514f8013a89b1015b3159f5f3d669563
-    - line 37: message_only message_only:7bd1d273514f8013a89b1015b3159f5f3d669563
+    - line 58: message_only message_only:50d9580972dc48395f591ed8724b0ac3d6c8720b
 
 Zend/tests/type_declarations/typed_properties_076.phpt
   state: handled
   fixture: Zend_tests_type_declarations_typed_properties_076
   first line: 40
   flavors covered: 1
-    - line 40: message_only message_only:c2ddb4c911929e8fafe70c7773be9d201e5ff62a
-    - line 46: message_only message_only:c2ddb4c911929e8fafe70c7773be9d201e5ff62a
-
-ext/bcmath/tests/bcdiv_error1.phpt
-  state: handled
-  fixture: ext_bcmath_tests_bcdiv_error1
-  first line: 14
-  flavors covered: 1
-    - line 14: message_only message_only:85d337243459d4fbaea6c0d45768eb582d1664bf
-    - line 20: message_only message_only:85d337243459d4fbaea6c0d45768eb582d1664bf
-    - line 26: message_only message_only:85d337243459d4fbaea6c0d45768eb582d1664bf
+    - line 40: message_only message_only:0a9da88f4e4bb8fd3d4d71ba50f83d61a416d1f1
+    - line 46: message_only message_only:0a9da88f4e4bb8fd3d4d71ba50f83d61a416d1f1
 
 ext/bcmath/tests/bcscale_variation001.phpt
   state: old_only
   fixture: ext_bcmath_tests_bcscale_variation001
   first line: 13
   flavors covered: 1
-    - line 13: message_only message_only:187757296cf19ee092fc32ecb19daafad015909e
+    - line 13: message_only message_only:037118fe3067d9f6389bf72174ca4dea340365b5
 
-ext/calendar/tests/cal_days_in_month_error1.phpt
-  state: handled
-  fixture: ext_calendar_tests_cal_days_in_month_error1
-  first line: 12
-  flavors covered: 1
-    - line 12: message_only message_only:863ed9a9ef8d6fd4669a2c2bd9e6e4893e5606ac
-    - line 17: message_only message_only:863ed9a9ef8d6fd4669a2c2bd9e6e4893e5606ac
-
-ext/com_dotnet/tests/gh8750a.phpt
+ext/com_dotnet/tests/bug77177.phpt
   state: old_only
-  fixture: ext_com_dotnet_tests_gh8750a
-  first line: 19
+  fixture: ext_com_dotnet_tests_bug77177
+  first line: 13
   flavors covered: 1
-    - line 19: message_only message_only:52dde127af6598a58587eced77d75e4a2f9a381a
+    - line 13: message_only message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
+    - line 22: message_only message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
+    - line 31: message_only message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
 
 ext/com_dotnet/tests/variants.phpt
   state: old_only
   fixture: ext_com_dotnet_tests_variants
   first line: 37
   flavors covered: 1
-    - line 37: message_only message_only:cae59b7e459ed5075e975b172a778431571ddab9
-
-ext/date/tests/bug51819.phpt
-  state: handled
-  fixture: ext_date_tests_bug51819
-  first line: 26
-  flavors covered: 1
-    - line 26: message_only message_only:6bb8a7d1c377a9281057d573ab32999d3f3aeb31
-
-ext/date/tests/bug72963.phpt
-  state: handled
-  fixture: ext_date_tests_bug72963
-  first line: 19
-  flavors covered: 1
-    - line 19: message_only message_only:2c06d1e93da8f001a7687d431d6f1633faffdd6e
-    - line 25: message_only message_only:2c06d1e93da8f001a7687d431d6f1633faffdd6e
-    - line 31: message_only message_only:2c06d1e93da8f001a7687d431d6f1633faffdd6e
+    - line 37: message_only message_only:ddbdfecc9307fe468ab9d75109eee17cb5869bd3
 
 ext/dom/tests/DOM4_ParentNode_append_invalidtypes.phpt
   state: old_only
   fixture: ext_dom_tests_DOM4_ParentNode_append_invalidtypes
   first line: 15
   flavors covered: 1
-    - line 15: message_only message_only:cbd014453a0fdb0d74c65ad811c22873ec93bd57
+    - line 15: message_only message_only:646df97825556cf144cf1bf6984fdb201d1664e7
+
+ext/dom/tests/DOMElement_className.phpt
+  state: handled
+  fixture: ext_dom_tests_DOMElement_className
+  first line: 31
+  flavors covered: 1
+    - line 31: message_only message_only:75303432baeacac718af5877ab5ee845284a5340
 
 ext/dom/tests/DOMNode_removeChild_error1.phpt
   state: handled
   fixture: ext_dom_tests_DOMNode_removeChild_error1
   first line: 17
   flavors covered: 1
-    - line 17: message_only message_only:e4d48fff0b563ce1439511df87e5a014e8dc4766
+    - line 17: message_only message_only:693b057fbbf5eb1f97ef5afdadb67dec9a0858d8
 
 ext/dom/tests/modern/spec/Document_createAttributeNS.phpt
   state: old_only
   fixture: ext_dom_tests_modern_spec_Document_createAttributeNS
   first line: 15
   flavors covered: 1
-    - line 15: message_only message_only:afb079ad3084688de7459c7d63cb7becf6e7cee7
+    - line 15: message_only message_only:1c55e2bcfb96722d5c72e3915a1aef7398a3d106
 
 ext/dom/tests/modern/xml/XMLDocument_xpath.phpt
   state: handled
   fixture: ext_dom_tests_modern_xml_XMLDocument_xpath
   first line: 49
   flavors covered: 1
-    - line 49: message_only message_only:9ca93a3260e3046a2ed62c475b0c6cf774bc4546
+    - line 49: message_only message_only:b4663a55d0bd152100512c35e3ffbc3589a56026
+
+ext/dom/tests/registerNodeClass_abstract_class.phpt
+  state: handled
+  fixture: ext_dom_tests_registerNodeClass_abstract_class
+  first line: 17
+  flavors covered: 1
+    - line 17: message_only message_only:7b858a69be77eccd3126f0c85637d44089a1802b
 
 ext/ffi/tests/031.phpt
   state: old_only
   fixture: ext_ffi_tests_031
   first line: 16
   flavors covered: 1
-    - line 16: class_message class_message:2187392452368847503768d91d0d4911c0bd3320
+    - line 16: class_message class_message:d51f8d18aa4996f4103de52c5cc98136c2883fa7
 
-ext/ffi/tests/gh9698.phpt
-  state: old_only
-  fixture: ext_ffi_tests_gh9698
+ext/fileinfo/tests/finfo_open_003.phpt
+  state: handled
+  fixture: ext_fileinfo_tests_finfo_open_003
   first line: 14
   flavors covered: 1
-    - line 14: message_only message_only:5c6d8344bf490e30371878613f566ae255c1d460
+    - line 14: message_only message_only:20adc70b63caf4908bad5020562eb595c142948a
 
 ext/hash/tests/hash_equals.phpt
   state: handled
   fixture: ext_hash_tests_hash_equals
   first line: 12
   flavors covered: 1
-    - line 12: class_message class_message:be73122ca596a930f5eedf6ca30333ce67d96d35
+    - line 12: class_message class_message:9e2d35686bea61267860efc15c32c752a8458610
+
+ext/hash/tests/hash_hkdf_edges.phpt
+  state: handled
+  fixture: ext_hash_tests_hash_hkdf_edges
+  first line: 19
+  flavors covered: 1
+    - line 19: message_only message_only:fbe5792845ba8cf33414abecc25ac1503cfc9127
 
 ext/hash/tests/hash_serialize_003.phpt
   state: handled
   fixture: ext_hash_tests_hash_serialize_003
   first line: 240
   flavors covered: 1
-    - line 240: message_only message_only:560dbf5b62f6eeca246c8f55d855ac7187cec121
+    - line 240: message_only message_only:44e5ad0767cbe2964db61f16427affc61ea06d2b
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt
   state: old_only
   fixture: ext_intl_tests_calendar_get_Least_Greatest_Minimum_Maximum_error
   first line: 13
   flavors covered: 1
-    - line 13: class_message class_message:7b98abed3f69147bdf3d9e40caf6a6ffb698d5cd
-    - line 18: class_message class_message:7b98abed3f69147bdf3d9e40caf6a6ffb698d5cd
-    - line 23: class_message class_message:7b98abed3f69147bdf3d9e40caf6a6ffb698d5cd
-    - line 28: class_message class_message:7b98abed3f69147bdf3d9e40caf6a6ffb698d5cd
-    - line 34: class_message class_message:7b98abed3f69147bdf3d9e40caf6a6ffb698d5cd
-    - line 39: class_message class_message:7b98abed3f69147bdf3d9e40caf6a6ffb698d5cd
-    - line 44: class_message class_message:7b98abed3f69147bdf3d9e40caf6a6ffb698d5cd
-    - line 49: class_message class_message:7b98abed3f69147bdf3d9e40caf6a6ffb698d5cd
+    - line 13: class_message class_message:f03ad05c9bda455fd1d1265e75e95e8b3cee6820
+    - line 18: class_message class_message:f03ad05c9bda455fd1d1265e75e95e8b3cee6820
+    - line 23: class_message class_message:f03ad05c9bda455fd1d1265e75e95e8b3cee6820
+    - line 28: class_message class_message:f03ad05c9bda455fd1d1265e75e95e8b3cee6820
+    - line 34: class_message class_message:f03ad05c9bda455fd1d1265e75e95e8b3cee6820
+    - line 39: class_message class_message:f03ad05c9bda455fd1d1265e75e95e8b3cee6820
+    - line 44: class_message class_message:f03ad05c9bda455fd1d1265e75e95e8b3cee6820
+    - line 49: class_message class_message:f03ad05c9bda455fd1d1265e75e95e8b3cee6820
 
 ext/intl/tests/calendar_toDateTime_error.phpt
   state: handled
   fixture: ext_intl_tests_calendar_toDateTime_error
   first line: 12
   flavors covered: 2
-    - line 12: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-    - line 14: class_message class_message:1d7ef669ef048aef465a09203d23aca45ced33cd
-    - line 20: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-    - line 22: class_message class_message:1d7ef669ef048aef465a09203d23aca45ced33cd
-    - line 29: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-    - line 31: class_message class_message:1d7ef669ef048aef465a09203d23aca45ced33cd
-    - line 37: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-    - line 39: class_message class_message:1d7ef669ef048aef465a09203d23aca45ced33cd
+    - line 12: class_message class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be
+    - line 14: class_message class_message:3dfb12681a94d8442270d54e876bff60182e51e6
+    - line 20: class_message class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be
+    - line 22: class_message class_message:3dfb12681a94d8442270d54e876bff60182e51e6
+    - line 29: class_message class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be
+    - line 31: class_message class_message:3dfb12681a94d8442270d54e876bff60182e51e6
+    - line 37: class_message class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be
+    - line 39: class_message class_message:3dfb12681a94d8442270d54e876bff60182e51e6
 
 ext/intl/tests/calendar_uninitialized_argument_position.phpt
   state: old_only
   fixture: ext_intl_tests_calendar_uninitialized_argument_position
   first line: 15
   flavors covered: 1
-    - line 15: message_only message_only:b297e8eb487c0ba86e367beee6191d1abeacffb7
-    - line 23: message_only message_only:b297e8eb487c0ba86e367beee6191d1abeacffb7
-
-ext/intl/tests/formatter_fail.phpt
-  state: old_only
-  fixture: ext_intl_tests_formatter_fail
-  first line: 15
-  flavors covered: 1
-    - line 15: class_message class_message:eb11c9bd6587525abd30a3f70d9626aefaa3b560
-
-ext/intl/tests/ini_use_exceptions_basic.phpt
-  state: old_only
-  fixture: ext_intl_tests_ini_use_exceptions_basic
-  first line: 12
-  flavors covered: 1
-    - line 12: message_only message_only:9a851638af2e4067abf687c8185789ae539c4152
-
-ext/intl/tests/listformatter/listformatter_clone.phpt
-  state: handled
-  fixture: ext_intl_tests_listformatter_listformatter_clone
-  first line: 17
-  flavors covered: 1
-    - line 17: message_only message_only:f5a67865168f7bf6f4636f47c4bc64ffc72e7787
-
-ext/intl/tests/msgfmt_fail2.phpt
-  state: old_only
-  fixture: ext_intl_tests_msgfmt_fail2
-  first line: 15
-  flavors covered: 1
-    - line 15: class_message_location class_message_location:a7c22a85028a826d2420501fbae71cb62d142993
+    - line 15: message_only message_only:a68142c702e6993b598af1351256a8a70f9fb7e9
+    - line 23: message_only message_only:a68142c702e6993b598af1351256a8a70f9fb7e9
 
 ext/ldap/tests/gh21262.phpt
   state: handled
   fixture: ext_ldap_tests_gh21262
   first line: 20
   flavors covered: 3
-    - line 20: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 27: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 35: message_only message_only:4c9e2c56acaa2a198559ebeec847927b8322c01d
-    - line 43: message_only message_only:bd940d349f94398c01a441728374595abafa9d90
-
-ext/ldap/tests/ldap_set_option_error.phpt
-  state: old_only
-  fixture: ext_ldap_tests_ldap_set_option_error
-  first line: 32
-  flavors covered: 1
-    - line 32: class_message class_message:d103e269b6a0f5a450f677c445dc032b659498ff
-
-ext/mysqli/tests/mysqli_connect_errno.phpt
-  state: old_only
-  fixture: ext_mysqli_tests_mysqli_connect_errno
-  first line: 19
-  flavors covered: 1
-    - line 19: message_only message_only:3a0bf5fd9ad4420e25368367a888f407a39dd7a7
+    - line 20: message_only message_only:7a67f09982f6587e881d42ccf6de5b5718e4ef4f
+    - line 27: message_only message_only:7a67f09982f6587e881d42ccf6de5b5718e4ef4f
+    - line 35: message_only message_only:b74ba2f3edac4625543529c1bb016cdc6c933840
+    - line 43: message_only message_only:a7d3974efc51b65724846f4c4d0392340ef613fc
 
 ext/mysqli/tests/mysqli_execute_query.phpt
   state: old_only
   fixture: ext_mysqli_tests_mysqli_execute_query
   first line: 62
   flavors covered: 3
-    - line 62: message_only message_only:34ea7163c425be9c9e8d7313df17b78a444163c0
-    - line 67: message_only message_only:99cc553e233268300e49fac3ef9e460ee0fb7d3b
-    - line 82: message_only message_only:ff7aef77de42d4787030cf514d5fe21819424ba8
+    - line 62: message_only message_only:c4656b36f09d9db129c3cd3708f8b618ae5419bf
+    - line 67: message_only message_only:5fbf0e1d0f19c8c8c688a87e41ca9bddc2b2d2f2
+    - line 82: message_only message_only:113f5a76c12776ef4fb5afe979bc3ff577da61b6
 
 ext/mysqli/tests/mysqli_execute_query_leak.phpt
   state: old_only
   fixture: ext_mysqli_tests_mysqli_execute_query_leak
   first line: 19
   flavors covered: 2
-    - line 19: message_only message_only:d89f190793adfdc1bd509d43aff7b987e72df3ff
-    - line 25: message_only message_only:6de66e0373e055c9515f07726aef41398b298f1c
+    - line 19: message_only message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
+    - line 25: message_only message_only:9cef7cb33a4a378d30ff9b0d1e51a25bddd57573
 
 ext/mysqli/tests/mysqli_stmt_execute_bind.phpt
   state: old_only
   fixture: ext_mysqli_tests_mysqli_stmt_execute_bind
   first line: 35
   flavors covered: 8
-    - line 35: message_only message_only:d89f190793adfdc1bd509d43aff7b987e72df3ff
-    - line 44: message_only message_only:6de66e0373e055c9515f07726aef41398b298f1c
-    - line 53: message_only message_only:7f6bb2a39b73902e617290f5b923d20477faca06
-    - line 62: message_only message_only:6e357a79d0ea289a2beb6c9f1c98761d219f7533
-    - line 71: message_only message_only:a0f4e8e77b4b5f6243fd74e6cb630c6f0a159bea
-    - line 80: message_only message_only:155e404ae1feacd53f523cb07f183ffd9c1452a6
-    - line 107: message_only message_only:35ab8d22676bca948f3eacb227028d909f670277
-    - line 123: message_only message_only:d9cf2756d395b997b5c6a2a937650a2b68f59c12
+    - line 35: message_only message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
+    - line 44: message_only message_only:9cef7cb33a4a378d30ff9b0d1e51a25bddd57573
+    - line 53: message_only message_only:bf2c93da56f275399371fc5a183fc2291e5a645c
+    - line 62: message_only message_only:e345dd81048e3fbd6e9635bb0ca3682b8d8dbc27
+    - line 71: message_only message_only:c8ae62246215f306f0a78d254fac398c11b9ff4e
+    - line 80: message_only message_only:ac63ae6a5ebaa44bfb04e26a48c2bbeecae734f4
+    - line 107: message_only message_only:73a24ef37a54618c2b094aaf6b5c78918de723a0
+    - line 123: message_only message_only:4187d0545b618af54dcd1250e3482abc104b72b8
 
 ext/opcache/tests/gh20628_borked_live_range_calc.phpt
-  state: old_only
+  state: handled
   fixture: ext_opcache_tests_gh20628_borked_live_range_calc
   first line: 18
   flavors covered: 1
-    - line 18: class_message class_message:70661bf3357619edf45c75dd9a7f08bedbc90dbf
+    - line 18: class_message class_message:ecc2d44b4323268819fce3df1e435f9e9232c853
 
-ext/pcntl/tests/bug81577.phpt
-  state: old_only
-  fixture: ext_pcntl_tests_bug81577
-  first line: 22
-  flavors covered: 1
-    - line 22: class_message class_message:be1fcd7babe523edbb678b22517bced2e0b4ff0d
+ext/opcache/tests/jit/mod_001.phpt
+  state: handled
+  fixture: ext_opcache_tests_jit_mod_001
+  first line: 24
+  flavors covered: 2
+    - line 24: message_only message_only:7879bc6cbe4e1bfa05781c7d5bf6e1ac22a530cc
+    - line 29: class_message class_message:3bf021637d59362dd295a4c59a8c4d1922c199e1
 
 ext/pdo/tests/pecl_bug_5217.phpt
   state: old_only
   fixture: ext_pdo_tests_pecl_bug_5217
   first line: 23
   flavors covered: 1
-    - line 23: message_only message_only:e96cee260ae975dc8ebf76b93713953245720184
+    - line 23: message_only message_only:016cc885829d21a49e775a13ad97f9666562db58
 
 ext/pdo_firebird/tests/autocommit.phpt
   state: old_only
   fixture: ext_pdo_firebird_tests_autocommit
   first line: 39
   flavors covered: 1
-    - line 39: message_only message_only:27637fc75be743007158976bf0ffd986659a3593
-    - line 46: message_only message_only:27637fc75be743007158976bf0ffd986659a3593
+    - line 39: message_only message_only:ec0799d54bb9e7ccb9f2aa469efd94f178f93a1f
+    - line 46: message_only message_only:ec0799d54bb9e7ccb9f2aa469efd94f178f93a1f
 
 ext/pdo_firebird/tests/bug_77863.phpt
   state: old_only
   fixture: ext_pdo_firebird_tests_bug_77863
   first line: 113
   flavors covered: 1
-    - line 113: message_only message_only:3f4705e901aec0d0cee7de6689c39c16500b52e6
+    - line 113: message_only message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86
 
 ext/pdo_firebird/tests/gh17383.phpt
   state: old_only
   fixture: ext_pdo_firebird_tests_gh17383
   first line: 25
   flavors covered: 1
-    - line 25: message_only message_only:29edfc7ef93bb2dae10eb7de6dd3cccf00c02d74
+    - line 25: message_only message_only:abaf9784b9e9d3c33cf1078bc14b2ba54605db34
 
 ext/pdo_mysql/tests/bug68371.phpt
   state: old_only
   fixture: ext_pdo_mysql_tests_bug68371
   first line: 61
   flavors covered: 1
-    - line 61: message_only message_only:959363ad7d6d9fb7b60cf5504e5daf3043116073
-
-ext/pdo_sqlite/tests/subclasses/pdosqlite_load_extension_failure.phpt
-  state: old_only
-  fixture: ext_pdo_sqlite_tests_subclasses_pdosqlite_load_extension_failure
-  first line: 25
-  flavors covered: 1
-    - line 25: message_only message_only:ff02eb32729ff0643cf18f027ae8286b3ec631c0
-    - line 34: message_only message_only:ff02eb32729ff0643cf18f027ae8286b3ec631c0
+    - line 61: message_only message_only:bb2251784b278c78cf4133fb258659d0336b8597
 
 ext/phar/tests/bug65028.phpt
   state: old_only
   fixture: ext_phar_tests_bug65028
   first line: 146
   flavors covered: 1
-    - line 146: message_only message_only:b430a50c636d10f0af376fb9b806c475faeaf7cf
-
-ext/phar/tests/bug79503.phpt
-  state: old_only
-  fixture: ext_phar_tests_bug79503
-  first line: 10
-  flavors covered: 1
-    - line 10: message_only message_only:0d8d604532ada0bc0ca845cda4cfe9e6b1fc1dfc
+    - line 146: message_only message_only:6dcad3f658966dfb6c642ee6cb54fef68a236764
 
 ext/phar/tests/buildFromIterator_user_overrides/getMTime_errors.phpt
   state: old_only
   fixture: ext_phar_tests_buildFromIterator_user_overrides_getMTime_errors
   first line: 81
   flavors covered: 2
-    - line 81: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 83: message_only message_only:181e45e93bb0bbf7c0c1a5123407d789b1b0778a
+    - line 81: message_only message_only:7a67f09982f6587e881d42ccf6de5b5718e4ef4f
+    - line 83: message_only message_only:4e70645635d8b31245efb07130ee51ce9bf90945
 
 ext/phar/tests/phar_metadata_write4.phpt
   state: old_only
   fixture: ext_phar_tests_phar_metadata_write4
   first line: 58
   flavors covered: 1
-    - line 58: message_only message_only:5cd763039d53ef0dd1fc948910d3c36286e3347e
-
-ext/phar/tests/tar/badalias.phpt
-  state: old_only
-  fixture: ext_phar_tests_tar_badalias
-  first line: 14
-  flavors covered: 1
-    - line 14: message_only message_only:6906da837dbd90b5cf0ed2d15fcdfa037bf9a32e
-
-ext/reflection/tests/004.phpt
-  state: handled
-  fixture: ext_reflection_tests_004
-  first line: 21
-  flavors covered: 1
-    - line 21: message_only message_only:19bbe441279109a3f55eb81a5176711ff20b5ee1
-    - line 28: message_only message_only:19bbe441279109a3f55eb81a5176711ff20b5ee1
-    - line 35: message_only message_only:19bbe441279109a3f55eb81a5176711ff20b5ee1
+    - line 58: message_only message_only:a9729e75b4df027b5cf393d95ba07b084bd946d9
 
 ext/reflection/tests/ReflectionExtension_constructor_error.phpt
   state: handled
   fixture: ext_reflection_tests_ReflectionExtension_constructor_error
   first line: 11
   flavors covered: 1
-    - line 11: message_only message_only:092e3fba689f5cec86fdb605895ae5eb8b2955d2
-    - line 17: message_only message_only:092e3fba689f5cec86fdb605895ae5eb8b2955d2
-    - line 23: message_only message_only:092e3fba689f5cec86fdb605895ae5eb8b2955d2
-
-ext/reflection/tests/ReflectionFiber_errors.phpt
-  state: old_only
-  fixture: ext_reflection_tests_ReflectionFiber_errors
-  first line: 15
-  flavors covered: 1
-    - line 15: message_only message_only:9fa9fe94d0a5f54d3aa6cd05060a655ee7eedf5d
-    - line 21: message_only message_only:9fa9fe94d0a5f54d3aa6cd05060a655ee7eedf5d
-    - line 27: message_only message_only:9fa9fe94d0a5f54d3aa6cd05060a655ee7eedf5d
-    - line 40: message_only message_only:9fa9fe94d0a5f54d3aa6cd05060a655ee7eedf5d
-    - line 46: message_only message_only:9fa9fe94d0a5f54d3aa6cd05060a655ee7eedf5d
-    - line 52: message_only message_only:9fa9fe94d0a5f54d3aa6cd05060a655ee7eedf5d
-    - line 58: message_only message_only:9fa9fe94d0a5f54d3aa6cd05060a655ee7eedf5d
-
-ext/reflection/tests/ReflectionMethod_invoke_basic.phpt
-  state: handled
-  fixture: ext_reflection_tests_ReflectionMethod_invoke_basic
-  first line: 28
-  flavors covered: 3
-    - line 28: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
-    - line 66: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 71: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 79: message_only message_only:0718c7189fac5f818672e16cd5060842dea08649
+    - line 11: message_only message_only:c799370b7843e4c4007a0f3e6bb1ef453eac6ba4
+    - line 17: message_only message_only:c799370b7843e4c4007a0f3e6bb1ef453eac6ba4
+    - line 23: message_only message_only:c799370b7843e4c4007a0f3e6bb1ef453eac6ba4
 
 ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_dynamic
   first line: 23
-  flavors covered: 2
-    - line 23: message_only message_only:10f714c5688b050597b07e6002cfdfa46678205f
-    - line 64: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
-    - line 71: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
+  flavors covered: 3
+    - line 23: message_only message_only:25bea6d1231731be46355534e83ece827498a842
+    - line 64: message_only message_only:d163add8f34533fa85238fad129a76b52459819b
+    - line 71: message_only message_only:6bb792fd65dccb99b611ab010d0f1765c2aa7921
 
 ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
   first line: 44
   flavors covered: 2
-    - line 44: message_only message_only:d43cb9ed24c67c7237dc34068296786c0b0aa035
-    - line 52: message_only message_only:6853fa0c8ab6716dc6d10447a9b13925a3a9389e
+    - line 44: message_only message_only:f0c074846f780625e03d06e41fa230b6bd206d9b
+    - line 52: message_only message_only:ad310bfa9fc6bc722018b51dba552a12f14ca4dc
 
 ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_instance
   first line: 26
   flavors covered: 2
-    - line 26: message_only message_only:f650c83eb49d0af9f854d2435e12ac51927b80ea
-    - line 48: message_only message_only:e20bd9eaadb85ebe935c27683b4eea38f5ee8457
+    - line 26: message_only message_only:595c0ecf7ae441dfcae4ba6f37e42a08f3cc8b03
+    - line 48: message_only message_only:dd2fcdc7d606cafbae028fa0ea70540ee85fda49
 
 ext/reflection/tests/internal_parameter_default_value/check_all.phpt
   state: handled
   fixture: ext_reflection_tests_internal_parameter_default_value_check_all
   first line: 12
   flavors covered: 1
-    - line 12: message_only message_only:81e8a1f089550d781796142978893b1553c23374
+    - line 12: message_only message_only:f31a9b59d85f586d3205ca5d57a412671da847ee
 
 ext/session/tests/session_create_id_invalid_prefix.phpt
   state: old_only
   fixture: ext_session_tests_session_create_id_invalid_prefix
   first line: 19
   flavors covered: 1
-    - line 19: class_message class_message:e1c6f262625e43498aad6143585d92b1f36f62c2
-    - line 25: class_message class_message:e1c6f262625e43498aad6143585d92b1f36f62c2
-
-ext/session/tests/session_start_error.phpt
-  state: old_only
-  fixture: ext_session_tests_session_start_error
-  first line: 15
-  flavors covered: 2
-    - line 15: message_only message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
-    - line 23: class_message class_message:82af62560ae783c167116f4e3c65d8f690ff85b3
+    - line 19: class_message class_message:d42a1b7eff30a5666e87a87cbc6976d5ecc9dff6
+    - line 25: class_message class_message:d42a1b7eff30a5666e87a87cbc6976d5ecc9dff6
 
 ext/soap/tests/bugs/gh22167.phpt
   state: old_only
   fixture: ext_soap_tests_bugs_gh22167
   first line: 101
   flavors covered: 1
-    - line 101: message_only message_only:eb40e2de3e173d548996ef3a90ab5a2dea44ed33
+    - line 101: message_only message_only:a8673607ef55b12296cc1d901d9837f4395435dd
 
 ext/soap/tests/bugs/protocol_relative_redirect.phpt
   state: old_only
   fixture: ext_soap_tests_bugs_protocol_relative_redirect
   first line: 45
   flavors covered: 1
-    - line 45: message_only message_only:295f517176a99a518bc4e0c2ff11e3cae0ead129
+    - line 45: message_only message_only:1ec5fa64124358dce243d2469687cdbcd868e829
 
 ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt
   state: old_only
   fixture: ext_spl_tests_ArrayObject_arrayObject___construct_error1
   first line: 11
   flavors covered: 1
-    - line 11: message_only message_only:449016f7139085a1fec735374d0851189261a3f5
-    - line 18: message_only message_only:449016f7139085a1fec735374d0851189261a3f5
+    - line 11: message_only message_only:110a558f693fb409d1e6c76f1e07660e98863040
+    - line 18: message_only message_only:110a558f693fb409d1e6c76f1e07660e98863040
 
-ext/spl/tests/SplFixedArray__construct_param_array.phpt
-  state: handled
-  fixture: ext_spl_tests_SplFixedArray__construct_param_array
-  first line: 11
+ext/spl/tests/SplFileObject/fileobject_003.phpt
+  state: old_only
+  fixture: ext_spl_tests_SplFileObject_fileobject_003
+  first line: 34
   flavors covered: 1
-    - line 11: message_only message_only:014325f5f2df835466e70b4b11f72ecb5a6c6759
+    - line 34: message_only message_only:79836f7ba96de26581786ad66801016aeeb7e28f
+    - line 40: message_only message_only:79836f7ba96de26581786ad66801016aeeb7e28f
 
 ext/spl/tests/SplHeap_serialize_corrupted.phpt
   state: handled
   fixture: ext_spl_tests_SplHeap_serialize_corrupted
   first line: 31
   flavors covered: 2
-    - line 31: message_only message_only:6b06435b5be6abcc662b2f95ff5574978c706fd6
-    - line 59: message_only message_only:c86a2b1c3dc1f116b2ff4deedd09923cd4087f22
+    - line 31: message_only message_only:5784a6682057fdfac3cebdacbaaba509eb109199
+    - line 59: message_only message_only:62a03fb73ac565c5d674e6116e07f530dc2283ae
 
 ext/spl/tests/SplHeap_serialize_error_handling.phpt
   state: handled
   fixture: ext_spl_tests_SplHeap_serialize_error_handling
   first line: 40
   flavors covered: 2
-    - line 40: message_only message_only:1d2245c46c72fd8f1152271f9782ab9e033d492c
-    - line 63: message_only message_only:8df574e7d8c600504be4abeb2b126e3b9826e0fb
+    - line 40: message_only message_only:9c1ea4f06978b915527ee487590a6ffe5d21bdc8
+    - line 63: message_only message_only:ee04651468eedc43a127db3d9e6136e8d5723465
 
 ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt
   state: handled
   fixture: ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags
   first line: 19
   flavors covered: 4
-    - line 19: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
-    - line 35: message_only message_only:7f0d2c022726916345cf1b9373bf0105ab11643e
-    - line 51: message_only message_only:50f0e2f39668185312aa2384dd53295626a8faa2
-    - line 72: message_only message_only:6e18e6e468f86ccd286d214ffd5b31f9c354849f
+    - line 19: message_only message_only:996fe1d1ddf64d95ac8f795eac684406266ef293
+    - line 35: message_only message_only:24b2ad28738aac23d869fbce8a852e1e5cbf4037
+    - line 51: message_only message_only:1ec58e999d204bd355d1584299a13fd070b710fa
+    - line 72: message_only message_only:0ae34191153a07b37eb2a06f76fcd58b99310f24
+
+ext/spl/tests/bug73629.phpt
+  state: handled
+  fixture: ext_spl_tests_bug73629
+  first line: 9
+  flavors covered: 2
+    - line 9: message_only message_only:6bb792fd65dccb99b611ab010d0f1765c2aa7921
+    - line 14: message_only message_only:8e8d4ab1dc841b37391d2235fd3f2abc0a5a604f
 
 ext/spl/tests/gh16217.phpt
   state: old_only
   fixture: ext_spl_tests_gh16217
   first line: 12
   flavors covered: 3
-    - line 12: message_only message_only:2677408e20af8efbf3106a6f75b63712214b2147
-    - line 18: message_only message_only:569b0cb0e0df6b2546892626b11c5ca34705ce32
-    - line 26: message_only message_only:06f616c2efd5860d6821501194dd6646c60f1b43
+    - line 12: message_only message_only:c4e813951622c9195e432588c8c894ab86d1809b
+    - line 18: message_only message_only:716ee8c95ea1d69abe8fea0b71b26c8e4f654890
+    - line 26: message_only message_only:b92dae3943857a7c8b986f2c353d7d05abdd3365
 
 ext/spl/tests/heap_corruption.phpt
   state: handled
   fixture: ext_spl_tests_heap_corruption
   first line: 51
   flavors covered: 2
-    - line 51: message_only message_only:c4657791ba2d961de0381cc5a451f0f6aabe8157
-    - line 58: message_only message_only:6689e3676c135dafb7312f39ec62473546464a72
+    - line 51: message_only message_only:bb4b1445c929ad8a92165195de1316acc9893816
+    - line 58: message_only message_only:454642b4f16235f0308b22a8be8518ff51ac31db
 
 ext/spl/tests/iterator_047.phpt
   state: handled
   fixture: ext_spl_tests_iterator_047
   first line: 51
   flavors covered: 1
-    - line 51: message_only message_only:133cd1f32b27fee649b6825086d06f0e47e63acf
+    - line 51: message_only message_only:c3629babcb523665062f95cbe77036ccf27c4e76
 
 ext/spl/tests/multiple_iterator_001.phpt
   state: handled
   fixture: ext_spl_tests_multiple_iterator_001
   first line: 19
   flavors covered: 4
-    - line 19: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 24: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 41: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
-    - line 46: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
-    - line 74: message_only message_only:d3d598729db7aa680ac063c02a7910d5c33befbe
-    - line 92: message_only message_only:d91662869ffd1b8efeb50033bb515af4b33b7ade
-    - line 100: message_only message_only:d3d598729db7aa680ac063c02a7910d5c33befbe
+    - line 19: message_only message_only:7a67f09982f6587e881d42ccf6de5b5718e4ef4f
+    - line 24: message_only message_only:7a67f09982f6587e881d42ccf6de5b5718e4ef4f
+    - line 41: message_only message_only:5553c427f0519a3479808825c51ba18e2d870f8a
+    - line 46: message_only message_only:5553c427f0519a3479808825c51ba18e2d870f8a
+    - line 74: message_only message_only:5a3c2df93fc43e317b2b17c17e36e585b8e55f97
+    - line 92: message_only message_only:24b07a5db84901006f8ca82adcaf817a9eef2312
+    - line 100: message_only message_only:5a3c2df93fc43e317b2b17c17e36e585b8e55f97
 
 ext/standard/tests/array/bug42177.phpt
   state: handled
   fixture: ext_standard_tests_array_bug42177
   first line: 24
   flavors covered: 1
-    - line 24: message_only message_only:e1134cf17bad05b90d123e3c777e5523d2252b8c
+    - line 24: message_only message_only:4a4e10c8ab844f28c35b8b287f0e43fe42e58fd2
+
+ext/standard/tests/array/gh16649/array_splice_uaf_add_elements.phpt
+  state: handled
+  fixture: ext_standard_tests_array_gh16649_array_splice_uaf_add_elements
+  first line: 18
+  flavors covered: 1
+    - line 18: message_only message_only:943b7749279d3c7af8420ebb139aa8e296e9eb02
+
+ext/standard/tests/file/file_error.phpt
+  state: handled
+  fixture: ext_standard_tests_file_file_error
+  first line: 13
+  flavors covered: 1
+    - line 13: message_only message_only:d052b6ac266a0003a7a5fc110502d03fd9364578
+    - line 18: message_only message_only:d052b6ac266a0003a7a5fc110502d03fd9364578
 
 ext/standard/tests/general_functions/bug44295-win.phpt
   state: old_only
   fixture: ext_standard_tests_general_functions_bug44295_win
   first line: 21
   flavors covered: 1
-    - line 21: message_only message_only:4dc7048ad3e34e50cd160ea846d5c2b757ed4ff5
+    - line 21: message_only message_only:fda58ac6a3e491515dd9c8376609c7a9447d4dd0
 
 ext/standard/tests/strings/printf.phpt
   state: old_only
   fixture: ext_standard_tests_strings_printf
   first line: 34
   flavors covered: 3
-    - line 34: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 45: message_only message_only:69f14bfa9a4d0ef8dbb2390e6e9d4c711bb446c8
-    - line 208: message_only message_only:6ac8e2e2b0f7cd785af81086faa8d32ab1d57e7e
+    - line 34: message_only message_only:7a67f09982f6587e881d42ccf6de5b5718e4ef4f
+    - line 45: message_only message_only:0aaa03c325d1bebdfa8c891eb2e355a4381bde9e
+    - line 208: message_only message_only:815c351c0d23adb97c78f1d77844c28a462c3b11
 
 ext/standard/tests/strings/strpos.phpt
   state: old_only
   fixture: ext_standard_tests_strings_strpos
   first line: 87
   flavors covered: 2
-    - line 87: message_only message_only:20f2ab4ea6354541b94d759f40ccdb9ecbd68ec4
-    - line 165: message_only message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
-    - line 171: message_only message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
+    - line 87: message_only message_only:e866c8cb53d8aa383f5ba3667154846bbb6149c9
+    - line 165: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
+    - line 171: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
 
 ext/standard/tests/strings/vfprintf_error4.phpt
   state: handled
   fixture: ext_standard_tests_strings_vfprintf_error4
   first line: 17
   flavors covered: 2
-    - line 17: message_only message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-    - line 22: message_only message_only:b96a4692463bf2450726d04083172fc132f1f893
+    - line 17: message_only message_only:7a67f09982f6587e881d42ccf6de5b5718e4ef4f
+    - line 22: message_only message_only:48ea07e8b6c18fa264b4bcec1a725b95c90c7de1
 
 ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt
   state: handled
   fixture: ext_tokenizer_tests_token_get_all_heredoc_nowdoc
   first line: 18
   flavors covered: 1
-    - line 18: message_only message_only:d3e34e5a1dadcc3ebfd22839cdcf42cacd0dc07c
-
-ext/uri/tests/053.phpt
-  state: handled
-  fixture: ext_uri_tests_053
-  first line: 16
-  flavors covered: 2
-    - line 16: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 22: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 28: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 34: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 37: message_only message_only:34c3f620002fd034fd11534efa8229867b9cf8ae
+    - line 18: message_only message_only:d94734ff16c1b662d68cb934422748987d1f4c5f
 
 tests/classes/array_access_013.phpt
   state: handled
   fixture: tests_classes_array_access_013
   first line: 22
   flavors covered: 1
-    - line 22: message_only message_only:cee8d304aae96d60e8c8bc9f4c4ec27c2bc4e8d0
-    - line 31: message_only message_only:cee8d304aae96d60e8c8bc9f4c4ec27c2bc4e8d0
-    - line 40: message_only message_only:cee8d304aae96d60e8c8bc9f4c4ec27c2bc4e8d0
-    - line 49: message_only message_only:cee8d304aae96d60e8c8bc9f4c4ec27c2bc4e8d0
+    - line 22: message_only message_only:dd0f463101fd55ce4f2e9ad60c1ea3511d91ecd9
+    - line 31: message_only message_only:dd0f463101fd55ce4f2e9ad60c1ea3511d91ecd9
+    - line 40: message_only message_only:dd0f463101fd55ce4f2e9ad60c1ea3511d91ecd9
+    - line 49: message_only message_only:dd0f463101fd55ce4f2e9ad60c1ea3511d91ecd9
 
 tests/classes/ctor_failure.phpt
-  state: old_only
+  state: handled
   fixture: tests_classes_ctor_failure
   first line: 25
   flavors covered: 1
-    - line 25: class_message class_message:8b2f4bf66810d53254f570075abfd26da4777bf6
+    - line 25: class_message class_message:fb78c87530431a9e8a4dca2c0a5d94531ec2a26e
 
-tests/classes/interfaces_001.phpt
-  state: old_only
-  fixture: tests_classes_interfaces_001
-  first line: 19
-  flavors covered: 1
-    - line 19: message_only message_only:6a9b165ec9612353902ce6f538b77fba38e6d940
-
-tests/classes/interfaces_002.phpt
-  state: old_only
-  fixture: tests_classes_interfaces_002
-  first line: 21
-  flavors covered: 1
-    - line 21: message_only message_only:01759b3e8e119bebda5e15cfa939cda175247f6c
+tests/classes/destructor_and_exceptions.phpt
+  state: handled
+  fixture: tests_classes_destructor_and_exceptions
+  first line: 25
+  flavors covered: 3
+    - line 25: message_only message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
+    - line 45: message_only message_only:cf7e9653a60e115d7e6ecb3ba100961e5c51a647
+    - line 49: message_only message_only:717f056961a2cf9ce94c906d5dcd6e00288a0606
 
 tests/classes/type_hinting_004.phpt
   state: handled
   fixture: tests_classes_type_hinting_004
   first line: 17
   flavors covered: 1
-    - line 17: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 22: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 27: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 32: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 37: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 42: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 66: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 71: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 76: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 81: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 86: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 91: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 116: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 121: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 126: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 131: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 136: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
-    - line 141: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
+    - line 17: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 22: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 27: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 32: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 37: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 42: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 66: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 71: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 76: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 81: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 86: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 91: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 116: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 121: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 126: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 131: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 136: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
+    - line 141: message_only message_only:9b1a3f16b509df2eba18046cc87a5844dacfc7b0
 
 tests/lang/foreachLoopIteratorAggregate.002.phpt
   state: handled
   fixture: tests_lang_foreachLoopIteratorAggregate_002
   first line: 41
   flavors covered: 1
-    - line 41: message_only message_only:fed0ec03c71480ae0b17c9f381d9abe6ab4c768e
+    - line 41: message_only message_only:5ef4c605566494379e09d717de65a634744c6752
 
 tests/strings/002.phpt
-  state: old_only
+  state: handled
   fixture: tests_strings_002
   first line: 45
   flavors covered: 1
-    - line 45: message_only message_only:3f8693e9ecf976bd1463af1df38cee802ace5895
+    - line 45: message_only message_only:4ace32465b6006ace0b1e173d1ada6b3cf9a5f81
