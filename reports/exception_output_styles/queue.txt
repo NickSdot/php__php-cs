@@ -1,4 +1,4 @@
-# Exception output flavor queue
+# Exception output flavour queue
 
 Zend/tests/closures/closure_from_callable_error.phpt:17
   state: old_only

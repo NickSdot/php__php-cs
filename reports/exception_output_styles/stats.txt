@@ -3,13 +3,13 @@
 Scanned PHPT files: 22048
 Candidate files: 3336
 Candidate windows: 7001
-Candidate flavors: 125
+Candidate flavours: 125
 Duplicate candidate windows: 6876
-Duplicate flavor groups: 58
+Duplicate flavour groups: 58
 
 # Selected source-file fixtures
 Selected fixture source files: 95
-Avoided extra per-flavor fixture dirs: 30
+Avoided extra per-flavour fixture dirs: 30
 Handled fixture files: 59
 Queued old-only fixture files: 36
 Queued stale fixture files: 0
@@ -17,13 +17,13 @@ Missing fixture files: 0
 Invalid fixture files: 0
 Remaining fixture queue: 36
 
-# Flavor coverage queue
-Flavors covered by handled fixtures: 74
-Flavors covered by old-only fixtures: 51
-Flavors covered by stale fixtures: 0
-Missing flavor fixtures: 0
-Invalid flavor fixtures: 0
-Remaining flavor queue: 51
+# Flavour coverage queue
+Flavours covered by handled fixtures: 74
+Flavours covered by old-only fixtures: 51
+Flavours covered by stale fixtures: 0
+Missing flavour fixtures: 0
+Invalid flavour fixtures: 0
+Remaining flavour queue: 51
 
 # Fixture directory shape
 Current source-file fixture dirs: 95
@@ -31,9 +31,9 @@ Extra fixture dirs outside source-file representatives: 79
 Legacy suffixed fixture dirs: 0
 
 # Last write run
-Created old fixtures: 2
-Verified fixture files: 75
-Updated new/diff pairs: 1
+Created old fixtures: 0
+Verified fixture files: 78
+Updated new/diff pairs: 0
 Deleted stale new/diff pairs: 0
-Old-only fixture files: 60
-Failures: 39
+Old-only fixture files: 59
+Failures: 37

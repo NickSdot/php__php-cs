@@ -1,4 +1,4 @@
-# Exception output flavors
+# Exception output flavours
 
 Zend/tests/arg_unpack/invalid_type.phpt:13
   fingerprint: class_message:055654a8e8d85772ff9c24f18681e1cb8f28d6be

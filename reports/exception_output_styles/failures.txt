@@ -3,7 +3,6 @@
 - Zend_tests_closures_closure_instantiate: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Closures cannot be instantiated directly [Zend_tests_closures_closure_instantiate/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
 - Zend_tests_pipe_operator_oss_fuzz_427814452: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL OSS-Fuzz #427814452 [Zend_tests_pipe_operator_oss_fuzz_427814452/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 3 line(s), actual 3 line(s)
 - Zend_tests_stack_limit_stack_limit_011: rewritten old.phpt does not match new.phpt
-- Zend_tests_try_bug72213_2: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Bug #72213 (Finally leaks on nested exceptions) [Zend_tests_try_bug72213_2/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
 - Zend_tests_type_declarations_typed_properties_076: expected handled rewrite, but fixer reported no change
 - ext_bcmath_tests_bcdiv_error1: rewrite failed verification: original test did not pass (SKIP: Required extension missing: bcmath)
 - ext_calendar_tests_cal_days_in_month_error1: rewrite failed verification: original test did not pass (SKIP: Required extension missing: calendar)
@@ -27,7 +26,7 @@
 - ext_reflection_tests_ReflectionProperty_getMangledName_inheritance: expected handled rewrite, but fixer reported no change
 - ext_reflection_tests_ReflectionProperty_getMangledName_instance: expected handled rewrite, but fixer reported no change
 - ext_reflection_tests_internal_parameter_default_value_check_all: expected handled rewrite, but fixer reported no change
-- ext_simplexml_tests_gh12929: missing old.phpt
+- ext_simplexml_tests_gh12929: rewrite failed verification: original test did not pass (SKIP: Required extension missing: simplexml)
 - ext_spl_tests_SplHeap_serialize_corrupted: expected handled rewrite, but fixer reported no change
 - ext_spl_tests_SplHeap_serialize_error_handling: expected handled rewrite, but fixer reported no change
 - ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags: rewritten old.phpt does not match new.phpt
@@ -38,4 +37,3 @@
 - ext_standard_tests_network_setrawcookie_error: rewrite failed verification: original test did not pass (SKIP: CGI not available)
 - tests_classes_ctor_failure: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL ZE2 Do not call destructors if constructor fails [tests_classes_ctor_failure/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 2 line(s), actual 2 line(s)
 - tests_classes_type_hinting_004: expected handled rewrite, but fixer reported no change
-- tests_strings_002: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Formatted print functions [tests_strings_002/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 37 line(s), actual 37 line(s)

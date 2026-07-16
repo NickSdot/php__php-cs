@@ -1,4 +1,4 @@
-# Exception output flavors covered by handled fixtures
+# Exception output flavours covered by handled fixtures
 
 Zend/tests/arg_unpack/invalid_type.phpt:13
   state: handled

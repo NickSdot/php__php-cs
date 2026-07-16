@@ -23,12 +23,13 @@ final readonly class FixerRunner
 
     /**
      * @param list<string> $paths
+     *
      * @return list<string>
      */
     public function collectFiles(array $paths): array
     {
         if ([] === $paths) {
-            $paths = [$this->rootDir];
+            $paths = [ $this->rootDir ];
         }
 
         $files = [];
@@ -49,6 +50,7 @@ final readonly class FixerRunner
                 new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS),
                 \RecursiveIteratorIterator::LEAVES_ONLY
             );
+
             foreach ($iterator as $file) {
 
                 if (!$file instanceof \SplFileInfo) {
@@ -67,6 +69,7 @@ final readonly class FixerRunner
 
     /**
      * @param list<string> $files
+     *
      * @return array{changed: int, failed: int}
      */
     public function run(array $files, bool $check): array
@@ -114,11 +117,12 @@ final readonly class FixerRunner
             }
         }
 
-        return ['changed' => $changed, 'failed' => $failed];
+        return [ 'changed' => $changed, 'failed' => $failed ];
     }
 
     /**
      * @param list<string> $files
+     *
      * @return array{changed: bool, failed: bool, output: string, failure: string|null}
      */
     public function print(array $files): array
