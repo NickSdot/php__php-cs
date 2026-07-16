@@ -1,5 +1,5 @@
 {
-    "name": "nicksdot/php-internals-cs",
+    "name": "nicksdot/php-cs",
     "description": "PHP project code style tools.",
     "type": "project",
     "license": "MIT",
