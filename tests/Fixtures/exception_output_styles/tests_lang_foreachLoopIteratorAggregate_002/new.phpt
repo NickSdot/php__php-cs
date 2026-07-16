@@ -38,7 +38,7 @@ function f($className) {
             echo "$k => $v\n";
         }
     } catch (Exception $e) {
-            echo $e->getLine() . ": " . $e::class . ': ' . $e->getMessage() .\PHP_EOL;
+            echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), \PHP_EOL;
     }
 }
 
@@ -49,7 +49,7 @@ f("bad4");
 
 ?>
 --EXPECT--
-34: Exception: Objects returned by bad1::getIterator() must be traversable or implement interface Iterator
-34: Exception: Objects returned by bad2::getIterator() must be traversable or implement interface Iterator
-34: Exception: Objects returned by bad3::getIterator() must be traversable or implement interface Iterator
-34: Exception: Objects returned by bad4::getIterator() must be traversable or implement interface Iterator
+Exception: Objects returned by bad1::getIterator() must be traversable or implement interface Iterator on line 34
+Exception: Objects returned by bad2::getIterator() must be traversable or implement interface Iterator on line 34
+Exception: Objects returned by bad3::getIterator() must be traversable or implement interface Iterator on line 34
+Exception: Objects returned by bad4::getIterator() must be traversable or implement interface Iterator on line 34
