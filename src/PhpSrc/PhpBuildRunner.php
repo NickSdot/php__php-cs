@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace InternalsCS\PhpSrc;
 
 use InternalsCS\Console\ConsoleIo;
-use InternalsCS\Support\ProcessEnvironment;
 
 use function array_map;
 use function chmod;
@@ -26,23 +25,28 @@ use function stream_get_contents;
 final readonly class PhpBuildRunner
 {
     public function __construct(
-        private ProcessEnvironment $environment = new ProcessEnvironment(),
+        private PhpBuildEnvironment $environment = new PhpBuildEnvironment(),
     ) {}
 
     public function build(PhpSrcRoot $root, PhpBuildProfile $profile, PhpBuildPaths $paths, int $jobs, ConsoleIo $io): void
     {
+        $environment = $this->environment->variables($profile->pkgConfigPackages());
+
         if (!is_file($root->path . '/configure')) {
-            $this->run($root, ['./buildconf', '--force'], $io);
+            $this->run($root, ['./buildconf', '--force'], $environment, $io);
         }
 
-        $this->run($root, ['./configure', ...$profile->configureArgs()], $io);
-        $this->run($root, ['make', '-j' . max(1, $jobs), ...$profile->makeTargets()], $io);
+        $this->run($root, ['./configure', ...$profile->configureArgs()], $environment, $io);
+        $this->run($root, ['make', '-j' . max(1, $jobs), ...$profile->makeTargets()], $environment, $io);
         $this->installBinary($root->path . '/sapi/cli/php', $paths->phpBinary());
         $this->installBinary($root->path . '/sapi/cgi/php-cgi', $paths->cgiBinary());
     }
 
-    /** @param list<string> $command */
-    private function run(PhpSrcRoot $root, array $command, ConsoleIo $io): void
+    /**
+     * @param list<string> $command
+     * @param array<string, string> $environment
+     */
+    private function run(PhpSrcRoot $root, array $command, array $environment, ConsoleIo $io): void
     {
         $io->out('$ ' . implode(' ', array_map(escapeshellarg(...), $command)) . "\n");
 
@@ -55,7 +59,7 @@ final readonly class PhpBuildRunner
             ],
             $pipes,
             $root->path,
-            $this->environment->variables(),
+            $environment,
         );
 
         if (!is_resource($process)) {

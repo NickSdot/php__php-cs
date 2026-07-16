@@ -20,12 +20,15 @@ final readonly class PhpBuildProfile
             '--enable-tokenizer',
             '--enable-bcmath',
             '--enable-calendar',
+            '--with-libxml',
             '--enable-dom',
             '--enable-fileinfo',
             '--enable-intl',
             '--with-ldap',
             '--enable-pcntl',
+            '--enable-posix',
             '--enable-phar',
+            '--enable-session',
             '--enable-simplexml',
             '--enable-soap',
             '--enable-xml',
@@ -34,6 +37,19 @@ final readonly class PhpBuildProfile
             '--enable-pdo',
             '--with-pdo-sqlite',
             '--with-sqlite3',
+        ];
+    }
+
+    /** @return list<string> */
+    public function pkgConfigPackages(): array
+    {
+        return [
+            'icu-io',
+            'icu-i18n',
+            'icu-uc',
+            'ldap',
+            'libxml-2.0',
+            'sqlite3',
         ];
     }
 
