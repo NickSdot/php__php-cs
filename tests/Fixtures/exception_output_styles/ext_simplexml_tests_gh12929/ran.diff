@@ -1,0 +1,27 @@
+--- old.phpt
++++ new.phpt
+@@ -9,7 +9,7 @@
+ try {
+     file_get_contents($scheme . "://x");
+ } catch (Error $e) {
+-    echo $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+     echo $e->getPrevious()->getMessage(), "\n";
+ }
+ 
+@@ -18,12 +18,12 @@
+ try {
+     file_get_contents($scheme . "://x");
+ } catch (Error $e) {
+-    echo $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+     echo $e->getPrevious()->getMessage(), "\n";
+ }
+ ?>
+ --EXPECT--
+-It's not possible to assign a complex type to properties, resource given
++TypeError: It's not possible to assign a complex type to properties, resource given
+ SimpleXMLElement is not properly initialized
+-It's not possible to assign a complex type to properties, resource given
++TypeError: It's not possible to assign a complex type to properties, resource given
+ SimpleXMLElement is not properly initialized
