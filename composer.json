@@ -13,14 +13,7 @@
     "autoload": {
         "psr-4": {
             "InternalsCS\\": "src/"
-        },
-        "classmap": [
-            "src/Fixers/",
-            "src/PhptFile.php",
-            "src/TestStyleFixer.php",
-            "src/TestStyleFixerBase.php",
-            "src/TestStyleRunner.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
