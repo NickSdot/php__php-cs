@@ -13,7 +13,7 @@ class_message:1d7ef669ef048aef465a09203d23aca45ced33cd
     - ext/intl/tests/timezone_toDateTimeZone_error.phpt:15
 
 class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-  count: 775
+  count: 805
   representative: Zend/tests/arg_unpack/invalid_type.phpt:13
   family: class_message
   safety: canonicalizable
@@ -39,7 +39,7 @@ class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
     - Zend/tests/clone/clone_with_006.phpt:11
     - Zend/tests/clone/clone_with_008.phpt:24
     - Zend/tests/clone/clone_with_010.phpt:9
-    - +754 more
+    - +784 more
 
 class_message:2fc35cc1e6b3638035149fc1ca7e44a1e7055ac1
   count: 122
@@ -98,7 +98,7 @@ class_message:82af62560ae783c167116f4e3c65d8f690ff85b3
     - ext/xml/tests/xml_parser_set_option_errors.phpt:55
 
 class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
-  count: 59
+  count: 64
   representative: Zend/tests/enum/backed-mismatch.phpt:13
   family: class_message
   safety: canonicalizable
@@ -116,15 +116,15 @@ class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
     - ext/date/tests/bug-gh11416.phpt:58
     - ext/date/tests/bug-gh15582.phpt:17
     - ext/date/tests/unserialize-test.phpt:20
+    - ext/markup/tests/children.phpt:32
+    - ext/markup/tests/children.phpt:64
+    - ext/markup/tests/children.phpt:77
+    - ext/markup/tests/component_hardening.phpt:14
+    - ext/markup/tests/component_hardening.phpt:90
     - ext/pdo/tests/bug_44159.phpt:25
     - ext/pdo/tests/bug_44159.phpt:30
     - ext/pdo/tests/bug_44159.phpt:35
-    - ext/pdo_mysql/tests/pdo_mysql_attr_errmode.phpt:20
-    - ext/pdo_mysql/tests/pdo_mysql_attr_errmode.phpt:25
-    - ext/pdo_mysql/tests/pdo_mysql_attr_errmode.phpt:30
-    - ext/pdo_mysql/tests/pdo_mysql_attr_errmode.phpt:35
-    - ext/pdo_mysql/tests/pdo_mysql_attr_statement_class.phpt:64
-    - +38 more
+    - +43 more
 
 class_message:bd3e43812eb6aff89978af280f0ef426bea48c10
   count: 3
@@ -307,15 +307,18 @@ message_only:10f714c5688b050597b07e6002cfdfa46678205f
     - ext/reflection/tests/ReflectionProperty_getMangledName_hooks.phpt:35
 
 message_only:11953960811bf83c1eb14f48a27257319c381c67
-  count: 4
+  count: 7
   representative: Zend/tests/closures/closure_031.phpt:14
   family: message_only
   safety: canonicalizable
   first statement: echo "Error: {$ex->getMessage()}\n";
   duplicates:
-    - ext/com_dotnet/tests/bug77177.phpt:18
-    - ext/com_dotnet/tests/bug77177.phpt:27
-    - ext/com_dotnet/tests/bug77177.phpt:36
+    - ext/com_dotnet/tests/bug77177.phpt:13
+    - ext/com_dotnet/tests/bug77177.phpt:22
+    - ext/com_dotnet/tests/bug77177.phpt:31
+    - ext/com_dotnet/tests/bug77177_dotnet.phpt:15
+    - ext/com_dotnet/tests/bug77177_dotnet.phpt:21
+    - ext/com_dotnet/tests/bug77177_dotnet.phpt:27
 
 message_only:120041112a223f231bd28ef4a7369e7c9f3802f8
   count: 14
@@ -358,7 +361,7 @@ message_only:19bbe441279109a3f55eb81a5176711ff20b5ee1
     - ext/reflection/tests/004.phpt:35
 
 message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
-  count: 170
+  count: 172
   representative: Zend/tests/ErrorException_construct.phpt:7
   family: message_only
   safety: canonicalizable
@@ -384,10 +387,10 @@ message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
     - Zend/tests/bug70124.phpt:26
     - Zend/tests/bug70124.phpt:32
     - Zend/tests/bug70124.phpt:38
-    - +149 more
+    - +151 more
 
 message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-  count: 2411
+  count: 2447
   representative: Zend/tests/array_literal_next_element_error.phpt:11
   family: message_only
   safety: canonicalizable
@@ -413,7 +416,7 @@ message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
     - Zend/tests/assign_dim_obj_null_return.phpt:19
     - Zend/tests/assign_dim_obj_null_return.phpt:25
     - Zend/tests/assign_dim_obj_null_return.phpt:31
-    - +2390 more
+    - +2426 more
 
 message_only:27637fc75be743007158976bf0ffd986659a3593
   count: 14
@@ -435,6 +438,16 @@ message_only:27637fc75be743007158976bf0ffd986659a3593
     - ext/standard/tests/mail/gh13415.phpt:18
     - ext/standard/tests/mail/gh13415.phpt:25
     - ext/standard/tests/mail/gh13415.phpt:32
+
+message_only:295f517176a99a518bc4e0c2ff11e3cae0ead129
+  count: 3
+  representative: ext/soap/tests/bugs/protocol_relative_redirect.phpt:45
+  family: message_only
+  safety: descriptive_context
+  first statement: echo "SoapFault: " . $e->getMessage() . "\n";
+  duplicates:
+    - ext/soap/tests/bugs/relative_redirect.phpt:45
+    - ext/soap/tests/bugs/relative_redirect_path.phpt:45
 
 message_only:29fa7b2a12d1760180943a1de3da2fa22c4d2155
   count: 2
@@ -497,7 +510,7 @@ message_only:3a0bf5fd9ad4420e25368367a888f407a39dd7a7
     - ext/mysqli/tests/mysqli_connect_error.phpt:19
 
 message_only:3fd28b152899602236338841b4e8420dd396ce58
-  count: 8
+  count: 11
   representative: Zend/tests/fibers/fiber-error-construct.phpt:9
   family: message_only
   safety: canonicalizable
@@ -510,6 +523,9 @@ message_only:3fd28b152899602236338841b4e8420dd396ce58
     - ext/date/tests/DatePeriod_wrong_recurrence_on_constructor.phpt:8
     - ext/date/tests/DatePeriod_wrong_recurrence_on_constructor.phpt:14
     - ext/mysqli/tests/mysqli_stmt_get_result.phpt:167
+    - ext/shmop/tests/gh9945.phpt:15
+    - ext/standard/tests/math/gh17384.phpt:15
+    - ext/sysvshm/tests/gh9945.phpt:15
 
 message_only:449016f7139085a1fec735374d0851189261a3f5
   count: 3
@@ -711,6 +727,15 @@ message_only:6ac8e2e2b0f7cd785af81086faa8d32ab1d57e7e
     - Zend/tests/type_declarations/typed_properties_112.phpt:14
     - +139 more
 
+message_only:6de66e0373e055c9515f07726aef41398b298f1c
+  count: 2
+  representative: ext/mysqli/tests/mysqli_execute_query_leak.phpt:25
+  family: message_only
+  safety: descriptive_context
+  first statement: echo '[002] '.$e->getMessage()."\n";
+  duplicates:
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:44
+
 message_only:71023fc0045c94e40eafd6fca373a2159314e496
   count: 4
   representative: Zend/tests/attributes/005_objects.phpt:34
@@ -860,7 +885,7 @@ message_only:8b9e096afe604f866ce70e04dc426f8f8da1622a
     - Zend/tests/type_declarations/types_in_ast.phpt:16
 
 message_only:8caf988c4ab167235f10422b331605565cc98857
-  count: 194
+  count: 199
   representative: Zend/tests/add_002.phpt:14
   family: message_only
   safety: canonicalizable
@@ -886,7 +911,7 @@ message_only:8caf988c4ab167235f10422b331605565cc98857
     - Zend/tests/exceptions/bug26698.phpt:55
     - Zend/tests/exceptions/bug31102.phpt:34
     - Zend/tests/exceptions/bug47771.phpt:26
-    - +173 more
+    - +178 more
 
 message_only:959363ad7d6d9fb7b60cf5504e5daf3043116073
   count: 2
@@ -914,6 +939,15 @@ message_only:9fa9fe94d0a5f54d3aa6cd05060a655ee7eedf5d
     - ext/standard/tests/math/clamp.phpt:32
     - ext/zend_test/tests/zend_forbid_dynamic_call.phpt:16
     - ext/zend_test/tests/zend_forbid_dynamic_call.phpt:23
+
+message_only:b297e8eb487c0ba86e367beee6191d1abeacffb7
+  count: 2
+  representative: ext/intl/tests/calendar_uninitialized_argument_position.phpt:15
+  family: message_only
+  safety: unsupported_expression
+  first statement: echo $method, ': ', $e->getMessage(), PHP_EOL;
+  duplicates:
+    - ext/intl/tests/calendar_uninitialized_argument_position.phpt:23
 
 message_only:b6d3bac07898ac9852baeb0863131368e15af781
   count: 18
@@ -1061,7 +1095,7 @@ message_only:d3d598729db7aa680ac063c02a7910d5c33befbe
     - ext/spl/tests/multiple_iterator_001.phpt:100
 
 message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  count: 1754
+  count: 1761
   representative: Zend/tests/access_modifiers/access_modifiers_008.phpt:36
   family: message_only
   safety: canonicalizable
@@ -1087,7 +1121,16 @@ message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
     - Zend/tests/bug72038.phpt:16
     - Zend/tests/bug80972.phpt:32
     - Zend/tests/dynamic_call/bug48770_2.phpt:29
-    - +1733 more
+    - +1740 more
+
+message_only:d89f190793adfdc1bd509d43aff7b987e72df3ff
+  count: 2
+  representative: ext/mysqli/tests/mysqli_execute_query_leak.phpt:19
+  family: message_only
+  safety: descriptive_context
+  first statement: echo '[001] '.$e->getMessage()."\n";
+  duplicates:
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:35
 
 message_only:e4d48fff0b563ce1439511df87e5a014e8dc4766
   count: 3

@@ -1,2 +1,24 @@
 # Fixture generation failures
 
+- Zend_tests_assert_expect_015: rewrite failed verification: original test did not pass (FAIL AST pretty-printer [/Users/Nick/Code/nicksdot/php__internals-cs/tests/Fixtures/exception_output_styles/Zend_tests_assert_expect_015/old.phpt])
+- Zend_tests_type_declarations_typed_properties_076: expected handled rewrite, but fixer reported no change
+- ext_bcmath_tests_bcdiv_error1: rewrite failed verification: original test did not pass (SKIP: Required extension missing: bcmath)
+- ext_calendar_tests_cal_days_in_month_error1: rewrite failed verification: original test did not pass (SKIP: Required extension missing: calendar)
+- ext_dom_tests_DOMElement_className: rewrite failed verification: original test did not pass (SKIP: Required extension missing: dom)
+- ext_dom_tests_DOMNode_removeChild_error1: rewrite failed verification: original test did not pass (SKIP: Required extension missing: dom)
+- ext_dom_tests_modern_xml_XMLDocument_xpath: expected handled rewrite, but fixer reported no change
+- ext_dom_tests_registerNodeClass_abstract_class: rewrite failed verification: original test did not pass (SKIP: Required extension missing: dom)
+- ext_hash_tests_hash_serialize_003: expected handled rewrite, but fixer reported no change
+- ext_intl_tests_calendar_toDateTime_error: rewrite failed verification: original test did not pass (SKIP: Required extension missing: intl)
+- ext_intl_tests_listformatter_listformatter_clone: rewrite failed verification: original test did not pass (SKIP: intl extension not available)
+- ext_intl_tests_listformatter_listformatter_error: rewrite failed verification: original test did not pass (SKIP: Required extension missing: intl)
+- ext_ldap_tests_gh21262: rewrite failed verification: original test did not pass (SKIP: Required extension missing: ldap)
+- ext_reflection_tests_ReflectionProperty_getMangledName_inheritance: expected handled rewrite, but fixer reported no change
+- ext_reflection_tests_ReflectionProperty_getMangledName_instance: expected handled rewrite, but fixer reported no change
+- ext_reflection_tests_internal_parameter_default_value_check_all: expected handled rewrite, but fixer reported no change
+- ext_spl_tests_SplHeap_serialize_corrupted: expected handled rewrite, but fixer reported no change
+- ext_spl_tests_SplHeap_serialize_error_handling: expected handled rewrite, but fixer reported no change
+- ext_spl_tests_heap_corruption: expected handled rewrite, but fixer reported no change
+- ext_sqlite3_tests_bug68760: rewrite failed verification: original test did not pass (SKIP: Required extension missing: sqlite3)
+- ext_sqlite3_tests_sqlite3_40_setauthorizer: rewrite failed verification: original test did not pass (SKIP: Required extension missing: sqlite3)
+- tests_classes_type_hinting_004: expected handled rewrite, but fixer reported no change

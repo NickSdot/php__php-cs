@@ -76,6 +76,44 @@ Zend/tests/enum/backed-mismatch.phpt:13
     15 
     16 try {
 
+ext/hash/tests/hash_equals.phpt:12
+  state: handled
+  fixture: ext_hash_tests_hash_equals
+  fingerprint: class_message:be73122ca596a930f5eedf6ca30333ce67d96d35
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_class(get_class) literal:trash exception_message(e) newline
+  echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";
+
+     9             var_dump($test());
+    10         }
+    11         catch (\Error $e) {
+>   12             echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";
+    13         }
+    14     }
+    15 }
+
+Zend/tests/arg_unpack/string_keys.phpt:13
+  state: handled
+  fixture: Zend_tests_arg_unpack_string_keys
+  fingerprint: message_only:01138cdaa7a1fad6e81ed9e25ff30615f4b902b8
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(ex)
+  var_dump($ex->getMessage());
+
+    10 try {
+    11     var_dump(...new ArrayIterator([1, 2, "foo" => 3, 4]));
+    12 } catch (Error $ex) {
+>   13     var_dump($ex->getMessage());
+    14 }
+    15 
+    16 ?>
+
 ext/spl/tests/SplFixedArray__construct_param_array.phpt:11
   state: handled
   fixture: ext_spl_tests_SplFixedArray__construct_param_array
@@ -113,6 +151,25 @@ Zend/tests/gh19306.phpt:29
     30 }
     31 echo "Destroying fiber\n";
     32 $fiber = null;
+
+ext/reflection/tests/ReflectionMethod_invoke_basic.phpt:79
+  state: handled
+  fixture: ext_reflection_tests_ReflectionMethod_invoke_basic
+  fingerprint: message_only:0718c7189fac5f818672e16cd5060842dea08649
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(exc)
+  var_dump($exc->getMessage());
+
+    76 try {
+    77     var_dump($methodThatThrows->invoke($testClassInstance));
+    78 } catch (Exception $exc) {
+>   79     var_dump($exc->getMessage());
+    80 }
+    81 
+    82 ?>
 
 ext/reflection/tests/ReflectionExtension_constructor_error.phpt:11
   state: handled
@@ -189,6 +246,25 @@ Zend/tests/closures/closure_031.phpt:14
     15 }
     16 ?>
     17 
+
+Zend/tests/bug53432.phpt:30
+  state: handled
+  fixture: Zend_tests_bug53432
+  fingerprint: message_only:120041112a223f231bd28ef4a7369e7c9f3802f8
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
+  echo "Error: {$e->getMessage()}\n";
+
+    27 try {
+    28     var_dump($str[] = 'a');
+    29 } catch (Error $e) {
+>   30     echo "Error: {$e->getMessage()}\n";
+    31 }
+    32 var_dump($str);
+    33 
 
 ext/spl/tests/iterator_047.phpt:51
   state: handled
@@ -285,6 +361,25 @@ ext/date/tests/bug72963.phpt:19
     21 
     22 	try {
 
+ext/uri/tests/053.phpt:37
+  state: handled
+  fixture: ext_uri_tests_053
+  fingerprint: message_only:34c3f620002fd034fd11534efa8229867b9cf8ae
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(r)
+  var_dump($r->getMessage());
+
+    34     echo $e->getMessage() . "\n";
+    35 }
+    36 
+>   37 var_dump($r->getMessage());
+    38 var_dump($r->errors);
+    39 var_dump($r->getCode());
+    40 var_dump($r->getPrevious()::class);
+
 Zend/tests/fibers/fiber-error-construct.phpt:9
   state: handled
   fixture: Zend_tests_fibers_fiber_error_construct
@@ -341,6 +436,44 @@ ext/ldap/tests/gh21262.phpt:35
     36 }
     37 
     38 // ldap_mod_del() should accept empty arrays (delete attribute)
+
+ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:51
+  state: handled
+  fixture: ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags
+  fingerprint: message_only:50f0e2f39668185312aa2384dd53295626a8faa2
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:7754482dbd20276bee4333448ca5653c88369b8f exception_message(e) newline
+  echo "Valid flags rejected: " . $e->getMessage() . "\n";
+
+    48     $queue->__unserialize($data);
+    49     echo "Valid flags accepted\n";
+    50 } catch (Exception $e) {
+>   51     echo "Valid flags rejected: " . $e->getMessage() . "\n";
+    52 }
+    53 
+    54 try {
+
+Zend/tests/type_declarations/dnf_types/gh9516.phpt:28
+  state: handled
+  fixture: Zend_tests_type_declarations_dnf_types_gh9516
+  fingerprint: message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(throwable) newline
+  echo $throwable->getMessage(), \PHP_EOL;
+
+    25     $t->method1(new A_);
+    26     echo 'Fail', \PHP_EOL;
+    27 } catch (\Throwable $throwable) {
+>   28     echo $throwable->getMessage(), \PHP_EOL;
+    29 }
+    30 
+    31 try {
 
 ext/hash/tests/hash_serialize_003.phpt:240
   state: handled
@@ -494,24 +627,62 @@ ext/date/tests/bug51819.phpt:26
     28     }
     29 }
 
-ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:64
+ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:72
   state: handled
-  fixture: ext_reflection_tests_ReflectionProperty_getMangledName_dynamic
-  fingerprint: message_only:6c6da67cc987f3bd63ad897aaab9cf8a3bcb4729
+  fixture: ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags
+  fingerprint: message_only:6e18e6e468f86ccd286d214ffd5b31f9c354849f
   family: message_only
   safety: descriptive_context
-  expected: EXPECTF
+  expected: EXPECT
   reason: contains descriptive context that must not be dropped
-  parts: literal:d470504916d3145bc79d1746324ab5eafb34883e exception_message(e) newline
-  echo "Expected exception for class-based reflection: " . $e->getMessage() . "\n";
+  parts: literal:fad50fdc052c54d8b60960c5ee88e47af150621c exception_message(e) newline
+  echo "Flags with extra bits should be masked: " . $e->getMessage() . "\n";
 
-    61     $reflection = new ReflectionProperty('TestClass', 'dynamic');
-    62     echo "This should not be reached\n";
-    63 } catch (ReflectionException $e) {
->   64     echo "Expected exception for class-based reflection: " . $e->getMessage() . "\n";
-    65 }
-    66 
-    67 try {
+    69         echo "Flags not properly masked, got: " . $queue->getExtractFlags() . "\n";
+    70     }
+    71 } catch (Exception $e) {
+>   72     echo "Flags with extra bits should be masked: " . $e->getMessage() . "\n";
+    73 }
+    74 
+    75 ?>
+
+Zend/tests/type_declarations/typed_properties_038.phpt:13
+  state: handled
+  fixture: Zend_tests_type_declarations_typed_properties_038
+  fingerprint: message_only:7bd1d273514f8013a89b1015b3159f5f3d669563
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(t)
+  var_dump($t->getMessage());
+
+    10 try {
+    11     $foo->bar++;
+    12 } catch(TypeError $t) {
+>   13     var_dump($t->getMessage());
+    14 }
+    15 
+    16 var_dump($foo);
+
+ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:35
+  state: handled
+  fixture: ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags
+  fingerprint: message_only:7f0d2c022726916345cf1b9373bf0105ab11643e
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:49dde3f7330a75a68651f84b4e969f5e66114353 exception_message(e) newline
+  echo "Exception thrown for zero flags: " . $e->getMessage() . "\n";
+
+    32     $queue->__unserialize($data);
+    33     echo "Should have thrown exception for zero flags\n";
+    34 } catch (Exception $e) {
+>   35     echo "Exception thrown for zero flags: " . $e->getMessage() . "\n";
+    36 }
+    37 
+    38 try {
 
 ext/reflection/tests/internal_parameter_default_value/check_all.phpt:12
   state: handled
@@ -607,6 +778,25 @@ Zend/tests/arrow_functions/007.phpt:11
     12 }
     13 
     14 try {
+
+Zend/tests/add_002.phpt:14
+  state: handled
+  fixture: Zend_tests_add_002
+  fingerprint: message_only:8caf988c4ab167235f10422b331605565cc98857
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
+  echo "\nException: " . $e->getMessage() . "\n";
+
+    11 try {
+    12     var_dump($a + $o);
+    13 } catch (Error $e) {
+>   14     echo "\nException: " . $e->getMessage() . "\n";
+    15 }
+    16 
+    17 $c = $a + $o;
 
 ext/spl/tests/SplHeap_serialize_error_handling.phpt:63
   state: handled
@@ -855,25 +1045,6 @@ ext/spl/tests/SplHeap_serialize_corrupted.phpt:59
     61 
     62 ?>
 
-ext/spl/tests/bug73629.phpt:14
-  state: handled
-  fixture: ext_spl_tests_bug73629
-  fingerprint: message_only:ce21b70d37e83e5f0615d484b44af07c0de90deb
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:c0d8931290bb8cb1b3d11391c78e765c463a1ea4 exception_message(e) newline
-  echo 'expected exception: ' . $e->getMessage() . "\n";
-
-    11 try {
-    12     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
-    13 } catch (Exception $e) {
->   14     echo 'expected exception: ' . $e->getMessage() . "\n";
-    15 }
-    16 ?>
-    17 
-
 tests/classes/array_access_013.phpt:22
   state: handled
   fixture: tests_classes_array_access_013
@@ -911,6 +1082,25 @@ Zend/tests/assert/bug71922.phpt:14
     15 }
     16 
     17 ?>
+
+ext/spl/tests/multiple_iterator_001.phpt:74
+  state: handled
+  fixture: ext_spl_tests_multiple_iterator_001
+  fingerprint: message_only:d3d598729db7aa680ac063c02a7910d5c33befbe
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:b2eb1df5bedac1720ad1f4aae1edbc867274dbc6 exception_message(e) newline
+  echo "InvalidArgumentException thrown: " . $e->getMessage() . "\n";
+
+    71 try {
+    72     $m->current();
+    73 } catch(InvalidArgumentException $e) {
+>   74     echo "InvalidArgumentException thrown: " . $e->getMessage() . "\n";
+    75 }
+    76 
+    77 echo "-- Flags |= MultipleIterator::MIT_KEYS_ASSOC --\n";
 
 ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt:18
   state: handled
@@ -968,6 +1158,44 @@ Zend/tests/access_modifiers/access_modifiers_008.phpt:36
     37         }
     38         echo B1::ma() . "\n"; // protected method defined also in A
     39         try {
+
+ext/spl/tests/multiple_iterator_001.phpt:92
+  state: handled
+  fixture: ext_spl_tests_multiple_iterator_001
+  fingerprint: message_only:d91662869ffd1b8efeb50033bb515af4b33b7ade
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:8d4dc6c469a8debe561984607e8e3ceb9e43375d exception_message(e) newline
+  echo "TypeError thrown: " . $e->getMessage() . "\n";
+
+    89 try {
+    90     $m->attachIterator($iter3, new stdClass());
+    91 } catch(TypeError $e) {
+>   92     echo "TypeError thrown: " . $e->getMessage() . "\n";
+    93 }
+    94 
+    95 echo "-- Associate with duplicate value --\n";
+
+Zend/tests/return_types/028.phpt:15
+  state: handled
+  fixture: Zend_tests_return_types_028
+  fingerprint: message_only:da586a443f59179d6bae35c3cada1c62186c9024
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) literal:in_separator exception_file(e) literal:on_line_separator exception_line(e)
+  echo $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine();
+
+    12 try {
+    13     foo();
+    14 } catch (Error $e) {
+>   15     echo $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine();
+    16 }
+    17 
+    18 ?>
 
 ext/standard/tests/array/bug42177.phpt:24
   state: handled
@@ -1082,3 +1310,22 @@ ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:26
     27     }
     28 }
     29 
+
+tests/lang/foreachLoopIteratorAggregate.002.phpt:41
+  state: handled
+  fixture: tests_lang_foreachLoopIteratorAggregate_002
+  fingerprint: message_only:fed0ec03c71480ae0b17c9f381d9abe6ab4c768e
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_line(e) literal:trash exception_message(e) newline
+  echo $e->getLine() . ": " . $e->getMessage() ."\n";
+
+    38             echo "$k => $v\n";
+    39         }
+    40     } catch (Exception $e) {
+>   41             echo $e->getLine() . ": " . $e->getMessage() ."\n";
+    42     }
+    43 }
+    44 

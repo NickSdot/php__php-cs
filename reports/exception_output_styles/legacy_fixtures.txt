@@ -43,6 +43,7 @@ These are not deleted automatically.
 - ext_spl_tests_ArrayObject_arrayObject_exchangeArray_basic3
 - ext_spl_tests_SplFileObject_fileobject_003
 - ext_spl_tests_SplObjectStorage_SplObjectStorage_unset
+- ext_spl_tests_bug73629
 - ext_spl_tests_spl_pq_top_error_corrupt
 - ext_sqlite3_tests_bug68760
 - ext_sqlite3_tests_sqlite3_40_setauthorizer

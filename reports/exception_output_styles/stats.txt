@@ -1,39 +1,39 @@
 # Exception output fixture generation
 
-Scanned PHPT files: 21778
-Candidate files: 3286
-Candidate windows: 6930
-Candidate flavors: 136
-Duplicate candidate windows: 6794
-Duplicate flavor groups: 68
+Scanned PHPT files: 22048
+Candidate files: 3357
+Candidate windows: 7032
+Candidate flavors: 142
+Duplicate candidate windows: 6890
+Duplicate flavor groups: 72
 
 # Selected source-file fixtures
-Selected fixture source files: 113
-Avoided extra per-flavor fixture dirs: 23
-Handled fixture files: 50
-Queued old-only fixture files: 63
+Selected fixture source files: 118
+Avoided extra per-flavor fixture dirs: 24
+Handled fixture files: 61
+Queued old-only fixture files: 57
 Queued stale fixture files: 0
 Missing fixture files: 0
 Invalid fixture files: 0
-Remaining fixture queue: 63
+Remaining fixture queue: 57
 
 # Flavor coverage queue
-Flavors covered by handled fixtures: 57
-Flavors covered by old-only fixtures: 79
+Flavors covered by handled fixtures: 70
+Flavors covered by old-only fixtures: 72
 Flavors covered by stale fixtures: 0
 Missing flavor fixtures: 0
 Invalid flavor fixtures: 0
-Remaining flavor queue: 79
+Remaining flavor queue: 72
 
 # Fixture directory shape
-Current source-file fixture dirs: 113
-Extra fixture dirs outside source-file representatives: 47
+Current source-file fixture dirs: 118
+Extra fixture dirs outside source-file representatives: 48
 Legacy suffixed fixture dirs: 0
 
 # Last write run
 Created old fixtures: 0
-Verified fixture files: 77
-Updated new/diff pairs: 0
+Verified fixture files: 99
+Updated new/diff pairs: 1
 Deleted stale new/diff pairs: 0
-Old-only fixture files: 83
-Failures: 0
+Old-only fixture files: 67
+Failures: 22

@@ -19357,6 +19357,40 @@ Zend/tests/type_coercion/float_to_int/union_int_string_type_arg_promote_exceptio
     17 
     18 ?>
 
+Zend/tests/type_coercion/gh22112.phpt:23
+  fingerprint: message_only:f1eb41718480b7a65f05449075c18f2372d8ffbd
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:f85593a9e1e8eb9ae3a5ad8f277af222092e9e68 exception_message(e) newline
+  echo "bool: ", $e->getMessage(), "\n";
+
+    20 try {
+    21     take_bool($nan);
+    22 } catch (Exception $e) {
+>   23     echo "bool: ", $e->getMessage(), "\n";
+    24 }
+    25 
+    26 try {
+
+Zend/tests/type_coercion/gh22112.phpt:29
+  fingerprint: message_only:f12937244b0f4437880f1760fd6d75a81ab2f8aa
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:20a50f3c44c97fd2562b76f39ef221e2104b8fe8 exception_message(e) newline
+  echo "string: ", $e->getMessage(), "\n";
+
+    26 try {
+    27     take_string($nan);
+    28 } catch (Exception $e) {
+>   29     echo "string: ", $e->getMessage(), "\n";
+    30 }
+    31 
+    32 ?>
+
 Zend/tests/type_coercion/settype/settype_resource.phpt:36
   fingerprint: message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
   family: message_only
@@ -24389,6 +24423,57 @@ ext/bcmath/tests/bcround_error.phpt:16
     18 ?>
     19 
 
+ext/bcmath/tests/bcround_precision_bounds.phpt:12
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . \PHP_EOL;
+
+     9 try {
+    10     bcround('1', PHP_INT_MAX);
+    11 } catch (\ValueError $e) {
+>   12     echo $e->getMessage() . \PHP_EOL;
+    13 }
+    14 try {
+    15     (new BcMath\Number('1'))->round(PHP_INT_MAX);
+
+ext/bcmath/tests/bcround_precision_bounds.phpt:17
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . \PHP_EOL;
+
+    14 try {
+    15     (new BcMath\Number('1'))->round(PHP_INT_MAX);
+    16 } catch (\ValueError $e) {
+>   17     echo $e->getMessage() . \PHP_EOL;
+    18 }
+    19 try {
+    20     (new BcMath\Number('1'))->round(2147483648); // INT_MAX + 1
+
+ext/bcmath/tests/bcround_precision_bounds.phpt:22
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . \PHP_EOL;
+
+    19 try {
+    20     (new BcMath\Number('1'))->round(2147483648); // INT_MAX + 1
+    21 } catch (\ValueError $e) {
+>   22     echo $e->getMessage() . \PHP_EOL;
+    23 }
+    24 ?>
+    25 
+
 ext/bcmath/tests/bcscale_variation001.phpt:13
   fingerprint: message_only:187757296cf19ee092fc32ecb19daafad015909e
   family: message_only
@@ -26293,6 +26378,23 @@ ext/bz2/tests/bzcompress_programming_errors.phpt:31
     33 
     34 ?>
 
+ext/bz2/tests/bzdecompress_input_too_large.phpt:20
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    17     $data = str_repeat("A", 4294967296);
+    18     bzdecompress($data);
+    19 } catch (ValueError $e) {
+>   20     echo $e->getMessage(), "\n";
+    21 }
+    22 ?>
+    23 
+
 ext/bz2/tests/bzerr_functions_on_invalid_stream.phpt:11
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
   family: message_only
@@ -26905,56 +27007,107 @@ ext/com_dotnet/tests/bug72498.phpt:13
     15 ?>
     16 
 
-ext/com_dotnet/tests/bug77177.phpt:18
+ext/com_dotnet/tests/bug77177.phpt:13
   fingerprint: message_only:11953960811bf83c1eb14f48a27257319c381c67
   family: message_only
   safety: canonicalizable
-  expected: EXPECTF
+  expected: EXPECT
   reason: safe candidate for a canonical exception-output family
   parts: literal:trash exception_message(ex) newline
   echo "Exception: {$ex->getMessage()}\n";
 
-    15     try {
-    16         serialize($object);
-    17     } catch (Exception $ex) {
->   18         echo "Exception: {$ex->getMessage()}\n";
-    19     }
-    20 }
-    21 
+    10     try {
+    11         serialize($object);
+    12     } catch (Exception $ex) {
+>   13         echo "Exception: {$ex->getMessage()}\n";
+    14     }
+    15 }
+    16 
 
-ext/com_dotnet/tests/bug77177.phpt:27
+ext/com_dotnet/tests/bug77177.phpt:22
   fingerprint: message_only:11953960811bf83c1eb14f48a27257319c381c67
   family: message_only
   safety: canonicalizable
-  expected: EXPECTF
+  expected: EXPECT
   reason: safe candidate for a canonical exception-output family
   parts: literal:trash exception_message(ex) newline
   echo "Exception: {$ex->getMessage()}\n";
 
-    24     try {
-    25         unserialize($string);
-    26     } catch (Exception $ex) {
->   27         echo "Exception: {$ex->getMessage()}\n";
-    28     }
-    29 }
+    19     try {
+    20         unserialize($string);
+    21     } catch (Exception $ex) {
+>   22         echo "Exception: {$ex->getMessage()}\n";
+    23     }
+    24 }
+    25 
+
+ext/com_dotnet/tests/bug77177.phpt:31
+  fingerprint: message_only:11953960811bf83c1eb14f48a27257319c381c67
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(ex) newline
+  echo "Exception: {$ex->getMessage()}\n";
+
+    28     try {
+    29         unserialize($string);
+    30     } catch (Exception $ex) {
+>   31         echo "Exception: {$ex->getMessage()}\n";
+    32     }
+    33 }
+    34 ?>
+
+ext/com_dotnet/tests/bug77177_dotnet.phpt:15
+  fingerprint: message_only:11953960811bf83c1eb14f48a27257319c381c67
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(ex) newline
+  echo "Exception: {$ex->getMessage()}\n";
+
+    12 try {
+    13     serialize($dotnet);
+    14 } catch (Exception $ex) {
+>   15     echo "Exception: {$ex->getMessage()}\n";
+    16 }
+    17 
+    18 try {
+
+ext/com_dotnet/tests/bug77177_dotnet.phpt:21
+  fingerprint: message_only:11953960811bf83c1eb14f48a27257319c381c67
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(ex) newline
+  echo "Exception: {$ex->getMessage()}\n";
+
+    18 try {
+    19     unserialize('C:6:"dotnet":0:{}');
+    20 } catch (Exception $ex) {
+>   21     echo "Exception: {$ex->getMessage()}\n";
+    22 }
+    23 
+    24 try {
+
+ext/com_dotnet/tests/bug77177_dotnet.phpt:27
+  fingerprint: message_only:11953960811bf83c1eb14f48a27257319c381c67
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(ex) newline
+  echo "Exception: {$ex->getMessage()}\n";
+
+    24 try {
+    25     unserialize('O:6:"dotnet":0:{}');
+    26 } catch (Exception $ex) {
+>   27     echo "Exception: {$ex->getMessage()}\n";
+    28 }
+    29 ?>
     30 
-
-ext/com_dotnet/tests/bug77177.phpt:36
-  fingerprint: message_only:11953960811bf83c1eb14f48a27257319c381c67
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: literal:trash exception_message(ex) newline
-  echo "Exception: {$ex->getMessage()}\n";
-
-    33     try {
-    34         unserialize($string);
-    35     } catch (Exception $ex) {
->   36         echo "Exception: {$ex->getMessage()}\n";
-    37     }
-    38 }
-    39 ?>
 
 ext/com_dotnet/tests/bug78694.phpt:11
   fingerprint: message_only:01138cdaa7a1fad6e81ed9e25ff30615f4b902b8
@@ -27007,6 +27160,108 @@ ext/com_dotnet/tests/lookup_error.phpt:11
     13 ?>
     14 
 
+ext/com_dotnet/tests/sa_proxy_errors.phpt:15
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
+
+    12 try {
+    13     var_dump(isset($v->hello));
+    14 } catch (Throwable $e) {
+>   15     echo $e::class, ': ', $e->getMessage(), "\n";
+    16 }
+    17 
+    18 try {
+
+ext/com_dotnet/tests/sa_proxy_errors.phpt:21
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
+
+    18 try {
+    19     var_dump($v->hello);
+    20 } catch (Throwable $e) {
+>   21     echo $e::class, ': ', $e->getMessage(), "\n";
+    22 }
+    23 
+    24 try {
+
+ext/com_dotnet/tests/sa_proxy_errors.phpt:28
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
+
+    25     $v->hello = 'blah';
+    26     var_dump($v);
+    27 } catch (Throwable $e) {
+>   28     echo $e::class, ': ', $e->getMessage(), "\n";
+    29 }
+    30 
+    31 try {
+
+ext/com_dotnet/tests/sa_proxy_errors.phpt:35
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
+
+    32     unset($v->hello);
+    33     var_dump($v);
+    34 } catch (Throwable $e) {
+>   35     echo $e::class, ': ', $e->getMessage(), "\n";
+    36 }
+    37 
+    38 try {
+
+ext/com_dotnet/tests/sa_proxy_errors.phpt:42
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
+
+    39     $c = clone $v;
+    40     var_dump($c);
+    41 } catch (Throwable $e) {
+>   42     echo $e::class, ': ', $e->getMessage(), "\n";
+    43 }
+    44 
+    45 try {
+
+ext/com_dotnet/tests/sa_proxy_errors.phpt:49
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
+
+    46     $s = serialize($v);
+    47     var_dump($s);
+    48 } catch (Throwable $e) {
+>   49     echo $e::class, ': ', $e->getMessage(), "\n";
+    50 }
+    51 ?>
+    52 
+
 ext/com_dotnet/tests/saproxy_instantiate.phpt:10
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
   family: message_only
@@ -27023,6 +27278,23 @@ ext/com_dotnet/tests/saproxy_instantiate.phpt:10
     11 }
     12 ?>
     13 
+
+ext/com_dotnet/tests/variant_no_clone.phpt:14
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
+
+    11 	$v2 = clone $v;
+    12     var_dump($v2);
+    13 } catch (Throwable $e) {
+>   14     echo $e::class, ': ', $e->getMessage(), "\n";
+    15 }
+    16 
+    17 ?>
 
 ext/com_dotnet/tests/variant_variation3.phpt:29
   fingerprint: message_only:85d337243459d4fbaea6c0d45768eb582d1664bf
@@ -27045,7 +27317,7 @@ ext/com_dotnet/tests/variants.phpt:37
   fingerprint: message_only:cae59b7e459ed5075e975b172a778431571ddab9
   family: message_only
   safety: canonicalizable
-  expected: EXPECT
+  expected: EXPECTF
   reason: safe candidate for a canonical exception-output family
   parts: literal:trash exception_message(e)
   echo "\texception " . $e->getMessage();
@@ -49632,6 +49904,40 @@ ext/intl/tests/calendar_toDateTime_error.phpt:39
     41 
     42 ?>
 
+ext/intl/tests/calendar_uninitialized_argument_position.phpt:15
+  fingerprint: message_only:b297e8eb487c0ba86e367beee6191d1abeacffb7
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECT
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_Variable) literal:trash exception_message(e) newline
+  echo $method, ': ', $e->getMessage(), PHP_EOL;
+
+    12     try {
+    13         $calendar->$method($uninitialized);
+    14     } catch (Error $e) {
+>   15         echo $method, ': ', $e->getMessage(), PHP_EOL;
+    16     }
+    17 }
+    18 
+
+ext/intl/tests/calendar_uninitialized_argument_position.phpt:23
+  fingerprint: message_only:b297e8eb487c0ba86e367beee6191d1abeacffb7
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECT
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_Variable) literal:trash exception_message(e) newline
+  echo $function, ': ', $e->getMessage(), PHP_EOL;
+
+    20     try {
+    21         $function($calendar, $uninitialized);
+    22     } catch (Error $e) {
+>   23         echo $function, ': ', $e->getMessage(), PHP_EOL;
+    24     }
+    25 }
+    26 
+
 ext/intl/tests/collator_create_errors.phpt:17
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
@@ -49648,6 +49954,23 @@ ext/intl/tests/collator_create_errors.phpt:17
     18     }
     19 
     20     $c = Collator::create($locale);
+
+ext/intl/tests/collator_double_ctor.phpt:12
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+     9 try {
+    10     $collator->__construct('en_US');
+    11 } catch (Error $e) {
+>   12     echo $e->getMessage(), "\n";
+    13 }
+    14 ?>
+    15 
 
 ext/intl/tests/dateformat___construct_bad_tz_cal.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
@@ -50990,6 +51313,23 @@ ext/intl/tests/listformatter/listformatter_clone.phpt:17
     19 ?>
     20 
 
+ext/intl/tests/listformatter/listformatter_double_ctor.phpt:12
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+     9 try {
+    10     $formatter->__construct('en_US');
+    11 } catch (Error $e) {
+>   12     echo $e->getMessage(), "\n";
+    13 }
+    14 ?>
+    15 
+
 ext/intl/tests/listformatter/listformatter_error.phpt:11
   fingerprint: message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
   family: message_only
@@ -51295,6 +51635,40 @@ ext/intl/tests/locale_is_right_to_left.phpt:14
     15 }
     16 ?>
     17 
+
+ext/intl/tests/locale_lookup_invalid_language_tag.phpt:19
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    16 try {
+    17     Locale::lookup([''], 'de-DE', false, 'en-US');
+    18 } catch (IntlException $e) {
+>   19     echo $e->getMessage(), PHP_EOL;
+    20 }
+    21 
+    22 try {
+
+ext/intl/tests/locale_lookup_invalid_language_tag.phpt:25
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    22 try {
+    23     locale_lookup([''], 'de-DE', false, 'en-US');
+    24 } catch (IntlException $e) {
+>   25     echo $e->getMessage(), PHP_EOL;
+    26 }
+    27 
+    28 ?>
 
 ext/intl/tests/locale_lookup_variant3.phpt:65
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
@@ -51876,6 +52250,23 @@ ext/intl/tests/spoofchecker_008.phpt:34
     36 
     37 ?>
 
+ext/intl/tests/spoofchecker_double_ctor.phpt:14
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    11 try {
+    12     $checker->__construct();
+    13 } catch (Error $e) {
+>   14     echo $e->getMessage(), "\n";
+    15 }
+    16 ?>
+    17 
+
 ext/intl/tests/spoofchecker_unknown_restriction_level.phpt:16
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
   family: message_only
@@ -52046,7 +52437,7 @@ ext/intl/tests/timezone_toDateTimeZone_error.phpt:15
     17 
     18 ?>
 
-ext/intl/tests/transliterator_transliterate_error.phpt:15
+ext/intl/tests/transliterator_transliterate_error.phpt:16
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -52055,15 +52446,15 @@ ext/intl/tests/transliterator_transliterate_error.phpt:15
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 
-    12 try {
-    13 	var_dump(transliterator_transliterate($tr, "str", 7));
-    14 } catch (Throwable $e) {
->   15 	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
-    16 }
-    17 
-    18 try {
+    13     try {
+    14         $callback();
+    15     } catch (Throwable $e) {
+>   16         echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+    17     }
+    18 }
+    19 
 
-ext/intl/tests/transliterator_transliterate_error.phpt:21
+ext/intl/tests/transliterator_transliterate_error.phpt:49
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -52072,30 +52463,13 @@ ext/intl/tests/transliterator_transliterate_error.phpt:21
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 
-    18 try {
-    19     transliterator_transliterate($tr, "str", 7, 6);
-    20 } catch (Throwable $e) {
->   21 	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
-    22 }
-    23 
-    24 //bad UTF-8
-
-ext/intl/tests/transliterator_transliterate_error.phpt:28
-  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
-  family: class_message
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_class(static_class) literal:trash exception_message(e) newline
-  echo $e::class, ': ', $e->getMessage(), PHP_EOL;
-
-    25 try {
-    26 	transliterator_transliterate($tr, "\x80\x03");
-    27 } catch (Throwable $e) {
->   28 	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
-    29 }
-    30 
-    31 ?>
+    46 try {
+    47 	transliterator_transliterate($tr, "\x80\x03");
+    48 } catch (Throwable $e) {
+>   49 	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+    50 }
+    51 
+    52 ?>
 
 ext/intl/tests/transliterator_transliterate_variant1.phpt:17
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
@@ -53746,6 +54120,23 @@ ext/ldap/tests/ldap_set_rebind_proc_trampoline.phpt:54
     56 
     57 ?>
 
+ext/ldap/tests/ldap_sort_control_missing_attr.phpt:23
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    20         ],
+    21     ]);
+    22 } catch (\ValueError $e) {
+>   23     echo $e->getMessage(), "\n";
+    24 }
+    25 
+    26 echo "ok\n";
+
 ext/libxml/tests/004.phpt:21
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
   family: message_only
@@ -53847,6 +54238,108 @@ ext/libxml/tests/libxml_set_external_entity_loader_error2.phpt:10
     11 }
     12 ?>
     13 
+
+ext/markup/tests/children.phpt:32
+  fingerprint: class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:trash exception_message(e) newline
+  echo get_class($e), ': ', $e->getMessage(), "\n";
+
+    29 try {
+    30     (new Element('div', [], [new stdClass]))->__toString();
+    31 } catch (\Throwable $e) {
+>   32     echo get_class($e), ': ', $e->getMessage(), "\n";
+    33 }
+    34 
+    35 // --- Traversable children: generators, Iterator, IteratorAggregate ---
+
+ext/markup/tests/children.phpt:64
+  fingerprint: class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:trash exception_message(e) newline
+  echo get_class($e), ': ', $e->getMessage(), "\n";
+
+    61 try {
+    62     (new Element('div', [], [boom()]))->__toString();
+    63 } catch (\Throwable $e) {
+>   64     echo get_class($e), ': ', $e->getMessage(), "\n";
+    65 }
+    66 
+    67 // --- nesting-depth bound ---
+
+ext/markup/tests/children.phpt:77
+  fingerprint: class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:trash exception_message(e) newline
+  echo get_class($e), ': ', $e->getMessage(), "\n";
+
+    74 try {
+    75     echo (new E('div', [], $kids))->__toString(), "\n";
+    76 } catch (\Throwable $e) {
+>   77     echo get_class($e), ': ', $e->getMessage(), "\n";
+    78 }
+    79 
+    80 // Normal (shallow) nesting still renders.
+
+ext/markup/tests/component_hardening.phpt:14
+  fingerprint: class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:trash exception_message(e) newline
+  echo get_class($e), ": ", $e->getMessage(), "\n";
+
+    11         $f();
+    12         echo "NO ERROR\n";
+    13     } catch (Error $e) {
+>   14         echo get_class($e), ": ", $e->getMessage(), "\n";
+    15     }
+    16 }
+    17 
+
+ext/markup/tests/component_hardening.phpt:78
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    75     try {
+    76         echo render_component('NeedsDep')->__toString();
+    77     } catch (\Error $e) {
+>   78         echo $e->getMessage(), "\n";
+    79     }
+    80 }
+    81 
+
+ext/markup/tests/component_hardening.phpt:90
+  fingerprint: class_message:bbb3272e13f500eb29d089288e86db3c29cb2d10
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:trash exception_message(e) newline
+  echo get_class($e), ": ", $e->getMessage(), "\n";
+
+    87 try {
+    88     echo render_component('Boom')->__toString();
+    89 } catch (\Throwable $e) {
+>   90     echo get_class($e), ": ", $e->getMessage(), "\n";
+    91 }
+    92 
+    93 echo "clean\n";
 
 ext/mbstring/tests/GHSA-74r9-qxhc-fx53.phpt:18
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
@@ -58930,6 +59423,40 @@ ext/mysqli/tests/mysqli_execute_query.phpt:82
     83 }
     84 
     85 print "done!";
+
+ext/mysqli/tests/mysqli_execute_query_leak.phpt:19
+  fingerprint: message_only:d89f190793adfdc1bd509d43aff7b987e72df3ff
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:31d9a18b7617c2ff22d2e743393454bac3a1baae exception_message(e) newline
+  echo '[001] '.$e->getMessage()."\n";
+
+    16 try {
+    17     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo', 42]);
+    18 } catch (ValueError $e) {
+>   19     echo '[001] '.$e->getMessage()."\n";
+    20 }
+    21 
+    22 try {
+
+ext/mysqli/tests/mysqli_execute_query_leak.phpt:25
+  fingerprint: message_only:6de66e0373e055c9515f07726aef41398b298f1c
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:a318ef2fa0ac8ab3e9aa605341e87eb9c88b1fe1 exception_message(e) newline
+  echo '[002] '.$e->getMessage()."\n";
+
+    22 try {
+    23     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo' => 42]);
+    24 } catch (ValueError $e) {
+>   25     echo '[002] '.$e->getMessage()."\n";
+    26 }
+    27 
+    28 print "done!";
 
 ext/mysqli/tests/mysqli_fetch_all_oo.phpt:77
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
@@ -64403,6 +64930,23 @@ ext/openssl/tests/openssl_pkcs12_export_to_file_basic.phpt:36
     38 ?>
     39 
 
+ext/openssl/tests/openssl_pkcs12_read_array_init.phpt:19
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), "\n";
+
+    16 try {
+    17     openssl_pkcs12_read($cert_store, $typed->foo, "csos");
+    18 } catch (TypeError $e) {
+>   19     echo $e::class, ": ", $e->getMessage(), "\n";
+    20 }
+    21 ?>
+    22 
+
 ext/openssl/tests/openssl_pkcs7_decrypt_error.phpt:21
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
   family: message_only
@@ -68601,6 +69145,40 @@ ext/pdo_pgsql/tests/copy_from.phpt:119
    120 }
    121 $db->rollback();
    122 
+
+ext/pdo_pgsql/tests/copy_from_array_non_stringable.phpt:22
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    19 try {
+    20     $db->pgsqlCopyFromArray('test_copy_non_stringable', [new stdClass()]);
+    21 } catch (\Error $e) {
+>   22     echo $e->getMessage(), PHP_EOL;
+    23 }
+    24 
+    25 var_dump($db->errorInfo()[0]);
+
+ext/pdo_pgsql/tests/copy_from_array_non_stringable.phpt:33
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    30 try {
+    31     $pgsql->copyFromArray('test_copy_non_stringable', [new stdClass()]);
+    32 } catch (\Error $e) {
+>   33     echo $e->getMessage(), PHP_EOL;
+    34 }
+    35 
+    36 var_dump($pgsql->errorInfo()[0]);
 
 ext/pdo_pgsql/tests/copy_from_iterator.phpt:48
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
@@ -72883,8 +73461,25 @@ ext/phar/tests/mkdir.phpt:25
     24 } catch (Exception $e) {
 >   25 echo $e->getMessage(),"\n";
     26 }
-    27 ?>
-    28 
+    27 try {
+    28 $a->addEmptyDir('/.phar');
+
+ext/phar/tests/mkdir.phpt:30
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(),"\n";
+
+    27 try {
+    28 $a->addEmptyDir('/.phar');
+    29 } catch (Exception $e) {
+>   30 echo $e->getMessage(),"\n";
+    31 }
+    32 $a->addEmptyDir('/.pharx');
+    33 var_dump(is_dir($pname . '/.pharx'));
 
 ext/phar/tests/mounteddir.phpt:65
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
@@ -74024,6 +74619,40 @@ ext/phar/tests/phar_extract3.phpt:30
     31 }
     32 
     33 ?>
+
+ext/phar/tests/phar_magic_dir_prefix.phpt:46
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    43 try {
+    44     $phar->addFromString('.phar/still-magic.txt', 'no');
+    45 } catch (Throwable $e) {
+>   46     echo $e->getMessage(), "\n";
+    47 }
+    48 
+    49 try {
+
+ext/phar/tests/phar_magic_dir_prefix.phpt:52
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    49 try {
+    50     $phar->addEmptyDir('/.phar');
+    51 } catch (Throwable $e) {
+>   52     echo $e->getMessage(), "\n";
+    53 }
+    54 ?>
+    55 
 
 ext/phar/tests/phar_metadata_write4.phpt:58
   fingerprint: message_only:5cd763039d53ef0dd1fc948910d3c36286e3347e
@@ -76591,6 +77220,23 @@ ext/phar/tests/zip/require_hash.phpt:38
     39 }
     40 
     41 ?>
+
+ext/phar/tests/zip/zip_extra_underflow.phpt:83
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    80     echo "Loaded corrupt ZIP\n";
+    81     echo $phar[$entry]->getMTime(), "\n";
+    82 } catch (Exception $e) {
+>   83     echo $e->getMessage(), "\n";
+    84 }
+    85 ?>
+    86 
 
 ext/phar/tests/zip/zlib.phpt:14
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
@@ -81149,12 +81795,12 @@ ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:23
     26 
 
 ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:64
-  fingerprint: message_only:6c6da67cc987f3bd63ad897aaab9cf8a3bcb4729
+  fingerprint: message_only:8caf988c4ab167235f10422b331605565cc98857
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:d470504916d3145bc79d1746324ab5eafb34883e exception_message(e) newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
   echo "Expected exception for class-based reflection: " . $e->getMessage() . "\n";
 
     61     $reflection = new ReflectionProperty('TestClass', 'dynamic');
@@ -83239,6 +83885,23 @@ ext/shmop/tests/002.phpt:67
     69 shmop_delete($shm_id);
     70 ?>
 
+ext/shmop/tests/gh9945.phpt:15
+  fingerprint: message_only:3fd28b152899602236338841b4e8420dd396ce58
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(exception) newline
+  echo $exception->getMessage(), "\n";
+
+    12 try {
+    13     shmop_open(0x100000000, '', 0644, 1);
+    14 } catch (ValueError $exception) {
+>   15     echo $exception->getMessage(), "\n";
+    16 }
+    17 ?>
+    18 
+
 ext/simplexml/tests/012.phpt:18
   fingerprint: message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
   family: message_only
@@ -83732,7 +84395,7 @@ ext/snmp/tests/gh21336.phpt:34
     36 ?>
     37 
 
-ext/snmp/tests/ipv6.phpt:28
+ext/snmp/tests/ipv6.phpt:30
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -83741,13 +84404,13 @@ ext/snmp/tests/ipv6.phpt:28
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    25 try {
-    26     var_dump(snmpget('[dead:beef::', $community, '.1.3.6.1.2.1.1.1.0'));
-    27 } catch (\ValueError $e) {
->   28     echo $e->getMessage() . \PHP_EOL;
-    29 }
-    30 ?>
-    31 
+    27 try {
+    28     var_dump(snmpget('[dead:beef::', $community, '.1.3.6.1.2.1.1.1.0'));
+    29 } catch (\ValueError $e) {
+>   30     echo $e->getMessage() . \PHP_EOL;
+    31 }
+    32 ?>
+    33 
 
 ext/snmp/tests/snmp-object-error.phpt:23
   fingerprint: message_only:8b426706a49a969f0148da2afee59513f61861f6
@@ -84242,7 +84905,7 @@ ext/snmp/tests/snmp-object-setSecurity_error.phpt:59
     61 
     62 var_dump($session->close());
 
-ext/snmp/tests/snmp2_get.phpt:25
+ext/snmp/tests/snmp2_get.phpt:27
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84251,15 +84914,15 @@ ext/snmp/tests/snmp2_get.phpt:25
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    22 try {
-    23     var_dump(snmp2_get($hostname, $community, array(), $timeout, $retries));
-    24 } catch (\ValueError $e) {
->   25     echo $e->getMessage() . \PHP_EOL;
-    26 }
-    27 
-    28 echo "Checking working\n";
+    24 try {
+    25     var_dump(snmp2_get($hostname, $community, array(), $timeout, $retries));
+    26 } catch (\ValueError $e) {
+>   27     echo $e->getMessage() . \PHP_EOL;
+    28 }
+    29 
+    30 echo "Checking working\n";
 
-ext/snmp/tests/snmp2_set.phpt:25
+ext/snmp/tests/snmp2_set.phpt:27
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84268,15 +84931,15 @@ ext/snmp/tests/snmp2_set.phpt:25
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    22     $z = snmp2_set($hostname, $communityWrite, 'SNMPv2-MIB::sysLocation.0', $timeout, $retries);
-    23     var_dump($z);
-    24 } catch (\ValueError $e) {
->   25     echo $e->getMessage() . \PHP_EOL;
-    26 }
-    27 
-    28 echo "No value (timeout instead), retries instead of timeout\n";
+    24     $z = snmp2_set($hostname, $communityWrite, 'SNMPv2-MIB::sysLocation.0', $timeout, $retries);
+    25     var_dump($z);
+    26 } catch (\ValueError $e) {
+>   27     echo $e->getMessage() . \PHP_EOL;
+    28 }
+    29 
+    30 echo "No value (timeout instead), retries instead of timeout\n";
 
-ext/snmp/tests/snmp2_set.phpt:95
+ext/snmp/tests/snmp2_set.phpt:97
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84285,15 +84948,15 @@ ext/snmp/tests/snmp2_set.phpt:95
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    92     $z = snmp2_set($hostname, $communityWrite, $oid1, array('s'), $newvalue1, $timeout, $retries);
-    93     var_dump($z);
-    94 } catch (\TypeError $e) {
->   95     echo $e->getMessage() . \PHP_EOL;
-    96 }
-    97 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-    98 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+    94     $z = snmp2_set($hostname, $communityWrite, $oid1, array('s'), $newvalue1, $timeout, $retries);
+    95     var_dump($z);
+    96 } catch (\TypeError $e) {
+>   97     echo $e->getMessage() . \PHP_EOL;
+    98 }
+    99 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   100 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmp2_set.phpt:105
+ext/snmp/tests/snmp2_set.phpt:107
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84302,15 +84965,15 @@ ext/snmp/tests/snmp2_set.phpt:105
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-   102     $z = snmp2_set($hostname, $communityWrite, $oid1, 's', array($newvalue1), $timeout, $retries);
-   103     var_dump($z);
-   104 } catch (\TypeError $e) {
->  105     echo $e->getMessage() . \PHP_EOL;
-   106 }
-   107 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   108 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+   104     $z = snmp2_set($hostname, $communityWrite, $oid1, 's', array($newvalue1), $timeout, $retries);
+   105     var_dump($z);
+   106 } catch (\TypeError $e) {
+>  107     echo $e->getMessage() . \PHP_EOL;
+   108 }
+   109 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   110 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmp2_set.phpt:115
+ext/snmp/tests/snmp2_set.phpt:117
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84319,15 +84982,15 @@ ext/snmp/tests/snmp2_set.phpt:115
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-   112     $z = snmp2_set($hostname, $communityWrite, array($oid1, $oid2), array('sw','s'), array($newvalue1, $newvalue2), $timeout, $retries);
-   113     var_dump($z);
-   114 } catch (\ValueError $e) {
->  115     echo $e->getMessage() . \PHP_EOL;
-   116 }
-   117 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   118 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+   114     $z = snmp2_set($hostname, $communityWrite, array($oid1, $oid2), array('sw','s'), array($newvalue1, $newvalue2), $timeout, $retries);
+   115     var_dump($z);
+   116 } catch (\ValueError $e) {
+>  117     echo $e->getMessage() . \PHP_EOL;
+   118 }
+   119 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   120 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmp2_set.phpt:125
+ext/snmp/tests/snmp2_set.phpt:127
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84336,15 +84999,15 @@ ext/snmp/tests/snmp2_set.phpt:125
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-   122     $z = snmp2_set($hostname, $communityWrite, array($oid1, $oid2), array('s','sb'), array($newvalue1, $newvalue2), $timeout, $retries);
-   123     var_dump($z);
-   124 } catch (\ValueError $e) {
->  125     echo $e->getMessage() . \PHP_EOL;
-   126 }
-   127 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   128 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+   124     $z = snmp2_set($hostname, $communityWrite, array($oid1, $oid2), array('s','sb'), array($newvalue1, $newvalue2), $timeout, $retries);
+   125     var_dump($z);
+   126 } catch (\ValueError $e) {
+>  127     echo $e->getMessage() . \PHP_EOL;
+   128 }
+   129 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   130 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmp2_set.phpt:135
+ext/snmp/tests/snmp2_set.phpt:137
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84353,15 +85016,15 @@ ext/snmp/tests/snmp2_set.phpt:135
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-   132     $z = snmp2_set($hostname, $communityWrite, array($oid1, $oid2), array('s'), array($newvalue1, $newvalue2), $timeout, $retries);
-   133     var_dump($z);
-   134 } catch (\ValueError $e) {
->  135     echo $e->getMessage() . \PHP_EOL;
-   136 }
-   137 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   138 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+   134     $z = snmp2_set($hostname, $communityWrite, array($oid1, $oid2), array('s'), array($newvalue1, $newvalue2), $timeout, $retries);
+   135     var_dump($z);
+   136 } catch (\ValueError $e) {
+>  137     echo $e->getMessage() . \PHP_EOL;
+   138 }
+   139 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   140 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmp2_set.phpt:145
+ext/snmp/tests/snmp2_set.phpt:147
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84370,15 +85033,15 @@ ext/snmp/tests/snmp2_set.phpt:145
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-   142     $z = snmp2_set($hostname, $communityWrite, array($oid1, $oid2), array('s', 's'), array($newvalue1), $timeout, $retries);
-   143     var_dump($z);
-   144 } catch (\ValueError $e) {
->  145     echo $e->getMessage() . \PHP_EOL;
-   146 }
-   147 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   148 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+   144     $z = snmp2_set($hostname, $communityWrite, array($oid1, $oid2), array('s', 's'), array($newvalue1), $timeout, $retries);
+   145     var_dump($z);
+   146 } catch (\ValueError $e) {
+>  147     echo $e->getMessage() . \PHP_EOL;
+   148 }
+   149 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   150 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmp3-error.phpt:25
+ext/snmp/tests/snmp3-error.phpt:27
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84387,15 +85050,15 @@ ext/snmp/tests/snmp3-error.phpt:25
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    22 try {
-    23     var_dump(snmp3_get($hostname, $community, '', '', '', '', '', '.1.3.6.1.2.1.1.1.0'));
-    24 } catch (\ValueError $e) {
->   25     echo $e->getMessage() . \PHP_EOL;
-    26 }
-    27 try {
-    28     var_dump(snmp3_get($hostname, $community, 'bugusPriv', '', '', '', '', '.1.3.6.1.2.1.1.1.0'));
+    24 try {
+    25     var_dump(snmp3_get($hostname, $community, '', '', '', '', '', '.1.3.6.1.2.1.1.1.0'));
+    26 } catch (\ValueError $e) {
+>   27     echo $e->getMessage() . \PHP_EOL;
+    28 }
+    29 try {
+    30     var_dump(snmp3_get($hostname, $community, 'bugusPriv', '', '', '', '', '.1.3.6.1.2.1.1.1.0'));
 
-ext/snmp/tests/snmp3-error.phpt:30
+ext/snmp/tests/snmp3-error.phpt:32
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84404,15 +85067,15 @@ ext/snmp/tests/snmp3-error.phpt:30
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    27 try {
-    28     var_dump(snmp3_get($hostname, $community, 'bugusPriv', '', '', '', '', '.1.3.6.1.2.1.1.1.0'));
-    29 } catch (\ValueError $e) {
->   30     echo $e->getMessage() . \PHP_EOL;
-    31 }
-    32 try {
-    33     var_dump(snmp3_get($hostname, $community, 'authNoPriv', 'TTT', '', '', '', '.1.3.6.1.2.1.1.1.0'));
+    29 try {
+    30     var_dump(snmp3_get($hostname, $community, 'bugusPriv', '', '', '', '', '.1.3.6.1.2.1.1.1.0'));
+    31 } catch (\ValueError $e) {
+>   32     echo $e->getMessage() . \PHP_EOL;
+    33 }
+    34 try {
+    35     var_dump(snmp3_get($hostname, $community, 'authNoPriv', 'TTT', '', '', '', '.1.3.6.1.2.1.1.1.0'));
 
-ext/snmp/tests/snmp3-error.phpt:35
+ext/snmp/tests/snmp3-error.phpt:37
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84421,15 +85084,15 @@ ext/snmp/tests/snmp3-error.phpt:35
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    32 try {
-    33     var_dump(snmp3_get($hostname, $community, 'authNoPriv', 'TTT', '', '', '', '.1.3.6.1.2.1.1.1.0'));
-    34 } catch (\ValueError $e) {
->   35     echo $e->getMessage() . \PHP_EOL;
-    36 }
-    37 
-    38 var_dump(snmp3_get($hostname, $community, 'authNoPriv', 'MD5', '', '', '', '.1.3.6.1.2.1.1.1.0'));
+    34 try {
+    35     var_dump(snmp3_get($hostname, $community, 'authNoPriv', 'TTT', '', '', '', '.1.3.6.1.2.1.1.1.0'));
+    36 } catch (\ValueError $e) {
+>   37     echo $e->getMessage() . \PHP_EOL;
+    38 }
+    39 
+    40 var_dump(snmp3_get($hostname, $community, 'authNoPriv', 'MD5', '', '', '', '.1.3.6.1.2.1.1.1.0'));
 
-ext/snmp/tests/snmp3-error.phpt:44
+ext/snmp/tests/snmp3-error.phpt:46
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84438,15 +85101,15 @@ ext/snmp/tests/snmp3-error.phpt:44
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    41 try {
-    42     var_dump(snmp3_get($hostname, $community, 'authPriv', 'MD5', $auth_pass, 'BBB', '', '.1.3.6.1.2.1.1.1.0'));
-    43 } catch (\ValueError $e) {
->   44     echo $e->getMessage() . \PHP_EOL;
-    45 }
-    46 
-    47 var_dump(snmp3_get($hostname, $community, 'authPriv', 'MD5', $auth_pass, 'AES', '', '.1.3.6.1.2.1.1.1.0'));
+    43 try {
+    44     var_dump(snmp3_get($hostname, $community, 'authPriv', 'MD5', $auth_pass, 'BBB', '', '.1.3.6.1.2.1.1.1.0'));
+    45 } catch (\ValueError $e) {
+>   46     echo $e->getMessage() . \PHP_EOL;
+    47 }
+    48 
+    49 var_dump(snmp3_get($hostname, $community, 'authPriv', 'MD5', $auth_pass, 'AES', '', '.1.3.6.1.2.1.1.1.0'));
 
-ext/snmp/tests/snmp3-error.phpt:56
+ext/snmp/tests/snmp3-error.phpt:58
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84455,13 +85118,13 @@ ext/snmp/tests/snmp3-error.phpt:56
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    53 try {
-    54     var_dump(snmp3_set($hostname, $rwuser, 'authPriv', 'MD5', $auth_pass, 'AES', $priv_pass, '.1.3.6.777.7.5.3', array('s'), 'yyy', $timeout, $retries));
-    55 } catch (\TypeError $e) {
->   56     echo $e->getMessage() . \PHP_EOL;
-    57 }
-    58 
-    59 ?>
+    55 try {
+    56     var_dump(snmp3_set($hostname, $rwuser, 'authPriv', 'MD5', $auth_pass, 'AES', $priv_pass, '.1.3.6.777.7.5.3', array('s'), 'yyy', $timeout, $retries));
+    57 } catch (\TypeError $e) {
+>   58     echo $e->getMessage() . \PHP_EOL;
+    59 }
+    60 
+    61 ?>
 
 ext/snmp/tests/snmp_get_valueretrieval.phpt:19
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
@@ -84633,7 +85296,7 @@ ext/snmp/tests/snmp_set_oid_output_format.phpt:20
     22 
     23 echo "Checking working\n";
 
-ext/snmp/tests/snmpset.phpt:25
+ext/snmp/tests/snmpset.phpt:27
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84642,15 +85305,15 @@ ext/snmp/tests/snmpset.phpt:25
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    22     $z = snmpset($hostname, $communityWrite, 'SNMPv2-MIB::sysLocation.0', $timeout, $retries);
-    23     var_dump($z);
-    24 } catch (\ValueError $e) {
->   25     echo $e->getMessage() . \PHP_EOL;
-    26 }
-    27 
-    28 echo "No value (timeout instead), retries instead of timeout\n";
+    24     $z = snmpset($hostname, $communityWrite, 'SNMPv2-MIB::sysLocation.0', $timeout, $retries);
+    25     var_dump($z);
+    26 } catch (\ValueError $e) {
+>   27     echo $e->getMessage() . \PHP_EOL;
+    28 }
+    29 
+    30 echo "No value (timeout instead), retries instead of timeout\n";
 
-ext/snmp/tests/snmpset.phpt:89
+ext/snmp/tests/snmpset.phpt:91
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84659,15 +85322,15 @@ ext/snmp/tests/snmpset.phpt:89
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    86     $z = snmpset($hostname, $communityWrite, $oid1, array('s'), $newvalue1, $timeout, $retries);
-    87     var_dump($z);
-    88 } catch (\TypeError $e) {
->   89     echo $e->getMessage() . \PHP_EOL;
-    90 }
-    91 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-    92 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+    88     $z = snmpset($hostname, $communityWrite, $oid1, array('s'), $newvalue1, $timeout, $retries);
+    89     var_dump($z);
+    90 } catch (\TypeError $e) {
+>   91     echo $e->getMessage() . \PHP_EOL;
+    92 }
+    93 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+    94 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmpset.phpt:99
+ext/snmp/tests/snmpset.phpt:101
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84676,15 +85339,15 @@ ext/snmp/tests/snmpset.phpt:99
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-    96     $z = snmpset($hostname, $communityWrite, $oid1, 's', array($newvalue1), $timeout, $retries);
-    97     var_dump($z);
-    98 } catch (\TypeError $e) {
->   99     echo $e->getMessage() . \PHP_EOL;
-   100 }
-   101 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   102 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+    98     $z = snmpset($hostname, $communityWrite, $oid1, 's', array($newvalue1), $timeout, $retries);
+    99     var_dump($z);
+   100 } catch (\TypeError $e) {
+>  101     echo $e->getMessage() . \PHP_EOL;
+   102 }
+   103 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   104 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmpset.phpt:109
+ext/snmp/tests/snmpset.phpt:111
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84693,15 +85356,15 @@ ext/snmp/tests/snmpset.phpt:109
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-   106     $z = snmpset($hostname, $communityWrite, array($oid1, $oid2), array('sw','s'), array($newvalue1, $newvalue2), $timeout, $retries);
-   107     var_dump($z);
-   108 } catch (\ValueError $e) {
->  109     echo $e->getMessage() . \PHP_EOL;
-   110 }
-   111 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   112 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+   108     $z = snmpset($hostname, $communityWrite, array($oid1, $oid2), array('sw','s'), array($newvalue1, $newvalue2), $timeout, $retries);
+   109     var_dump($z);
+   110 } catch (\ValueError $e) {
+>  111     echo $e->getMessage() . \PHP_EOL;
+   112 }
+   113 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   114 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmpset.phpt:119
+ext/snmp/tests/snmpset.phpt:121
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84710,15 +85373,15 @@ ext/snmp/tests/snmpset.phpt:119
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-   116     $z = snmpset($hostname, $communityWrite, array($oid1, $oid2), array('s','sb'), array($newvalue1, $newvalue2), $timeout, $retries);
-   117     var_dump($z);
-   118 } catch (\ValueError $e) {
->  119     echo $e->getMessage() . \PHP_EOL;
-   120 }
-   121 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   122 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+   118     $z = snmpset($hostname, $communityWrite, array($oid1, $oid2), array('s','sb'), array($newvalue1, $newvalue2), $timeout, $retries);
+   119     var_dump($z);
+   120 } catch (\ValueError $e) {
+>  121     echo $e->getMessage() . \PHP_EOL;
+   122 }
+   123 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   124 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmpset.phpt:129
+ext/snmp/tests/snmpset.phpt:131
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84727,15 +85390,15 @@ ext/snmp/tests/snmpset.phpt:129
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-   126     $z = snmpset($hostname, $communityWrite, array($oid1, $oid2), array('s'), array($newvalue1, $newvalue2), $timeout, $retries);
-   127     var_dump($z);
-   128 } catch (\ValueError $e) {
->  129     echo $e->getMessage() . \PHP_EOL;
-   130 }
-   131 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   132 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+   128     $z = snmpset($hostname, $communityWrite, array($oid1, $oid2), array('s'), array($newvalue1, $newvalue2), $timeout, $retries);
+   129     var_dump($z);
+   130 } catch (\ValueError $e) {
+>  131     echo $e->getMessage() . \PHP_EOL;
+   132 }
+   133 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   134 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
-ext/snmp/tests/snmpset.phpt:139
+ext/snmp/tests/snmpset.phpt:141
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -84744,13 +85407,13 @@ ext/snmp/tests/snmpset.phpt:139
   parts: exception_message(e) newline
   echo $e->getMessage() . \PHP_EOL;
 
-   136     $z = snmpset($hostname, $communityWrite, array($oid1, $oid2), array('s', 's'), array($newvalue1), $timeout, $retries);
-   137     var_dump($z);
-   138 } catch (\ValueError $e) {
->  139     echo $e->getMessage() . \PHP_EOL;
-   140 }
-   141 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
-   142 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
+   138     $z = snmpset($hostname, $communityWrite, array($oid1, $oid2), array('s', 's'), array($newvalue1), $timeout, $retries);
+   139     var_dump($z);
+   140 } catch (\ValueError $e) {
+>  141     echo $e->getMessage() . \PHP_EOL;
+   142 }
+   143 var_dump((snmpget($hostname, $communityWrite, $oid1, $timeout, $retries) === $oldvalue1));
+   144 var_dump((snmpget($hostname, $communityWrite, $oid2, $timeout, $retries) === $oldvalue2));
 
 ext/soap/tests/SoapClient/invalid-encoding-option.phpt:17
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
@@ -85278,6 +85941,74 @@ ext/soap/tests/bugs/gh16429.phpt:17
     18 }
     19 ?>
     20 
+
+ext/soap/tests/bugs/gh22167.phpt:101
+  fingerprint: message_only:eb40e2de3e173d548996ef3a90ab5a2dea44ed33
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECT
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_Variable) literal:trash exception_message(e) newline
+  echo "$name: {$e->getMessage()}\n";
+
+    98         new SoapClient($file, ["cache_wsdl" => WSDL_CACHE_NONE]);
+    99         echo "$name: parsed\n";
+   100     } catch (SoapFault $e) {
+>  101         echo "$name: {$e->getMessage()}\n";
+   102     } finally {
+   103         unlink($file);
+   104     }
+
+ext/soap/tests/bugs/protocol_relative_redirect.phpt:45
+  fingerprint: message_only:295f517176a99a518bc4e0c2ff11e3cae0ead129
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:f09e12db9a502e1f3fb20d8ac729daf4b47d6cbb exception_message(e) newline
+  echo "SoapFault: " . $e->getMessage() . "\n";
+
+    42     $client->__soapCall("foo", []);
+    43     echo "redirect followed\n";
+    44 } catch (SoapFault $e) {
+>   45     echo "SoapFault: " . $e->getMessage() . "\n";
+    46 }
+    47 ?>
+    48 
+
+ext/soap/tests/bugs/relative_redirect.phpt:45
+  fingerprint: message_only:295f517176a99a518bc4e0c2ff11e3cae0ead129
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:f09e12db9a502e1f3fb20d8ac729daf4b47d6cbb exception_message(e) newline
+  echo "SoapFault: " . $e->getMessage() . "\n";
+
+    42     $client->__soapCall("foo", []);
+    43     echo "redirect followed\n";
+    44 } catch (SoapFault $e) {
+>   45     echo "SoapFault: " . $e->getMessage() . "\n";
+    46 }
+    47 ?>
+    48 
+
+ext/soap/tests/bugs/relative_redirect_path.phpt:45
+  fingerprint: message_only:295f517176a99a518bc4e0c2ff11e3cae0ead129
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:f09e12db9a502e1f3fb20d8ac729daf4b47d6cbb exception_message(e) newline
+  echo "SoapFault: " . $e->getMessage() . "\n";
+
+    42     $client->__soapCall("foo", []);
+    43     echo "redirect followed\n";
+    44 } catch (SoapFault $e) {
+>   45     echo "SoapFault: " . $e->getMessage() . "\n";
+    46 }
+    47 ?>
+    48 
 
 ext/soap/tests/fault_warning.phpt:11
   fingerprint: message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
@@ -87523,6 +88254,40 @@ ext/sodium/tests/inc_add.phpt:31
     33 
     34 $str = "abc";
 
+ext/sodium/tests/pwhash_memlimit_below_min.phpt:16
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    13 try {
+    14     sodium_crypto_pwhash(32, "password", $salt, SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE, 1);
+    15 } catch (\ValueError $e) {
+>   16     echo $e->getMessage(), "\n";
+    17 }
+    18 
+    19 try {
+
+ext/sodium/tests/pwhash_memlimit_below_min.phpt:22
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    19 try {
+    20     sodium_crypto_pwhash_str("password", SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE, 1);
+    21 } catch (\ValueError $e) {
+>   22     echo $e->getMessage(), "\n";
+    23 }
+    24 ?>
+    25 
+
 ext/sodium/tests/sodium_bin2ip.phpt:43
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
@@ -87965,73 +88730,39 @@ ext/spl/tests/ArrayObject/arrayObject_setIteratorClass_error1.phpt:41
     43 
     44 ?>
 
-ext/spl/tests/ArrayObject/arrayObject_uasort_error1.phpt:15
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
+ext/spl/tests/ArrayObject/arrayObject_uasort_error1.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
   safety: canonicalizable
   expected: EXPECT
   reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
 
-    12 try {
-    13     $ao->uasort();
-    14 } catch (ArgumentCountError $e) {
->   15     echo $e->getMessage() . "\n";
-    16 }
-    17 
-    18 try {
+     8 try {
+     9     $ao->uasort('not_a_valid_function');
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ': ', $e->getMessage(), "\n";
+    12 }
+    13 
+    14 ?>
 
-ext/spl/tests/ArrayObject/arrayObject_uasort_error1.phpt:21
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
+ext/spl/tests/ArrayObject/arrayObject_uksort_error1.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
   safety: canonicalizable
   expected: EXPECT
   reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
 
-    18 try {
-    19     $ao->uasort(1,2);
-    20 } catch (ArgumentCountError $e) {
->   21     echo $e->getMessage() . "\n";
-    22 }
-    23 ?>
-    24 
-
-ext/spl/tests/ArrayObject/arrayObject_uksort_error1.phpt:15
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    12 try {
-    13     $ao->uksort();
-    14 } catch (ArgumentCountError $e) {
->   15     echo $e->getMessage() . "\n";
-    16 }
-    17 
-    18 try {
-
-ext/spl/tests/ArrayObject/arrayObject_uksort_error1.phpt:21
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    18 try {
-    19     $ao->uksort(1,2);
-    20 } catch (ArgumentCountError $e) {
->   21     echo $e->getMessage() . "\n";
-    22 }
-    23 ?>
-    24 
+     8 try {
+     9     $ao->uksort('not_a_valid_function');
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ': ', $e->getMessage(), "\n";
+    12 }
+    13 
+    14 ?>
 
 ext/spl/tests/ArrayObject/array_014.phpt:19
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
@@ -88186,6 +88917,23 @@ ext/spl/tests/ArrayObject/gh15918.phpt:9
     11 ?>
     12 
 
+ext/spl/tests/ArrayObject_construct_during_sorting.phpt:14
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    11         try {
+    12             $ao->__construct($other);
+    13         } catch (Error $e) {
+>   14             echo $e->getMessage(), "\n";
+    15         }
+    16     }
+    17     return $a <=> $b;
+
 ext/spl/tests/CallbackFilterIteratorTest-002.phpt:14
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
@@ -88304,6 +89052,23 @@ ext/spl/tests/DirectoryIterator_uninitialized.phpt:14
     15 }
     16 
     17 ?>
+
+ext/spl/tests/GH-22047.phpt:16
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    13         echo "should not reach here\n";
+    14     }
+    15 } catch (UnexpectedValueException $e) {
+>   16     echo $e->getMessage(), "\n";
+    17 }
+    18 
+    19 ?>
 
 ext/spl/tests/GlobIterator_constructor_count.phpt:10
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
@@ -89785,12 +90550,12 @@ ext/spl/tests/bug73629.phpt:9
     12     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
 
 ext/spl/tests/bug73629.phpt:14
-  fingerprint: message_only:ce21b70d37e83e5f0615d484b44af07c0de90deb
+  fingerprint: message_only:8caf988c4ab167235f10422b331605565cc98857
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:c0d8931290bb8cb1b3d11391c78e765c463a1ea4 exception_message(e) newline
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
   echo 'expected exception: ' . $e->getMessage() . "\n";
 
     11 try {
@@ -90922,6 +91687,57 @@ ext/spl/tests/gh13685.phpt:38
     39 }
     40 
     41 ?>
+
+ext/spl/tests/gh16217.phpt:12
+  fingerprint: message_only:2677408e20af8efbf3106a6f75b63712214b2147
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:655e160b092da5278409ae30c74866baad30966d exception_message(e) newline
+  echo "fputcsv: ", $e->getMessage(), "\n";
+
+     9 try {
+    10     (new ReflectionMethod(SplFileObject::class, "fputcsv"))->invoke(uninitialized(), []);
+    11 } catch (Error $e) {
+>   12     echo "fputcsv: ", $e->getMessage(), "\n";
+    13 }
+    14 
+    15 try {
+
+ext/spl/tests/gh16217.phpt:18
+  fingerprint: message_only:569b0cb0e0df6b2546892626b11c5ca34705ce32
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:8d725dede340685b7ca4112a4fc95d81b1119ef1 exception_message(e) newline
+  echo "next: ", $e->getMessage(), "\n";
+
+    15 try {
+    16     (new ReflectionMethod(SplFileObject::class, "next"))->invoke(uninitialized());
+    17 } catch (Error $e) {
+>   18     echo "next: ", $e->getMessage(), "\n";
+    19 }
+    20 
+    21 $obj = uninitialized();
+
+ext/spl/tests/gh16217.phpt:26
+  fingerprint: message_only:06f616c2efd5860d6821501194dd6646c60f1b43
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:0d97ccf9c8f0139083d8107f4a3b25a646966782 exception_message(e) newline
+  echo "next (READ_AHEAD): ", $e->getMessage(), "\n";
+
+    23 try {
+    24     (new ReflectionMethod(SplFileObject::class, "next"))->invoke($obj);
+    25 } catch (Error $e) {
+>   26     echo "next (READ_AHEAD): ", $e->getMessage(), "\n";
+    27 }
+    28 
+    29 echo "Done\n";
 
 ext/spl/tests/gh16337.phpt:12
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
@@ -97484,6 +98300,176 @@ ext/standard/tests/assert/assert_variation.phpt:57
     59 echo"\n";
     60 
 
+ext/standard/tests/assert/gh22290.phpt:13
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    10 	$string = "Foo\x00bar";
+    11 	assert(!str_contains($string, "\x00"));
+    12 } catch (AssertionError $e) {
+>   13 	echo $e->getMessage(), PHP_EOL;
+    14 }
+    15 
+    16 try {
+
+ext/standard/tests/assert/gh22290.phpt:19
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    16 try {
+    17 	assert(["a\x00b" => 1] === []);
+    18 } catch (AssertionError $e) {
+>   19 	echo $e->getMessage(), PHP_EOL;
+    20 }
+    21 
+    22 try {
+
+ext/standard/tests/assert/gh22290.phpt:25
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    22 try {
+    23 	assert("tab\there" === "");
+    24 } catch (AssertionError $e) {
+>   25 	echo $e->getMessage(), PHP_EOL;
+    26 }
+    27 
+    28 try {
+
+ext/standard/tests/assert/gh22290.phpt:31
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    28 try {
+    29 	assert(str_contains("plain", "zzz"));
+    30 } catch (AssertionError $e) {
+>   31 	echo $e->getMessage(), PHP_EOL;
+    32 }
+    33 
+    34 ?>
+
+ext/standard/tests/assert/gh22291.phpt:12
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+     9 	var_dump("{$foo}");
+    10 	assert(!"{{$foo}}");
+    11 } catch (Error $e) {
+>   12 	echo $e->getMessage(), PHP_EOL;
+    13 }
+    14 
+    15 ?>
+
+ext/standard/tests/assert/gh22292.phpt:15
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    12 	var_dump(${'---'});
+    13 	assert(!${'---'});
+    14 } catch (Error $e) {
+>   15 	echo $e->getMessage(), PHP_EOL;
+    16 }
+    17 
+    18 try {
+
+ext/standard/tests/assert/gh22292.phpt:23
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    20 	var_dump($f->{'---'});
+    21 	assert(!$f->{'---'});
+    22 } catch (Error $e) {
+>   23 	echo $e->getMessage(), PHP_EOL;
+    24 }
+    25 
+    26 ?>
+
+ext/standard/tests/assert/gh22373.phpt:15
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    12 		try {
+    13 			assert(($this->f)('abc') !== 'cba');
+    14 		} catch (Error $e) {
+>   15 			echo $e->getMessage(), PHP_EOL;
+    16 		}
+    17 		try {
+    18 			assert(($this?->f)('abc') !== 'cba');
+
+ext/standard/tests/assert/gh22373.phpt:20
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    17 		try {
+    18 			assert(($this?->f)('abc') !== 'cba');
+    19 		} catch (Error $e) {
+>   20 			echo $e->getMessage(), PHP_EOL;
+    21 		}
+    22 		try {
+    23 			assert((self::$sf)('abc') !== 'cba');
+
+ext/standard/tests/assert/gh22373.phpt:25
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    22 		try {
+    23 			assert((self::$sf)('abc') !== 'cba');
+    24 		} catch (Error $e) {
+>   25 			echo $e->getMessage(), PHP_EOL;
+    26 		}
+    27 	}
+    28 }
+
 ext/standard/tests/class_object/get_class_methods_basic_001.phpt:31
   fingerprint: message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
   family: message_only
@@ -101326,6 +102312,23 @@ ext/standard/tests/general_functions/callbacks_002.phpt:19
     21 
     22 ?>
 
+ext/standard/tests/general_functions/dl_null_bytes.phpt:9
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+     6 try {
+     7     dl("foo\0bar");
+     8 } catch (ValueError $e) {
+>    9     echo $e->getMessage(), "\n";
+    10 }
+    11 
+    12 ?>
+
 ext/standard/tests/general_functions/error_get_last.phpt:10
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
   family: message_only
@@ -103162,6 +104165,23 @@ ext/standard/tests/math/floor_variation1.phpt:68
     70     $iterator++;
     71 };
 
+ext/standard/tests/math/gh17384.phpt:15
+  fingerprint: message_only:3fd28b152899602236338841b4e8420dd396ce58
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(exception) newline
+  echo $exception->getMessage(), "\n";
+
+    12         try {
+    13             number_format($number, $decimals);
+    14         } catch (ValueError $exception) {
+>   15             echo $exception->getMessage(), "\n";
+    16         }
+    17     }
+    18 }
+
 ext/standard/tests/math/hexdec_variation1.phpt:65
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
   family: message_only
@@ -103739,6 +104759,23 @@ ext/standard/tests/network/ghsa-www2-q4fc-65wf.phpt:50
     51 }
     52 ?>
     53 
+
+ext/standard/tests/network/openlog_null_bytes.phpt:12
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+     9 try {
+    10     openlog("foo\0bar", LOG_NDELAY, LOG_USER);
+    11 } catch (ValueError $e) {
+>   12     echo $e->getMessage(), "\n";
+    13 }
+    14 ?>
+    15 
 
 ext/standard/tests/network/setcookie_array_option_error.phpt:14
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
@@ -104351,6 +105388,142 @@ ext/standard/tests/password/password_verify_error.phpt:10
     11 }
     12 
     13 ?>
+
+ext/standard/tests/poll/poll_clone_not_allowed.phpt:16
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    13     try {
+    14         clone $obj;
+    15     } catch (Error $e) {
+>   16         echo $e->getMessage(), "\n";
+    17     }
+    18 }
+    19 
+
+ext/standard/tests/poll/poll_ctx_backend_unix.phpt:22
+  fingerprint: message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e)
+  var_dump($e->getMessage());
+
+    19 try {
+    20     new Io\Poll\Context(Io\Poll\Backend::WSAPoll);
+    21 } catch (\Io\Poll\BackendUnavailableException $e) {
+>   22     var_dump($e->getMessage());
+    23 }
+    24 ?>
+    25 
+
+ext/standard/tests/poll/poll_ctx_backend_windows.phpt:22
+  fingerprint: message_only:1b93c95f614ab638d020ceccdc30fa5214c0fb10
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e)
+  var_dump($e->getMessage());
+
+    19 try {
+    20     new Io\Poll\Context(Io\Poll\Backend::Epoll);
+    21 } catch (\Io\Poll\BackendUnavailableException $e) {
+>   22     var_dump($e->getMessage());
+    23 }
+    24 ?>
+    25 
+
+ext/standard/tests/poll/poll_double_construct.phpt:13
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    10 try {
+    11     $handle->__construct($r);
+    12 } catch (Error $e) {
+>   13     echo $e->getMessage(), "\n";
+    14 }
+    15 
+    16 $ctx = pt_new_stream_poll();
+
+ext/standard/tests/poll/poll_double_construct.phpt:20
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    17 try {
+    18     $ctx->__construct();
+    19 } catch (Error $e) {
+>   20     echo $e->getMessage(), "\n";
+    21 }
+    22 
+    23 echo "done\n";
+
+ext/standard/tests/poll/poll_stream_add_error_duplicate.phpt:15
+  fingerprint: message_only:8caf988c4ab167235f10422b331605565cc98857
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
+  echo "ERROR: " . $e->getMessage() . "\n";
+
+    12 try {
+    13     pt_stream_poll_add($poll_ctx, $socket1w, [Io\Poll\Event::Write], "socket2_data");
+    14 } catch (Io\Poll\HandleAlreadyWatchedException $e) {
+>   15     echo "ERROR: " . $e->getMessage() . "\n";
+    16 }
+    17 ?>
+    18 
+
+ext/standard/tests/poll/poll_watcher_outlives_context.phpt:20
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    17 try {
+    18     $watcher->remove();
+    19 } catch (Io\Poll\InactiveWatcherException $e) {
+>   20     echo $e->getMessage(), "\n";
+    21 }
+    22 
+    23 try {
+
+ext/standard/tests/poll/poll_watcher_outlives_context.phpt:26
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    23 try {
+    24     $watcher->modifyEvents([Io\Poll\Event::Write]);
+    25 } catch (Io\Poll\InactiveWatcherException $e) {
+>   26     echo $e->getMessage(), "\n";
+    27 }
+    28 
+    29 echo "done\n";
 
 ext/standard/tests/serialize/__serialize_002.phpt:15
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
@@ -105711,6 +106884,57 @@ ext/standard/tests/streams/stream_context_set_params_notification_valid_then_inv
     15 }
     16 
     17 ?>
+
+ext/standard/tests/streams/stream_errors_exception_mode_terminal.phpt:15
+  fingerprint: message_only:8caf988c4ab167235f10422b331605565cc98857
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
+  echo "Caught: " . $e->getMessage() . "\n";
+
+    12 try {
+    13     $stream = fopen('php://nonexistent', 'r', false, $context);
+    14 } catch (StreamException $e) {
+>   15     echo "Caught: " . $e->getMessage() . "\n";
+    16     echo "Code: " . $e->getCode() . "\n";
+    17     
+    18     $errors = $e->getErrors();
+
+ext/standard/tests/streams/stream_errors_mix_modes_storage.phpt:44
+  fingerprint: message_only:8caf988c4ab167235f10422b331605565cc98857
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash exception_message(e) newline
+  echo 'EXCEPTION: ' . $e->getMessage() . "\n";
+
+    41         $except = NULL;
+    42         stream_select($read, $write, $except, 0, 0, $context);
+    43     } catch (StreamException $e) {
+>   44         echo 'EXCEPTION: ' . $e->getMessage() . "\n";
+    45     }
+    46 
+    47     $errors = stream_last_errors();
+
+ext/standard/tests/streams/stream_errors_set_default_context_error.phpt:13
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    10         ]
+    11     ]);
+    12 } catch (\ValueError $e) {
+>   13     echo $e->getMessage() . "\n";
+    14 }
+    15 
+    16 ?>
 
 ext/standard/tests/streams/stream_get_contents_negative_length.phpt:13
   fingerprint: message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
@@ -109367,6 +110591,23 @@ ext/sysvshm/tests/gh16591.phpt:20
     22 
     23 ?>
 
+ext/sysvshm/tests/gh9945.phpt:15
+  fingerprint: message_only:3fd28b152899602236338841b4e8420dd396ce58
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(exception) newline
+  echo $exception->getMessage(), "\n";
+
+    12 try {
+    13     shm_attach(0x100000000, 0);
+    14 } catch (ValueError $exception) {
+>   15     echo $exception->getMessage(), "\n";
+    16 }
+    17 ?>
+    18 
+
 ext/sysvshm/tests/serialize_exception.phpt:20
   fingerprint: message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
   family: message_only
@@ -110064,7 +111305,7 @@ ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt:18
     20 }
     21 
 
-ext/uri/tests/004.phpt:14
+ext/uri/tests/004.phpt:12
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110073,15 +111314,15 @@ ext/uri/tests/004.phpt:14
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    11 try {
-    12     new Uri\WhatWg\Url("");
-    13 } catch (Uri\WhatWg\InvalidUrlException $e) {
->   14     echo $e->getMessage() . "\n";
-    15 }
-    16 
-    17 var_dump(Uri\WhatWg\Url::parse(""));
+     9 try {
+    10     new Uri\WhatWg\Url("");
+    11 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>   12     echo $e->getMessage() . "\n";
+    13 }
+    14 
+    15 var_dump(Uri\WhatWg\Url::parse(""));
 
-ext/uri/tests/007.phpt:11
+ext/uri/tests/007.phpt:9
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110090,15 +111331,15 @@ ext/uri/tests/007.phpt:11
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-     8 try {
-     9     new Uri\Rfc3986\Uri("https://example.com:8080@username:password/path?q=r#fragment");
-    10 } catch (Uri\InvalidUriException $e) {
->   11     echo $e->getMessage() . "\n";
-    12 }
-    13 
-    14 try {
+     6 try {
+     7     new Uri\Rfc3986\Uri("https://example.com:8080@username:password/path?q=r#fragment");
+     8 } catch (Uri\InvalidUriException $e) {
+>    9     echo $e->getMessage() . "\n";
+    10 }
+    11 
+    12 try {
 
-ext/uri/tests/007.phpt:17
+ext/uri/tests/007.phpt:15
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110107,13 +111348,13 @@ ext/uri/tests/007.phpt:17
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    14 try {
-    15     new Uri\WhatWg\Url("https://example.com:8080@username:password/path?q=r#fragment");
-    16 } catch (Uri\WhatWg\InvalidUrlException $e) {
->   17     echo $e->getMessage() . "\n";
-    18     var_dump($e->errors);
-    19 }
-    20 
+    12 try {
+    13     new Uri\WhatWg\Url("https://example.com:8080@username:password/path?q=r#fragment");
+    14 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>   15     echo $e->getMessage() . "\n";
+    16     var_dump($e->errors);
+    17 }
+    18 
 
 ext/uri/tests/015.phpt:13
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
@@ -110149,7 +111390,7 @@ ext/uri/tests/015.phpt:20
     22 
     23 ?>
 
-ext/uri/tests/023.phpt:23
+ext/uri/tests/023.phpt:21
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110158,15 +111399,15 @@ ext/uri/tests/023.phpt:23
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    20 try {
-    21     $uri3->withScheme("");
-    22 } catch (Uri\InvalidUriException $e) {
->   23     echo $e->getMessage() . "\n";
-    24 }
-    25 
-    26 try {
+    18 try {
+    19     $uri3->withScheme("");
+    20 } catch (Uri\InvalidUriException $e) {
+>   21     echo $e->getMessage() . "\n";
+    22 }
+    23 
+    24 try {
 
-ext/uri/tests/023.phpt:29
+ext/uri/tests/023.phpt:27
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110175,15 +111416,15 @@ ext/uri/tests/023.phpt:29
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    26 try {
-    27     $uri3->withScheme("http%73");
-    28 } catch (Uri\InvalidUriException $e) {
->   29     echo $e->getMessage() . "\n";
-    30 }
-    31 
-    32 $url1 = Uri\WhatWg\Url::parse("https://example.com");
+    24 try {
+    25     $uri3->withScheme("http%73");
+    26 } catch (Uri\InvalidUriException $e) {
+>   27     echo $e->getMessage() . "\n";
+    28 }
+    29 
+    30 $url1 = Uri\WhatWg\Url::parse("https://example.com");
 
-ext/uri/tests/023.phpt:41
+ext/uri/tests/023.phpt:39
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110192,15 +111433,15 @@ ext/uri/tests/023.phpt:41
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    38 try {
-    39     $url2->withScheme("");
-    40 } catch (Uri\WhatWg\InvalidUrlException $e) {
->   41     echo $e->getMessage() . "\n";
-    42 }
-    43 
-    44 try {
+    36 try {
+    37     $url2->withScheme("");
+    38 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>   39     echo $e->getMessage() . "\n";
+    40 }
+    41 
+    42 try {
 
-ext/uri/tests/023.phpt:47
+ext/uri/tests/023.phpt:45
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110209,49 +111450,287 @@ ext/uri/tests/023.phpt:47
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    44 try {
-    45     $url2->withScheme("http%73");
-    46 } catch (Uri\WhatWg\InvalidUrlException $e) {
->   47     echo $e->getMessage() . "\n";
-    48 }
-    49 
-    50 ?>
+    42 try {
+    43     $url2->withScheme("http%73");
+    44 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>   45     echo $e->getMessage() . "\n";
+    46 }
+    47 
+    48 ?>
 
-ext/uri/tests/026.phpt:35
+ext/uri/tests/026.phpt:33
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    30 try {
+    31     $uri3->withHost("test.com:8080");
+    32 } catch (Uri\InvalidUriException $e) {
+>   33     echo $e->getMessage() . "\n";
+    34 }
+    35 
+    36 try {
+
+ext/uri/tests/026.phpt:39
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    36 try {
+    37     $uri3->withHost("t%3As%2Ft.com"); // t:s/t.com
+    38 } catch (Uri\InvalidUriException $e) {
+>   39     echo $e->getMessage() . "\n";
+    40 }
+    41 
+    42 try {
+
+ext/uri/tests/026.phpt:45
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    42 try {
+    43     $uri3->withHost("t:s/t.com");
+    44 } catch (Uri\InvalidUriException $e) {
+>   45     echo $e->getMessage() . "\n";
+    46 }
+    47 
+    48 try {
+
+ext/uri/tests/026.phpt:51
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    48 try {
+    49     $uri2->withHost("");
+    50 } catch (Uri\InvalidUriException $e) {
+>   51     echo $e->getMessage() . "\n";
+    52 }
+    53 
+    54 $uri1 = Uri\Rfc3986\Uri::parse("ftp://user:pass@foo.com?query=abc#foo");
+
+ext/uri/tests/026.phpt:63
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    60 try {
+    61     $uri1->withHost(null);
+    62 } catch (Uri\InvalidUriException $e) {
+>   63     echo $e->getMessage() . "\n";
+    64 }
+    65 
+    66 $url1 = Uri\WhatWg\Url::parse("https://example.com");
+
+ext/uri/tests/026.phpt:81
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    78 try {
+    79     $url3->withHost("test.com:8080");
+    80 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>   81     echo $e->getMessage() . "\n";
+    82 }
+    83 
+    84 try {
+
+ext/uri/tests/026.phpt:87
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    84 try {
+    85     $url3->withHost("t%3As%2Ft.com"); // t:s/t.com
+    86 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>   87     echo $e->getMessage() . "\n";
+    88 }
+    89 
+    90 try {
+
+ext/uri/tests/026.phpt:93
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    90 try {
+    91     $url3->withHost("t:s/t.com");     // t:s/t.com
+    92 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>   93     echo $e->getMessage() . "\n";
+    94 }
+    95 
+    96 try {
+
+ext/uri/tests/026.phpt:99
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    96 try {
+    97     $url2->withHost(null);
+    98 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>   99     echo $e->getMessage() . "\n";
+   100 }
+   101 
+   102 $url1 = Uri\WhatWg\Url::parse("ftp://foo.com?query=abc#foo");
+
+ext/uri/tests/026_userinfo.phpt:29
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    26 try {
+    27     $uri4->withUserInfo("u:s/r");
+    28 } catch (Uri\InvalidUriException $e) {
+>   29     echo $e->getMessage() . "\n";
+    30 }
+    31 
+    32 $uri5 = Uri\Rfc3986\Uri::parse("file:///foo/bar/");
+
+ext/uri/tests/027.phpt:33
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    30 try {
+    31     $uri1->withPort(1);
+    32 } catch (Uri\InvalidUriException $e) {
+>   33     echo $e->getMessage() . "\n";
+    34 }
+    35 
+    36 $url1 = Uri\WhatWg\Url::parse("https://example.com:8080");
+
+ext/uri/tests/028.phpt:29
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    26 try {
+    27     $uri5->withPath("test");
+    28 } catch (Uri\InvalidUriException $e) {
+>   29     echo $e->getMessage() . "\n";
+    30 }
+    31 
+    32 try {
+
+ext/uri/tests/028.phpt:35
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
   reason: safe candidate for a canonical exception-output family
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
     32 try {
-    33     $uri3->withHost("test.com:8080");
+    33     $uri5->withPath("/#");
     34 } catch (Uri\InvalidUriException $e) {
 >   35     echo $e->getMessage() . "\n";
     36 }
     37 
-    38 try {
+    38 $uri1 = Uri\Rfc3986\Uri::parse("/foo");
 
-ext/uri/tests/026.phpt:41
+ext/uri/tests/029.phpt:41
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
-  expected: EXPECTF
+  expected: EXPECT
   reason: safe candidate for a canonical exception-output family
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
     38 try {
-    39     $uri3->withHost("t%3As%2Ft.com"); // t:s/t.com
+    39     $uri5->withQuery("#");
     40 } catch (Uri\InvalidUriException $e) {
 >   41     echo $e->getMessage() . "\n";
     42 }
     43 
-    44 try {
+    44 $url1 = Uri\WhatWg\Url::parse("https://example.com?foo=bar");
 
-ext/uri/tests/026.phpt:47
+ext/uri/tests/030.phpt:21
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    18 try {
+    19     $uri3->withFragment(" ");
+    20 } catch (Uri\InvalidUriException $e) {
+>   21     echo $e->getMessage() . "\n";
+    22 }
+    23 
+    24 try {
+
+ext/uri/tests/030.phpt:27
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    24 try {
+    25     $uri1->withFragment("#fragment2");
+    26 } catch (Uri\InvalidUriException $e) {
+>   27     echo $e->getMessage() . "\n";
+    28 }
+    29 
+    30 $uri1 = Uri\Rfc3986\Uri::parse("https://example.com?abc=def");
+
+ext/uri/tests/031.phpt:16
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110260,15 +111739,15 @@ ext/uri/tests/026.phpt:47
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    44 try {
-    45     $uri3->withHost("t:s/t.com");
-    46 } catch (Uri\InvalidUriException $e) {
->   47     echo $e->getMessage() . "\n";
-    48 }
-    49 
-    50 try {
+    13 try {
+    14     unserialize('O:15:"Uri\Rfc3986\Uri":1:{i:0;a:0:{}}'); // less than 2 items
+    15 } catch (Exception $e) {
+>   16     echo $e->getMessage() . "\n";
+    17 }
+    18 
+    19 try {
 
-ext/uri/tests/026.phpt:53
+ext/uri/tests/031.phpt:22
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110277,15 +111756,15 @@ ext/uri/tests/026.phpt:53
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    50 try {
-    51     $uri2->withHost("");
-    52 } catch (Uri\InvalidUriException $e) {
->   53     echo $e->getMessage() . "\n";
-    54 }
-    55 
-    56 $uri1 = Uri\Rfc3986\Uri::parse("ftp://user:pass@foo.com?query=abc#foo");
+    19 try {
+    20     unserialize('O:15:"Uri\Rfc3986\Uri":3:{i:0;a:0:{}i:1;a:0:{}i:2;a:0:{}}'); // more than 2 items
+    21 } catch (Exception $e) {
+>   22     echo $e->getMessage() . "\n";
+    23 }
+    24 
+    25 try {
 
-ext/uri/tests/026.phpt:65
+ext/uri/tests/031.phpt:28
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110294,15 +111773,134 @@ ext/uri/tests/026.phpt:65
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    62 try {
-    63     $uri1->withHost(null);
-    64 } catch (Uri\InvalidUriException $e) {
->   65     echo $e->getMessage() . "\n";
-    66 }
-    67 
-    68 $url1 = Uri\WhatWg\Url::parse("https://example.com");
+    25 try {
+    26     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;N;i:1;a:0:{}}'); // first item is not an array
+    27 } catch (Exception $e) {
+>   28     echo $e->getMessage() . "\n";
+    29 }
+    30 
+    31 try {
 
-ext/uri/tests/026.phpt:83
+ext/uri/tests/031.phpt:34
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    31 try {
+    32     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:0:{}i:1;a:0:{}}'); // first array is empty
+    33 } catch (Exception $e) {
+>   34     echo $e->getMessage() . "\n";
+    35 }
+    36 
+    37 try {
+
+ext/uri/tests/031.phpt:40
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    37 try {
+    38     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:1:{s:3:"uri";i:1;}i:1;a:0:{}}'); // "uri" key in first array is not a string
+    39 } catch (Exception $e) {
+>   40     echo $e->getMessage() . "\n";
+    41 }
+    42 
+    43 try {
+
+ext/uri/tests/031.phpt:46
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    43 try {
+    44     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:1:{s:3:"uri";s:2:"%1";}i:1;a:0:{}}'); // "uri" key in first array contains invalid URI
+    45 } catch (Exception $e) {
+>   46     echo $e->getMessage() . "\n";
+    47 }
+    48 
+    49 try {
+
+ext/uri/tests/031.phpt:52
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    49 try {
+    50     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:1:{s:3:"uri";s:4:"/uri";}i:1;s:0:"";}'); // second item in not an array
+    51 } catch (Exception $e) {
+>   52     echo $e->getMessage() . "\n";
+    53 }
+    54 
+    55 try {
+
+ext/uri/tests/031.phpt:58
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    55 try {
+    56     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:1:{s:3:"uri";s:4:"/uri";}i:1;a:1:{s:5:"prop1";i:123;}}'); // second array contains a property
+    57 } catch (Exception $e) {
+>   58     echo $e->getMessage() . "\n";
+    59 }
+    60 
+    61 $url1 = new Uri\WhatWg\Url("https://username:password@www.example.com:8080/pathname1/pathname2/pathname3?query=true#hash-exists");
+
+ext/uri/tests/031.phpt:71
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    68 try {
+    69     unserialize('O:14:"Uri\WhatWg\Url":1:{i:0;a:0:{}}'); // less than 2 items
+    70 } catch (Exception $e) {
+>   71     echo $e->getMessage() . "\n";
+    72 }
+    73 
+    74 try {
+
+ext/uri/tests/031.phpt:77
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    74 try {
+    75     unserialize('O:14:"Uri\WhatWg\Url":3:{i:0;a:0:{}i:1;a:0:{}i:2;a:0:{}}'); // more than 2 items
+    76 } catch (Exception $e) {
+>   77     echo $e->getMessage() . "\n";
+    78 }
+    79 
+    80 try {
+
+ext/uri/tests/031.phpt:83
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110312,14 +111910,14 @@ ext/uri/tests/026.phpt:83
   echo $e->getMessage() . "\n";
 
     80 try {
-    81     $url3->withHost("test.com:8080");
-    82 } catch (Uri\WhatWg\InvalidUrlException $e) {
+    81     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;N;i:1;a:0:{}}'); // first item is not an array
+    82 } catch (Exception $e) {
 >   83     echo $e->getMessage() . "\n";
     84 }
     85 
     86 try {
 
-ext/uri/tests/026.phpt:89
+ext/uri/tests/031.phpt:89
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110329,14 +111927,14 @@ ext/uri/tests/026.phpt:89
   echo $e->getMessage() . "\n";
 
     86 try {
-    87     $url3->withHost("t%3As%2Ft.com"); // t:s/t.com
-    88 } catch (Uri\WhatWg\InvalidUrlException $e) {
+    87     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:0:{}i:1;a:0:{}}'); // first array is empty
+    88 } catch (Exception $e) {
 >   89     echo $e->getMessage() . "\n";
     90 }
     91 
     92 try {
 
-ext/uri/tests/026.phpt:95
+ext/uri/tests/031.phpt:95
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110346,14 +111944,14 @@ ext/uri/tests/026.phpt:95
   echo $e->getMessage() . "\n";
 
     92 try {
-    93     $url3->withHost("t:s/t.com");     // t:s/t.com
-    94 } catch (Uri\WhatWg\InvalidUrlException $e) {
+    93     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:2:{s:3:"uri";s:19:"https://example.com";s:1:"a";i:1;}i:1;a:0:{}}'); // "uri" key in first array contains more than 1 item
+    94 } catch (Exception $e) {
 >   95     echo $e->getMessage() . "\n";
     96 }
     97 
     98 try {
 
-ext/uri/tests/026.phpt:101
+ext/uri/tests/031.phpt:101
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110363,133 +111961,14 @@ ext/uri/tests/026.phpt:101
   echo $e->getMessage() . "\n";
 
     98 try {
-    99     $url2->withHost(null);
-   100 } catch (Uri\WhatWg\InvalidUrlException $e) {
+    99     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:1:{s:3:"uri";i:1;}i:1;a:0:{}}'); // "uri" key in first array is not a string
+   100 } catch (Exception $e) {
 >  101     echo $e->getMessage() . "\n";
    102 }
    103 
-   104 $url1 = Uri\WhatWg\Url::parse("ftp://foo.com?query=abc#foo");
+   104 try {
 
-ext/uri/tests/026_userinfo.phpt:31
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    28 try {
-    29     $uri4->withUserInfo("u:s/r");
-    30 } catch (Uri\InvalidUriException $e) {
->   31     echo $e->getMessage() . "\n";
-    32 }
-    33 
-    34 $uri5 = Uri\Rfc3986\Uri::parse("file:///foo/bar/");
-
-ext/uri/tests/027.phpt:35
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    32 try {
-    33     $uri1->withPort(1);
-    34 } catch (Uri\InvalidUriException $e) {
->   35     echo $e->getMessage() . "\n";
-    36 }
-    37 
-    38 $url1 = Uri\WhatWg\Url::parse("https://example.com:8080");
-
-ext/uri/tests/028.phpt:31
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    28 try {
-    29     $uri5->withPath("test");
-    30 } catch (Uri\InvalidUriException $e) {
->   31     echo $e->getMessage() . "\n";
-    32 }
-    33 
-    34 try {
-
-ext/uri/tests/028.phpt:37
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    34 try {
-    35     $uri5->withPath("/#");
-    36 } catch (Uri\InvalidUriException $e) {
->   37     echo $e->getMessage() . "\n";
-    38 }
-    39 
-    40 $uri1 = Uri\Rfc3986\Uri::parse("/foo");
-
-ext/uri/tests/029.phpt:43
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    40 try {
-    41     $uri5->withQuery("#");
-    42 } catch (Uri\InvalidUriException $e) {
->   43     echo $e->getMessage() . "\n";
-    44 }
-    45 
-    46 $url1 = Uri\WhatWg\Url::parse("https://example.com?foo=bar");
-
-ext/uri/tests/030.phpt:23
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    20 try {
-    21     $uri3->withFragment(" ");
-    22 } catch (Uri\InvalidUriException $e) {
->   23     echo $e->getMessage() . "\n";
-    24 }
-    25 
-    26 try {
-
-ext/uri/tests/030.phpt:29
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    26 try {
-    27     $uri1->withFragment("#fragment2");
-    28 } catch (Uri\InvalidUriException $e) {
->   29     echo $e->getMessage() . "\n";
-    30 }
-    31 
-    32 $uri1 = Uri\Rfc3986\Uri::parse("https://example.com?abc=def");
-
-ext/uri/tests/031.phpt:18
+ext/uri/tests/031.phpt:107
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110498,15 +111977,15 @@ ext/uri/tests/031.phpt:18
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    15 try {
-    16     unserialize('O:15:"Uri\Rfc3986\Uri":1:{i:0;a:0:{}}'); // less than 2 items
-    17 } catch (Exception $e) {
->   18     echo $e->getMessage() . "\n";
-    19 }
-    20 
-    21 try {
+   104 try {
+   105     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:1:{s:3:"uri";s:11:"invalid-url";}i:1;a:0:{}}'); // "uri" key in first array contains invalid URL
+   106 } catch (Exception $e) {
+>  107     echo $e->getMessage() . "\n";
+   108 }
+   109 
+   110 try {
 
-ext/uri/tests/031.phpt:24
+ext/uri/tests/031.phpt:113
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110515,15 +111994,15 @@ ext/uri/tests/031.phpt:24
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    21 try {
-    22     unserialize('O:15:"Uri\Rfc3986\Uri":3:{i:0;a:0:{}i:1;a:0:{}i:2;a:0:{}}'); // more than 2 items
-    23 } catch (Exception $e) {
->   24     echo $e->getMessage() . "\n";
-    25 }
-    26 
-    27 try {
+   110 try {
+   111     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:1:{s:3:"uri";s:19:"https://example.com";}i:1;s:0:"";}'); // second item in not an array
+   112 } catch (Exception $e) {
+>  113     echo $e->getMessage() . "\n";
+   114 }
+   115 
+   116 try {
 
-ext/uri/tests/031.phpt:30
+ext/uri/tests/031.phpt:119
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110532,15 +112011,15 @@ ext/uri/tests/031.phpt:30
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    27 try {
-    28     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;N;i:1;a:0:{}}'); // first item is not an array
-    29 } catch (Exception $e) {
->   30     echo $e->getMessage() . "\n";
-    31 }
-    32 
-    33 try {
+   116 try {
+   117     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:1:{s:3:"uri";s:19:"https://example.com";}i:1;a:1:{s:5:"prop1";i:123;}}'); // second array contains property
+   118 } catch (Exception $e) {
+>  119     echo $e->getMessage() . "\n";
+   120 }
+   121 
+   122 ?>
 
-ext/uri/tests/031.phpt:36
+ext/uri/tests/051.phpt:11
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110549,15 +112028,15 @@ ext/uri/tests/031.phpt:36
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    33 try {
-    34     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:0:{}i:1;a:0:{}}'); // first array is empty
-    35 } catch (Exception $e) {
->   36     echo $e->getMessage() . "\n";
-    37 }
-    38 
-    39 try {
+     8 try {
+     9     $uri->resolve("á");
+    10 } catch (Uri\InvalidUriException $e) {
+>   11     echo $e->getMessage() . "\n";
+    12 }
+    13 
+    14 $url = new Uri\WhatWg\Url("https://example.com");
 
-ext/uri/tests/031.phpt:42
+ext/uri/tests/051.phpt:19
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110566,15 +112045,15 @@ ext/uri/tests/031.phpt:42
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    39 try {
-    40     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:1:{s:3:"uri";i:1;}i:1;a:0:{}}'); // "uri" key in first array is not a string
-    41 } catch (Exception $e) {
->   42     echo $e->getMessage() . "\n";
-    43 }
-    44 
-    45 try {
+    16 try {
+    17     $url->resolve("https://1.2.3.4.5");
+    18 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>   19     echo $e->getMessage() . "\n";
+    20 }
+    21 
+    22 $softErrors = [];
 
-ext/uri/tests/031.phpt:48
+ext/uri/tests/052.phpt:11
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110583,15 +112062,15 @@ ext/uri/tests/031.phpt:48
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    45 try {
-    46     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:1:{s:3:"uri";s:2:"%1";}i:1;a:0:{}}'); // "uri" key in first array contains invalid URI
-    47 } catch (Exception $e) {
->   48     echo $e->getMessage() . "\n";
-    49 }
-    50 
-    51 try {
+     8 try {
+     9     $r->__construct('bar', Uri\WhatWg\UrlValidationErrorType::HostMissing, false);
+    10 } catch (Error $e) {
+>   11     echo $e->getMessage() . "\n";
+    12 }
+    13 
+    14 var_dump($r);
 
-ext/uri/tests/031.phpt:54
+ext/uri/tests/053.phpt:16
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110600,15 +112079,15 @@ ext/uri/tests/031.phpt:54
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    51 try {
-    52     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:1:{s:3:"uri";s:4:"/uri";}i:1;s:0:"";}'); // second item in not an array
-    53 } catch (Exception $e) {
->   54     echo $e->getMessage() . "\n";
-    55 }
-    56 
-    57 try {
+    13 try {
+    14     $r->__construct("foo");
+    15 } catch (Error $e) {
+>   16     echo $e->getMessage() . "\n";
+    17 }
+    18 
+    19 try {
 
-ext/uri/tests/031.phpt:60
+ext/uri/tests/053.phpt:22
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110617,15 +112096,15 @@ ext/uri/tests/031.phpt:60
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    57 try {
-    58     unserialize('O:15:"Uri\Rfc3986\Uri":2:{i:0;a:1:{s:3:"uri";s:4:"/uri";}i:1;a:1:{s:5:"prop1";i:123;}}'); // second array contains a property
-    59 } catch (Exception $e) {
->   60     echo $e->getMessage() . "\n";
-    61 }
-    62 
-    63 $url1 = new Uri\WhatWg\Url("https://username:password@www.example.com:8080/pathname1/pathname2/pathname3?query=true#hash-exists");
+    19 try {
+    20     $r->__construct("bar", []);
+    21 } catch (Error $e) {
+>   22     echo $e->getMessage() . "\n";
+    23 }
+    24 
+    25 try {
 
-ext/uri/tests/031.phpt:73
+ext/uri/tests/053.phpt:28
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110634,15 +112113,15 @@ ext/uri/tests/031.phpt:73
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    70 try {
-    71     unserialize('O:14:"Uri\WhatWg\Url":1:{i:0;a:0:{}}'); // less than 2 items
-    72 } catch (Exception $e) {
->   73     echo $e->getMessage() . "\n";
-    74 }
-    75 
-    76 try {
+    25 try {
+    26     $r->__construct("baz", [], 0);
+    27 } catch (Error $e) {
+>   28     echo $e->getMessage() . "\n";
+    29 }
+    30 
+    31 try {
 
-ext/uri/tests/031.phpt:79
+ext/uri/tests/053.phpt:34
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110651,253 +112130,15 @@ ext/uri/tests/031.phpt:79
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-    76 try {
-    77     unserialize('O:14:"Uri\WhatWg\Url":3:{i:0;a:0:{}i:1;a:0:{}i:2;a:0:{}}'); // more than 2 items
-    78 } catch (Exception $e) {
->   79     echo $e->getMessage() . "\n";
-    80 }
-    81 
-    82 try {
+    31 try {
+    32     $r->__construct("qax", [], 0, null);
+    33 } catch (Error $e) {
+>   34     echo $e->getMessage() . "\n";
+    35 }
+    36 
+    37 var_dump($r->getMessage());
 
-ext/uri/tests/031.phpt:85
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    82 try {
-    83     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;N;i:1;a:0:{}}'); // first item is not an array
-    84 } catch (Exception $e) {
->   85     echo $e->getMessage() . "\n";
-    86 }
-    87 
-    88 try {
-
-ext/uri/tests/031.phpt:91
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    88 try {
-    89     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:0:{}i:1;a:0:{}}'); // first array is empty
-    90 } catch (Exception $e) {
->   91     echo $e->getMessage() . "\n";
-    92 }
-    93 
-    94 try {
-
-ext/uri/tests/031.phpt:97
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    94 try {
-    95     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:2:{s:3:"uri";s:19:"https://example.com";s:1:"a";i:1;}i:1;a:0:{}}'); // "uri" key in first array contains more than 1 item
-    96 } catch (Exception $e) {
->   97     echo $e->getMessage() . "\n";
-    98 }
-    99 
-   100 try {
-
-ext/uri/tests/031.phpt:103
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-   100 try {
-   101     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:1:{s:3:"uri";i:1;}i:1;a:0:{}}'); // "uri" key in first array is not a string
-   102 } catch (Exception $e) {
->  103     echo $e->getMessage() . "\n";
-   104 }
-   105 
-   106 try {
-
-ext/uri/tests/031.phpt:109
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-   106 try {
-   107     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:1:{s:3:"uri";s:11:"invalid-url";}i:1;a:0:{}}'); // "uri" key in first array contains invalid URL
-   108 } catch (Exception $e) {
->  109     echo $e->getMessage() . "\n";
-   110 }
-   111 
-   112 try {
-
-ext/uri/tests/031.phpt:115
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-   112 try {
-   113     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:1:{s:3:"uri";s:19:"https://example.com";}i:1;s:0:"";}'); // second item in not an array
-   114 } catch (Exception $e) {
->  115     echo $e->getMessage() . "\n";
-   116 }
-   117 
-   118 try {
-
-ext/uri/tests/031.phpt:121
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-   118 try {
-   119     unserialize('O:14:"Uri\WhatWg\Url":2:{i:0;a:1:{s:3:"uri";s:19:"https://example.com";}i:1;a:1:{s:5:"prop1";i:123;}}'); // second array contains property
-   120 } catch (Exception $e) {
->  121     echo $e->getMessage() . "\n";
-   122 }
-   123 
-   124 ?>
-
-ext/uri/tests/051.phpt:13
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    10 try {
-    11     $uri->resolve("á");
-    12 } catch (Uri\InvalidUriException $e) {
->   13     echo $e->getMessage() . "\n";
-    14 }
-    15 
-    16 $url = new Uri\WhatWg\Url("https://example.com");
-
-ext/uri/tests/051.phpt:21
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    18 try {
-    19     $url->resolve("https://1.2.3.4.5");
-    20 } catch (Uri\WhatWg\InvalidUrlException $e) {
->   21     echo $e->getMessage() . "\n";
-    22 }
-    23 
-    24 $softErrors = [];
-
-ext/uri/tests/052.phpt:13
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    10 try {
-    11     $r->__construct('bar', Uri\WhatWg\UrlValidationErrorType::HostMissing, false);
-    12 } catch (Error $e) {
->   13     echo $e->getMessage() . "\n";
-    14 }
-    15 
-    16 var_dump($r);
-
-ext/uri/tests/053.phpt:18
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    15 try {
-    16     $r->__construct("foo");
-    17 } catch (Error $e) {
->   18     echo $e->getMessage() . "\n";
-    19 }
-    20 
-    21 try {
-
-ext/uri/tests/053.phpt:24
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    21 try {
-    22     $r->__construct("bar", []);
-    23 } catch (Error $e) {
->   24     echo $e->getMessage() . "\n";
-    25 }
-    26 
-    27 try {
-
-ext/uri/tests/053.phpt:30
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    27 try {
-    28     $r->__construct("baz", [], 0);
-    29 } catch (Error $e) {
->   30     echo $e->getMessage() . "\n";
-    31 }
-    32 
-    33 try {
-
-ext/uri/tests/053.phpt:36
-  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage() . "\n";
-
-    33 try {
-    34     $r->__construct("qax", [], 0, null);
-    35 } catch (Error $e) {
->   36     echo $e->getMessage() . "\n";
-    37 }
-    38 
-    39 var_dump($r->getMessage());
-
-ext/uri/tests/053.phpt:39
+ext/uri/tests/053.phpt:37
   fingerprint: message_only:34c3f620002fd034fd11534efa8229867b9cf8ae
   family: message_only
   safety: canonicalizable
@@ -110906,15 +112147,15 @@ ext/uri/tests/053.phpt:39
   parts: exception_message(r)
   var_dump($r->getMessage());
 
-    36     echo $e->getMessage() . "\n";
-    37 }
-    38 
->   39 var_dump($r->getMessage());
-    40 var_dump($r->errors);
-    41 var_dump($r->getCode());
-    42 var_dump($r->getPrevious()::class);
+    34     echo $e->getMessage() . "\n";
+    35 }
+    36 
+>   37 var_dump($r->getMessage());
+    38 var_dump($r->errors);
+    39 var_dump($r->getCode());
+    40 var_dump($r->getPrevious()::class);
 
-ext/uri/tests/054.phpt:11
+ext/uri/tests/054.phpt:9
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110923,15 +112164,15 @@ ext/uri/tests/054.phpt:11
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-     8 try {
-     9     new \Uri\WhatWg\Url('http://localhost:99999');
-    10 } catch (Uri\WhatWg\InvalidUrlException $e) {
->   11     echo $e->getMessage() . "\n";
-    12     var_dump($e->errors[0]->type === \Uri\WhatWg\UrlValidationErrorType::PortOutOfRange);
-    13 }
-    14 
+     6 try {
+     7     new \Uri\WhatWg\Url('http://localhost:99999');
+     8 } catch (Uri\WhatWg\InvalidUrlException $e) {
+>    9     echo $e->getMessage() . "\n";
+    10     var_dump($e->errors[0]->type === \Uri\WhatWg\UrlValidationErrorType::PortOutOfRange);
+    11 }
+    12 
 
-ext/uri/tests/055.phpt:11
+ext/uri/tests/055.phpt:9
   fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
   family: message_only
   safety: canonicalizable
@@ -110940,15 +112181,15 @@ ext/uri/tests/055.phpt:11
   parts: exception_message(e) newline
   echo $e->getMessage() . "\n";
 
-     8 try {
-     9     var_dump(new Uri\Rfc3986\Uri('foo', new Uri\Rfc3986\Uri('bar')));
-    10 } catch (Uri\InvalidUriException $e) {
->   11     echo $e->getMessage() . "\n";
-    12 }
-    13 ?>
-    14 
+     6 try {
+     7     var_dump(new Uri\Rfc3986\Uri('foo', new Uri\Rfc3986\Uri('bar')));
+     8 } catch (Uri\InvalidUriException $e) {
+>    9     echo $e->getMessage() . "\n";
+    10 }
+    11 ?>
+    12 
 
-ext/uri/tests/057.phpt:16
+ext/uri/tests/057.phpt:14
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -110957,15 +112198,15 @@ ext/uri/tests/057.phpt:16
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    13 try {
-    14     Uri\WhatWg\Url::parse(" https://example.org ", errors: $f->x);
-    15 } catch (Throwable $e) {
->   16     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    17 }
-    18 
-    19 ?>
+    11 try {
+    12     Uri\WhatWg\Url::parse(" https://example.org ", errors: $f->x);
+    13 } catch (Throwable $e) {
+>   14     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    15 }
+    16 
+    17 ?>
 
-ext/uri/tests/058.phpt:25
+ext/uri/tests/058.phpt:23
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -110974,15 +112215,15 @@ ext/uri/tests/058.phpt:25
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    22         new \Uri\Rfc3986\Uri('https://example.com:2147483648');
-    23     }
-    24 } catch (Throwable $e) {
->   25     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    26 }
-    27 
-    28 ?>
+    20         new \Uri\Rfc3986\Uri('https://example.com:2147483648');
+    21     }
+    22 } catch (Throwable $e) {
+>   23     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    24 }
+    25 
+    26 ?>
 
-ext/uri/tests/065.phpt:12
+ext/uri/tests/065.phpt:10
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -110991,15 +112232,15 @@ ext/uri/tests/065.phpt:12
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-     9 try {
-    10   $uri->__construct('ftp://example.org');
-    11 } catch (Throwable $e) {
->   12   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    13 }
-    14 var_dump($uri);
-    15 
+     7 try {
+     8   $uri->__construct('ftp://example.org');
+     9 } catch (Throwable $e) {
+>   10   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    11 }
+    12 var_dump($uri);
+    13 
 
-ext/uri/tests/065.phpt:20
+ext/uri/tests/065.phpt:18
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111008,15 +112249,15 @@ ext/uri/tests/065.phpt:20
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    17 try {
-    18   $uri->__unserialize([['uri' => 'ftp://example.org'], []]);
-    19 } catch (Throwable $e) {
->   20   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    21 }
-    22 var_dump($uri);
-    23 
+    15 try {
+    16   $uri->__unserialize([['uri' => 'ftp://example.org'], []]);
+    17 } catch (Throwable $e) {
+>   18   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    19 }
+    20 var_dump($uri);
+    21 
 
-ext/uri/tests/065.phpt:28
+ext/uri/tests/065.phpt:26
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111025,15 +112266,15 @@ ext/uri/tests/065.phpt:28
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    25 try {
-    26   $uri->__construct('ftp://example.org');
-    27 } catch (Throwable $e) {
->   28   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    29 }
-    30 var_dump($uri);
-    31 
+    23 try {
+    24   $uri->__construct('ftp://example.org');
+    25 } catch (Throwable $e) {
+>   26   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    27 }
+    28 var_dump($uri);
+    29 
 
-ext/uri/tests/065.phpt:36
+ext/uri/tests/065.phpt:34
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111042,15 +112283,15 @@ ext/uri/tests/065.phpt:36
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    33 try {
-    34   $uri->__unserialize([['uri' => 'ftp://example.org'], []]);
-    35 } catch (Throwable $e) {
->   36   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    37 }
-    38 var_dump($uri);
-    39 
+    31 try {
+    32   $uri->__unserialize([['uri' => 'ftp://example.org'], []]);
+    33 } catch (Throwable $e) {
+>   34   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    35 }
+    36 var_dump($uri);
+    37 
 
-ext/uri/tests/101.phpt:12
+ext/uri/tests/101.phpt:11
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
   family: message_only
   safety: canonicalizable
@@ -111059,49 +112300,185 @@ ext/uri/tests/101.phpt:12
   parts: exception_message(e) newline
   echo $e->getMessage(), PHP_EOL;
 
+     8 try {
+     9   var_dump(zend_test_uri_parser('invalid uri', "Uri\\WhatWg\\Url"));
+    10 } catch (\Uri\WhatWg\InvalidUrlException $e) {
+>   11   echo $e->getMessage(), PHP_EOL;
+    12   var_dump($e->errors);
+    13 }
+    14 
+
+ext/uri/tests/gh19780.phpt:13
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    10 try {
+    11     new InvalidUrlException('message', ['foo']);
+    12 } catch (ValueError $e) {
+>   13     echo $e->getMessage(), "\n";
+    14 }
+    15 
+    16 try {
+
+ext/uri/tests/gh19780.phpt:21
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), "\n";
+
+    18         1 => new UrlValidationError('context', UrlValidationErrorType::HostMissing, true)
+    19     ]);
+    20 } catch (ValueError $e) {
+>   21     echo $e->getMessage(), "\n";
+    22 }
+    23 
+    24 ?>
+
+ext/uri/tests/rfc3986/builder/basic_error_with_base.phpt:12
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
      9 try {
-    10   var_dump(zend_test_uri_parser('invalid uri', "Uri\\WhatWg\\Url"));
-    11 } catch (\Uri\WhatWg\InvalidUrlException $e) {
->   12   echo $e->getMessage(), PHP_EOL;
-    13   var_dump($e->errors);
-    14 }
-    15 
+    10     $builder->build(new Uri\Rfc3986\Uri("/foo/bar"));
+    11 } catch (Throwable $e) {
+>   12     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    13 }
+    14 
+    15 ?>
 
-ext/uri/tests/gh19780.phpt:15
-  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-  family: message_only
+ext/uri/tests/rfc3986/builder/fragment_error_special_char.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
   safety: canonicalizable
   expected: EXPECT
   reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage(), "\n";
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    12 try {
-    13     new InvalidUrlException('message', ['foo']);
-    14 } catch (ValueError $e) {
->   15     echo $e->getMessage(), "\n";
-    16 }
-    17 
-    18 try {
+     8 try {
+     9     $builder->setFragment("#foo");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/gh19780.phpt:23
-  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
-  family: message_only
+ext/uri/tests/rfc3986/builder/fragment_error_unicode_char.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
   safety: canonicalizable
   expected: EXPECT
   reason: safe candidate for a canonical exception-output family
-  parts: exception_message(e) newline
-  echo $e->getMessage(), "\n";
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    20         1 => new UrlValidationError('context', UrlValidationErrorType::HostMissing, true)
-    21     ]);
-    22 } catch (ValueError $e) {
->   23     echo $e->getMessage(), "\n";
-    24 }
-    25 
-    26 ?>
+     8 try {
+     9     $builder->setFragment("főő");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/fragment_error_reserved.phpt:13
+ext/uri/tests/rfc3986/builder/host_error_ipv6_closing_brace.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $builder->setHost("[2001:%30db8:85a3:0000:0000:8a2e:0370:7334");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/builder/host_error_percent_encoding1.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $builder->setHost("ex%3mple.co");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/builder/host_error_percent_encoding2.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $builder->setHost("[2001:%308:85a3:0000:0000:8a2e:0370:7334]");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/builder/path_error_first_segment_colon.phpt:12
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     9 try {
+    10     $builder->build();
+    11 } catch (Throwable $e) {
+>   12     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    13 }
+    14 
+    15 ?>
+
+ext/uri/tests/rfc3986/builder/path_error_leading_double_slash.phpt:12
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     9 try {
+    10     $builder->build();
+    11 } catch (Throwable $e) {
+>   12     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    13 }
+    14 
+    15 ?>
+
+ext/uri/tests/rfc3986/builder/path_error_missing_leading_slash.phpt:13
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111111,14 +112488,14 @@ ext/uri/tests/rfc3986/modification/fragment_error_reserved.phpt:13
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
     10 try {
-    11     $uri->withFragment("#fragment");
+    11     $builder->build();
     12 } catch (Throwable $e) {
 >   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
     14 }
     15 
     16 ?>
 
-ext/uri/tests/rfc3986/modification/fragment_error_unicode.phpt:13
+ext/uri/tests/rfc3986/builder/path_error_special_char.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111127,15 +112504,15 @@ ext/uri/tests/rfc3986/modification/fragment_error_unicode.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withFragment("ő");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $builder->setPath("#foo");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/host_error_reserved.phpt:13
+ext/uri/tests/rfc3986/builder/port_error_missing_host.phpt:12
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111144,15 +112521,15 @@ ext/uri/tests/rfc3986/modification/host_error_reserved.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withHost("ex#mple.com");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     9 try {
+    10     $builder->build();
+    11 } catch (Throwable $e) {
+>   12     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    13 }
+    14 
+    15 ?>
 
-ext/uri/tests/rfc3986/modification/path_error_null_byte.phpt:13
+ext/uri/tests/rfc3986/builder/port_error_negative.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111161,15 +112538,15 @@ ext/uri/tests/rfc3986/modification/path_error_null_byte.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withPath("/\0foo");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $builder->setPort(-1);
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/path_error_reserved.phpt:13
+ext/uri/tests/rfc3986/builder/query_error_special_char.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111178,15 +112555,15 @@ ext/uri/tests/rfc3986/modification/path_error_reserved.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withPath("/[foo]");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $builder->setQuery("#foo");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/path_error_unicode.phpt:13
+ext/uri/tests/rfc3986/builder/query_error_unicode_char.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111195,15 +112572,15 @@ ext/uri/tests/rfc3986/modification/path_error_unicode.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withPath("/ő");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $builder->setQuery("főő");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/path_error_without_leading_slash.phpt:13
+ext/uri/tests/rfc3986/builder/scheme_error_empty.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111212,15 +112589,15 @@ ext/uri/tests/rfc3986/modification/path_error_without_leading_slash.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withPath("foo");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $builder->setScheme("");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/port_error_negative.phpt:13
+ext/uri/tests/rfc3986/builder/scheme_error_first_char.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111229,15 +112606,15 @@ ext/uri/tests/rfc3986/modification/port_error_negative.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withPort(-1);
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $builder->setScheme("1");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/query_error_reserved.phpt:13
+ext/uri/tests/rfc3986/builder/scheme_error_special_char.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111246,15 +112623,15 @@ ext/uri/tests/rfc3986/modification/query_error_reserved.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withQuery("#foo");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $builder->setScheme(":");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/query_error_unicode.phpt:13
+ext/uri/tests/rfc3986/builder/userinfo_error_missing_host.phpt:12
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111263,15 +112640,15 @@ ext/uri/tests/rfc3986/modification/query_error_unicode.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withQuery("ő");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     9 try {
+    10     $builder->build();
+    11 } catch (Throwable $e) {
+>   12     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    13 }
+    14 
+    15 ?>
 
-ext/uri/tests/rfc3986/modification/scheme_error_empty.phpt:13
+ext/uri/tests/rfc3986/builder/userinfo_error_percent_encoding.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111280,15 +112657,15 @@ ext/uri/tests/rfc3986/modification/scheme_error_empty.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withScheme("");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $builder->setUserInfo("%3");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/scheme_error_encoded.phpt:13
+ext/uri/tests/rfc3986/builder/userinfo_error_special_char.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111297,15 +112674,15 @@ ext/uri/tests/rfc3986/modification/scheme_error_encoded.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withScheme("http%73");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $builder->setUserInfo("<>");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/scheme_error_reserved.phpt:13
+ext/uri/tests/rfc3986/modification/fragment_error_reserved.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111314,15 +112691,15 @@ ext/uri/tests/rfc3986/modification/scheme_error_reserved.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withScheme("https:");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $uri->withFragment("#fragment");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/rfc3986/modification/userinfo_error_reserved.phpt:13
+ext/uri/tests/rfc3986/modification/fragment_error_unicode.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111331,13 +112708,217 @@ ext/uri/tests/rfc3986/modification/userinfo_error_reserved.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->withUserInfo("us/r:password"); // us/r:password
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $uri->withFragment("ő");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/host_error_reserved.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withHost("ex#mple.com");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/path_error_null_byte.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withPath("/\0foo");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/path_error_reserved.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withPath("/[foo]");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/path_error_unicode.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withPath("/ő");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/path_error_without_leading_slash.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withPath("foo");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/port_error_negative.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withPort(-1);
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/query_error_reserved.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withQuery("#foo");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/query_error_unicode.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withQuery("ő");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/scheme_error_empty.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withScheme("");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/scheme_error_encoded.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withScheme("http%73");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/scheme_error_reserved.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withScheme("https:");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/rfc3986/modification/userinfo_error_reserved.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $uri->withUserInfo("us/r:password"); // us/r:password
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
 ext/uri/tests/rfc3986/parsing/basic_error_multibyte.phpt:9
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
@@ -111628,7 +113209,7 @@ ext/uri/tests/rfc3986/parsing/userinfo_error_reserved.phpt:9
     11 
     12 ?>
 
-ext/uri/tests/rfc3986/reference_resolution/resolve_error_null_byte.phpt:13
+ext/uri/tests/rfc3986/reference_resolution/resolve_error_null_byte.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111637,15 +113218,15 @@ ext/uri/tests/rfc3986/reference_resolution/resolve_error_null_byte.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $uri->resolve("/f\0o");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $uri->resolve("/f\0o");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/host_error_empty.phpt:13
+ext/uri/tests/whatwg/modification/host_error_empty.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111654,15 +113235,15 @@ ext/uri/tests/whatwg/modification/host_error_empty.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url->withHost("");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url->withHost("");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_opaque1.phpt:13
+ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_opaque1.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111671,15 +113252,15 @@ ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_opaque1.ph
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url = $url->withHost("ex@mple.com");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url = $url->withHost("ex@mple.com");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_special1.phpt:13
+ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_special1.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111688,15 +113269,15 @@ ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_special1.p
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url = $url->withHost("ex@mple.com");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url = $url->withHost("ex@mple.com");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_special2.phpt:13
+ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_special2.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111705,15 +113286,15 @@ ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_special2.p
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url = $url->withHost("ex:mple.com");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url = $url->withHost("ex:mple.com");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_special3.phpt:13
+ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_special3.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111722,15 +113303,15 @@ ext/uri/tests/whatwg/modification/host_error_forbidden_host_codepoint_special3.p
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url = $url->withHost("ex:mple.com");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url = $url->withHost("ex:mple.com");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/host_error_null_byte.phpt:13
+ext/uri/tests/whatwg/modification/host_error_null_byte.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111739,15 +113320,15 @@ ext/uri/tests/whatwg/modification/host_error_null_byte.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url->withHost("h\0st");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url->withHost("h\0st");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/host_error_unset_existing.phpt:13
+ext/uri/tests/whatwg/modification/host_error_unset_existing.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111756,15 +113337,15 @@ ext/uri/tests/whatwg/modification/host_error_unset_existing.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url = $url->withHost(null);
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url = $url->withHost(null);
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/port_error_negative.phpt:13
+ext/uri/tests/whatwg/modification/multiple_error_with_warnings.phpt:15
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111773,15 +113354,15 @@ ext/uri/tests/whatwg/modification/port_error_negative.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url->withPort(-1);
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+    12 try {
+    13     $url->withScheme("0");
+    14 } catch (Throwable $e) {
+>   15     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    16     var_dump($e->errors);
+    17 }
+    18 
 
-ext/uri/tests/whatwg/modification/port_error_too_large.phpt:13
+ext/uri/tests/whatwg/modification/port_error_negative.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111790,15 +113371,15 @@ ext/uri/tests/whatwg/modification/port_error_too_large.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url->withPort(65536);
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url->withPort(-1);
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/scheme_error_empty.phpt:13
+ext/uri/tests/whatwg/modification/port_error_too_large.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111807,15 +113388,15 @@ ext/uri/tests/whatwg/modification/scheme_error_empty.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url->withScheme("");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url->withPort(65536);
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/scheme_error_encoded.phpt:13
+ext/uri/tests/whatwg/modification/scheme_error_empty.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111824,15 +113405,15 @@ ext/uri/tests/whatwg/modification/scheme_error_encoded.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url->withScheme("http%73");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url->withScheme("");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/scheme_error_invalid.phpt:13
+ext/uri/tests/whatwg/modification/scheme_error_encoded.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111841,15 +113422,15 @@ ext/uri/tests/whatwg/modification/scheme_error_invalid.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url->withScheme("http?");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url->withScheme("http%73");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
-ext/uri/tests/whatwg/modification/scheme_error_null_byte.phpt:13
+ext/uri/tests/whatwg/modification/scheme_error_invalid.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -111858,13 +113439,30 @@ ext/uri/tests/whatwg/modification/scheme_error_null_byte.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url->withScheme("sch\0me");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url->withScheme("http?");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
+
+ext/uri/tests/whatwg/modification/scheme_error_null_byte.phpt:11
+  fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:trash exception_message(e) newline
+  echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+
+     8 try {
+     9     $url->withScheme("sch\0me");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
 ext/uri/tests/whatwg/parsing/basic_error_empty.phpt:9
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
@@ -112257,7 +113855,7 @@ ext/uri/tests/whatwg/parsing/scheme_error_special.phpt:9
     11 
     12 ?>
 
-ext/uri/tests/whatwg/reference_resolution/resolve_error_host_null_byte.phpt:13
+ext/uri/tests/whatwg/reference_resolution/resolve_error_host_null_byte.phpt:11
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
   family: class_message
   safety: canonicalizable
@@ -112266,13 +113864,13 @@ ext/uri/tests/whatwg/reference_resolution/resolve_error_host_null_byte.phpt:13
   parts: exception_class(static_class) literal:trash exception_message(e) newline
   echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 
-    10 try {
-    11     $url->resolve("https://ex\0mple.com");
-    12 } catch (Throwable $e) {
->   13     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
-    14 }
-    15 
-    16 ?>
+     8 try {
+     9     $url->resolve("https://ex\0mple.com");
+    10 } catch (Throwable $e) {
+>   11     echo $e::class, ": ", $e->getMessage(), PHP_EOL;
+    12 }
+    13 
+    14 ?>
 
 ext/xml/tests/bug78563.phpt:12
   fingerprint: class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
@@ -115044,6 +116642,74 @@ ext/zend_test/tests/zend_test_compile_string.phpt:49
     51 
     52 zend_test_compile_string(null, null, null);
 
+ext/zip/tests/ZipArchive_closeString_error.phpt:14
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    11 try {
+    12 	$zip->closeString();
+    13 } catch (Error $e) {
+>   14 	echo $e->getMessage() . "\n";
+    15 }
+    16 
+    17 echo "2.\n";
+
+ext/zip/tests/ZipArchive_closeString_error.phpt:24
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    21 try {
+    22 	$zip->closeString();
+    23 } catch (Error $e) {
+>   24 	echo $e->getMessage() . "\n";
+    25 }
+    26 
+    27 echo "3.\n";
+
+ext/zip/tests/ZipArchive_closeString_error.phpt:34
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    31 try {
+    32 	$zip->closeString();
+    33 } catch (Error $e) {
+>   34 	echo $e->getMessage() . "\n";
+    35 }
+    36 
+    37 ?>
+
+ext/zip/tests/bug72434.phpt:13
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    10     $unserialized_payload = unserialize($serialized_payload);
+    11     var_dump($unserialized_payload);
+    12 } catch (Exception $e) {
+>   13     echo $e->getMessage() . "\n";
+    14 }
+    15 ?>
+    16 
+
 ext/zip/tests/doubleclose.phpt:17
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
   family: message_only
@@ -115077,6 +116743,57 @@ ext/zip/tests/doubleclose.phpt:30
     31     }
     32 } else {
     33     die("Failure");
+
+ext/zip/tests/gh21682.phpt:12
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+     9     serialize($a);
+    10     echo "ERROR: should have thrown\n";
+    11 } catch (\Exception $e) {
+>   12     echo $e->getMessage() . "\n";
+    13 }
+    14 ?>
+    15 
+
+ext/zip/tests/gh21682_subclass_no_overrides.phpt:14
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    11     serialize($zip);
+    12     echo "ERROR: should have thrown\n";
+    13 } catch (\Exception $e) {
+>   14     echo $e->getMessage() . "\n";
+    15 }
+    16 
+    17 try {
+
+ext/zip/tests/gh21682_subclass_no_overrides.phpt:21
+  fingerprint: message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage() . "\n";
+
+    18     unserialize('O:5:"MyZip":0:{}');
+    19     echo "ERROR: should have thrown\n";
+    20 } catch (\Exception $e) {
+>   21     echo $e->getMessage() . "\n";
+    22 }
+    23 ?>
+    24 
 
 ext/zip/tests/oo_addglob2.phpt:44
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
@@ -115842,6 +117559,23 @@ ext/zlib/tests/gh16326.phpt:20
     21 }
     22 ?>
     23 
+
+ext/zlib/tests/gh22142.phpt:15
+  fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message(e) newline
+  echo $e->getMessage(), PHP_EOL;
+
+    12 try {
+    13     deflate_init(ZLIB_ENCODING_DEFLATE, new Options());
+    14 } catch (TypeError $e) {
+>   15     echo $e->getMessage(), PHP_EOL;
+    16 }
+    17 
+    18 ?>
 
 ext/zlib/tests/gzclose_basic.phpt:19
   fingerprint: message_only:2390ad0c3deebc07314e217c6d5af79712e2e848

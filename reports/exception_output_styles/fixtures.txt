@@ -23,7 +23,7 @@ Zend/tests/access_modifiers/access_modifiers_008.phpt
     - line 47: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
 
 Zend/tests/add_002.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_add_002
   first line: 14
   flavors covered: 1
@@ -48,7 +48,7 @@ Zend/tests/arg_unpack/non_integer_keys.phpt
     - line 16: message_only message_only:6aad370bb56dc0760c2ad93c8ec22e95876a0175
 
 Zend/tests/arg_unpack/string_keys.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_arg_unpack_string_keys
   first line: 13
   flavors covered: 1
@@ -110,7 +110,7 @@ Zend/tests/attributes/deprecated/functions/deprecated_handler_001.phpt
     - line 8: message_only message_only:29fa7b2a12d1760180943a1de3da2fa22c4d2155
 
 Zend/tests/bug53432.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_bug53432
   first line: 22
   flavors covered: 2
@@ -303,14 +303,22 @@ Zend/tests/require_parse_exception.phpt
     - line 12: message_only message_only:a72f63c4799eb92de7e43e492194e7d22662fd52
 
 Zend/tests/return_types/028.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_return_types_028
   first line: 15
   flavors covered: 1
     - line 15: message_only message_only:da586a443f59179d6bae35c3cada1c62186c9024
 
-Zend/tests/type_declarations/dnf_types/gh9516.phpt
+Zend/tests/type_coercion/gh22112.phpt
   state: old_only
+  fixture: Zend_tests_type_coercion_gh22112
+  first line: 23
+  flavors covered: 2
+    - line 23: message_only message_only:f1eb41718480b7a65f05449075c18f2372d8ffbd
+    - line 29: message_only message_only:f12937244b0f4437880f1760fd6d75a81ab2f8aa
+
+Zend/tests/type_declarations/dnf_types/gh9516.phpt
+  state: handled
   fixture: Zend_tests_type_declarations_dnf_types_gh9516
   first line: 28
   flavors covered: 1
@@ -332,7 +340,7 @@ Zend/tests/type_declarations/dnf_types/gh9516.phpt
     - line 136: message_only message_only:5540f368e4fd1a506105e1f5b04b1f18cff3af9f
 
 Zend/tests/type_declarations/typed_properties_038.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_type_declarations_typed_properties_038
   first line: 13
   flavors covered: 1
@@ -446,7 +454,7 @@ ext/ffi/tests/gh9698.phpt
     - line 14: message_only message_only:5c6d8344bf490e30371878613f566ae255c1d460
 
 ext/hash/tests/hash_equals.phpt
-  state: old_only
+  state: handled
   fixture: ext_hash_tests_hash_equals
   first line: 12
   flavors covered: 1
@@ -486,6 +494,14 @@ ext/intl/tests/calendar_toDateTime_error.phpt
     - line 31: class_message class_message:1d7ef669ef048aef465a09203d23aca45ced33cd
     - line 37: class_message class_message:2483e803fdb97c2b413c1e74a0dc4c15e781a078
     - line 39: class_message class_message:1d7ef669ef048aef465a09203d23aca45ced33cd
+
+ext/intl/tests/calendar_uninitialized_argument_position.phpt
+  state: old_only
+  fixture: ext_intl_tests_calendar_uninitialized_argument_position
+  first line: 15
+  flavors covered: 1
+    - line 15: message_only message_only:b297e8eb487c0ba86e367beee6191d1abeacffb7
+    - line 23: message_only message_only:b297e8eb487c0ba86e367beee6191d1abeacffb7
 
 ext/intl/tests/formatter_fail.phpt
   state: old_only
@@ -547,6 +563,14 @@ ext/mysqli/tests/mysqli_execute_query.phpt
     - line 62: message_only message_only:34ea7163c425be9c9e8d7313df17b78a444163c0
     - line 67: message_only message_only:99cc553e233268300e49fac3ef9e460ee0fb7d3b
     - line 82: message_only message_only:ff7aef77de42d4787030cf514d5fe21819424ba8
+
+ext/mysqli/tests/mysqli_execute_query_leak.phpt
+  state: old_only
+  fixture: ext_mysqli_tests_mysqli_execute_query_leak
+  first line: 19
+  flavors covered: 2
+    - line 19: message_only message_only:d89f190793adfdc1bd509d43aff7b987e72df3ff
+    - line 25: message_only message_only:6de66e0373e055c9515f07726aef41398b298f1c
 
 ext/mysqli/tests/mysqli_stmt_execute_bind.phpt
   state: old_only
@@ -688,7 +712,7 @@ ext/reflection/tests/ReflectionFiber_errors.phpt
     - line 58: message_only message_only:9fa9fe94d0a5f54d3aa6cd05060a655ee7eedf5d
 
 ext/reflection/tests/ReflectionMethod_invoke_basic.phpt
-  state: old_only
+  state: handled
   fixture: ext_reflection_tests_ReflectionMethod_invoke_basic
   first line: 28
   flavors covered: 3
@@ -701,9 +725,9 @@ ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_dynamic
   first line: 23
-  flavors covered: 3
+  flavors covered: 2
     - line 23: message_only message_only:10f714c5688b050597b07e6002cfdfa46678205f
-    - line 64: message_only message_only:6c6da67cc987f3bd63ad897aaab9cf8a3bcb4729
+    - line 64: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
     - line 71: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
 
 ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt
@@ -745,6 +769,20 @@ ext/session/tests/session_start_error.phpt
     - line 15: message_only message_only:5805d72f42f93979758edfbf1bef1f782ab4dff7
     - line 23: class_message class_message:82af62560ae783c167116f4e3c65d8f690ff85b3
 
+ext/soap/tests/bugs/gh22167.phpt
+  state: old_only
+  fixture: ext_soap_tests_bugs_gh22167
+  first line: 101
+  flavors covered: 1
+    - line 101: message_only message_only:eb40e2de3e173d548996ef3a90ab5a2dea44ed33
+
+ext/soap/tests/bugs/protocol_relative_redirect.phpt
+  state: old_only
+  fixture: ext_soap_tests_bugs_protocol_relative_redirect
+  first line: 45
+  flavors covered: 1
+    - line 45: message_only message_only:295f517176a99a518bc4e0c2ff11e3cae0ead129
+
 ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt
   state: old_only
   fixture: ext_spl_tests_ArrayObject_arrayObject___construct_error1
@@ -777,7 +815,7 @@ ext/spl/tests/SplHeap_serialize_error_handling.phpt
     - line 63: message_only message_only:8df574e7d8c600504be4abeb2b126e3b9826e0fb
 
 ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt
-  state: old_only
+  state: handled
   fixture: ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags
   first line: 19
   flavors covered: 4
@@ -786,13 +824,14 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt
     - line 51: message_only message_only:50f0e2f39668185312aa2384dd53295626a8faa2
     - line 72: message_only message_only:6e18e6e468f86ccd286d214ffd5b31f9c354849f
 
-ext/spl/tests/bug73629.phpt
-  state: handled
-  fixture: ext_spl_tests_bug73629
-  first line: 9
-  flavors covered: 2
-    - line 9: message_only message_only:8caf988c4ab167235f10422b331605565cc98857
-    - line 14: message_only message_only:ce21b70d37e83e5f0615d484b44af07c0de90deb
+ext/spl/tests/gh16217.phpt
+  state: old_only
+  fixture: ext_spl_tests_gh16217
+  first line: 12
+  flavors covered: 3
+    - line 12: message_only message_only:2677408e20af8efbf3106a6f75b63712214b2147
+    - line 18: message_only message_only:569b0cb0e0df6b2546892626b11c5ca34705ce32
+    - line 26: message_only message_only:06f616c2efd5860d6821501194dd6646c60f1b43
 
 ext/spl/tests/heap_corruption.phpt
   state: handled
@@ -810,7 +849,7 @@ ext/spl/tests/iterator_047.phpt
     - line 51: message_only message_only:133cd1f32b27fee649b6825086d06f0e47e63acf
 
 ext/spl/tests/multiple_iterator_001.phpt
-  state: old_only
+  state: handled
   fixture: ext_spl_tests_multiple_iterator_001
   first line: 19
   flavors covered: 4
@@ -870,15 +909,15 @@ ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt
     - line 18: message_only message_only:d3e34e5a1dadcc3ebfd22839cdcf42cacd0dc07c
 
 ext/uri/tests/053.phpt
-  state: old_only
+  state: handled
   fixture: ext_uri_tests_053
-  first line: 18
+  first line: 16
   flavors covered: 2
-    - line 18: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 24: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 30: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 36: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
-    - line 39: message_only message_only:34c3f620002fd034fd11534efa8229867b9cf8ae
+    - line 16: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+    - line 22: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+    - line 28: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+    - line 34: message_only message_only:d738007cfbc5b7240e8cef0ab34363a1d23244dd
+    - line 37: message_only message_only:34c3f620002fd034fd11534efa8229867b9cf8ae
 
 tests/classes/array_access_013.phpt
   state: handled
@@ -936,7 +975,7 @@ tests/classes/type_hinting_004.phpt
     - line 141: message_only message_only:b6d3bac07898ac9852baeb0863131368e15af781
 
 tests/lang/foreachLoopIteratorAggregate.002.phpt
-  state: old_only
+  state: handled
   fixture: tests_lang_foreachLoopIteratorAggregate_002
   first line: 41
   flavors covered: 1
