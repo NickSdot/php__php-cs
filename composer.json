@@ -34,7 +34,7 @@
         "stan": "./vendor/bin/phpstan analyse",
         "deps": "./vendor/bin/composer-dependency-analyser",
         "fixer": "./vendor/bin/php-cs-fixer fix",
-        "fixer-fresh": "files=($(git --no-pager diff --name-only --diff-filter=ACMR HEAD | grep -E '\\.php$')); [ ${#files[@]} -gt 0 ] && vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --path-mode=intersection -- \"${files[@]}\"",
+        "fixer-fresh": "files=($(git --no-pager diff --name-only --diff-filter=ACMR HEAD | grep -E '\\.php$')); [ ${#files[@]} -eq 0 ] || vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --path-mode=intersection -- \"${files[@]}\"",
         "rector": "./vendor/bin/rector",
         "quality": [
           "@rector",
