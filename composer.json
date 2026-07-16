@@ -33,7 +33,7 @@
         "test": "./vendor/bin/phpunit",
         "stan": "./vendor/bin/phpstan analyse",
         "deps": "./vendor/bin/composer-dependency-analyser",
-        "fixer": "export PHP_CS_FIXER_IGNORE_ENV=1; ./vendor/bin/php-cs-fixer",
+        "fixer": "./vendor/bin/php-cs-fixer fix",
         "fixer-fresh": "files=($(git --no-pager diff --name-only --diff-filter=ACMR HEAD | grep -E '\\.php$')); [ ${#files[@]} -gt 0 ] && vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --path-mode=intersection -- \"${files[@]}\"",
         "rector": "./vendor/bin/rector",
         "quality": [
