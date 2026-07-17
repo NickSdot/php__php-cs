@@ -2,8 +2,8 @@
 
 Refresh-only run: no
 Updated new/diff pairs: 0
-Stale existing new/diff pairs kept: 12
-Old-only fixture files: 31
+Stale existing new/diff pairs kept: 10
+Old-only fixture files: 26
 Failures: 3
 
 ## Updated pairs
@@ -18,13 +18,11 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 - Zend_tests_type_declarations_typed_properties_076
 - ext_dom_tests_modern_xml_XMLDocument_xpath
 - ext_hash_tests_hash_serialize_003
-- ext_pcntl_tests_bug81577
 - ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
 - ext_reflection_tests_ReflectionProperty_getMangledName_instance
 - ext_reflection_tests_internal_parameter_default_value_check_all
 - ext_spl_tests_SplHeap_serialize_error_handling
 - ext_spl_tests_heap_corruption
-- tests_classes_ctor_failure
 - tests_classes_type_hinting_004
 
 ## Old-only fixtures
@@ -40,10 +38,7 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 - ext_dom_tests_modern_xml_gh22570
 - ext_intl_tests_calendar_get_Least_Greatest_Minimum_Maximum_error
 - ext_intl_tests_calendar_uninitialized_argument_position
-- ext_phar_tests_phar_metadata_write4
-- ext_spl_tests_ArrayObject_arrayObject___construct_error1
 - ext_spl_tests_gh16217
-- ext_standard_tests_mail_gh13415
 - ext_standard_tests_strings_printf_64bit
 - ext_standard_tests_strings_strpos
 - manual_001
@@ -58,8 +53,6 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 - manual_010
 - manual_011
 - manual_012
-- manual_014
-- manual_017
 
 ## Failures
 

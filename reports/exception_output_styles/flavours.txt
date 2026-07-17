@@ -202,9 +202,9 @@ ext/pcntl/tests/bug81577.phpt:22
   fingerprint: class_message:7c685ccbb97fc6de5c30b1ddd3e6cb3acd4d2a92
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
+  reason: safe candidate for a canonical exception-output family
   parts: exception_class(get_class) literal:d98411eb70b07edf83e993ee9dba073bee0dddeb exception_message newline
   echo get_class($ex) , " : " , $ex->getMessage() , "\n";
 
@@ -778,9 +778,9 @@ ext/pdo_firebird/tests/bug_77863.phpt:113
   fingerprint: message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86
   origin: php_src
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
+  reason: safe candidate for a canonical exception-output family
   parts: exception_message literal:01298c01639d867f841df8043cedc891cf11d8f0
   echo $e->getMessage() . '<br>';
 

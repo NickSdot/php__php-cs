@@ -200,26 +200,6 @@ Zend/tests/methods-on-non-objects-catch.phpt:13
     15 echo "Alive\n";
     16 ?>
 
-ext/phar/tests/phar_metadata_write4.phpt:58
-  state: old_only
-  fixture: ext_phar_tests_phar_metadata_write4
-  fingerprint: message_only:0f3444b319aa6b82bb6a6e57e3e5380d1ebf1b99
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:trash:caught exception_message literal:7df702c1e2a7f97f2512b0267e516708fda29ac8 exception_file literal:05a79f06cf3f67f726dae68d18a2290f6c9a50c9 exception_line newline
-  echo "Caught {$e->getMessage()} at {$e->getFile()}:{$e->getLine()}\n";
-
-    55 try {
-    56     var_dump($phar['a']->setMetadata(new ThrowsOnSerialize()));
-    57 } catch (RuntimeException $e) {
->   58     echo "Caught {$e->getMessage()} at {$e->getFile()}:{$e->getLine()}\n";
-    59     unset($e);
-    60 }
-    61 var_dump($phar['a']->getMetadata([]));
-
 manual_004/old.phpt:8
   state: old_only
   fixture: manual_004
@@ -239,46 +219,6 @@ manual_004/old.phpt:8
      9 }
     10 ?>
     11 
-
-manual_017/old.phpt:8
-  state: old_only
-  fixture: manual_017
-  fingerprint: message_only:1ec5fa64124358dce243d2469687cdbcd868e829
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:f09e12db9a502e1f3fb20d8ac729daf4b47d6cbb exception_message newline
-  echo "SoapFault: " . $e->getMessage() . "\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo "SoapFault: " . $e->getMessage() . "\n";
-     9 }
-    10 ?>
-    11 
-
-manual_014/old.phpt:8
-  state: old_only
-  fixture: manual_014
-  fingerprint: message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_message literal:01298c01639d867f841df8043cedc891cf11d8f0
-  echo $e->getMessage() . '<br>';
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo $e->getMessage() . '<br>';
-     9     echo "\n";
-    10 }
-    11 ?>
 
 Zend/tests/type_coercion/gh22112.phpt:29
   state: old_only
@@ -359,26 +299,6 @@ Zend/tests/attributes/005_objects.phpt:54
     55 }
     56 
     57 echo "\n";
-
-ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt:11
-  state: old_only
-  fixture: ext_spl_tests_ArrayObject_arrayObject___construct_error1
-  fingerprint: message_only:4629d0d3302b4096cec9cfbe69f9c600b046cc45
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_message literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:a35077a93b180088463ecc1cdf83178d99a53a66
-  echo $e->getMessage() . "(" . $e->getLine() .  ")\n";
-
-     8 try {
-     9   var_dump(new ArrayObject($a, 0, "Exception"));
-    10 } catch (TypeError $e) {
->   11   echo $e->getMessage() . "(" . $e->getLine() .  ")\n";
-    12 }
-    13 
-    14 echo "Non-existent class:\n";
 
 ext/standard/tests/strings/strpos.phpt:87
   state: old_only
@@ -479,26 +399,6 @@ manual_007/old.phpt:8
      9 }
     10 ?>
     11 
-
-ext/standard/tests/mail/gh13415.phpt:11
-  state: old_only
-  fixture: ext_standard_tests_mail_gh13415
-  fingerprint: message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
-  origin: php_src
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
-  echo $e->getMessage()."\n\n";
-
-     8 try {
-     9     mail('to@example.com', 'Test Subject', 'A Message', ['Reply-To' => "foo@example.com \nCc: hacker@example.com"]);
-    10 } catch (Throwable $e) {
->   11     echo $e->getMessage()."\n\n";
-    12 }
-    13 
-    14 echo "CR only:\n";
 
 Zend/tests/attributes/005_objects.phpt:70
   state: old_only

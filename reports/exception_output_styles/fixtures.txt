@@ -546,7 +546,7 @@ manual_013/old.phpt
     - line 8: message_only message_only:bfd265dcec2331332ed2146834383588669a9bff
 
 ext/standard/tests/mail/gh13415.phpt
-  state: old_only
+  state: handled
   fixture: ext_standard_tests_mail_gh13415
   first line: 11
   flavours covered: 1
@@ -556,7 +556,7 @@ ext/standard/tests/mail/gh13415.phpt
     - line 32: message_only message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
 
 manual_014/old.phpt
-  state: old_only
+  state: handled
   fixture: manual_014
   first line: 8
   flavours covered: 1
@@ -584,7 +584,7 @@ ext/phar/tests/bug65028.phpt
     - line 146: message_only message_only:c7eadb7fcb7c1b84340d49987b5f51e48dfacc0d
 
 ext/phar/tests/phar_metadata_write4.phpt
-  state: old_only
+  state: handled
   fixture: ext_phar_tests_phar_metadata_write4
   first line: 58
   flavours covered: 1
@@ -655,14 +655,14 @@ ext/session/tests/session_start_error.phpt
     - line 23: class_message class_message:40a5c2e3a98b10f114ee9e82bf7c145041642dfb
 
 manual_017/old.phpt
-  state: old_only
+  state: handled
   fixture: manual_017
-  first line: 8
+  first line: 20
   flavours covered: 1
-    - line 8: message_only message_only:1ec5fa64124358dce243d2469687cdbcd868e829
+    - line 20: message_only message_only:1ec5fa64124358dce243d2469687cdbcd868e829
 
 ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt
-  state: old_only
+  state: handled
   fixture: ext_spl_tests_ArrayObject_arrayObject___construct_error1
   first line: 11
   flavours covered: 1

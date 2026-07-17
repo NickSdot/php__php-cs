@@ -135,7 +135,7 @@ class_message:7c685ccbb97fc6de5c30b1ddd3e6cb3acd4d2a92
   count: 3
   representative: ext/pcntl/tests/bug81577.phpt:22
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   first statement: echo get_class($ex) , " : " , $ex->getMessage() , "\n";
   duplicates:
     - ext/pcntl/tests/bug81577_2.phpt:13
@@ -429,7 +429,7 @@ message_only:1ec5fa64124358dce243d2469687cdbcd868e829
   duplicates:
     - ext/soap/tests/bugs/relative_redirect.phpt:45
     - ext/soap/tests/bugs/relative_redirect_path.phpt:45
-    - manual_017/old.phpt:8
+    - manual_017/old.phpt:20
 
 message_only:20adc70b63caf4908bad5020562eb595c142948a
   count: 2
@@ -444,7 +444,7 @@ message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86
   count: 2
   representative: ext/pdo_firebird/tests/bug_77863.phpt:113
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   first statement: echo $e->getMessage() . '<br>';
   duplicates:
     - manual_014/old.phpt:8

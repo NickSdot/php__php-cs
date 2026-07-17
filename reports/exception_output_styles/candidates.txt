@@ -67716,9 +67716,9 @@ ext/pcntl/tests/bug81577.phpt:22
   fingerprint: class_message:7c685ccbb97fc6de5c30b1ddd3e6cb3acd4d2a92
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
+  reason: safe candidate for a canonical exception-output family
   parts: exception_class(get_class) literal:d98411eb70b07edf83e993ee9dba073bee0dddeb exception_message newline
   echo get_class($ex) , " : " , $ex->getMessage() , "\n";
 
@@ -67734,9 +67734,9 @@ ext/pcntl/tests/bug81577_2.phpt:13
   fingerprint: class_message:7c685ccbb97fc6de5c30b1ddd3e6cb3acd4d2a92
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
+  reason: safe candidate for a canonical exception-output family
   parts: exception_class(get_class) literal:d98411eb70b07edf83e993ee9dba073bee0dddeb exception_message newline
   echo get_class($ex) , " : " , $ex->getMessage() , "\n";
 
@@ -67752,9 +67752,9 @@ ext/pcntl/tests/bug81577_3.phpt:15
   fingerprint: class_message:7c685ccbb97fc6de5c30b1ddd3e6cb3acd4d2a92
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
+  reason: safe candidate for a canonical exception-output family
   parts: exception_class(get_class) literal:d98411eb70b07edf83e993ee9dba073bee0dddeb exception_message newline
   echo get_class($ex) , " : " , $ex->getMessage() , "\n";
 
@@ -70488,9 +70488,9 @@ ext/pdo_firebird/tests/bug_77863.phpt:113
   fingerprint: message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86
   origin: php_src
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
+  reason: safe candidate for a canonical exception-output family
   parts: exception_message literal:01298c01639d867f841df8043cedc891cf11d8f0
   echo $e->getMessage() . '<br>';
 
@@ -122298,9 +122298,9 @@ manual_014/old.phpt:8
   fingerprint: message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86
   origin: manual_fixture
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
+  reason: safe candidate for a canonical exception-output family
   parts: exception_message literal:01298c01639d867f841df8043cedc891cf11d8f0
   echo $e->getMessage() . '<br>';
 
@@ -122348,7 +122348,7 @@ manual_016/old.phpt:8
     10 ?>
     11 
 
-manual_017/old.phpt:8
+manual_017/old.phpt:20
   fingerprint: message_only:1ec5fa64124358dce243d2469687cdbcd868e829
   origin: manual_fixture
   family: message_only
@@ -122358,10 +122358,10 @@ manual_017/old.phpt:8
   parts: literal:f09e12db9a502e1f3fb20d8ac729daf4b47d6cbb exception_message newline
   echo "SoapFault: " . $e->getMessage() . "\n";
 
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo "SoapFault: " . $e->getMessage() . "\n";
-     9 }
-    10 ?>
-    11 
+    17 try {
+    18     throw fixtureSoapFault();
+    19 } catch (SoapFault $e) {
+>   20     echo "SoapFault: " . $e->getMessage() . "\n";
+    21 }
+    22 ?>
+    23 
