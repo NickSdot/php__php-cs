@@ -24,12 +24,6 @@ final readonly class FixtureWriter
 
         $createdOld = $this->ensureOldFixture($source, $fixtureFiles);
 
-        if (null === $createdOld) {
-            return FixtureWriteResult::failure(
-                'old.phpt differs from source for ' . $source->relativePath,
-            );
-        }
-
         return new FixtureWriteResult(
             createdOld: $createdOld,
             updatedNew: false,
@@ -39,18 +33,17 @@ final readonly class FixtureWriter
         );
     }
 
-    private function ensureOldFixture(FixtureSource $source, FixturePairFiles $fixtureFiles): ?bool
+    private function ensureOldFixture(FixtureSource $source, FixturePairFiles $fixtureFiles): bool
     {
-        $contents = $this->files->read($source->sourcePath, 'source file');
         $oldPath = $fixtureFiles->oldPath();
 
-        if (!is_file($oldPath)) {
-            $this->files->write($oldPath, $contents, 'fixture');
-            return true;
+        if (is_file($oldPath)) {
+            return false;
         }
 
-        $old = $this->files->read($oldPath, 'fixture');
+        $contents = $this->files->read($source->sourcePath, 'source file');
+        $this->files->write($oldPath, $contents, 'fixture');
 
-        return $old === $contents ? false : null;
+        return true;
     }
 }

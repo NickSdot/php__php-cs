@@ -183,13 +183,47 @@ final class FixtureGeneratorTest extends TestCase
         self::assertStringContainsString('source.phpt', (string) file_get_contents($reports . '/queue.txt'));
     }
 
-    private function writeSourcePhpt(string $root, string $name, string $statement): void
+    public function testWriteRunReportsPostRefreshHandledFixtureState(): void
     {
-        $this->writeSourcePhptWithStatements($root, $name, [$statement]);
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+        mkdir($fixtures . '/source');
+
+        $sourcePath = $this->writeSourcePhpt($phpSrc, 'source.phpt', 'echo $e->getMessage(), "\n";');
+        file_put_contents($fixtures . '/source/old.phpt', (string) file_get_contents($sourcePath));
+
+        $this->generator()->generate(new FixtureGenerationOptions(
+            sourceRoot: $phpSrc,
+            fixturesDir: $fixtures,
+            reportsDir: $reports,
+            paths: [],
+            excludedRoots: [
+                $fixtures,
+            ],
+            extensions: ['phpt'],
+            runner: new ChangedFixtureRewriteRunner("new\n"),
+            allowDirty: false,
+            sourceDirty: false,
+            write: true,
+            refreshOnly: false,
+        ));
+
+        self::assertStringContainsString('Handled fixture files: 1', (string) file_get_contents($reports . '/stats.txt'));
+        self::assertStringContainsString('Queued stale fixture files: 0', (string) file_get_contents($reports . '/stats.txt'));
+    }
+
+    private function writeSourcePhpt(string $root, string $name, string $statement): string
+    {
+        return $this->writeSourcePhptWithStatements($root, $name, [$statement]);
     }
 
     /** @param list<string> $statements */
-    private function writeSourcePhptWithStatements(string $root, string $name, array $statements): void
+    private function writeSourcePhptWithStatements(string $root, string $name, array $statements): string
     {
         $body = $this->indentedStatements($statements);
 
@@ -207,7 +241,10 @@ final class FixtureGeneratorTest extends TestCase
 
             PHPT;
 
-        file_put_contents($root . '/' . $name, $contents);
+        $path = $root . '/' . $name;
+        file_put_contents($path, $contents);
+
+        return $path;
     }
 
     /** @param list<string> $statements */

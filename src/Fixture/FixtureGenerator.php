@@ -57,7 +57,7 @@ final readonly class FixtureGenerator
             $result->oldOnly += $write->oldOnly ? 1 : 0;
         }
 
-        $this->refreshFixtures($result, $options);
+        $this->refreshFixtures($result, $options, $selection);
 
         $this->writeDiscoveryReports($result, $options, $candidates, $selection, $writeResults);
 
@@ -72,15 +72,15 @@ final readonly class FixtureGenerator
             return $result;
         }
 
-        $this->refreshFixtures($result, $options);
-
         if ($options->sourceDirty) {
+            $this->refreshFixtures($result, $options);
             $result->warn('source checkout is dirty; skipped source report recomputation during refresh-only run');
             $this->reports->writeRefresh($options->reportsDir, $options->fixturesDir, $result);
             return $result;
         }
 
         $scan = $this->scan($result, $options);
+        $this->refreshFixtures($result, $options, $scan['selection']);
         $this->writeDiscoveryReports($result, $options, $scan['candidates'], $scan['selection'], []);
 
         return $result;
@@ -126,8 +126,11 @@ final readonly class FixtureGenerator
         ];
     }
 
-    private function refreshFixtures(FixtureGenerationResult $result, FixtureGenerationOptions $options): void
-    {
+    private function refreshFixtures(
+        FixtureGenerationResult $result,
+        FixtureGenerationOptions $options,
+        ?FixtureSelection $selection = null,
+    ): void {
         $validation = $this->validator->validate(new FixtureValidationOptions(
             fixturesDir: $options->fixturesDir,
             cases: [],

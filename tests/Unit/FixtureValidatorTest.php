@@ -15,6 +15,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function mkdir;
 use function random_bytes;
+use function realpath;
 use function sys_get_temp_dir;
 
 final class FixtureValidatorTest extends TestCase
@@ -175,6 +176,26 @@ final class FixtureValidatorTest extends TestCase
         self::assertFileExists($fixtures . '/needs-extension/ran.diff');
     }
 
+    public function testRefreshRewritesOldFixtureCopy(): void
+    {
+        $fixtures = $this->fixturesDir();
+        $runner = $this->recordingRunner("new\n");
+
+        mkdir($fixtures . '/case', recursive: true);
+        file_put_contents($fixtures . '/case/old.phpt', "old\n");
+
+        $result = $this->validate(
+            fixtures: $fixtures,
+            runner: $runner,
+            update: true,
+            refreshPairs: true,
+        );
+
+        self::assertSame([], $result->failures);
+        self::assertSame(realpath($fixtures . '/case/old.phpt'), $runner->paths[0] ?? null);
+        self::assertSame("new\n", file_get_contents($fixtures . '/case/new.phpt'));
+    }
+
     private function validate(
         string $fixtures,
         ?FixtureRewriteRunner $runner = null,
@@ -213,6 +234,11 @@ final class FixtureValidatorTest extends TestCase
 
         return $root . '/fixtures';
     }
+
+    private function recordingRunner(string $output): RecordingFixtureRewriteRunner
+    {
+        return new RecordingFixtureRewriteRunner($output);
+    }
 }
 
 final readonly class StaticFixtureRewriteRunner implements FixtureRewriteRunner
@@ -231,6 +257,28 @@ final readonly class StaticFixtureRewriteRunner implements FixtureRewriteRunner
             'failed' => $this->failed,
             'output' => $this->output,
             'failure' => $this->failure,
+        ];
+    }
+}
+
+final class RecordingFixtureRewriteRunner implements FixtureRewriteRunner
+{
+    /** @var list<string> */
+    public array $paths = [];
+
+    public function __construct(
+        private readonly string $output,
+    ) {}
+
+    public function printFile(string $path): array
+    {
+        $this->paths[] = $path;
+
+        return [
+            'changed' => true,
+            'failed' => false,
+            'output' => $this->output,
+            'failure' => null,
         ];
     }
 }

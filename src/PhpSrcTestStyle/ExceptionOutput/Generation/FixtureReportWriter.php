@@ -100,23 +100,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
 
     private function stateAfterWrite(string $fileState, ?FixtureWriteResult $write): string
     {
-        if (null === $write) {
-            return $fileState;
-        }
-
-        if ($write->verifiedPair) {
-            return 'handled';
-        }
-
-        if ($write->oldOnly && 'handled' === $fileState) {
-            return 'stale_pair';
-        }
-
-        if ($write->oldOnly) {
-            return 'old_only';
-        }
-
-        if (null !== $write->failure) {
+        if (null !== $write?->failure) {
             return 'invalid';
         }
 

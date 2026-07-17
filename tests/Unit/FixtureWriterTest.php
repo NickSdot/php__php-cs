@@ -42,7 +42,7 @@ final class FixtureWriterTest extends TestCase
         self::assertSame($contents, file_get_contents($this->oldPath($fixtures, $candidate)));
     }
 
-    public function testExistingOldFixtureMustMatchSourceExactly(): void
+    public function testExistingOldFixtureIsNeverUpdatedFromSource(): void
     {
         $root = $this->makeTempDir();
         $source = $root . '/Zend/tests/example.phpt';
@@ -59,7 +59,8 @@ final class FixtureWriterTest extends TestCase
 
         $result = new FixtureWriter()->write(new FixtureSource([$candidate]), $fixtures);
 
-        self::assertSame('old.phpt differs from source for Zend/tests/example.phpt', $result->failure);
+        self::assertFalse($result->createdOld);
+        self::assertNull($result->failure);
         self::assertSame("different\n", file_get_contents($fixtureDir . '/old.phpt'));
     }
 

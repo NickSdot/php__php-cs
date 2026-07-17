@@ -52,8 +52,7 @@ final readonly class FixtureValidator
                 continue;
             }
 
-            $realOldPath = realpath($oldPath);
-            $rewrite = $options->runner->printFile(false === $realOldPath ? $oldPath : $realOldPath);
+            $rewrite = $options->runner->printFile($this->realPath($oldPath));
 
             if ($hasNew) {
                 $this->validateHandled($result, $case, $oldPath, $newPath, $diffPath, $rewrite, $options);
@@ -64,6 +63,13 @@ final readonly class FixtureValidator
         }
 
         return $result;
+    }
+
+    private function realPath(string $path): string
+    {
+        $realPath = realpath($path);
+
+        return false === $realPath ? $path : $realPath;
     }
 
     /** @return list<string> */
