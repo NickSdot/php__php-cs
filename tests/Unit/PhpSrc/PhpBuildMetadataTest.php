@@ -9,16 +9,16 @@ use PHPUnit\Framework\TestCase;
 
 final class PhpBuildMetadataTest extends TestCase
 {
-    public function testCheckoutMatchIgnoresDirtyStatusHash(): void
+    public function testCheckoutMatchUsesHeadAndProfileOnly(): void
     {
         $built = new PhpBuildMetadata(
-            phpSrcDir: '/php-src',
+            phpSrcDir: '/old-runtime-path/source',
             head: 'abc123',
             statusHash: 'clean',
             profileSignature: 'profile',
         );
         $current = new PhpBuildMetadata(
-            phpSrcDir: '/php-src',
+            phpSrcDir: '/new-runtime-path/source',
             head: 'abc123',
             statusHash: 'dirty',
             profileSignature: 'profile',

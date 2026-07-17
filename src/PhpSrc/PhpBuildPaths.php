@@ -15,7 +15,7 @@ final readonly class PhpBuildPaths
 
     public static function default(string $toolRoot): self
     {
-        return new self($toolRoot . '/bin/php-test-runtime');
+        return new self($toolRoot . '/var/php-test-runtime');
     }
 
     public function phpBinary(): string

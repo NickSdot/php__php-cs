@@ -285,7 +285,7 @@ final class PhptFile
             return $configured;
         }
 
-        $local = $this->toolRoot() . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'php-test-runtime' . DIRECTORY_SEPARATOR . 'php';
+        $local = $this->toolRoot() . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'php-test-runtime' . DIRECTORY_SEPARATOR . 'php';
 
         if (is_file($local) && is_executable($local)) {
             return $local;
@@ -307,7 +307,7 @@ final class PhptFile
             return $configured;
         }
 
-        $local = $this->toolRoot() . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'php-test-runtime' . DIRECTORY_SEPARATOR . 'php-cgi';
+        $local = $this->toolRoot() . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'php-test-runtime' . DIRECTORY_SEPARATOR . 'php-cgi';
 
         if (is_file($local) && is_executable($local)) {
             return $local;

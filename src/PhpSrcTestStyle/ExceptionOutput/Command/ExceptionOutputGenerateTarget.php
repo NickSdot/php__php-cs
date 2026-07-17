@@ -74,7 +74,7 @@ final readonly class ExceptionOutputGenerateTarget implements GenerateTarget
 
     public function rewriteRunner(GenerateOptions $options): FixtureRewriteRunner
     {
-        return new PhptFixtureRewriteRunner($options->phpSrcRoot->path);
+        return new PhptFixtureRewriteRunner($options->phpTestRuntimeRoot->path);
     }
 
     public function printResult(FixtureGenerationResult $result, ConsoleIo $io): int

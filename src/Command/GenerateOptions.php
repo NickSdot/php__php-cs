@@ -11,6 +11,7 @@ final readonly class GenerateOptions
     /** @param list<string> $paths */
     public function __construct(
         public PhpSrcRoot $phpSrcRoot,
+        public PhpSrcRoot $phpTestRuntimeRoot,
         public string $fixturesDir,
         public string $reportsDir,
         public array $paths,
@@ -20,10 +21,11 @@ final readonly class GenerateOptions
         public bool $refreshOnly,
     ) {}
 
-    public function withPhpSrcRoot(PhpSrcRoot $phpSrcRoot): self
+    public function withPhpTestRuntimeRoot(PhpSrcRoot $phpTestRuntimeRoot): self
     {
         return new self(
-            phpSrcRoot: $phpSrcRoot,
+            phpSrcRoot: $this->phpSrcRoot,
+            phpTestRuntimeRoot: $phpTestRuntimeRoot,
             fixturesDir: $this->fixturesDir,
             reportsDir: $this->reportsDir,
             paths: $this->paths,

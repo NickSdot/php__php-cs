@@ -58,22 +58,9 @@ final readonly class PhpBuildCheckout
 
     private function masterReference(PhpSrcRoot $sourceRoot, string $sourceDir, ConsoleIo $io): string
     {
-        $upstreamUrl = $this->optional($sourceRoot->path, ['git', 'remote', 'get-url', 'upstream'])->stdout();
-
-        if ('' !== $upstreamUrl) {
-            $this->syncRemote($sourceDir, 'upstream', $upstreamUrl);
-
-            if ($this->optional($sourceDir, ['git', 'fetch', 'upstream', 'master'])->ok()) {
-                $io->out("Using upstream/master for PHP test runtime\n");
-                return 'refs/remotes/upstream/master';
-            }
-
-            $io->err("Warning: Could not fetch upstream master; falling back to local master\n");
-        }
-
         if (!$this->optional($sourceDir, ['git', 'fetch', 'origin', 'master'])->ok()) {
             throw new \RuntimeException(
-                'Cannot resolve local master from php-src checkout after upstream master was unavailable',
+                'Cannot resolve local master from php-src checkout',
             );
         }
 
@@ -81,17 +68,6 @@ final readonly class PhpBuildCheckout
 
         return 'refs/remotes/origin/master';
     }
-
-    private function syncRemote(string $sourceDir, string $name, string $url): void
-    {
-        if ($this->optional($sourceDir, ['git', 'remote', 'get-url', $name])->ok()) {
-            $this->run($sourceDir, ['git', 'remote', 'set-url', $name, $url]);
-            return;
-        }
-
-        $this->run($sourceDir, ['git', 'remote', 'add', $name, $url]);
-    }
-
     /** @param list<string> $command */
     private function optional(string $cwd, array $command): PhpBuildProcessResult
     {

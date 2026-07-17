@@ -67,19 +67,23 @@ final readonly class GenerateCommand implements Command
             return 2;
         }
 
+        $phpTestRuntimeRoot = $options->phpSrcRoot;
+
         if ($options->write && $target->requiresPhpTestRuntime()) {
             try {
-                $options = $options->withPhpSrcRoot($this->phpBuild->ensure(
+                $phpTestRuntimeRoot = $this->phpBuild->ensure(
                     root: $options->phpSrcRoot,
                     paths: PhpBuildPaths::default($this->toolRoot()),
                     force: $options->forcePhpBinaryRebuild,
                     io: $io,
-                ));
+                );
             } catch (\Throwable $e) {
                 $io->err($e->getMessage() . "\n");
                 return 1;
             }
         }
+
+        $options = $options->withPhpTestRuntimeRoot($phpTestRuntimeRoot);
 
         $sourceDirty = !$options->allowDirty && $this->git->isDirty($options->phpSrcRoot->path);
 
@@ -195,6 +199,7 @@ final readonly class GenerateCommand implements Command
 
         return new GenerateOptions(
             phpSrcRoot: PhpSrcRoot::fromPath($phpSrcDir),
+            phpTestRuntimeRoot: PhpSrcRoot::fromPath($phpSrcDir),
             fixturesDir: $this->paths->absolute($fixturesDir, $workingDir),
             reportsDir: $this->paths->absolute($reportsDir, $workingDir),
             paths: $paths,

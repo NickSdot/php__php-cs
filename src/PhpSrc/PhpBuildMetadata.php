@@ -67,8 +67,7 @@ final readonly class PhpBuildMetadata
 
     public function matchesCheckout(self $other): bool
     {
-        return $this->phpSrcDir === $other->phpSrcDir
-            && $this->head === $other->head
+        return $this->head === $other->head
             && $this->profileSignature === $other->profileSignature;
     }
 
