@@ -28,6 +28,11 @@ final readonly class PhpBuildPaths
         return $this->outputDir . '/php-cgi';
     }
 
+    public function sourceDir(): string
+    {
+        return $this->outputDir . '/source';
+    }
+
     public function metadata(): string
     {
         return $this->outputDir . '/build.json';

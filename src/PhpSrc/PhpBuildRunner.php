@@ -32,14 +32,23 @@ final readonly class PhpBuildRunner
     {
         $environment = $this->environment->variables($profile->pkgConfigPackages());
 
-        if (!is_file($root->path . '/configure')) {
-            $this->run($root, ['./buildconf', '--force'], $environment, $io);
-        }
+        $this->cleanPreviousBuild($root, $environment, $io);
 
+        $this->run($root, ['./buildconf', '--force'], $environment, $io);
         $this->run($root, ['./configure', ...$profile->configureArgs()], $environment, $io);
         $this->run($root, ['make', '-j' . max(1, $jobs), ...$profile->makeTargets()], $environment, $io);
         $this->installBinary($root->path . '/sapi/cli/php', $paths->phpBinary());
         $this->installBinary($root->path . '/sapi/cgi/php-cgi', $paths->cgiBinary());
+    }
+
+    /** @param array<string, string> $environment */
+    private function cleanPreviousBuild(PhpSrcRoot $root, array $environment, ConsoleIo $io): void
+    {
+        if (!is_file($root->path . '/Makefile')) {
+            return;
+        }
+
+        $this->run($root, ['make', 'distclean'], $environment, $io);
     }
 
     /**

@@ -67,21 +67,21 @@ final readonly class GenerateCommand implements Command
             return 2;
         }
 
-        $sourceDirty = !$options->allowDirty && $this->git->isDirty($options->phpSrcRoot->path);
-
         if ($options->write && $target->requiresPhpTestRuntime()) {
             try {
-                $this->phpBuild->ensure(
+                $options = $options->withPhpSrcRoot($this->phpBuild->ensure(
                     root: $options->phpSrcRoot,
                     paths: PhpBuildPaths::default($this->toolRoot()),
                     force: $options->forcePhpBinaryRebuild,
                     io: $io,
-                );
+                ));
             } catch (\Throwable $e) {
                 $io->err($e->getMessage() . "\n");
                 return 1;
             }
         }
+
+        $sourceDirty = !$options->allowDirty && $this->git->isDirty($options->phpSrcRoot->path);
 
         $result = $target->generator()->generate(new FixtureGenerationOptions(
             sourceRoot: $options->phpSrcRoot->path,
@@ -96,6 +96,7 @@ final readonly class GenerateCommand implements Command
             allowDirty: $options->allowDirty,
             sourceDirty: $sourceDirty,
             write: $options->write,
+            refreshOnly: $options->refreshOnly,
         ));
 
         return $target->printResult($result, $io);
@@ -116,6 +117,7 @@ final readonly class GenerateCommand implements Command
         $allowDirty = false;
         $write = false;
         $forcePhpBinaryRebuild = false;
+        $refreshOnly = false;
         $paths = [];
 
         for ($i = 0; $i < count($args); $i++) {
@@ -132,6 +134,11 @@ final readonly class GenerateCommand implements Command
 
             if ('--write' === $arg) {
                 $write = true;
+                continue;
+            }
+
+            if ('--refresh-only' === $arg) {
+                $refreshOnly = true;
                 continue;
             }
 
@@ -194,6 +201,7 @@ final readonly class GenerateCommand implements Command
             allowDirty: $allowDirty,
             write: $write,
             forcePhpBinaryRebuild: $forcePhpBinaryRebuild,
+            refreshOnly: $refreshOnly,
         );
     }
 
@@ -259,7 +267,7 @@ final readonly class GenerateCommand implements Command
     {
         $targetScript = null === $targetName ? $script : $script . ' ' . $target->name();
 
-        $io->out("Usage: php bin/$targetScript --php-src-dir dir [--write] [--fixtures-dir dir] [--reports-dir dir] [--allow-dirty] [--force-php-binary-rebuild] [path ...]\n");
+        $io->out("Usage: php bin/$targetScript --php-src-dir dir [--write] [--refresh-only] [--fixtures-dir dir] [--reports-dir dir] [--allow-dirty] [--force-php-binary-rebuild] [path ...]\n");
         $io->out($target->description() . ". Writes only with --write.\n");
     }
 

@@ -49,6 +49,7 @@ final class FixtureGeneratorTest extends TestCase
             allowDirty: false,
             sourceDirty: false,
             write: false,
+            refreshOnly: false,
         ));
 
         self::assertSame(2, $result->candidateFiles);
@@ -86,6 +87,7 @@ final class FixtureGeneratorTest extends TestCase
             allowDirty: false,
             sourceDirty: false,
             write: false,
+            refreshOnly: false,
         ));
 
         self::assertSame(1, $result->candidateFiles);
@@ -120,6 +122,7 @@ final class FixtureGeneratorTest extends TestCase
             allowDirty: false,
             sourceDirty: true,
             write: true,
+            refreshOnly: false,
         ));
 
         self::assertTrue($result->refreshOnly);
@@ -136,6 +139,46 @@ final class FixtureGeneratorTest extends TestCase
         self::assertTrue(is_file($fixtures . '/case/ran.diff'));
         self::assertSame("existing queue\n", file_get_contents($reports . '/queue.txt'));
         self::assertStringContainsString('- case', (string) file_get_contents($reports . '/refresh.txt'));
+    }
+
+    public function testRefreshOnlyRefreshesExistingFixturesWithoutScanningSource(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+        mkdir($fixtures . '/case');
+        file_put_contents($phpSrc . '/source.phpt', "--TEST--\nsource\n");
+        file_put_contents($fixtures . '/case/old.phpt', "old\n");
+
+        $result = $this->generator()->generate(new FixtureGenerationOptions(
+            sourceRoot: $phpSrc,
+            fixturesDir: $fixtures,
+            reportsDir: $reports,
+            paths: [],
+            excludedRoots: [
+                $fixtures,
+            ],
+            extensions: ['phpt'],
+            runner: new ChangedFixtureRewriteRunner("new\n"),
+            allowDirty: false,
+            sourceDirty: false,
+            write: true,
+            refreshOnly: true,
+        ));
+
+        self::assertTrue($result->refreshOnly);
+        self::assertSame(0, $result->scannedFiles);
+        self::assertSame(0, $result->selectedFixtures);
+        self::assertSame(1, $result->updatedPairs);
+        self::assertSame(['case'], $result->updatedPairCases);
+        self::assertSame("old\n", file_get_contents($fixtures . '/case/old.phpt'));
+        self::assertSame("new\n", file_get_contents($fixtures . '/case/new.phpt'));
+        self::assertTrue(is_file($fixtures . '/case/ran.diff'));
+        self::assertTrue(is_file($reports . '/refresh.txt'));
     }
 
     private function writePhpt(string $root, string $name, string $statement): void

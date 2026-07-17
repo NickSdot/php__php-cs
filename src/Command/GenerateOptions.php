@@ -17,5 +17,20 @@ final readonly class GenerateOptions
         public bool $allowDirty,
         public bool $write,
         public bool $forcePhpBinaryRebuild,
+        public bool $refreshOnly,
     ) {}
+
+    public function withPhpSrcRoot(PhpSrcRoot $phpSrcRoot): self
+    {
+        return new self(
+            phpSrcRoot: $phpSrcRoot,
+            fixturesDir: $this->fixturesDir,
+            reportsDir: $this->reportsDir,
+            paths: $this->paths,
+            allowDirty: $this->allowDirty,
+            write: $this->write,
+            forcePhpBinaryRebuild: $this->forcePhpBinaryRebuild,
+            refreshOnly: $this->refreshOnly,
+        );
+    }
 }

@@ -20,29 +20,34 @@ final readonly class PhpBuild
         private PhpBuildProfile $profile = new PhpBuildProfile(),
         private PhpBuildState $state = new PhpBuildState(),
         private PhpBuildRunner $runner = new PhpBuildRunner(),
+        private PhpBuildCheckout $checkout = new PhpBuildCheckout(),
     ) {}
 
-    public function ensure(PhpSrcRoot $root, PhpBuildPaths $paths, bool $force, ConsoleIo $io): void
+    public function ensure(PhpSrcRoot $root, PhpBuildPaths $paths, bool $force, ConsoleIo $io): PhpSrcRoot
     {
         if ($this->hasConfiguredPhpBinary()) {
             $io->out("Using configured PHP test binary\n");
-            return;
+            return $root;
         }
 
-        $current = $this->state->current($root, $this->profile);
+        $buildRoot = $this->checkout->prepare($root, $paths, $io);
+        $current = $this->state->current($buildRoot, $this->profile);
         $existing = PhpBuildMetadata::read($paths->metadata());
-        $isCurrent = null !== $existing && $existing->matches($current);
+        $isCurrent = null !== $existing && $existing->matchesCheckout($current);
 
         if (!$force && $isCurrent && $paths->hasRunnableBinaries()) {
             $io->out('PHP test binaries are current in ' . $paths->outputDir . "\n");
-            return;
+            return $buildRoot;
         }
 
-        $this->runner->build($root, $this->profile, $paths, $jobs = $this->defaultJobs(), $io);
+        $this->runner->build($buildRoot, $this->profile, $paths, $jobs = $this->defaultJobs(), $io);
+        $this->checkout->clean($buildRoot);
         $current->write($paths->metadata());
 
         $io->out('Installed PHP CLI: ' . $paths->phpBinary() . "\n");
         $io->out('Installed PHP CGI: ' . $paths->cgiBinary() . "\n");
+
+        return $buildRoot;
     }
 
     private function defaultJobs(): int

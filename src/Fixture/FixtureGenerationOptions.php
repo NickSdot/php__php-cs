@@ -22,5 +22,6 @@ final readonly class FixtureGenerationOptions
         public bool $allowDirty,
         public bool $sourceDirty,
         public bool $write,
+        public bool $refreshOnly,
     ) {}
 }

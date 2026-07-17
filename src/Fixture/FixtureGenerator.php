@@ -24,6 +24,17 @@ final readonly class FixtureGenerator
         $result = new FixtureGenerationResult();
         $result->dryRun = !$options->write;
 
+        if ($options->refreshOnly) {
+            $result->refreshOnly = true;
+
+            if ($options->write) {
+                $this->refreshFixtures($result, $options);
+                $this->reports->writeRefresh($options->reportsDir, $options->fixturesDir, $result);
+            }
+
+            return $result;
+        }
+
         if ($options->sourceDirty) {
             $result->refreshOnly = true;
             $result->warn('source checkout is dirty; skipped source discovery and old.phpt import; pass --allow-dirty to generate from dirty source');
