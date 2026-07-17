@@ -14,6 +14,8 @@ final class FixtureGenerationResult
 
     public bool $refreshOnly = false;
 
+    public bool $discoveryReportsWritten = false;
+
     public int $scannedFiles = 0;
 
     public int $candidateFiles = 0;

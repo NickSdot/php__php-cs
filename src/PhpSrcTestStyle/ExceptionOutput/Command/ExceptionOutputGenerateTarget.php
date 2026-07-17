@@ -112,7 +112,11 @@ final readonly class ExceptionOutputGenerateTarget implements GenerateTarget
     private function printWriteSummary(FixtureGenerationResult $result, ConsoleIo $io): void
     {
         if ($result->refreshOnly) {
-            $io->out("Refreshed existing fixtures only; source discovery reports were left unchanged\n");
+            $summary = $result->discoveryReportsWritten
+                ? "Refreshed existing fixtures and recomputed source discovery reports\n"
+                : "Refreshed existing fixtures only; source discovery reports were left unchanged\n";
+
+            $io->out($summary);
         }
 
         $io->out('Created ' . $result->createdOld . " old.phpt fixtures\n");

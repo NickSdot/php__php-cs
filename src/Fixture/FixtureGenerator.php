@@ -25,43 +25,16 @@ final readonly class FixtureGenerator
         $result->dryRun = !$options->write;
 
         if ($options->refreshOnly) {
-            $result->refreshOnly = true;
-
-            if ($options->write) {
-                $this->refreshFixtures($result, $options);
-                $this->reports->writeRefresh($options->reportsDir, $options->fixturesDir, $result);
-            }
-
-            return $result;
+            return $this->refreshOnly($result, $options);
         }
 
         if ($options->sourceDirty) {
-            $result->refreshOnly = true;
-            $result->warn('source checkout is dirty; skipped source discovery and old.phpt import; pass --allow-dirty to generate from dirty source');
-
-            if ($options->write) {
-                $this->refreshFixtures($result, $options);
-                $this->reports->writeRefresh($options->reportsDir, $options->fixturesDir, $result);
-            }
-
-            return $result;
+            return $this->dirtySource($result, $options);
         }
 
-        $files = $this->finder->find(
-            rootDir: $options->sourceRoot,
-            scanPaths: $options->paths,
-            excludedRoots: $options->excludedRoots,
-            extensions: $options->extensions,
-        );
-        $candidates = $this->scanner->scan($files, $options->sourceRoot);
-        $selection = $this->selector->select($candidates);
-
-        $result->scannedFiles = count($files);
-        $result->candidateFiles = $this->candidateFileCount($candidates);
-        $result->candidateWindows = count($candidates);
-        $result->candidateFlavours = $selection->flavourCount();
-        $result->duplicateCandidates = $selection->duplicateCandidateWindows(count($candidates));
-        $result->selectedFixtures = $selection->fixtureCount();
+        $scan = $this->scan($result, $options);
+        $candidates = $scan['candidates'];
+        $selection = $scan['selection'];
 
         if (!$options->write) {
             return $result;
@@ -86,9 +59,71 @@ final readonly class FixtureGenerator
 
         $this->refreshFixtures($result, $options);
 
-        $this->reports->write($options->reportsDir, $options->fixturesDir, $result, $candidates, $selection, $writeResults);
+        $this->writeDiscoveryReports($result, $options, $candidates, $selection, $writeResults);
 
         return $result;
+    }
+
+    private function refreshOnly(FixtureGenerationResult $result, FixtureGenerationOptions $options): FixtureGenerationResult
+    {
+        $result->refreshOnly = true;
+
+        if (!$options->write) {
+            return $result;
+        }
+
+        $this->refreshFixtures($result, $options);
+
+        if ($options->sourceDirty) {
+            $result->warn('source checkout is dirty; skipped source report recomputation during refresh-only run');
+            $this->reports->writeRefresh($options->reportsDir, $options->fixturesDir, $result);
+            return $result;
+        }
+
+        $scan = $this->scan($result, $options);
+        $this->writeDiscoveryReports($result, $options, $scan['candidates'], $scan['selection'], []);
+
+        return $result;
+    }
+
+    private function dirtySource(FixtureGenerationResult $result, FixtureGenerationOptions $options): FixtureGenerationResult
+    {
+        $result->refreshOnly = true;
+        $result->warn('source checkout is dirty; skipped source discovery and old.phpt import; pass --allow-dirty to generate from dirty source');
+
+        if (!$options->write) {
+            return $result;
+        }
+
+        $this->refreshFixtures($result, $options);
+        $this->reports->writeRefresh($options->reportsDir, $options->fixturesDir, $result);
+
+        return $result;
+    }
+
+    /** @return array{candidates: list<FixtureCandidate>, selection: FixtureSelection} */
+    private function scan(FixtureGenerationResult $result, FixtureGenerationOptions $options): array
+    {
+        $files = $this->finder->find(
+            rootDir: $options->sourceRoot,
+            scanPaths: $options->paths,
+            excludedRoots: $options->excludedRoots,
+            extensions: $options->extensions,
+        );
+        $candidates = $this->scanner->scan($files, $options->sourceRoot);
+        $selection = $this->selector->select($candidates);
+
+        $result->scannedFiles = count($files);
+        $result->candidateFiles = $this->candidateFileCount($candidates);
+        $result->candidateWindows = count($candidates);
+        $result->candidateFlavours = $selection->flavourCount();
+        $result->duplicateCandidates = $selection->duplicateCandidateWindows(count($candidates));
+        $result->selectedFixtures = $selection->fixtureCount();
+
+        return [
+            'candidates' => $candidates,
+            'selection' => $selection,
+        ];
     }
 
     private function refreshFixtures(FixtureGenerationResult $result, FixtureGenerationOptions $options): void
@@ -114,6 +149,21 @@ final readonly class FixtureGenerator
         $result->updatedPairCases = $validation->updatedCases;
         $result->stalePairCases = $validation->staleCases;
         $result->oldOnlyCases = $validation->oldOnlyCases;
+    }
+
+    /**
+     * @param list<FixtureCandidate> $candidates
+     * @param array<string, FixtureWriteResult> $writeResults
+     */
+    private function writeDiscoveryReports(
+        FixtureGenerationResult $result,
+        FixtureGenerationOptions $options,
+        array $candidates,
+        FixtureSelection $selection,
+        array $writeResults,
+    ): void {
+        $this->reports->write($options->reportsDir, $options->fixturesDir, $result, $candidates, $selection, $writeResults);
+        $result->discoveryReportsWritten = true;
     }
 
     /** @param list<FixtureCandidate> $candidates */

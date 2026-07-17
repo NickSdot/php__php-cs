@@ -33,8 +33,8 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($phpSrc);
         file_put_contents($phpSrc . '/run-tests.php', '<?php');
 
-        $this->writePhpt($phpSrc, 'a.phpt', 'echo "Caught " . $e->getMessage() . "\n";');
-        $this->writePhpt($phpSrc, 'b.phpt', 'echo "*** Caught " . $e->getMessage() . "\n";');
+        $this->writeSourcePhpt($phpSrc, 'a.phpt', 'echo "Caught " . $e->getMessage() . "\n";');
+        $this->writeSourcePhpt($phpSrc, 'b.phpt', 'echo "*** Caught " . $e->getMessage() . "\n";');
 
         $result = $this->generator()->generate(new FixtureGenerationOptions(
             sourceRoot: PhpSrcRoot::fromPath($phpSrc)->path,
@@ -69,7 +69,7 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($phpSrc);
         file_put_contents($phpSrc . '/run-tests.php', '<?php');
 
-        $this->writePhptWithStatements($phpSrc, 'a.phpt', [
+        $this->writeSourcePhptWithStatements($phpSrc, 'a.phpt', [
             'echo $e->getMessage(), "\n";',
             'echo $e::class, \': \', $e->getMessage(), PHP_EOL;',
         ]);
@@ -141,7 +141,7 @@ final class FixtureGeneratorTest extends TestCase
         self::assertStringContainsString('- case', (string) file_get_contents($reports . '/refresh.txt'));
     }
 
-    public function testRefreshOnlyRefreshesExistingFixturesWithoutScanningSource(): void
+    public function testRefreshOnlyRefreshesExistingFixturesAndRecomputesDiscoveryReports(): void
     {
         $root = $this->makeTempDir();
         $fixtures = $root . '/fixtures';
@@ -151,7 +151,7 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($reports);
         mkdir($phpSrc);
         mkdir($fixtures . '/case');
-        file_put_contents($phpSrc . '/source.phpt', "--TEST--\nsource\n");
+        $this->writeSourcePhpt($phpSrc, 'source.phpt', 'echo "Caught " . $e->getMessage() . "\n";');
         file_put_contents($fixtures . '/case/old.phpt', "old\n");
 
         $result = $this->generator()->generate(new FixtureGenerationOptions(
@@ -171,23 +171,25 @@ final class FixtureGeneratorTest extends TestCase
         ));
 
         self::assertTrue($result->refreshOnly);
-        self::assertSame(0, $result->scannedFiles);
-        self::assertSame(0, $result->selectedFixtures);
+        self::assertSame(1, $result->scannedFiles);
+        self::assertSame(1, $result->selectedFixtures);
         self::assertSame(1, $result->updatedPairs);
         self::assertSame(['case'], $result->updatedPairCases);
         self::assertSame("old\n", file_get_contents($fixtures . '/case/old.phpt'));
         self::assertSame("new\n", file_get_contents($fixtures . '/case/new.phpt'));
         self::assertTrue(is_file($fixtures . '/case/ran.diff'));
         self::assertTrue(is_file($reports . '/refresh.txt'));
+        self::assertStringContainsString('Scanned PHPT files: 1', (string) file_get_contents($reports . '/stats.txt'));
+        self::assertStringContainsString('source.phpt', (string) file_get_contents($reports . '/queue.txt'));
     }
 
-    private function writePhpt(string $root, string $name, string $statement): void
+    private function writeSourcePhpt(string $root, string $name, string $statement): void
     {
-        $this->writePhptWithStatements($root, $name, [$statement]);
+        $this->writeSourcePhptWithStatements($root, $name, [$statement]);
     }
 
     /** @param list<string> $statements */
-    private function writePhptWithStatements(string $root, string $name, array $statements): void
+    private function writeSourcePhptWithStatements(string $root, string $name, array $statements): void
     {
         $body = $this->indentedStatements($statements);
 
