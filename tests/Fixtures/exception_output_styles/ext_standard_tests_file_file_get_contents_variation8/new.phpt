@@ -4,8 +4,8 @@ Test file_get_contents() function : variation - obscure filenames
 Dave Kelsey <d_kelsey@uk.ibm.com>
 --SKIPIF--
 <?php
-if (substr(PHP_OS, 0, 3) != 'WIN') {
-  die("skip Valid only on Windows");
+if (substr(PHP_OS, 0, 3) == 'WIN') {
+    die('skip.. Not valid for Windows');
 }
 ?>
 --CONFLICTS--
@@ -13,70 +13,63 @@ obscure_filename
 --FILE--
 <?php
 echo "*** Testing file_get_contents() : variation ***\n";
-
 /* An array of filenames */
 $names_arr = array(
   /* Invalid args */
-  "-1" => -1,
-  "TRUE" => TRUE,
-  "FALSE" => FALSE,
-  "\"\"" => "",
-  "\" \"" => " ",
-  "\\0" => "\0",
-  "array()" => array(),
+  -1,
+  TRUE,
+  FALSE,
+  "",
+  " ",
+  "\0",
+  array(),
 
   /* prefix with path separator of a non existing directory*/
-  "/no/such/file/dir" => "/no/such/file/dir",
-  "php/php"=> "php/php"
+  "/no/such/file/dir",
+  "php/php"
 
 );
 
-foreach($names_arr as $key =>$value) {
-    echo "\n-- Filename: $key --\n";
+for( $i=0; $i<count($names_arr); $i++ ) {
+    echo "-- Iteration $i --\n";
     try {
-        var_dump(file_get_contents($value));
+        var_dump(file_get_contents($names_arr[$i]));
     } catch (\TypeError|\ValueError $e) {
-        echo get_class($e) . ': ' . $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
     }
 }
 
+echo "\n*** Done ***\n";
 ?>
 --EXPECTF--
 *** Testing file_get_contents() : variation ***
-
--- Filename: -1 --
+-- Iteration 0 --
 
 Warning: file_get_contents(-1): Failed to open stream: No such file or directory in %s on line %d
 bool(false)
-
--- Filename: TRUE --
+-- Iteration 1 --
 
 Warning: file_get_contents(1): Failed to open stream: No such file or directory in %s on line %d
 bool(false)
-
--- Filename: FALSE --
+-- Iteration 2 --
 ValueError: Path must not be empty
-
--- Filename: "" --
+-- Iteration 3 --
 ValueError: Path must not be empty
+-- Iteration 4 --
 
--- Filename: " " --
-
-Warning: file_get_contents( ): Failed to open stream: Permission denied in %s on line %d
+Warning: file_get_contents( ): Failed to open stream: No such file or directory in %s on line %d
 bool(false)
-
--- Filename: \0 --
+-- Iteration 5 --
 ValueError: file_get_contents(): Argument #1 ($filename) must not contain any null bytes
-
--- Filename: array() --
+-- Iteration 6 --
 TypeError: file_get_contents(): Argument #1 ($filename) must be of type string, array given
-
--- Filename: /no/such/file/dir --
+-- Iteration 7 --
 
 Warning: file_get_contents(/no/such/file/dir): Failed to open stream: No such file or directory in %s on line %d
 bool(false)
-
--- Filename: php/php --
+-- Iteration 8 --
 
 Warning: file_get_contents(php/php): Failed to open stream: No such file or directory in %s on line %d
 bool(false)
+
+*** Done ***
