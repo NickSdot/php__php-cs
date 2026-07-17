@@ -1,13 +1,14 @@
 --- old.phpt
 +++ new.phpt
-@@ -5,8 +5,8 @@
- try {
-     throw new RuntimeException('fixture message');
- } catch (Throwable $e) {
+@@ -6,9 +6,9 @@
+     throw new PDOException('fixture message', 335544721);
+ } catch (PDOException $e) {
+     echo 'PDOException code: ' . $e->getCode() . "\n";
 -    echo 'PDOException message: ' . $e->getMessage() . "\n";
 +    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
  }
  ?>
  --EXPECT--
+ PDOException code: 335544721
 -PDOException message: fixture message
-+RuntimeException: fixture message
++PDOException: fixture message
