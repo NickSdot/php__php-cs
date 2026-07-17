@@ -1,5 +1,23 @@
 # Exception output flavours
 
+ext/ffi/tests/031.phpt:16
+  fingerprint: class_message:0c65a3c6ae95d881da1786ab56e48194f83a0fcb
+  origin: php_src
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: other_variable literal:marker:variable_separator exception_class(get_class) literal:colon_separator exception_message newline
+  echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
+
+    13             echo "FAIL: sizeof($type) != $expected_size ($size)\n";
+    14         }
+    15     } catch (Throwable $e) {
+>   16         echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
+    17     }
+    18 }
+    19
+
 tests/classes/ctor_failure.phpt:25
   fingerprint: class_message:1a52c9f6293ea0de2186a091032d7f61e30f8472
   origin: php_src
@@ -15,7 +33,7 @@ tests/classes/ctor_failure.phpt:25
     24 {
 >   25     echo 'Caught ' . get_class($e) . '(' . $e->getMessage() . ")\n";
     26 }
-    27 
+    27
     28 ?>
 
 Zend/tests/closures/closure_from_callable_error.phpt:17
@@ -33,8 +51,8 @@ Zend/tests/closures/closure_from_callable_error.phpt:17
     16 catch (\Throwable $t) {
 >   17     echo "Wrong exception type thrown: ".get_class($t)." : ".$t->getMessage()."\n";
     18 }
-    19 
-    20 
+    19
+    20
 
 ext/session/tests/session_create_id_invalid_prefix.phpt:19
   fingerprint: class_message:2655104d24e7570bc0d0be3c4a79a4cb46f6a818
@@ -51,7 +69,7 @@ ext/session/tests/session_create_id_invalid_prefix.phpt:19
     18 } catch (Throwable $e) {
 >   19     echo $e::class . ': ' . $e->getMessage() . "\n";
     20 }
-    21 
+    21
     22 try {
 
 Zend/tests/assert/disable_assert_function.phpt:11
@@ -70,7 +88,7 @@ Zend/tests/assert/disable_assert_function.phpt:11
 >   11     echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     12 }
     13 ?>
-    14 
+    14
 
 ext/intl/tests/calendar_toDateTime_error.phpt:14
   fingerprint: class_message:38588428af1553498985c4175249d9c2eac072d2
@@ -87,7 +105,7 @@ ext/intl/tests/calendar_toDateTime_error.phpt:14
     13     $previous = $e->getPrevious();
 >   14     echo '    ', $previous::class, ': ', $previous->getMessage(), PHP_EOL;
     15 }
-    16 
+    16
     17 try {
 
 ext/pdo/tests/bug_44159.phpt:25
@@ -123,7 +141,7 @@ ext/session/tests/session_start_error.phpt:23
     22 } catch (ValueError $exception) {
 >   23     echo $exception::class, ': ', $exception->getMessage() . "\n";
     24 }
-    25 
+    25
     26 var_dump(session_start(['option' => false]));
 
 ext/dom/tests/modern/xml/gh22570.phpt:31
@@ -141,7 +159,7 @@ ext/dom/tests/modern/xml/gh22570.phpt:31
     30 } catch (\Error $e) {
 >   31     echo "saveXml: ", $e::class, ": ", $e->getMessage(), "\n";
     32 }
-    33 
+    33
     34 try {
 
 ext/standard/tests/file/file_get_contents_variation8-win32.phpt:39
@@ -160,7 +178,7 @@ ext/standard/tests/file/file_get_contents_variation8-win32.phpt:39
 >   39         echo get_class($e) . ': ' . $e->getMessage(), "\n";
     40     }
     41 }
-    42 
+    42
 
 ext/hash/tests/hash_equals.phpt:12
   fingerprint: class_message:6dbf626cacf52d90febc65bb5677a477f765aac9
@@ -249,7 +267,7 @@ Zend/tests/enum/backed-mismatch.phpt:13
     12 } catch (Error $e) {
 >   13     echo get_class($e), ': ', $e->getMessage(), "\n";
     14 }
-    15 
+    15
     16 try {
 
 Zend/tests/offsets/appending_containers_in_fetch.phpt:14
@@ -268,7 +286,7 @@ Zend/tests/offsets/appending_containers_in_fetch.phpt:14
 >   14         echo $e::class, ': ', $e->getMessage(), "\n";
     15     }
     16 }
-    17 
+    17
 
 ext/dom/tests/modern/xml/gh22570.phpt:37
   fingerprint: class_message:c528f632c4fbba2bdc5bd63a373513919d0b0130
@@ -286,7 +304,7 @@ ext/dom/tests/modern/xml/gh22570.phpt:37
 >   37     echo "innerHTML: ", $e::class, ": ", $e->getMessage(), "\n";
     38 }
     39 ?>
-    40 
+    40
 
 Zend/tests/attributes/delayed_target_validation/has_runtime_errors.phpt:69
   fingerprint: class_message:c69459693d00856d286451544fcadcf392558259
@@ -304,25 +322,7 @@ Zend/tests/attributes/delayed_target_validation/has_runtime_errors.phpt:69
 >   69 		echo get_class($e) . ": " . $e->getMessage() . "\n";
     70 	}
     71 }
-    72 
-
-ext/ffi/tests/031.phpt:16
-  fingerprint: class_message:c7cd74a2c02c2abd67a926f5daa2407698fffdd0
-  origin: php_src
-  family: class_message
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_Variable) literal:4d2a116113e32bcceaf300821ede7a9665b3f990 exception_class(get_class) literal:colon_separator exception_message newline
-  echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
-
-    13             echo "FAIL: sizeof($type) != $expected_size ($size)\n";
-    14         }
-    15     } catch (Throwable $e) {
->   16         echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
-    17     }
-    18 }
-    19 
+    72
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
   fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
@@ -358,7 +358,7 @@ ext/opcache/tests/jit/mod_001.phpt:29
 >   29     echo "Exception (" . get_class($e) . "): " . $e->getMessage() . "\n";
     30 }
     31 ?>
-    32 
+    32
 
 Zend/tests/arg_unpack/invalid_type.phpt:13
   fingerprint: class_message:ea22164fdb83f284f290502160a1c8abce7f9703
@@ -378,24 +378,6 @@ Zend/tests/arg_unpack/invalid_type.phpt:13
     15 try {
     16     test(...42);
 
-Zend/tests/attributes/005_objects.phpt:44
-  fingerprint: message_only:002f36e8d3bf1ac4127f6c6c76bcec58d95fc19a
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:1b84b2eb69ee0f8726d2343629223bdce8ee6fcb exception_message
-  var_dump('ERROR 2', $e->getMessage());
-
-    41 try {
-    42     $ref->getAttributes()[0]->newInstance();
-    43 } catch (\TypeError $e) {
->   44     var_dump('ERROR 2', $e->getMessage());
-    45 }
-    46 
-    47 echo "\n";
-
 Zend/tests/attributes/deprecated/class_constants/deprecated_constant_as_message_002.phpt:24
   fingerprint: message_only:003e3f4de4ac26286d48cef53d931035386c750e
   origin: php_src
@@ -411,7 +393,7 @@ Zend/tests/attributes/deprecated/class_constants/deprecated_constant_as_message_
     23 } catch (ErrorException $e) {
 >   24 	echo "Caught: ", $e->getMessage(), PHP_EOL;
     25 }
-    26 
+    26
     27 try {
 
 Zend/tests/match/043.phpt:12
@@ -430,7 +412,7 @@ Zend/tests/match/043.phpt:12
 >   12         print $e->getMessage() . PHP_EOL;
     13     }
     14 }
-    15 
+    15
 
 Zend/tests/array_literal_next_element_error.phpt:11
   fingerprint: message_only:02e1260470d1a0436b6b0813de22b405065abd5c
@@ -447,7 +429,7 @@ Zend/tests/array_literal_next_element_error.phpt:11
     10 } catch (Error $e) {
 >   11     echo $e->getMessage(), "\n";
     12 }
-    13 
+    13
     14 function test($x = [PHP_INT_MAX => 42, "foo"]) {}
 
 ext/bcmath/tests/bcscale_variation001.phpt:13
@@ -466,7 +448,7 @@ ext/bcmath/tests/bcscale_variation001.phpt:13
 >   13     echo \PHP_EOL . $e->getMessage() . \PHP_EOL;
     14 }
     15 ?>
-    16 
+    16
 
 ext/spl/tests/gh16217.phpt:26
   fingerprint: message_only:044551d978b7135ee381f7feffc185c017be5594
@@ -483,7 +465,7 @@ ext/spl/tests/gh16217.phpt:26
     25 } catch (Error $e) {
 >   26     echo "next (READ_AHEAD): ", $e->getMessage(), "\n";
     27 }
-    28 
+    28
     29 echo "Done\n";
 
 Zend/tests/bug76869.phpt:19
@@ -502,25 +484,25 @@ Zend/tests/bug76869.phpt:19
 >   19     echo "Exception: ", $e->getMessage(), "\n";
     20 }
     21 ?>
-    22 
+    22
 
-Zend/tests/type_declarations/typed_properties_076.phpt:40
-  fingerprint: message_only:0a9da88f4e4bb8fd3d4d71ba50f83d61a416d1f1
+ext/dom/tests/modern/spec/Document_createAttributeNS.phpt:15
+  fingerprint: message_only:09e0c51776da2fecd02d8190c1b20c2f8963fa05
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
   reason: contains descriptive context that must not be dropped
-  parts: literal:e871041d84875d6279a81f4cce33f613fd059680 unknown(Expr_Variable) literal:4eee2afb97c4990115f7125987181035faa8da3a unknown(Expr_Variable) literal:7a199e96201dea624fe45aa523d67a330160f635 exception_message newline
-  echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";
+  parts: literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 other_variable literal:badf2839be86aaec37c49cc58baa78c81f85edae other_variable literal:ea6e2fdbde7c52722e937e9db194872a02c5e039 exception_message newline
+  echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
 
-    37         $test->$prop2 = $value;
-    38         $test->$prop1 =& $test->$prop2;
-    39     } catch (TypeError $e) {
->   40         echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";
-    41     }
-    42     try {
-    43         $test->$prop1 = $value;
+    12         $dom->createAttributeNS($ns, $qname);
+    13     } catch (DOMException $e) {
+    14         $ns_readable = is_null($ns) ? 'null' : "\"$ns\"";
+>   15         echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
+    16     }
+    17 }
+    18
 
 ext/standard/tests/strings/printf.phpt:45
   fingerprint: message_only:0aaa03c325d1bebdfa8c891eb2e355a4381bde9e
@@ -537,8 +519,8 @@ ext/standard/tests/strings/printf.phpt:45
     44 } catch (\ArgumentCountError $e) {
 >   45     print('Error found: '.$e->getMessage());
     46 }
-    47 
-    48 
+    47
+    48
 
 ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:72
   fingerprint: message_only:0ae34191153a07b37eb2a06f76fcd58b99310f24
@@ -555,7 +537,7 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:72
     71 } catch (Exception $e) {
 >   72     echo "Flags with extra bits should be masked: " . $e->getMessage() . "\n";
     73 }
-    74 
+    74
     75 ?>
 
 Zend/tests/methods-on-non-objects-catch.phpt:13
@@ -594,32 +576,14 @@ ext/phar/tests/phar_metadata_write4.phpt:58
     60 }
     61 var_dump($phar['a']->getMetadata([]));
 
-ext/mysqli/tests/mysqli_execute_query.phpt:82
-  fingerprint: message_only:113f5a76c12776ef4fb5afe979bc3ff577da61b6
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:1dfb8f3e8b8382ae91bd0d0364cfd9198b1e55f1 exception_message newline
-  echo '[012] '.$e->getMessage()."\n";
-
-    79 try {
-    80     $link->execute_query("SELECT id FROM test WHERE label = ?", ["foo"]);
-    81 } catch (mysqli_sql_exception $e) {
->   82     echo '[012] '.$e->getMessage()."\n";
-    83 }
-    84 
-    85 print "done!";
-
 ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:48
-  fingerprint: message_only:12ef3d2b78bd825a2c766daf892251cbb35b0c23
+  fingerprint: message_only:10a1e8ff201331c1b4f513353f78066198c27cd6
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: literal:84a6235784fcced38ac73d40c3f97ed8fe185ef3 unknown(Expr_Variable) literal:f0c279909b702a506f0d4a6d3ae098675f773635 exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
+  parts: literal:84a6235784fcced38ac73d40c3f97ed8fe185ef3 other_variable literal:f0c279909b702a506f0d4a6d3ae098675f773635 exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
   echo "Property $property from instance: EXCEPTION - " . $e->getMessage() . "\n\n";
 
     45         echo "  Found in array cast: " . (array_key_exists($reflection->getMangledName(), $array) ? "yes" : "no") . "\n";
@@ -628,25 +592,43 @@ ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:48
 >   48         echo "Property $property from instance: EXCEPTION - " . $e->getMessage() . "\n\n";
     49     }
     50 }
-    51 
+    51
 
-ext/spl/tests/SplHeap_serialize_error_handling.phpt:63
-  fingerprint: message_only:15d9610b5a5e9d843b44d141cc0b75a51473b8cb
+ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:71
+  fingerprint: message_only:148a618e7ced665c3a3a27f8d419d9079d8521c2
+  origin: php_src
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:d51776670f437289243a3720e76f6854b3ccea9d exception_message newline
+  echo "Unexpected exception: " . $e->getMessage() . "\n";
+
+    68     $reflection = new ReflectionProperty($obj, 'dynamic');
+    69     echo "Instance-based reflection works: " . $reflection->getMangledName() . "\n";
+    70 } catch (ReflectionException $e) {
+>   71     echo "Unexpected exception: " . $e->getMessage() . "\n";
+    72 }
+    73
+    74 ?>
+
+Zend/tests/type_declarations/typed_properties_076.phpt:40
+  fingerprint: message_only:1d6d45d286175da0e57b42b7b8ca3b1d586264a2
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
   reason: contains descriptive context that must not be dropped
-  parts: literal:3af2ce3560628311e5e6076176bfb18a3b4ae879 unknown(Expr_Variable) literal:colon_separator exception_message newline
-  echo "PQ Case $i: " . $e->getMessage() . "\n";
+  parts: literal:e871041d84875d6279a81f4cce33f613fd059680 other_variable literal:4eee2afb97c4990115f7125987181035faa8da3a other_variable literal:7a199e96201dea624fe45aa523d67a330160f635 exception_message newline
+  echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";
 
-    60         $pq->__unserialize($case);
-    61         echo "PQ Case $i: UNEXPECTED SUCCESS\n";
-    62     } catch (Exception $e) {
->   63         echo "PQ Case $i: " . $e->getMessage() . "\n";
-    64     }
-    65 }
-    66 
+    37         $test->$prop2 = $value;
+    38         $test->$prop1 =& $test->$prop2;
+    39     } catch (TypeError $e) {
+>   40         echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";
+    41     }
+    42     try {
+    43         $test->$prop1 = $value;
 
 ext/dom/tests/DOM4_ParentNode_append_invalidtypes.phpt:15
   fingerprint: message_only:1e7c78ce2f438141c35d420bb92a812210d45300
@@ -664,7 +646,7 @@ ext/dom/tests/DOM4_ParentNode_append_invalidtypes.phpt:15
 >   15     echo "OK! {$e->getMessage()}";
     16 }
     17 ?>
-    18 
+    18
 
 ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:51
   fingerprint: message_only:1ec58e999d204bd355d1584299a13fd070b710fa
@@ -681,7 +663,7 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:51
     50 } catch (Exception $e) {
 >   51     echo "Valid flags rejected: " . $e->getMessage() . "\n";
     52 }
-    53 
+    53
     54 try {
 
 ext/soap/tests/bugs/protocol_relative_redirect.phpt:45
@@ -700,7 +682,7 @@ ext/soap/tests/bugs/protocol_relative_redirect.phpt:45
 >   45     echo "SoapFault: " . $e->getMessage() . "\n";
     46 }
     47 ?>
-    48 
+    48
 
 ext/fileinfo/tests/finfo_open_003.phpt:14
   fingerprint: message_only:20adc70b63caf4908bad5020562eb595c142948a
@@ -718,7 +700,7 @@ ext/fileinfo/tests/finfo_open_003.phpt:14
 >   14     echo "TEST:" . $ex->getMessage() . PHP_EOL;
     15 }
     16 ?>
-    17 
+    17
 
 ext/hash/tests/hash_serialize_003.phpt:240
   fingerprint: message_only:22b54e72685d40d9821d145fcb1ad5ae00e71c77
@@ -736,7 +718,7 @@ ext/hash/tests/hash_serialize_003.phpt:240
 >  240         echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();
    241     }
    242 }
-   243 
+   243
 
 ext/spl/tests/multiple_iterator_001.phpt:92
   fingerprint: message_only:24b07a5db84901006f8ca82adcaf817a9eef2312
@@ -753,7 +735,7 @@ ext/spl/tests/multiple_iterator_001.phpt:92
     91 } catch(TypeError $e) {
 >   92     echo "TypeError thrown: " . $e->getMessage() . "\n";
     93 }
-    94 
+    94
     95 echo "-- Associate with duplicate value --\n";
 
 ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:35
@@ -771,7 +753,7 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:35
     34 } catch (Exception $e) {
 >   35     echo "Exception thrown for zero flags: " . $e->getMessage() . "\n";
     36 }
-    37 
+    37
     38 try {
 
 ext/pdo_firebird/tests/bug_77863.phpt:113
@@ -825,7 +807,7 @@ Zend/tests/type_coercion/gh22112.phpt:29
     28 } catch (Exception $e) {
 >   29     echo "string: ", $e->getMessage(), "\n";
     30 }
-    31 
+    31
     32 ?>
 
 Zend/tests/type_declarations/scalar_return_basic.phpt:58
@@ -861,7 +843,7 @@ Zend/tests/assert/bug71922.phpt:14
     13 } catch (AssertionError $e) {
 >   14     echo "Assertion failure: ", $e->getMessage(), "\n";
     15 }
-    16 
+    16
     17 ?>
 
 ext/dom/tests/modern/xml/XMLDocument_xpath.phpt:49
@@ -879,62 +861,8 @@ ext/dom/tests/modern/xml/XMLDocument_xpath.phpt:49
     48 } catch (DOMException $e) {
 >   49     echo $e->getCode(), ": ", $e->getMessage(), "\n";
     50 }
-    51 
+    51
     52 ?>
-
-Zend/tests/attributes/005_objects.phpt:34
-  fingerprint: message_only:41382eb8418d03b4e3cf7137cd03b45a09663c7d
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:70720c47bbb680657368261801cbe3413c336e01 exception_message
-  var_dump('ERROR 1', $e->getMessage());
-
-    31 try {
-    32     $ref->getAttributes()[0]->newInstance();
-    33 } catch (\ArgumentCountError $e) {
->   34     var_dump('ERROR 1', $e->getMessage());
-    35 }
-    36 
-    37 echo "\n";
-
-ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:123
-  fingerprint: message_only:4187d0545b618af54dcd1250e3482abc104b72b8
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:6627b0547115e351a8e32d09da91f17cc6633f4a exception_message newline
-  echo '[008] '.$e->getMessage()."\n";
-
-   120 try {
-   121     $stmt->execute(['A'=>'abc', 2=>42, ''=>$id]);
-   122 } catch (ValueError $e) {
->  123     echo '[008] '.$e->getMessage()."\n";
-   124 }
-   125 $stmt = null;
-   126 
-
-Zend/tests/attributes/005_objects.phpt:54
-  fingerprint: message_only:42e56f10b2d781f7fe507a1d1460e2fa7adfcd10
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:e19a403602dd4e12a3e657f506a895c2f9d3112f exception_message
-  var_dump('ERROR 3', $e->getMessage());
-
-    51 try {
-    52     $ref->getAttributes()[0]->newInstance();
-    53 } catch (\Error $e) {
->   54     var_dump('ERROR 3', $e->getMessage());
-    55 }
-    56 
-    57 echo "\n";
 
 ext/spl/tests/heap_corruption.phpt:58
   fingerprint: message_only:454642b4f16235f0308b22a8be8518ff51ac31db
@@ -951,7 +879,7 @@ ext/spl/tests/heap_corruption.phpt:58
     57 catch (Exception $e) {
 >   58     echo "Corruption Exception: " . $e->getMessage() . PHP_EOL;
     59 }
-    60 
+    60
     61 var_dump($heap->isCorrupted());
 
 Zend/tests/require_parse_exception.phpt:12
@@ -970,7 +898,7 @@ Zend/tests/require_parse_exception.phpt:12
 >   12         echo $e->getMessage(), " on line ", $e->getLine(), "\n";
     13     }
     14 }
-    15 
+    15
 
 ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt:11
   fingerprint: message_only:4629d0d3302b4096cec9cfbe69f9c600b046cc45
@@ -987,7 +915,7 @@ ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt:11
     10 } catch (TypeError $e) {
 >   11   echo $e->getMessage() . "(" . $e->getLine() .  ")\n";
     12 }
-    13 
+    13
     14 echo "Non-existent class:\n";
 
 ext/standard/tests/array/bug42177.phpt:24
@@ -1006,7 +934,7 @@ ext/standard/tests/array/bug42177.phpt:24
 >   24     echo $e->getMessage() . " on line " . $e->getLine() . "\n";
     25 }
     26 unset( $a1, $a2 );
-    27 
+    27
 
 tests/strings/002.phpt:45
   fingerprint: message_only:4ace32465b6006ace0b1e173d1ada6b3cf9a5f81
@@ -1060,7 +988,7 @@ ext/standard/tests/strings/strpos.phpt:87
 >   87     echo "\n", $e->getMessage(), "\n";
     88   }
     89 }
-    90 
+    90
 
 ext/spl/tests/SplHeap_serialize_corrupted.phpt:31
   fingerprint: message_only:5784a6682057fdfac3cebdacbaaba509eb109199
@@ -1077,7 +1005,7 @@ ext/spl/tests/SplHeap_serialize_corrupted.phpt:31
     30 } catch (Exception $e) {
 >   31     echo "Serialization failed: " . $e->getMessage() . "\n";
     32 }
-    33 
+    33
     34 class ThrowingPQ extends SplPriorityQueue {
 
 ext/spl/tests/multiple_iterator_001.phpt:74
@@ -1095,7 +1023,7 @@ ext/spl/tests/multiple_iterator_001.phpt:74
     73 } catch(InvalidArgumentException $e) {
 >   74     echo "InvalidArgumentException thrown: " . $e->getMessage() . "\n";
     75 }
-    76 
+    76
     77 echo "-- Flags |= MultipleIterator::MIT_KEYS_ASSOC --\n";
 
 ext/standard/tests/general_functions/bug44295-win.phpt:21
@@ -1131,26 +1059,26 @@ tests/classes/array_access_013.phpt:22
     21 {
 >   22     echo "Caught in " . $e->getMessage() . "()\n";
     23 }
-    24 
+    24
     25 try
 
-ext/mysqli/tests/mysqli_execute_query.phpt:67
-  fingerprint: message_only:5fbf0e1d0f19c8c8c688a87e41ca9bddc2b2d2f2
+ext/intl/tests/calendar_uninitialized_argument_position.phpt:15
+  fingerprint: message_only:5fc248c6aba8175313c66dc74cb234d456d2947d
   origin: php_src
   family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:cf68964b82dcd029db9c3eb2017f0eddf80247ba exception_message newline
-  echo '[010] '.$e->getMessage()."\n";
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: other_variable literal:colon_separator exception_message newline
+  echo $method, ': ', $e->getMessage(), PHP_EOL;
 
-    64 try {
-    65     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo' => 42]);
-    66 } catch (ValueError $e) {
->   67     echo '[010] '.$e->getMessage()."\n";
-    68 }
-    69 
-    70 // check if insert_id is copied
+    12     try {
+    13         $calendar->$method($uninitialized);
+    14     } catch (Error $e) {
+>   15         echo $method, ': ', $e->getMessage(), PHP_EOL;
+    16     }
+    17 }
+    18
 
 ext/ldap/tests/gh21262.phpt:43
   fingerprint: message_only:60589cd4911e2fb4483215e80aeb44f46d675c39
@@ -1168,25 +1096,7 @@ ext/ldap/tests/gh21262.phpt:43
 >   43 	echo "ldap_mod_del: UNEXPECTED ValueError: ", $e->getMessage(), PHP_EOL;
     44 }
     45 ?>
-    46 
-
-ext/intl/tests/calendar_uninitialized_argument_position.phpt:15
-  fingerprint: message_only:6118fe02f515a7838680f4caedfa7c8f735839da
-  origin: php_src
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECT
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_Variable) literal:colon_separator exception_message newline
-  echo $method, ': ', $e->getMessage(), PHP_EOL;
-
-    12     try {
-    13         $calendar->$method($uninitialized);
-    14     } catch (Error $e) {
->   15         echo $method, ': ', $e->getMessage(), PHP_EOL;
-    16     }
-    17 }
-    18 
+    46
 
 ext/spl/tests/SplHeap_serialize_corrupted.phpt:59
   fingerprint: message_only:62a03fb73ac565c5d674e6116e07f530dc2283ae
@@ -1203,7 +1113,7 @@ ext/spl/tests/SplHeap_serialize_corrupted.phpt:59
     58 } catch (Exception $e) {
 >   59     echo "PQ Serialization failed: " . $e->getMessage() . "\n";
     60 }
-    61 
+    61
     62 ?>
 
 Zend/tests/type_coercion/gh22112.phpt:23
@@ -1221,7 +1131,7 @@ Zend/tests/type_coercion/gh22112.phpt:23
     22 } catch (Exception $e) {
 >   23     echo "bool: ", $e->getMessage(), "\n";
     24 }
-    25 
+    25
     26 try {
 
 ext/standard/tests/strings/vfprintf_error4.phpt:22
@@ -1276,25 +1186,7 @@ ext/dom/tests/DOMNode_removeChild_error1.phpt:17
 >   17 	echo "DOMException: " . $e->getMessage();
     18 }
     19 ?>
-    20 
-
-ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:71
-  fingerprint: message_only:6bb792fd65dccb99b611ab010d0f1765c2aa7921
-  origin: php_src
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: literal:trash:unexpected_exception exception_message newline
-  echo "Unexpected exception: " . $e->getMessage() . "\n";
-
-    68     $reflection = new ReflectionProperty($obj, 'dynamic');
-    69     echo "Instance-based reflection works: " . $reflection->getMangledName() . "\n";
-    70 } catch (ReflectionException $e) {
->   71     echo "Unexpected exception: " . $e->getMessage() . "\n";
-    72 }
-    73 
-    74 ?>
+    20
 
 Zend/tests/constexpr/constant_expressions_exceptions_002.phpt:8
   fingerprint: message_only:6f6e5ea043acd6775b6dd4ab86dd62f8e194918b
@@ -1329,26 +1221,8 @@ tests/classes/destructor_and_exceptions.phpt:49
     48 {
 >   49     echo "Caught FatalException: " . $e->getMessage() . "\n";
     50 }
-    51 
+    51
     52 ?>
-
-ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:107
-  fingerprint: message_only:73a24ef37a54618c2b094aaf6b5c78918de723a0
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:7b0c4f7f67da4572af5691eac442f4372d2ea99f exception_message newline
-  echo '[007] '.$e->getMessage()."\n";
-
-   104 try {
-   105     $stmt->execute([]); // no params here. PDO doesn't throw an error, but mysqli does
-   106 } catch (ValueError $e) {
->  107     echo '[007] '.$e->getMessage()."\n";
-   108 }
-   109 $stmt = null;
-   110 
 
 ext/pdo_firebird/tests/autocommit.phpt:39
   fingerprint: message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
@@ -1365,26 +1239,8 @@ ext/pdo_firebird/tests/autocommit.phpt:39
     38 } catch (PDOException $e) {
 >   39     echo $e->getMessage()."\n\n";
     40 }
-    41 
+    41
     42 echo "select, expect error\n";
-
-Zend/tests/attributes/005_objects.phpt:70
-  fingerprint: message_only:77dbb9c209ca81710552611c075f03812d5ccca6
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:5d6d894b0ae699e59807a308a86a57a9089815da exception_message
-  var_dump('ERROR 4', $e->getMessage());
-
-    67 try {
-    68     $ref->getAttributes()[0]->newInstance();
-    69 } catch (\Error $e) {
->   70     var_dump('ERROR 4', $e->getMessage());
-    71 }
-    72 
-    73 echo "\n";
 
 ext/reflection/tests/internal_parameter_default_value/check_all.phpt:12
   fingerprint: message_only:77e998e05e3bdd99308717813405be030bd6f4da
@@ -1419,8 +1275,26 @@ Zend/tests/add_002.phpt:14
     13 } catch (Error $e) {
 >   14     echo "\nException: " . $e->getMessage() . "\n";
     15 }
-    16 
+    16
     17 $c = $a + $o;
+
+Zend/tests/attributes/005_objects.phpt:34
+  fingerprint: message_only:78c8244c45e6beb27e598e2137855adcc9acb454
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:marker:error_number exception_message
+  var_dump('ERROR 1', $e->getMessage());
+
+    31 try {
+    32     $ref->getAttributes()[0]->newInstance();
+    33 } catch (\ArgumentCountError $e) {
+>   34     var_dump('ERROR 1', $e->getMessage());
+    35 }
+    36
+    37 echo "\n";
 
 ext/spl/tests/SplFileObject/fileobject_003.phpt:34
   fingerprint: message_only:79836f7ba96de26581786ad66801016aeeb7e28f
@@ -1456,25 +1330,25 @@ Zend/tests/ast/gh21072.phpt:13
 >   13     echo $e->getMessage();
     14 }
     15 ?>
-    16 
+    16
 
-ext/dom/tests/modern/spec/Document_createAttributeNS.phpt:15
-  fingerprint: message_only:85b5c22c326f219e22be45140faf2fd2d2cb0a9c
+ext/mysqli/tests/mysqli_execute_query.phpt:62
+  fingerprint: message_only:815f31b82e031eabb16ff93787ef394bb67f7914
   origin: php_src
   family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 unknown(Expr_Variable) literal:badf2839be86aaec37c49cc58baa78c81f85edae unknown(Expr_Variable) literal:ea6e2fdbde7c52722e937e9db194872a02c5e039 exception_message newline
-  echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:marker:bracketed_numeric exception_message newline
+  echo '[009] '.$e->getMessage()."\n";
 
-    12         $dom->createAttributeNS($ns, $qname);
-    13     } catch (DOMException $e) {
-    14         $ns_readable = is_null($ns) ? 'null' : "\"$ns\"";
->   15         echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
-    16     }
-    17 }
-    18 
+    59 try {
+    60     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo', 42]);
+    61 } catch (ValueError $e) {
+>   62     echo '[009] '.$e->getMessage()."\n";
+    63 }
+    64 try {
+    65     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo' => 42]);
 
 ext/pdo_mysql/tests/bug68371.phpt:61
   fingerprint: message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b
@@ -1509,7 +1383,7 @@ Zend/tests/closures/closure_instantiate.phpt:16
     15     // This is the message that we should see for a caught error
 >   16     echo 'ERROR: ', $e->getMessage();
     17 }
-    18 
+    18
     19 ?>
 
 ext/ldap/tests/gh21262.phpt:35
@@ -1527,7 +1401,7 @@ ext/ldap/tests/gh21262.phpt:35
     34 } catch (ValueError $e) {
 >   35 	echo "ldap_modify: UNEXPECTED ValueError: ", $e->getMessage(), PHP_EOL;
     36 }
-    37 
+    37
     38 // ldap_mod_del() should accept empty arrays (delete attribute)
 
 ext/spl/tests/bug73629.phpt:14
@@ -1546,7 +1420,7 @@ ext/spl/tests/bug73629.phpt:14
 >   14     echo 'expected exception: ' . $e->getMessage() . "\n";
     15 }
     16 ?>
-    17 
+    17
 
 ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:64
   fingerprint: message_only:940059cd3c449e068b142fc1ccc87823147d9790
@@ -1563,7 +1437,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:64
     63 } catch (ReflectionException $e) {
 >   64     echo "Expected exception for class-based reflection: " . $e->getMessage() . "\n";
     65 }
-    66 
+    66
     67 try {
 
 ext/standard/tests/array/gh16649/array_splice_uaf_add_elements.phpt:18
@@ -1582,7 +1456,7 @@ ext/standard/tests/array/gh16649/array_splice_uaf_add_elements.phpt:18
 >   18     echo "Exception caught: " . $e->getMessage() . "\n";
     19 }
     20 ?>
-    21 
+    21
 
 Zend/tests/bug53432.phpt:30
   fingerprint: message_only:9487ef0a1ab8a5fd30e34b5a5e4f4e8ecb04ba47
@@ -1600,7 +1474,7 @@ Zend/tests/bug53432.phpt:30
 >   30     echo "Error: {$e->getMessage()}\n";
     31 }
     32 var_dump($str);
-    33 
+    33
 
 ext/dom/tests/DOMElement_className.phpt:31
   fingerprint: message_only:9662d106e3caf68a258fb67957b19f856566fe28
@@ -1635,7 +1509,7 @@ Zend/tests/arrow_functions/007.phpt:11
     10 } catch (AssertionError $e) {
 >   11     echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
     12 }
-    13 
+    13
     14 try {
 
 Zend/tests/exceptions/bug50383.phpt:26
@@ -1654,7 +1528,7 @@ Zend/tests/exceptions/bug50383.phpt:26
 >   26     print $e->getMessage();
     27     print_r($e->getTrace());
     28 }
-    29 
+    29
 
 Zend/tests/exit_finally_2.phpt:18
   fingerprint: message_only:9bc8a6b37b5e50d6864de5f9d4886dbfaeea5aea
@@ -1671,26 +1545,8 @@ Zend/tests/exit_finally_2.phpt:18
     17 } catch (Exception $e) {
 >   18     echo "Caught {$e->getMessage()}\n";
     19 }
-    20 
+    20
     21 ?>
-
-ext/mysqli/tests/mysqli_execute_query_leak.phpt:25
-  fingerprint: message_only:9cef7cb33a4a378d30ff9b0d1e51a25bddd57573
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:a318ef2fa0ac8ab3e9aa605341e87eb9c88b1fe1 exception_message newline
-  echo '[002] '.$e->getMessage()."\n";
-
-    22 try {
-    23     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo' => 42]);
-    24 } catch (ValueError $e) {
->   25     echo '[002] '.$e->getMessage()."\n";
-    26 }
-    27 
-    28 print "done!";
 
 Zend/tests/exceptions/bug26698.phpt:29
   fingerprint: message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
@@ -1708,7 +1564,7 @@ Zend/tests/exceptions/bug26698.phpt:29
 >   29             echo 'Caught: '.$e->getMessage()."\n";
     30         }
     31     }
-    32 
+    32
 
 Zend/tests/return_types/028.phpt:15
   fingerprint: message_only:a1c85d7d368e91ada3994bca051c54aee1d7abab
@@ -1725,7 +1581,7 @@ Zend/tests/return_types/028.phpt:15
     14 } catch (Error $e) {
 >   15     echo $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine();
     16 }
-    17 
+    17
     18 ?>
 
 Zend/tests/arg_unpack/string_keys.phpt:13
@@ -1743,7 +1599,7 @@ Zend/tests/arg_unpack/string_keys.phpt:13
     12 } catch (Error $ex) {
 >   13     var_dump($ex->getMessage());
     14 }
-    15 
+    15
     16 ?>
 
 ext/com_dotnet/tests/bug77177.phpt:18
@@ -1762,7 +1618,7 @@ ext/com_dotnet/tests/bug77177.phpt:18
 >   18         echo "Exception: {$ex->getMessage()}\n";
     19     }
     20 }
-    21 
+    21
 
 tests/lang/foreachLoopIteratorAggregate.002.phpt:41
   fingerprint: message_only:a63773d7bd97622ebacaf1d5b6d2418d55fda151
@@ -1780,43 +1636,7 @@ tests/lang/foreachLoopIteratorAggregate.002.phpt:41
 >   41             echo $e->getLine() . ": " . $e->getMessage() ."\n";
     42     }
     43 }
-    44 
-
-ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:23
-  fingerprint: message_only:abc81131ad0caa7d4ed1af4bdce98308420754cd
-  origin: php_src
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECTF
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_Variable) literal:trash:exception exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
-  echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
-
-    20         echo "  Found in array cast: " . (array_key_exists($reflection->getMangledName(), $array) ? "yes" : "no") . "\n";
-    21         echo "\n";
-    22     } catch (ReflectionException $e) {
->   23         echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
-    24     }
-    25 }
-    26 
-
-ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:80
-  fingerprint: message_only:ac63ae6a5ebaa44bfb04e26a48c2bbeecae734f4
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:700d2fd66f8cb0efd649d5693a5033a907a9bb9f exception_message newline
-  echo '[006] '.$e->getMessage()."\n";
-
-    77 try {
-    78     $stmt->execute((object)[&$abc, 42, $id]);
-    79 } catch (TypeError $e) {
->   80     echo '[006] '.$e->getMessage()."\n";
-    81 }
-    82 $stmt = null;
-    83 
+    44
 
 ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:52
   fingerprint: message_only:ad310bfa9fc6bc722018b51dba552a12f14ca4dc
@@ -1833,8 +1653,26 @@ ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:52
     51 } catch (ReflectionException $e) {
 >   52     echo "Object-based creation failed as expected: " . $e->getMessage() . "\n";
     53 }
-    54 
+    54
     55 ?>
+
+ext/spl/tests/SplHeap_serialize_error_handling.phpt:40
+  fingerprint: message_only:b1be19f6f7486680131651bd4680d4d20626ce56
+  origin: php_src
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:c5709de96362743e4de06cf361b5fa8b92c3a891 other_variable literal:colon_separator exception_message newline
+  echo "Case $i: " . $e->getMessage() . "\n";
+
+    37         $heap->__unserialize($case);
+    38         echo "Case $i: UNEXPECTED SUCCESS\n";
+    39     } catch (Exception $e) {
+>   40         echo "Case $i: " . $e->getMessage() . "\n";
+    41     }
+    42 }
+    43
 
 ext/spl/tests/heap_corruption.phpt:51
   fingerprint: message_only:bb4b1445c929ad8a92165195de1316acc9893816
@@ -1851,7 +1689,7 @@ ext/spl/tests/heap_corruption.phpt:51
     50 catch (Exception $e) {
 >   51     echo "Compare Exception: " . $e->getMessage() . PHP_EOL;
     52 }
-    53 
+    53
     54 try {
 
 Zend/tests/generators/generator_throwing_during_function_call.phpt:23
@@ -1869,7 +1707,7 @@ Zend/tests/generators/generator_throwing_during_function_call.phpt:23
     22 } catch (Exception $e) {
 >   23     echo 'Caught exception with message "', $e->getMessage(), '"', "\n";
     24 }
-    25 
+    25
     26 var_dump($gen->current());
 
 Zend/tests/closures/closure_instantiate.phpt:13
@@ -1890,24 +1728,6 @@ Zend/tests/closures/closure_instantiate.phpt:13
     15     // This is the message that we should see for a caught error
     16     echo 'ERROR: ', $e->getMessage();
 
-ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:53
-  fingerprint: message_only:bf2c93da56f275399371fc5a183fc2291e5a645c
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:90a2315e644bb8b72317d2c229dd3e16b96bea26 exception_message newline
-  echo '[003] '.$e->getMessage()."\n";
-
-    50 try {
-    51     $stmt->execute([]);
-    52 } catch (ValueError $e) {
->   53     echo '[003] '.$e->getMessage()."\n";
-    54 }
-    55 $stmt = null;
-    56 
-
 ext/pdo/tests/pecl_bug_5217.phpt:23
   fingerprint: message_only:bfd265dcec2331332ed2146834383588669a9bff
   origin: php_src
@@ -1923,8 +1743,26 @@ ext/pdo/tests/pecl_bug_5217.phpt:23
     22 } catch (Exception $e) {
 >   23     echo "Safely caught " . $e->getMessage() . "\n";
     24 }
-    25 
+    25
     26 echo "PHP Didn't crash!\n";
+
+ext/spl/tests/SplHeap_serialize_error_handling.phpt:63
+  fingerprint: message_only:c2df79ff56a37b19e0a35461b12ff7fe7c68a828
+  origin: php_src
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:3af2ce3560628311e5e6076176bfb18a3b4ae879 other_variable literal:colon_separator exception_message newline
+  echo "PQ Case $i: " . $e->getMessage() . "\n";
+
+    60         $pq->__unserialize($case);
+    61         echo "PQ Case $i: UNEXPECTED SUCCESS\n";
+    62     } catch (Exception $e) {
+>   63         echo "PQ Case $i: " . $e->getMessage() . "\n";
+    64     }
+    65 }
+    66
 
 ext/spl/tests/iterator_047.phpt:51
   fingerprint: message_only:c3629babcb523665062f95cbe77036ccf27c4e76
@@ -1944,42 +1782,6 @@ ext/spl/tests/iterator_047.phpt:51
     53             MyRecursiveArrayIterator::$fail++;
     54         }
 
-ext/mysqli/tests/mysqli_execute_query.phpt:62
-  fingerprint: message_only:c4656b36f09d9db129c3cd3708f8b618ae5419bf
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:b99fe37fbf42271bee96ba42cc909120136d43ba exception_message newline
-  echo '[009] '.$e->getMessage()."\n";
-
-    59 try {
-    60     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo', 42]);
-    61 } catch (ValueError $e) {
->   62     echo '[009] '.$e->getMessage()."\n";
-    63 }
-    64 try {
-    65     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo' => 42]);
-
-ext/spl/tests/SplHeap_serialize_error_handling.phpt:40
-  fingerprint: message_only:c68ccfdfa1c3d9fb6b29974d1372657c1ba0f74a
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:c5709de96362743e4de06cf361b5fa8b92c3a891 unknown(Expr_Variable) literal:colon_separator exception_message newline
-  echo "Case $i: " . $e->getMessage() . "\n";
-
-    37         $heap->__unserialize($case);
-    38         echo "Case $i: UNEXPECTED SUCCESS\n";
-    39     } catch (Exception $e) {
->   40         echo "Case $i: " . $e->getMessage() . "\n";
-    41     }
-    42 }
-    43 
-
 ext/reflection/tests/ReflectionExtension_constructor_error.phpt:11
   fingerprint: message_only:c799370b7843e4c4007a0f3e6bb1ef453eac6ba4
   origin: php_src
@@ -1995,7 +1797,7 @@ ext/reflection/tests/ReflectionExtension_constructor_error.phpt:11
     10 } catch (TypeError $re) {
 >   11     echo "Ok - ".$re->getMessage().PHP_EOL;
     12 }
-    13 
+    13
     14 try {
 
 ext/phar/tests/bug65028.phpt:146
@@ -2014,25 +1816,7 @@ ext/phar/tests/bug65028.phpt:146
 >  146     echo "Exception thrown: " . $ex->getMessage() . "\n";
    147 }
    148 ?>
-   149 
-
-ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:71
-  fingerprint: message_only:c8ae62246215f306f0a78d254fac398c11b9ff4e
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:f04a376559c36bbcf2ddf2c0cf3c858442bba3e0 exception_message newline
-  echo '[005] '.$e->getMessage()."\n";
-
-    68 try {
-    69     $stmt->execute(42);
-    70 } catch (TypeError $e) {
->   71     echo '[005] '.$e->getMessage()."\n";
-    72 }
-    73 $stmt = null;
-    74 
+   149
 
 ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:19
   fingerprint: message_only:ca0d1a481a80aff0f225943c564eb232a9bdb136
@@ -2049,7 +1833,7 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:19
     18 } catch (Exception $e) {
 >   19     echo "Exception thrown for invalid flags: " . $e->getMessage() . "\n";
     20 }
-    21 
+    21
     22 try {
 
 tests/classes/destructor_and_exceptions.phpt:45
@@ -2104,7 +1888,25 @@ ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt:18
 >   18         echo "Parse error: {$e->getMessage()} on line {$e->getLine()}\n";
     19     }
     20 }
-    21 
+    21
+
+Zend/tests/exceptions/bug60569.phpt:9
+  fingerprint: message_only:dbe267cf0c1911a07020b93e3746e026b8eac66e
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message other_variable
+  var_dump($e->getMessage(), $msg);
+
+     6     $msg = "Some error \x00 message";
+     7     throw new Exception($msg);
+     8 } catch(Exception $e) {
+>    9     var_dump($e->getMessage(), $msg);
+    10 }
+    11 ?>
+    12
 
 ext/com_dotnet/tests/variants.phpt:37
   fingerprint: message_only:ddbdfecc9307fe468ab9d75109eee17cb5869bd3
@@ -2142,41 +1944,23 @@ ext/pdo_firebird/tests/gh17383.phpt:25
     27     }
     28 }
 
-ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:62
-  fingerprint: message_only:e345dd81048e3fbd6e9635bb0ca3682b8d8dbc27
+ext/spl/tests/bug73629.phpt:9
+  fingerprint: message_only:e22984e792b433d75e714722eae4cd72ab921a1f
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
   reason: contains descriptive context that must not be dropped
-  parts: literal:dd95708c897f1021b382335f3f4d7ee87e175074 exception_message newline
-  echo '[004] '.$e->getMessage()."\n";
+  parts: literal:c5837e806ec8cb2e8d3764b7d0d92e5321aa1f13 exception_message newline
+  echo 'unexpected exception: ' . $e->getMessage() . "\n";
 
-    59 try {
-    60     $stmt->execute();
-    61 } catch (mysqli_sql_exception $e) {
->   62     echo '[004] '.$e->getMessage()."\n";
-    63 }
-    64 $stmt = null;
-    65 
-
-Zend/tests/attributes/005_objects.phpt:82
-  fingerprint: message_only:e357c0740e03ec3b4d2f4e66ad2531cccd3e9070
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:3a1f47bce6728882997fcc6cd4cefaeae415904d exception_message
-  var_dump('ERROR 6', $e->getMessage());
-
-    79 try {
-    80     $ref->getAttributes()[0]->newInstance();
-    81 } catch (\Error $e) {
->   82     var_dump('ERROR 6', $e->getMessage());
-    83 }
-    84 
-    85 ?>
+     6 try {
+     7     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_FIFO);
+     8 } catch (Exception $e) {
+>    9     echo 'unexpected exception: ' . $e->getMessage() . "\n";
+    10 }
+    11 try {
+    12     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
 
 tests/classes/type_hinting_004.phpt:17
   fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
@@ -2197,13 +1981,13 @@ tests/classes/type_hinting_004.phpt:17
     20     call_user_func('f1', new A);
 
 ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:26
-  fingerprint: message_only:ea17af06280e4fbe4327c343c8366366e40bd29b
+  fingerprint: message_only:e54b33988ec2fd1a67b9a2626fcf97959e839e53
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: literal:84a6235784fcced38ac73d40c3f97ed8fe185ef3 unknown(Expr_Variable) literal:3cf67e0a93956075ae2b88a13028f336b7a35b9d exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
+  parts: literal:84a6235784fcced38ac73d40c3f97ed8fe185ef3 other_variable literal:3cf67e0a93956075ae2b88a13028f336b7a35b9d exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
   echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
 
     23         echo "  getMangledName(): " . $reflection->getMangledName() . "\n";
@@ -2212,7 +1996,25 @@ ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:26
 >   26         echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
     27     }
     28 }
-    29 
+    29
+
+ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:23
+  fingerprint: message_only:e8b3afad693a6d862bf3363ca0182e4f0c9f2940
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: other_variable literal:trash:exception exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
+  echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
+
+    20         echo "  Found in array cast: " . (array_key_exists($reflection->getMangledName(), $array) ? "yes" : "no") . "\n";
+    21         echo "\n";
+    22     } catch (ReflectionException $e) {
+>   23         echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
+    24     }
+    25 }
+    26
 
 Zend/tests/assert/expect_015.phpt:23
   fingerprint: message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
@@ -2229,7 +2031,7 @@ Zend/tests/assert/expect_015.phpt:23
     22 } catch (AssertionError $e) {
 >   23     echo $e->getMessage(), PHP_EOL;
     24 }
-    25 
+    25
     26 try {
 
 ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:44
@@ -2247,7 +2049,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:44
     43 } catch (ReflectionException $e) {
 >   44     echo "Instance-based creation failed as expected: " . $e->getMessage() . "\n";
     45 }
-    46 
+    46
     47 try {
 
 ext/spl/tests/gh16217.phpt:18
@@ -2265,26 +2067,8 @@ ext/spl/tests/gh16217.phpt:18
     17 } catch (Error $e) {
 >   18     echo "next: ", $e->getMessage(), "\n";
     19 }
-    20 
+    20
     21 $obj = uninitialized();
-
-ext/mysqli/tests/mysqli_execute_query_leak.phpt:19
-  fingerprint: message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:31d9a18b7617c2ff22d2e743393454bac3a1baae exception_message newline
-  echo '[001] '.$e->getMessage()."\n";
-
-    16 try {
-    17     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo', 42]);
-    18 } catch (ValueError $e) {
->   19     echo '[001] '.$e->getMessage()."\n";
-    20 }
-    21 
-    22 try {
 
 ext/spl/tests/gh16217.phpt:12
   fingerprint: message_only:f59f6daa590005b1c04487988f184dcc4122e8c5
@@ -2301,26 +2085,8 @@ ext/spl/tests/gh16217.phpt:12
     11 } catch (Error $e) {
 >   12     echo "fputcsv: ", $e->getMessage(), "\n";
     13 }
-    14 
+    14
     15 try {
-
-Zend/tests/exceptions/bug60569.phpt:9
-  fingerprint: message_only:f9202729d1b379aa087eae7302d31e65b85c52c9
-  origin: php_src
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECTF
-  reason: contains an unsupported expression shape
-  parts: exception_message unknown(Expr_Variable)
-  var_dump($e->getMessage(), $msg);
-
-     6     $msg = "Some error \x00 message";
-     7     throw new Exception($msg);
-     8 } catch(Exception $e) {
->    9     var_dump($e->getMessage(), $msg);
-    10 }
-    11 ?>
-    12 
 
 Zend/tests/constants/008.phpt:9
   fingerprint: message_only:f99671c17dc5b51b229206cf22b75ad358a0591d
@@ -2337,7 +2103,7 @@ Zend/tests/constants/008.phpt:9
      8 } catch (TypeError $e) {
 >    9     echo "TypeError: ", $e->getMessage(), "\n";
     10 }
-    11 
+    11
     12 var_dump(define("TRUE", 1));
 
 ext/hash/tests/hash_hkdf_edges.phpt:19
@@ -2355,7 +2121,7 @@ ext/hash/tests/hash_hkdf_edges.phpt:19
     18 catch (\Error $e) {
 >   19     echo '[Error] ' . $e->getMessage() . "\n";
     20 }
-    21 
+    21
     22 ?>
 
 ext/dom/tests/registerNodeClass_abstract_class.phpt:17
@@ -2373,5 +2139,5 @@ ext/dom/tests/registerNodeClass_abstract_class.phpt:17
     16 } catch (ValueError $e) {
 >   17     echo "ValueError: ", $e->getMessage(), "\n";
     18 }
-    19 
+    19
     20 $dom->createElement("foo");

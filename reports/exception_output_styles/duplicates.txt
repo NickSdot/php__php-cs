@@ -1,5 +1,14 @@
 # Duplicate candidate windows by flavour
 
+class_message:0c65a3c6ae95d881da1786ab56e48194f83a0fcb
+  count: 2
+  representative: ext/ffi/tests/031.phpt:16
+  family: class_message
+  safety: canonicalizable
+  first statement: echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
+  duplicates:
+    - manual_001/old.phpt:10
+
 class_message:23ad30aefc82923c0a477ecb92b3cb2be99def27
   count: 15
   representative: Zend/tests/closures/closure_from_callable_error.phpt:17
@@ -228,15 +237,6 @@ class_message:c69459693d00856d286451544fcadcf392558259
     - ext/date/tests/getSetMicroseconds.phpt:56
     - +126 more
 
-class_message:c7cd74a2c02c2abd67a926f5daa2407698fffdd0
-  count: 2
-  representative: ext/ffi/tests/031.phpt:16
-  family: class_message
-  safety: descriptive_context
-  first statement: echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
-  duplicates:
-    - manual_001/old.phpt:10
-
 class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
   count: 11
   representative: ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
@@ -279,16 +279,6 @@ class_message:ea22164fdb83f284f290502160a1c8abce7f9703
     - Zend/tests/arg_unpack/invalid_type.phpt:23
     - Zend/tests/arg_unpack/invalid_type.phpt:29
     - Zend/tests/arg_unpack/invalid_type.phpt:34
-
-message_only:002f36e8d3bf1ac4127f6c6c76bcec58d95fc19a
-  count: 3
-  representative: Zend/tests/attributes/005_objects.phpt:44
-  family: message_only
-  safety: descriptive_context
-  first statement: var_dump('ERROR 2', $e->getMessage());
-  duplicates:
-    - Zend/tests/attributes/006_filter.phpt:68
-    - Zend/tests/attributes/020_userland_attribute_validation.phpt:35
 
 message_only:003e3f4de4ac26286d48cef53d931035386c750e
   count: 16
@@ -384,15 +374,6 @@ message_only:0713801e5e64601b8aa6f0b4b6e42917b9e6ff48
     - ext/ldap/tests/ldap_constructor.phpt:11
     - ext/spl/tests/bug73896.phpt:34
 
-message_only:0a9da88f4e4bb8fd3d4d71ba50f83d61a416d1f1
-  count: 2
-  representative: Zend/tests/type_declarations/typed_properties_076.phpt:40
-  family: message_only
-  safety: descriptive_context
-  first statement: echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";
-  duplicates:
-    - Zend/tests/type_declarations/typed_properties_076.phpt:46
-
 message_only:0aaa03c325d1bebdfa8c891eb2e355a4381bde9e
   count: 2
   representative: ext/standard/tests/strings/printf.phpt:45
@@ -411,14 +392,14 @@ message_only:0ee545d0d92e5f915dbe3bd1d1d93ab058897975
   duplicates:
     - Zend/tests/methods-on-non-objects-usort.phpt:15
 
-message_only:113f5a76c12776ef4fb5afe979bc3ff577da61b6
+message_only:1d6d45d286175da0e57b42b7b8ca3b1d586264a2
   count: 2
-  representative: ext/mysqli/tests/mysqli_execute_query.phpt:82
+  representative: Zend/tests/type_declarations/typed_properties_076.phpt:40
   family: message_only
   safety: descriptive_context
-  first statement: echo '[012] '.$e->getMessage()."\n";
+  first statement: echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";
   duplicates:
-    - manual_004/old.phpt:8
+    - Zend/tests/type_declarations/typed_properties_076.phpt:46
 
 message_only:1ec5fa64124358dce243d2469687cdbcd868e829
   count: 4
@@ -487,26 +468,6 @@ message_only:2e9049a84007173882ed62fac7cf85bc37533f61
   duplicates:
     - Zend/tests/type_declarations/scalar_return_basic_64bit.phpt:58
 
-message_only:41382eb8418d03b4e3cf7137cd03b45a09663c7d
-  count: 4
-  representative: Zend/tests/attributes/005_objects.phpt:34
-  family: message_only
-  safety: descriptive_context
-  first statement: var_dump('ERROR 1', $e->getMessage());
-  duplicates:
-    - Zend/tests/attributes/006_filter.phpt:60
-    - Zend/tests/attributes/013_class_scope.phpt:50
-    - Zend/tests/attributes/020_userland_attribute_validation.phpt:23
-
-message_only:4187d0545b618af54dcd1250e3482abc104b72b8
-  count: 2
-  representative: ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:123
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[008] '.$e->getMessage()."\n";
-  duplicates:
-    - manual_008/old.phpt:8
-
 message_only:4629d0d3302b4096cec9cfbe69f9c600b046cc45
   count: 3
   representative: ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt:11
@@ -556,20 +517,11 @@ message_only:5efe02aed1b9dda5dd4d1034442e3a40b1f5ab6e
     - tests/classes/array_access_013.phpt:49
     - tests/classes/iterators_007.phpt:30
 
-message_only:5fbf0e1d0f19c8c8c688a87e41ca9bddc2b2d2f2
-  count: 2
-  representative: ext/mysqli/tests/mysqli_execute_query.phpt:67
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[010] '.$e->getMessage()."\n";
-  duplicates:
-    - manual_003/old.phpt:8
-
-message_only:6118fe02f515a7838680f4caedfa7c8f735839da
+message_only:5fc248c6aba8175313c66dc74cb234d456d2947d
   count: 2
   representative: ext/intl/tests/calendar_uninitialized_argument_position.phpt:15
   family: message_only
-  safety: unsupported_expression
+  safety: canonicalizable
   first statement: echo $method, ': ', $e->getMessage(), PHP_EOL;
   duplicates:
     - ext/intl/tests/calendar_uninitialized_argument_position.phpt:23
@@ -603,15 +555,6 @@ message_only:693b057fbbf5eb1f97ef5afdadb67dec9a0858d8
     - ext/dom/tests/DOMNode_replaceChild_error1.phpt:18
     - ext/dom/tests/DOMNode_replaceChild_error2.phpt:16
 
-message_only:6bb792fd65dccb99b611ab010d0f1765c2aa7921
-  count: 2
-  representative: ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:71
-  family: message_only
-  safety: canonicalizable
-  first statement: echo "Unexpected exception: " . $e->getMessage() . "\n";
-  duplicates:
-    - ext/spl/tests/bug73629.phpt:9
-
 message_only:6f6e5ea043acd6775b6dd4ab86dd62f8e194918b
   count: 7
   representative: Zend/tests/constexpr/constant_expressions_exceptions_002.phpt:8
@@ -625,15 +568,6 @@ message_only:6f6e5ea043acd6775b6dd4ab86dd62f8e194918b
     - Zend/tests/exceptions/exception_014.phpt:13
     - Zend/tests/exceptions/exception_015.phpt:9
     - Zend/tests/exceptions/exception_016.phpt:8
-
-message_only:73a24ef37a54618c2b094aaf6b5c78918de723a0
-  count: 2
-  representative: ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:107
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[007] '.$e->getMessage()."\n";
-  duplicates:
-    - manual_007/old.phpt:8
 
 message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
   count: 14
@@ -685,6 +619,23 @@ message_only:7879bc6cbe4e1bfa05781c7d5bf6e1ac22a530cc
     - Zend/tests/exceptions/bug47771.phpt:26
     - +138 more
 
+message_only:78c8244c45e6beb27e598e2137855adcc9acb454
+  count: 10
+  representative: Zend/tests/attributes/005_objects.phpt:34
+  family: message_only
+  safety: canonicalizable
+  first statement: var_dump('ERROR 1', $e->getMessage());
+  duplicates:
+    - Zend/tests/attributes/005_objects.phpt:44
+    - Zend/tests/attributes/005_objects.phpt:54
+    - Zend/tests/attributes/005_objects.phpt:70
+    - Zend/tests/attributes/005_objects.phpt:82
+    - Zend/tests/attributes/006_filter.phpt:60
+    - Zend/tests/attributes/006_filter.phpt:68
+    - Zend/tests/attributes/013_class_scope.phpt:50
+    - Zend/tests/attributes/020_userland_attribute_validation.phpt:23
+    - Zend/tests/attributes/020_userland_attribute_validation.phpt:35
+
 message_only:79836f7ba96de26581786ad66801016aeeb7e28f
   count: 2
   representative: ext/spl/tests/SplFileObject/fileobject_003.phpt:34
@@ -722,6 +673,27 @@ message_only:815c351c0d23adb97c78f1d77844c28a462c3b11
     - Zend/tests/type_declarations/typed_properties_111.phpt:15
     - Zend/tests/type_declarations/typed_properties_112.phpt:14
     - +155 more
+
+message_only:815f31b82e031eabb16ff93787ef394bb67f7914
+  count: 14
+  representative: ext/mysqli/tests/mysqli_execute_query.phpt:62
+  family: message_only
+  safety: canonicalizable
+  first statement: echo '[009] '.$e->getMessage()."\n";
+  duplicates:
+    - ext/mysqli/tests/mysqli_execute_query.phpt:67
+    - ext/mysqli/tests/mysqli_execute_query.phpt:82
+    - ext/mysqli/tests/mysqli_execute_query_leak.phpt:19
+    - ext/mysqli/tests/mysqli_execute_query_leak.phpt:25
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:35
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:44
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:53
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:62
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:71
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:80
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:107
+    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:123
+    - manual_005/old.phpt:8
 
 message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b
   count: 3
@@ -817,16 +789,6 @@ message_only:9bc8a6b37b5e50d6864de5f9d4886dbfaeea5aea
     - ext/spl/tests/SplObjectStorage/SplObjectStorage_unset.phpt:19
     - ext/spl/tests/SplObjectStorage/SplObjectStorage_unset.phpt:26
 
-message_only:9cef7cb33a4a378d30ff9b0d1e51a25bddd57573
-  count: 3
-  representative: ext/mysqli/tests/mysqli_execute_query_leak.phpt:25
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[002] '.$e->getMessage()."\n";
-  duplicates:
-    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:44
-    - manual_006/old.phpt:8
-
 message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
   count: 22
   representative: Zend/tests/exceptions/bug26698.phpt:29
@@ -902,24 +864,6 @@ message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
     - ext/pdo_pgsql/tests/copy_to.phpt:67
     - ext/pdo_pgsql/tests/copy_to.phpt:74
 
-message_only:abc81131ad0caa7d4ed1af4bdce98308420754cd
-  count: 2
-  representative: ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:23
-  family: message_only
-  safety: unsupported_expression
-  first statement: echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
-  duplicates:
-    - ext/reflection/tests/ReflectionProperty_getMangledName_hooks.phpt:35
-
-message_only:ac63ae6a5ebaa44bfb04e26a48c2bbeecae734f4
-  count: 2
-  representative: ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:80
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[006] '.$e->getMessage()."\n";
-  duplicates:
-    - manual_012/old.phpt:8
-
 message_only:bbbd9425eecd10c52079a0b51aed62e80633f85c
   count: 2
   representative: Zend/tests/generators/generator_throwing_during_function_call.phpt:23
@@ -929,15 +873,6 @@ message_only:bbbd9425eecd10c52079a0b51aed62e80633f85c
   duplicates:
     - Zend/tests/generators/generator_throwing_exception.phpt:19
 
-message_only:bf2c93da56f275399371fc5a183fc2291e5a645c
-  count: 2
-  representative: ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:53
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[003] '.$e->getMessage()."\n";
-  duplicates:
-    - manual_009/old.phpt:8
-
 message_only:bfd265dcec2331332ed2146834383588669a9bff
   count: 2
   representative: ext/pdo/tests/pecl_bug_5217.phpt:23
@@ -946,15 +881,6 @@ message_only:bfd265dcec2331332ed2146834383588669a9bff
   first statement: echo "Safely caught " . $e->getMessage() . "\n";
   duplicates:
     - manual_013/old.phpt:8
-
-message_only:c4656b36f09d9db129c3cd3708f8b618ae5419bf
-  count: 2
-  representative: ext/mysqli/tests/mysqli_execute_query.phpt:62
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[009] '.$e->getMessage()."\n";
-  duplicates:
-    - manual_002/old.phpt:8
 
 message_only:c799370b7843e4c4007a0f3e6bb1ef453eac6ba4
   count: 20
@@ -982,15 +908,6 @@ message_only:c799370b7843e4c4007a0f3e6bb1ef453eac6ba4
     - ext/spl/tests/SplFixedArray__construct_param_array.phpt:11
     - ext/spl/tests/SplFixedArray__construct_param_string.phpt:10
     - ext/spl/tests/SplFixedArray_construct_param_SplFixedArray.phpt:10
-
-message_only:c8ae62246215f306f0a78d254fac398c11b9ff4e
-  count: 2
-  representative: ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:71
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[005] '.$e->getMessage()."\n";
-  duplicates:
-    - manual_011/old.phpt:8
 
 message_only:d052b6ac266a0003a7a5fc110502d03fd9364578
   count: 2
@@ -1021,16 +938,7 @@ message_only:ded429edd68d51d3df17dd6c275b9904b96ccaaf
   safety: canonicalizable
   first statement: echo 'PDOException message: ' . $e->getMessage() . "\n";
   duplicates:
-    - manual_015/old.phpt:8
-
-message_only:e345dd81048e3fbd6e9635bb0ca3682b8d8dbc27
-  count: 2
-  representative: ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:62
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[004] '.$e->getMessage()."\n";
-  duplicates:
-    - manual_010/old.phpt:8
+    - manual_015/old.phpt:9
 
 message_only:e46062ddabb913d5065299ce17326448faa6446c
   count: 18
@@ -1056,6 +964,15 @@ message_only:e46062ddabb913d5065299ce17326448faa6446c
     - tests/classes/type_hinting_004.phpt:131
     - tests/classes/type_hinting_004.phpt:136
     - tests/classes/type_hinting_004.phpt:141
+
+message_only:e8b3afad693a6d862bf3363ca0182e4f0c9f2940
+  count: 2
+  representative: ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:23
+  family: message_only
+  safety: canonicalizable
+  first statement: echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
+  duplicates:
+    - ext/reflection/tests/ReflectionProperty_getMangledName_hooks.phpt:35
 
 message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
   count: 392
@@ -1085,16 +1002,6 @@ message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
     - Zend/tests/exit/die_string_cast_exception.phpt:9
     - Zend/tests/function_arguments/sensitive_parameter_correctly_captures_original.phpt:18
     - +371 more
-
-message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
-  count: 3
-  representative: ext/mysqli/tests/mysqli_execute_query_leak.phpt:19
-  family: message_only
-  safety: descriptive_context
-  first statement: echo '[001] '.$e->getMessage()."\n";
-  duplicates:
-    - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:35
-    - manual_005/old.phpt:8
 
 message_only:fbe96e8a08edd676397a88d9c6d3f809c0bdaac5
   count: 3

@@ -17,8 +17,8 @@ Zend/tests/closures/closure_from_callable_error.phpt:17
     16 catch (\Throwable $t) {
 >   17     echo "Wrong exception type thrown: ".get_class($t)." : ".$t->getMessage()."\n";
     18 }
-    19 
-    20 
+    19
+    20
 
 ext/dom/tests/modern/xml/gh22570.phpt:31
   state: old_only
@@ -37,7 +37,7 @@ ext/dom/tests/modern/xml/gh22570.phpt:31
     30 } catch (\Error $e) {
 >   31     echo "saveXml: ", $e::class, ": ", $e->getMessage(), "\n";
     32 }
-    33 
+    33
     34 try {
 
 ext/dom/tests/modern/xml/gh22570.phpt:37
@@ -58,27 +58,7 @@ ext/dom/tests/modern/xml/gh22570.phpt:37
 >   37     echo "innerHTML: ", $e::class, ": ", $e->getMessage(), "\n";
     38 }
     39 ?>
-    40 
-
-manual_001/old.phpt:10
-  state: old_only
-  fixture: manual_001
-  fingerprint: class_message:c7cd74a2c02c2abd67a926f5daa2407698fffdd0
-  origin: manual_fixture
-  family: class_message
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_Variable) literal:4d2a116113e32bcceaf300821ede7a9665b3f990 exception_class(get_class) literal:colon_separator exception_message newline
-  echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
-
-     7 try {
-     8     throw new RuntimeException('fixture message');
-     9 } catch (Throwable $e) {
->   10     echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
-    11 }
-    12 ?>
-    13 
+    40
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
   state: old_only
@@ -100,26 +80,6 @@ ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
     15 try {
     16     var_dump($c->getMaximum(-1));
 
-Zend/tests/attributes/005_objects.phpt:44
-  state: old_only
-  fixture: Zend_tests_attributes_005_objects
-  fingerprint: message_only:002f36e8d3bf1ac4127f6c6c76bcec58d95fc19a
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:1b84b2eb69ee0f8726d2343629223bdce8ee6fcb exception_message
-  var_dump('ERROR 2', $e->getMessage());
-
-    41 try {
-    42     $ref->getAttributes()[0]->newInstance();
-    43 } catch (\TypeError $e) {
->   44     var_dump('ERROR 2', $e->getMessage());
-    45 }
-    46 
-    47 echo "\n";
-
 ext/bcmath/tests/bcscale_variation001.phpt:13
   state: old_only
   fixture: ext_bcmath_tests_bcscale_variation001
@@ -138,7 +98,7 @@ ext/bcmath/tests/bcscale_variation001.phpt:13
 >   13     echo \PHP_EOL . $e->getMessage() . \PHP_EOL;
     14 }
     15 ?>
-    16 
+    16
 
 ext/spl/tests/gh16217.phpt:26
   state: old_only
@@ -157,8 +117,28 @@ ext/spl/tests/gh16217.phpt:26
     25 } catch (Error $e) {
 >   26     echo "next (READ_AHEAD): ", $e->getMessage(), "\n";
     27 }
-    28 
+    28
     29 echo "Done\n";
+
+ext/dom/tests/modern/spec/Document_createAttributeNS.phpt:15
+  state: old_only
+  fixture: ext_dom_tests_modern_spec_Document_createAttributeNS
+  fingerprint: message_only:09e0c51776da2fecd02d8190c1b20c2f8963fa05
+  origin: php_src
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 other_variable literal:badf2839be86aaec37c49cc58baa78c81f85edae other_variable literal:ea6e2fdbde7c52722e937e9db194872a02c5e039 exception_message newline
+  echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
+
+    12         $dom->createAttributeNS($ns, $qname);
+    13     } catch (DOMException $e) {
+    14         $ns_readable = is_null($ns) ? 'null' : "\"$ns\"";
+>   15         echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
+    16     }
+    17 }
+    18
 
 ext/standard/tests/strings/printf_64bit.phpt:45
   state: old_only
@@ -177,8 +157,8 @@ ext/standard/tests/strings/printf_64bit.phpt:45
     44 } catch (\ArgumentCountError $e) {
 >   45     print('Error found: '.$e->getMessage());
     46 }
-    47 
-    48 
+    47
+    48
 
 Zend/tests/methods-on-non-objects-catch.phpt:13
   state: old_only
@@ -200,26 +180,6 @@ Zend/tests/methods-on-non-objects-catch.phpt:13
     15 echo "Alive\n";
     16 ?>
 
-manual_004/old.phpt:8
-  state: old_only
-  fixture: manual_004
-  fingerprint: message_only:113f5a76c12776ef4fb5afe979bc3ff577da61b6
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:1dfb8f3e8b8382ae91bd0d0364cfd9198b1e55f1 exception_message newline
-  echo '[012] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[012] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
-
 Zend/tests/type_coercion/gh22112.phpt:29
   state: old_only
   fixture: Zend_tests_type_coercion_gh22112
@@ -237,68 +197,8 @@ Zend/tests/type_coercion/gh22112.phpt:29
     28 } catch (Exception $e) {
 >   29     echo "string: ", $e->getMessage(), "\n";
     30 }
-    31 
+    31
     32 ?>
-
-Zend/tests/attributes/005_objects.phpt:34
-  state: old_only
-  fixture: Zend_tests_attributes_005_objects
-  fingerprint: message_only:41382eb8418d03b4e3cf7137cd03b45a09663c7d
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:70720c47bbb680657368261801cbe3413c336e01 exception_message
-  var_dump('ERROR 1', $e->getMessage());
-
-    31 try {
-    32     $ref->getAttributes()[0]->newInstance();
-    33 } catch (\ArgumentCountError $e) {
->   34     var_dump('ERROR 1', $e->getMessage());
-    35 }
-    36 
-    37 echo "\n";
-
-manual_008/old.phpt:8
-  state: old_only
-  fixture: manual_008
-  fingerprint: message_only:4187d0545b618af54dcd1250e3482abc104b72b8
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:6627b0547115e351a8e32d09da91f17cc6633f4a exception_message newline
-  echo '[008] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[008] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
-
-Zend/tests/attributes/005_objects.phpt:54
-  state: old_only
-  fixture: Zend_tests_attributes_005_objects
-  fingerprint: message_only:42e56f10b2d781f7fe507a1d1460e2fa7adfcd10
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:e19a403602dd4e12a3e657f506a895c2f9d3112f exception_message
-  var_dump('ERROR 3', $e->getMessage());
-
-    51 try {
-    52     $ref->getAttributes()[0]->newInstance();
-    53 } catch (\Error $e) {
->   54     var_dump('ERROR 3', $e->getMessage());
-    55 }
-    56 
-    57 echo "\n";
 
 ext/standard/tests/strings/strpos.phpt:87
   state: old_only
@@ -318,38 +218,18 @@ ext/standard/tests/strings/strpos.phpt:87
 >   87     echo "\n", $e->getMessage(), "\n";
     88   }
     89 }
-    90 
-
-manual_003/old.phpt:8
-  state: old_only
-  fixture: manual_003
-  fingerprint: message_only:5fbf0e1d0f19c8c8c688a87e41ca9bddc2b2d2f2
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:cf68964b82dcd029db9c3eb2017f0eddf80247ba exception_message newline
-  echo '[010] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[010] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
+    90
 
 ext/intl/tests/calendar_uninitialized_argument_position.phpt:15
   state: old_only
   fixture: ext_intl_tests_calendar_uninitialized_argument_position
-  fingerprint: message_only:6118fe02f515a7838680f4caedfa7c8f735839da
+  fingerprint: message_only:5fc248c6aba8175313c66dc74cb234d456d2947d
   origin: php_src
   family: message_only
-  safety: unsupported_expression
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_Variable) literal:colon_separator exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: other_variable literal:colon_separator exception_message newline
   echo $method, ': ', $e->getMessage(), PHP_EOL;
 
     12     try {
@@ -358,7 +238,7 @@ ext/intl/tests/calendar_uninitialized_argument_position.phpt:15
 >   15         echo $method, ': ', $e->getMessage(), PHP_EOL;
     16     }
     17 }
-    18 
+    18
 
 Zend/tests/type_coercion/gh22112.phpt:23
   state: old_only
@@ -377,68 +257,8 @@ Zend/tests/type_coercion/gh22112.phpt:23
     22 } catch (Exception $e) {
 >   23     echo "bool: ", $e->getMessage(), "\n";
     24 }
-    25 
+    25
     26 try {
-
-manual_007/old.phpt:8
-  state: old_only
-  fixture: manual_007
-  fingerprint: message_only:73a24ef37a54618c2b094aaf6b5c78918de723a0
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:7b0c4f7f67da4572af5691eac442f4372d2ea99f exception_message newline
-  echo '[007] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[007] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
-
-Zend/tests/attributes/005_objects.phpt:70
-  state: old_only
-  fixture: Zend_tests_attributes_005_objects
-  fingerprint: message_only:77dbb9c209ca81710552611c075f03812d5ccca6
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:5d6d894b0ae699e59807a308a86a57a9089815da exception_message
-  var_dump('ERROR 4', $e->getMessage());
-
-    67 try {
-    68     $ref->getAttributes()[0]->newInstance();
-    69 } catch (\Error $e) {
->   70     var_dump('ERROR 4', $e->getMessage());
-    71 }
-    72 
-    73 echo "\n";
-
-ext/dom/tests/modern/spec/Document_createAttributeNS.phpt:15
-  state: old_only
-  fixture: ext_dom_tests_modern_spec_Document_createAttributeNS
-  fingerprint: message_only:85b5c22c326f219e22be45140faf2fd2d2cb0a9c
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 unknown(Expr_Variable) literal:badf2839be86aaec37c49cc58baa78c81f85edae unknown(Expr_Variable) literal:ea6e2fdbde7c52722e937e9db194872a02c5e039 exception_message newline
-  echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
-
-    12         $dom->createAttributeNS($ns, $qname);
-    13     } catch (DOMException $e) {
-    14         $ns_readable = is_null($ns) ? 'null' : "\"$ns\"";
->   15         echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
-    16     }
-    17 }
-    18 
 
 Zend/tests/exceptions/bug50383.phpt:26
   state: old_only
@@ -458,147 +278,27 @@ Zend/tests/exceptions/bug50383.phpt:26
 >   26     print $e->getMessage();
     27     print_r($e->getTrace());
     28 }
-    29 
+    29
 
-manual_006/old.phpt:8
+Zend/tests/exceptions/bug60569.phpt:9
   state: old_only
-  fixture: manual_006
-  fingerprint: message_only:9cef7cb33a4a378d30ff9b0d1e51a25bddd57573
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:a318ef2fa0ac8ab3e9aa605341e87eb9c88b1fe1 exception_message newline
-  echo '[002] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[002] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
-
-manual_012/old.phpt:8
-  state: old_only
-  fixture: manual_012
-  fingerprint: message_only:ac63ae6a5ebaa44bfb04e26a48c2bbeecae734f4
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:700d2fd66f8cb0efd649d5693a5033a907a9bb9f exception_message newline
-  echo '[006] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[006] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
-
-manual_009/old.phpt:8
-  state: old_only
-  fixture: manual_009
-  fingerprint: message_only:bf2c93da56f275399371fc5a183fc2291e5a645c
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:90a2315e644bb8b72317d2c229dd3e16b96bea26 exception_message newline
-  echo '[003] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[003] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
-
-manual_002/old.phpt:8
-  state: old_only
-  fixture: manual_002
-  fingerprint: message_only:c4656b36f09d9db129c3cd3708f8b618ae5419bf
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:b99fe37fbf42271bee96ba42cc909120136d43ba exception_message newline
-  echo '[009] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[009] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
-
-manual_011/old.phpt:8
-  state: old_only
-  fixture: manual_011
-  fingerprint: message_only:c8ae62246215f306f0a78d254fac398c11b9ff4e
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:f04a376559c36bbcf2ddf2c0cf3c858442bba3e0 exception_message newline
-  echo '[005] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[005] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
-
-manual_010/old.phpt:8
-  state: old_only
-  fixture: manual_010
-  fingerprint: message_only:e345dd81048e3fbd6e9635bb0ca3682b8d8dbc27
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:dd95708c897f1021b382335f3f4d7ee87e175074 exception_message newline
-  echo '[004] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[004] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
-
-Zend/tests/attributes/005_objects.phpt:82
-  state: old_only
-  fixture: Zend_tests_attributes_005_objects
-  fingerprint: message_only:e357c0740e03ec3b4d2f4e66ad2531cccd3e9070
+  fixture: Zend_tests_exceptions_bug60569
+  fingerprint: message_only:dbe267cf0c1911a07020b93e3746e026b8eac66e
   origin: php_src
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:3a1f47bce6728882997fcc6cd4cefaeae415904d exception_message
-  var_dump('ERROR 6', $e->getMessage());
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message other_variable
+  var_dump($e->getMessage(), $msg);
 
-    79 try {
-    80     $ref->getAttributes()[0]->newInstance();
-    81 } catch (\Error $e) {
->   82     var_dump('ERROR 6', $e->getMessage());
-    83 }
-    84 
-    85 ?>
+     6     $msg = "Some error \x00 message";
+     7     throw new Exception($msg);
+     8 } catch(Exception $e) {
+>    9     var_dump($e->getMessage(), $msg);
+    10 }
+    11 ?>
+    12
 
 ext/spl/tests/gh16217.phpt:18
   state: old_only
@@ -617,28 +317,8 @@ ext/spl/tests/gh16217.phpt:18
     17 } catch (Error $e) {
 >   18     echo "next: ", $e->getMessage(), "\n";
     19 }
-    20 
+    20
     21 $obj = uninitialized();
-
-manual_005/old.phpt:8
-  state: old_only
-  fixture: manual_005
-  fingerprint: message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
-  origin: manual_fixture
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:31d9a18b7617c2ff22d2e743393454bac3a1baae exception_message newline
-  echo '[001] '.$e->getMessage()."\n";
-
-     5 try {
-     6     throw new RuntimeException('fixture message');
-     7 } catch (Throwable $e) {
->    8     echo '[001] '.$e->getMessage()."\n";
-     9 }
-    10 ?>
-    11 
 
 ext/spl/tests/gh16217.phpt:12
   state: old_only
@@ -657,25 +337,5 @@ ext/spl/tests/gh16217.phpt:12
     11 } catch (Error $e) {
 >   12     echo "fputcsv: ", $e->getMessage(), "\n";
     13 }
-    14 
+    14
     15 try {
-
-Zend/tests/exceptions/bug60569.phpt:9
-  state: old_only
-  fixture: Zend_tests_exceptions_bug60569
-  fingerprint: message_only:f9202729d1b379aa087eae7302d31e65b85c52c9
-  origin: php_src
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECTF
-  reason: contains an unsupported expression shape
-  parts: exception_message unknown(Expr_Variable)
-  var_dump($e->getMessage(), $msg);
-
-     6     $msg = "Some error \x00 message";
-     7     throw new Exception($msg);
-     8 } catch(Exception $e) {
->    9     var_dump($e->getMessage(), $msg);
-    10 }
-    11 ?>
-    12 
