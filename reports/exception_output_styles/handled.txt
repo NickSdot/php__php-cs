@@ -76,25 +76,6 @@ ext/hash/tests/hash_equals.phpt:12
     14     }
     15 }
 
-ext/opcache/tests/gh20628_borked_live_range_calc.phpt:18
-  state: handled
-  fixture: ext_opcache_tests_gh20628_borked_live_range_calc
-  fingerprint: class_message:75a9537544fe6e29fc63fe67a5a55ce1c3e303e2
-  family: class_message
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_class(static_class) exception_message newline
-  echo $e::class, $e->getMessage(), "\n";
-
-    15 try {
-    16     test(true);
-    17 } catch (Throwable $e) {
->   18     echo $e::class, $e->getMessage(), "\n";
-    19 }
-    20 
-    21 ?>
-
 Zend/tests/pipe_operator/oss_fuzz_427814452.phpt:9
   state: handled
   fixture: Zend_tests_pipe_operator_oss_fuzz_427814452
@@ -1025,25 +1006,6 @@ Zend/tests/exit_finally_2.phpt:18
     19 }
     20 
     21 ?>
-
-ext/phar/tests/buildFromIterator_user_overrides/getMTime_errors.phpt:83
-  state: handled
-  fixture: ext_phar_tests_buildFromIterator_user_overrides_getMTime_errors
-  fingerprint: message_only:9f73eb7ae30dd2fe96f00815cdceff72c49621fd
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:6efb399bf67dc9983d8a57d2b6d1359ae036fdc7 exception_message newline
-  echo "Previous: ", $previous->getMessage(), "\n";
-
-    80     } catch (Throwable $e) {
-    81         echo $e->getMessage(), "\n";
-    82         if ($previous = $e->getPrevious()) {
->   83             echo "Previous: ", $previous->getMessage(), "\n";
-    84         }
-    85     }
-    86 }
 
 Zend/tests/exceptions/bug26698.phpt:29
   state: handled

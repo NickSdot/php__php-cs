@@ -55,10 +55,12 @@ These are not deleted automatically.
 - ext_ldap_tests_ldap_set_option_error
 - ext_mysqli_tests_mysqli_connect_errno
 - ext_mysqli_tests_mysqli_set_charset
+- ext_opcache_tests_gh20628_borked_live_range_calc
 - ext_opcache_tests_jit_fetch_obj_001
 - ext_pdo_sqlite_tests_subclasses_pdosqlite_load_extension_failure
 - ext_phar_tests_bug65414
 - ext_phar_tests_bug79503
+- ext_phar_tests_buildFromIterator_user_overrides_getMTime_errors
 - ext_phar_tests_tar_badalias
 - ext_reflection_tests_004
 - ext_reflection_tests_ReflectionAttribute_constructor_001
@@ -66,6 +68,7 @@ These are not deleted automatically.
 - ext_reflection_tests_ReflectionMethod_invoke_basic
 - ext_reflection_tests_bug74454
 - ext_simplexml_tests_gh12929
+- ext_soap_tests_bugs_gh22167
 - ext_spl_tests_ArrayObject_arrayObject_exchangeArray_basic3
 - ext_spl_tests_SplFixedArray__construct_param_array
 - ext_spl_tests_SplObjectStorage_SplObjectStorage_unset

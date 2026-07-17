@@ -39,7 +39,7 @@ ext/session/tests/session_create_id_invalid_prefix.phpt:19
     22 try {
 
 ext/pdo/tests/bug_44159.phpt:25
-  state: missing
+  state: old_only
   fixture: ext_pdo_tests_bug_44159
   fingerprint: class_message:3938d63e3e745da3c6d86e96ce0b0c4d2b33bc16
   family: class_message
@@ -76,27 +76,8 @@ ext/session/tests/session_start_error.phpt:23
     25 
     26 var_dump(session_start(['option' => false]));
 
-ext/gmp/tests/gh22549.phpt:23
-  state: missing
-  fixture: ext_gmp_tests_gh22549
-  fingerprint: class_message:4b6763e0dc2b8cd3f2c20bd7ae6cffe153f8d115
-  family: class_message
-  safety: unsupported_expression
-  expected: EXPECTF
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_Variable) literal:colon_separator exception_class(static_class) literal:colon_separator exception_message newline
-  echo "$label: ", $e::class, ": ", $e->getMessage(), "\n";
-
-    20         $op($x);
-    21         echo "$label: no exception\n";
-    22     } catch (\Throwable $e) {
->   23         echo "$label: ", $e::class, ": ", $e->getMessage(), "\n";
-    24     }
-    25     var_dump($x);
-    26 }
-
 ext/dom/tests/modern/xml/gh22570.phpt:31
-  state: missing
+  state: old_only
   fixture: ext_dom_tests_modern_xml_gh22570
   fingerprint: class_message:5d18463e5d4fc5e6974531ff87ee5a818f62675e
   family: class_message
@@ -115,7 +96,7 @@ ext/dom/tests/modern/xml/gh22570.phpt:31
     34 try {
 
 ext/standard/tests/file/file_get_contents_variation8-win32.phpt:39
-  state: missing
+  state: old_only
   fixture: ext_standard_tests_file_file_get_contents_variation8_win32
   fingerprint: class_message:686c02b4fb9c21dd9bb816ca920fe5c0b65b1d0c
   family: class_message
@@ -134,7 +115,7 @@ ext/standard/tests/file/file_get_contents_variation8-win32.phpt:39
     42 
 
 ext/session/tests/session_gc_probability_ini.phpt:39
-  state: missing
+  state: old_only
   fixture: ext_session_tests_session_gc_probability_ini
   fingerprint: class_message:7d136db541ccb5075636648d5db01c83a58f2ffe
   family: class_message
@@ -172,7 +153,7 @@ Zend/tests/offsets/appending_containers_in_fetch.phpt:14
     17 
 
 ext/dom/tests/modern/xml/gh22570.phpt:37
-  state: missing
+  state: old_only
   fixture: ext_dom_tests_modern_xml_gh22570
   fingerprint: class_message:c528f632c4fbba2bdc5bd63a373513919d0b0130
   family: class_message
@@ -341,25 +322,6 @@ ext/phar/tests/phar_metadata_write4.phpt:58
     59     unset($e);
     60 }
     61 var_dump($phar['a']->getMetadata([]));
-
-ext/soap/tests/bugs/gh22167.phpt:101
-  state: old_only
-  fixture: ext_soap_tests_bugs_gh22167
-  fingerprint: message_only:104bdc04a7c4f71c23d6f09ae9f09ad1c4774f4b
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECT
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_Variable) literal:colon_separator exception_message newline
-  echo "$name: {$e->getMessage()}\n";
-
-    98         new SoapClient($file, ["cache_wsdl" => WSDL_CACHE_NONE]);
-    99         echo "$name: parsed\n";
-   100     } catch (SoapFault $e) {
->  101         echo "$name: {$e->getMessage()}\n";
-   102     } finally {
-   103         unlink($file);
-   104     }
 
 ext/mysqli/tests/mysqli_execute_query.phpt:82
   state: old_only
@@ -576,7 +538,7 @@ ext/standard/tests/general_functions/bug44295-win.phpt:21
   fingerprint: message_only:5e4de5ddf3ec9110757ef31e59e6ccfba28b17b0
   family: message_only
   safety: canonicalizable
-  expected: EXPECT
+  expected: EXPECTF
   reason: safe candidate for a canonical exception-output family
   parts: literal:trash:in_catch exception_message newline
   print "in catch: ".$e->getMessage()."\n";
@@ -741,25 +703,6 @@ ext/spl/tests/SplFileObject/fileobject_003.phpt:34
     36     try {
     37         $fo = $o->openFile();
 
-ext/pgsql/tests/pg_fetch_object_ctor_paths.phpt:49
-  state: missing
-  fixture: ext_pgsql_tests_pg_fetch_object_ctor_paths
-  fingerprint: message_only:7f95606250626ced9e1d03c1f19c0ab7f2905459
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: literal:trash:caught exception_message newline
-  echo "caught: ", $e->getMessage(), "\n";
-
-    46 try {
-    47     pg_fetch_object(pg_query($db, $sql), null, 'ThrowingCtor');
-    48 } catch (RuntimeException $e) {
->   49     echo "caught: ", $e->getMessage(), "\n";
-    50 }
-    51 
-    52 // 3) Constructor sees row properties already merged onto $this
-
 ext/dom/tests/modern/spec/Document_createAttributeNS.phpt:15
   state: old_only
   fixture: ext_dom_tests_modern_spec_Document_createAttributeNS
@@ -797,25 +740,6 @@ ext/pdo_mysql/tests/bug68371.phpt:61
     62             }
     63         }
     64     }
-
-ext/curl/tests/curl_setopt_error_nul_byte.phpt:27
-  state: missing
-  fixture: ext_curl_tests_curl_setopt_error_nul_byte
-  fingerprint: message_only:8efbcbb13b8d05c9ebde432449bca7e0857682c1
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECT
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_Variable) literal:colon_separator exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
-  echo $option . ": " . $exception->getMessage() . "\n\n";
-
-    24     try {
-    25         curl_setopt($ch, constant($option), ["Something: foo\0bar"]);
-    26     } catch (ValueError $exception) {
->   27         echo $option . ": " . $exception->getMessage() . "\n\n";
-    28     }
-    29 }
-    30 
 
 Zend/tests/exceptions/bug50383.phpt:26
   state: old_only
@@ -855,24 +779,24 @@ ext/mysqli/tests/mysqli_execute_query_leak.phpt:25
     27 
     28 print "done!";
 
-ext/com_dotnet/tests/bug77177.phpt:13
+ext/com_dotnet/tests/bug77177.phpt:18
   state: old_only
   fixture: ext_com_dotnet_tests_bug77177
   fingerprint: message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
   family: message_only
   safety: canonicalizable
-  expected: EXPECT
+  expected: EXPECTF
   reason: safe candidate for a canonical exception-output family
   parts: literal:trash:exception exception_message newline
   echo "Exception: {$ex->getMessage()}\n";
 
-    10     try {
-    11         serialize($object);
-    12     } catch (Exception $ex) {
->   13         echo "Exception: {$ex->getMessage()}\n";
-    14     }
-    15 }
-    16 
+    15     try {
+    16         serialize($object);
+    17     } catch (Exception $ex) {
+>   18         echo "Exception: {$ex->getMessage()}\n";
+    19     }
+    20 }
+    21 
 
 ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:80
   state: old_only

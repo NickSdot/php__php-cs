@@ -33,7 +33,7 @@ class_message:2655104d24e7570bc0d0be3c4a79a4cb46f6a818
     - ext/session/tests/user_session_module/session_set_save_handler_error5.phpt:13
 
 class_message:2b5ab22f50fe027176283f01fe88840eaa3c6e1d
-  count: 649
+  count: 599
   representative: Zend/tests/assert/disable_assert_function.phpt:11
   family: class_message
   safety: canonicalizable
@@ -59,7 +59,7 @@ class_message:2b5ab22f50fe027176283f01fe88840eaa3c6e1d
     - Zend/tests/clone/clone_with_012.phpt:24
     - Zend/tests/clone/clone_with_013.phpt:14
     - Zend/tests/clone/clone_with_013.phpt:22
-    - +628 more
+    - +578 more
 
 class_message:38588428af1553498985c4175249d9c2eac072d2
   count: 5
@@ -165,13 +165,13 @@ class_message:81ba6e437b2e511a80d25e03eaacd799aaeac355
     - ext/sockets/tests/socket_export_stream-4-win.phpt:37
     - ext/sockets/tests/socket_export_stream-4.phpt:21
     - ext/sockets/tests/socket_export_stream-4.phpt:30
-    - ext/sockets/tests/socket_export_stream-4.phpt:39
+    - ext/sockets/tests/socket_export_stream-4.phpt:37
     - ext/sockets/tests/socket_import_stream-4-win.phpt:21
     - ext/sockets/tests/socket_import_stream-4-win.phpt:30
     - +22 more
 
 class_message:8759f865d6ed3f04147723ea105efc670ffbc5cf
-  count: 164
+  count: 147
   representative: Zend/tests/offsets/appending_containers_in_fetch.phpt:14
   family: class_message
   safety: canonicalizable
@@ -179,13 +179,6 @@ class_message:8759f865d6ed3f04147723ea105efc670ffbc5cf
   duplicates:
     - Zend/tests/offsets/reference_containers_appended.phpt:14
     - Zend/tests/traits/gh17959.phpt:11
-    - ext/com_dotnet/tests/sa_proxy_errors.phpt:15
-    - ext/com_dotnet/tests/sa_proxy_errors.phpt:21
-    - ext/com_dotnet/tests/sa_proxy_errors.phpt:28
-    - ext/com_dotnet/tests/sa_proxy_errors.phpt:35
-    - ext/com_dotnet/tests/sa_proxy_errors.phpt:42
-    - ext/com_dotnet/tests/sa_proxy_errors.phpt:49
-    - ext/com_dotnet/tests/variant_no_clone.phpt:14
     - ext/date/tests/68062.phpt:13
     - ext/date/tests/DateInterval_construct_exceptions.phpt:12
     - ext/date/tests/DateInterval_createFromDateString_broken.phpt:8
@@ -197,7 +190,14 @@ class_message:8759f865d6ed3f04147723ea105efc670ffbc5cf
     - ext/date/tests/DatePeriod_modify_readonly_property.phpt:20
     - ext/date/tests/DatePeriod_properties2.phpt:23
     - ext/date/tests/DatePeriod_properties2.phpt:29
-    - +143 more
+    - ext/date/tests/DatePeriod_properties2.phpt:36
+    - ext/date/tests/DatePeriod_set_state_exception.phpt:52
+    - ext/date/tests/DatePeriod_uninitialised_exceptions.phpt:19
+    - ext/date/tests/DatePeriod_wrong_arguments.phpt:21
+    - ext/date/tests/DateTimeImmutable_createFromInterface_exceptions.phpt:25
+    - ext/date/tests/DateTimeImmutable_createFromInterface_exceptions.phpt:32
+    - ext/date/tests/DateTimeImmutable_createFromMutable-001.phpt:15
+    - +126 more
 
 class_message:c69459693d00856d286451544fcadcf392558259
   count: 147
@@ -260,7 +260,7 @@ class_message:e109af70b13abb22587cfb0aa98ab32c77949bb4
     - ext/opcache/tests/jit/shift_right_002.phpt:44
 
 class_message:ea22164fdb83f284f290502160a1c8abce7f9703
-  count: 6
+  count: 5
   representative: Zend/tests/arg_unpack/invalid_type.phpt:13
   family: class_message
   safety: canonicalizable
@@ -270,7 +270,6 @@ class_message:ea22164fdb83f284f290502160a1c8abce7f9703
     - Zend/tests/arg_unpack/invalid_type.phpt:23
     - Zend/tests/arg_unpack/invalid_type.phpt:29
     - Zend/tests/arg_unpack/invalid_type.phpt:34
-    - ext/standard/tests/array/array_filter_invalid_mode.phpt:9
 
 message_only:002f36e8d3bf1ac4127f6c6c76bcec58d95fc19a
   count: 3
@@ -335,7 +334,7 @@ message_only:00cf8f17f03acf0e463dfd81c41695aad1a33894
     - +47 more
 
 message_only:02e1260470d1a0436b6b0813de22b405065abd5c
-  count: 2119
+  count: 2084
   representative: Zend/tests/array_literal_next_element_error.phpt:11
   family: message_only
   safety: canonicalizable
@@ -361,7 +360,7 @@ message_only:02e1260470d1a0436b6b0813de22b405065abd5c
     - Zend/tests/assign_dim_obj_null_return.phpt:55
     - Zend/tests/assign_dim_obj_null_return.phpt:61
     - Zend/tests/assign_dim_obj_null_return.phpt:66
-    - +2098 more
+    - +2063 more
 
 message_only:0713801e5e64601b8aa6f0b4b6e42917b9e6ff48
   count: 6
@@ -374,7 +373,7 @@ message_only:0713801e5e64601b8aa6f0b4b6e42917b9e6ff48
     - ext/ftp/tests/ftp_constructor.phpt:12
     - ext/ftp/tests/ftp_set_option_errors.phpt:27
     - ext/ldap/tests/ldap_constructor.phpt:11
-    - ext/spl/tests/autoloading/bug73896.phpt:34
+    - ext/spl/tests/bug73896.phpt:34
 
 message_only:0a9da88f4e4bb8fd3d4d71ba50f83d61a416d1f1
   count: 2
@@ -423,7 +422,7 @@ message_only:20adc70b63caf4908bad5020562eb595c142948a
     - ext/fileinfo/tests/finfo_open_004.phpt:16
 
 message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
-  count: 2475
+  count: 2390
   representative: Zend/tests/access_modifiers/access_modifiers_008.phpt:36
   family: message_only
   safety: canonicalizable
@@ -449,7 +448,7 @@ message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
     - Zend/tests/bug72038.phpt:16
     - Zend/tests/bug80972.phpt:32
     - Zend/tests/constant_arrays.phpt:37
-    - +2454 more
+    - +2369 more
 
 message_only:2e9049a84007173882ed62fac7cf85bc37533f61
   count: 2
@@ -603,7 +602,7 @@ message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
     - ext/standard/tests/mail/gh13415.phpt:32
 
 message_only:7879bc6cbe4e1bfa05781c7d5bf6e1ac22a530cc
-  count: 160
+  count: 159
   representative: Zend/tests/add_002.phpt:14
   family: message_only
   safety: canonicalizable
@@ -629,7 +628,7 @@ message_only:7879bc6cbe4e1bfa05781c7d5bf6e1ac22a530cc
     - Zend/tests/div_002.phpt:12
     - Zend/tests/dynamic_prop_deprecation_002.phpt:13
     - Zend/tests/exceptions/bug47771.phpt:26
-    - +139 more
+    - +138 more
 
 message_only:79836f7ba96de26581786ad66801016aeeb7e28f
   count: 2
@@ -641,7 +640,7 @@ message_only:79836f7ba96de26581786ad66801016aeeb7e28f
     - ext/spl/tests/SplFileObject/fileobject_003.phpt:40
 
 message_only:815c351c0d23adb97c78f1d77844c28a462c3b11
-  count: 169
+  count: 176
   representative: Zend/tests/ast/gh21072.phpt:13
   family: message_only
   safety: canonicalizable
@@ -667,7 +666,7 @@ message_only:815c351c0d23adb97c78f1d77844c28a462c3b11
     - Zend/tests/type_declarations/typed_properties_110.phpt:15
     - Zend/tests/type_declarations/typed_properties_111.phpt:15
     - Zend/tests/type_declarations/typed_properties_112.phpt:14
-    - +148 more
+    - +155 more
 
 message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b
   count: 2
@@ -771,17 +770,8 @@ message_only:9cef7cb33a4a378d30ff9b0d1e51a25bddd57573
   duplicates:
     - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:44
 
-message_only:9f73eb7ae30dd2fe96f00815cdceff72c49621fd
-  count: 2
-  representative: ext/phar/tests/buildFromIterator_user_overrides/getMTime_errors.phpt:83
-  family: message_only
-  safety: descriptive_context
-  first statement: echo "Previous: ", $previous->getMessage(), "\n";
-  duplicates:
-    - ext/phar/tests/buildFromIterator_user_overrides/getPathname_exception.phpt:45
-
 message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
-  count: 23
+  count: 22
   representative: Zend/tests/exceptions/bug26698.phpt:29
   family: message_only
   safety: canonicalizable
@@ -807,10 +797,10 @@ message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
     - ext/phar/tests/bug64931/bug64931.phpt:42
     - ext/spl/tests/bug31185.phpt:40
     - ext/standard/tests/array/array_walk/bug30266.phpt:31
-    - +2 more
+    - +1 more
 
 message_only:a2350f6a03bf223388395898998b6581f0ef7a72
-  count: 197
+  count: 195
   representative: Zend/tests/arg_unpack/string_keys.phpt:13
   family: message_only
   safety: canonicalizable
@@ -836,20 +826,17 @@ message_only:a2350f6a03bf223388395898998b6581f0ef7a72
     - Zend/tests/bug70918.phpt:8
     - Zend/tests/bug70918.phpt:14
     - Zend/tests/bug70918.phpt:20
-    - +176 more
+    - +174 more
 
 message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
-  count: 13
-  representative: ext/com_dotnet/tests/bug77177.phpt:13
+  count: 10
+  representative: ext/com_dotnet/tests/bug77177.phpt:18
   family: message_only
   safety: canonicalizable
   first statement: echo "Exception: {$ex->getMessage()}\n";
   duplicates:
-    - ext/com_dotnet/tests/bug77177.phpt:22
-    - ext/com_dotnet/tests/bug77177.phpt:31
-    - ext/com_dotnet/tests/bug77177_dotnet.phpt:15
-    - ext/com_dotnet/tests/bug77177_dotnet.phpt:21
-    - ext/com_dotnet/tests/bug77177_dotnet.phpt:27
+    - ext/com_dotnet/tests/bug77177.phpt:27
+    - ext/com_dotnet/tests/bug77177.phpt:36
     - ext/hash/tests/new-context.phpt:9
     - ext/pdo_pgsql/tests/copy_from.phpt:73
     - ext/pdo_pgsql/tests/copy_from.phpt:110
@@ -951,7 +938,7 @@ message_only:e46062ddabb913d5065299ce17326448faa6446c
     - tests/classes/type_hinting_004.phpt:141
 
 message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
-  count: 445
+  count: 392
   representative: Zend/tests/assert/expect_015.phpt:23
   family: message_only
   safety: canonicalizable
@@ -977,7 +964,7 @@ message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
     - Zend/tests/clone/ast.phpt:78
     - Zend/tests/exit/die_string_cast_exception.phpt:9
     - Zend/tests/function_arguments/sensitive_parameter_correctly_captures_original.phpt:18
-    - +424 more
+    - +371 more
 
 message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
   count: 2
@@ -987,15 +974,6 @@ message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
   first statement: echo '[001] '.$e->getMessage()."\n";
   duplicates:
     - ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:35
-
-message_only:fbe5792845ba8cf33414abecc25ac1503cfc9127
-  count: 2
-  representative: ext/hash/tests/hash_hkdf_edges.phpt:19
-  family: message_only
-  safety: canonicalizable
-  first statement: echo '[Error] ' . $e->getMessage() . "\n";
-  duplicates:
-    - ext/standard/tests/poll/poll_stream_add_error_duplicate.phpt:15
 
 message_only:fbe96e8a08edd676397a88d9c6d3f809c0bdaac5
   count: 3
