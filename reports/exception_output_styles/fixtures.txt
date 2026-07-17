@@ -64,17 +64,13 @@ Zend/tests/assert/disable_assert_function.phpt
   flavours covered: 1
     - line 11: class_message class_message:2b5ab22f50fe027176283f01fe88840eaa3c6e1d
 
-Zend/tests/assert/expect_015.phpt
+Zend/tests/bug80972.phpt
   state: handled
-  fixture: Zend_tests_assert_expect_015
+  fixture: Zend_tests_bug80972
   first line: 23
-  flavours covered: 1
+  flavours covered: 2
     - line 23: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
-    - line 72: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
-    - line 108: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
-    - line 124: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
-    - line 141: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
-    - line 169: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
+    - line 32: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
 
 Zend/tests/ast/gh21072.phpt
   state: handled
@@ -276,9 +272,9 @@ Zend/tests/type_coercion/gh22112.phpt
     - line 23: message_only message_only:639a87a493642087ffdbe24d080fe18f7eb42f13
     - line 29: message_only message_only:2a20690c6f97eeb03ecd3e3d9cc18bc948c0bc77
 
-Zend/tests/type_declarations/scalar_return_basic.phpt
-  state: old_only
-  fixture: Zend_tests_type_declarations_scalar_return_basic
+Zend/tests/type_declarations/scalar_return_basic_64bit.phpt
+  state: handled
+  fixture: Zend_tests_type_declarations_scalar_return_basic_64bit
   first line: 58
   flavours covered: 1
     - line 58: message_only message_only:2e9049a84007173882ed62fac7cf85bc37533f61
@@ -298,21 +294,19 @@ ext/bcmath/tests/bcscale_variation001.phpt
   flavours covered: 1
     - line 13: message_only message_only:037118fe3067d9f6389bf72174ca4dea340365b5
 
-ext/com_dotnet/tests/bug77177.phpt
-  state: old_only
-  fixture: ext_com_dotnet_tests_bug77177
-  first line: 18
+ext/hash/tests/new-context.phpt
+  state: handled
+  fixture: ext_hash_tests_new_context
+  first line: 9
   flavours covered: 1
-    - line 18: message_only message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
-    - line 27: message_only message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
-    - line 36: message_only message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
+    - line 9: message_only message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
 
-ext/com_dotnet/tests/variants.phpt
-  state: old_only
-  fixture: ext_com_dotnet_tests_variants
-  first line: 37
+ext/sqlite3/tests/bug68760.phpt
+  state: handled
+  fixture: ext_sqlite3_tests_bug68760
+  first line: 27
   flavours covered: 1
-    - line 37: message_only message_only:ddbdfecc9307fe468ab9d75109eee17cb5869bd3
+    - line 27: message_only message_only:ddbdfecc9307fe468ab9d75109eee17cb5869bd3
 
 ext/dom/tests/DOM4_ParentNode_append_invalidtypes.phpt
   state: handled
@@ -364,12 +358,12 @@ ext/dom/tests/registerNodeClass_abstract_class.phpt
   flavours covered: 1
     - line 17: message_only message_only:fbe96e8a08edd676397a88d9c6d3f809c0bdaac5
 
-ext/ffi/tests/031.phpt
+manual_001/old.phpt
   state: old_only
-  fixture: ext_ffi_tests_031
-  first line: 16
+  fixture: manual_001
+  first line: 10
   flavours covered: 1
-    - line 16: class_message class_message:c7cd74a2c02c2abd67a926f5daa2407698fffdd0
+    - line 10: class_message class_message:c7cd74a2c02c2abd67a926f5daa2407698fffdd0
 
 ext/fileinfo/tests/finfo_open_003.phpt
   state: handled
@@ -445,36 +439,82 @@ ext/ldap/tests/gh21262.phpt
     - line 35: message_only message_only:8c584058b228cb69bf8e149df5a70f23a58b30ed
     - line 43: message_only message_only:60589cd4911e2fb4483215e80aeb44f46d675c39
 
-ext/mysqli/tests/mysqli_execute_query.phpt
+manual_002/old.phpt
   state: old_only
-  fixture: ext_mysqli_tests_mysqli_execute_query
-  first line: 62
-  flavours covered: 3
-    - line 62: message_only message_only:c4656b36f09d9db129c3cd3708f8b618ae5419bf
-    - line 67: message_only message_only:5fbf0e1d0f19c8c8c688a87e41ca9bddc2b2d2f2
-    - line 82: message_only message_only:113f5a76c12776ef4fb5afe979bc3ff577da61b6
+  fixture: manual_002
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:c4656b36f09d9db129c3cd3708f8b618ae5419bf
 
-ext/mysqli/tests/mysqli_execute_query_leak.phpt
+manual_003/old.phpt
   state: old_only
-  fixture: ext_mysqli_tests_mysqli_execute_query_leak
-  first line: 19
-  flavours covered: 2
-    - line 19: message_only message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
-    - line 25: message_only message_only:9cef7cb33a4a378d30ff9b0d1e51a25bddd57573
+  fixture: manual_003
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:5fbf0e1d0f19c8c8c688a87e41ca9bddc2b2d2f2
 
-ext/mysqli/tests/mysqli_stmt_execute_bind.phpt
+manual_004/old.phpt
   state: old_only
-  fixture: ext_mysqli_tests_mysqli_stmt_execute_bind
-  first line: 35
-  flavours covered: 8
-    - line 35: message_only message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
-    - line 44: message_only message_only:9cef7cb33a4a378d30ff9b0d1e51a25bddd57573
-    - line 53: message_only message_only:bf2c93da56f275399371fc5a183fc2291e5a645c
-    - line 62: message_only message_only:e345dd81048e3fbd6e9635bb0ca3682b8d8dbc27
-    - line 71: message_only message_only:c8ae62246215f306f0a78d254fac398c11b9ff4e
-    - line 80: message_only message_only:ac63ae6a5ebaa44bfb04e26a48c2bbeecae734f4
-    - line 107: message_only message_only:73a24ef37a54618c2b094aaf6b5c78918de723a0
-    - line 123: message_only message_only:4187d0545b618af54dcd1250e3482abc104b72b8
+  fixture: manual_004
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:113f5a76c12776ef4fb5afe979bc3ff577da61b6
+
+manual_005/old.phpt
+  state: old_only
+  fixture: manual_005
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:f550ba91421cc0b2dcecb4d1ac3587e0e65d9282
+
+manual_006/old.phpt
+  state: old_only
+  fixture: manual_006
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:9cef7cb33a4a378d30ff9b0d1e51a25bddd57573
+
+manual_009/old.phpt
+  state: old_only
+  fixture: manual_009
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:bf2c93da56f275399371fc5a183fc2291e5a645c
+
+manual_010/old.phpt
+  state: old_only
+  fixture: manual_010
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:e345dd81048e3fbd6e9635bb0ca3682b8d8dbc27
+
+manual_011/old.phpt
+  state: old_only
+  fixture: manual_011
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:c8ae62246215f306f0a78d254fac398c11b9ff4e
+
+manual_012/old.phpt
+  state: old_only
+  fixture: manual_012
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:ac63ae6a5ebaa44bfb04e26a48c2bbeecae734f4
+
+manual_007/old.phpt
+  state: old_only
+  fixture: manual_007
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:73a24ef37a54618c2b094aaf6b5c78918de723a0
+
+manual_008/old.phpt
+  state: old_only
+  fixture: manual_008
+  first line: 8
+  flavours covered: 1
+    - line 8: message_only message_only:4187d0545b618af54dcd1250e3482abc104b72b8
 
 ext/opcache/tests/jit/mod_001.phpt
   state: handled
@@ -491,50 +531,50 @@ ext/pcntl/tests/bug81577.phpt
   flavours covered: 1
     - line 22: class_message class_message:7c685ccbb97fc6de5c30b1ddd3e6cb3acd4d2a92
 
-ext/pdo/tests/bug_44159.phpt
-  state: old_only
-  fixture: ext_pdo_tests_bug_44159
-  first line: 25
+ext/reflection/tests/bug74454.phpt
+  state: handled
+  fixture: ext_reflection_tests_bug74454
+  first line: 9
   flavours covered: 1
-    - line 25: class_message class_message:3938d63e3e745da3c6d86e96ce0b0c4d2b33bc16
-    - line 30: class_message class_message:3938d63e3e745da3c6d86e96ce0b0c4d2b33bc16
-    - line 35: class_message class_message:3938d63e3e745da3c6d86e96ce0b0c4d2b33bc16
+    - line 9: class_message class_message:3938d63e3e745da3c6d86e96ce0b0c4d2b33bc16
 
-ext/pdo/tests/pecl_bug_5217.phpt
-  state: old_only
-  fixture: ext_pdo_tests_pecl_bug_5217
-  first line: 23
+manual_013/old.phpt
+  state: handled
+  fixture: manual_013
+  first line: 8
   flavours covered: 1
-    - line 23: message_only message_only:bfd265dcec2331332ed2146834383588669a9bff
+    - line 8: message_only message_only:bfd265dcec2331332ed2146834383588669a9bff
 
-ext/pdo_firebird/tests/autocommit.phpt
+ext/standard/tests/mail/gh13415.phpt
   state: old_only
-  fixture: ext_pdo_firebird_tests_autocommit
-  first line: 39
+  fixture: ext_standard_tests_mail_gh13415
+  first line: 11
   flavours covered: 1
-    - line 39: message_only message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
-    - line 46: message_only message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
+    - line 11: message_only message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
+    - line 18: message_only message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
+    - line 25: message_only message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
+    - line 32: message_only message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
 
-ext/pdo_firebird/tests/bug_77863.phpt
+manual_014/old.phpt
   state: old_only
-  fixture: ext_pdo_firebird_tests_bug_77863
-  first line: 113
+  fixture: manual_014
+  first line: 8
   flavours covered: 1
-    - line 113: message_only message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86
+    - line 8: message_only message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86
 
-ext/pdo_firebird/tests/gh17383.phpt
-  state: old_only
-  fixture: ext_pdo_firebird_tests_gh17383
-  first line: 25
+manual_015/old.phpt
+  state: handled
+  fixture: manual_015
+  first line: 8
   flavours covered: 1
-    - line 25: message_only message_only:ded429edd68d51d3df17dd6c275b9904b96ccaaf
+    - line 8: message_only message_only:ded429edd68d51d3df17dd6c275b9904b96ccaaf
 
-ext/pdo_mysql/tests/bug68371.phpt
-  state: old_only
-  fixture: ext_pdo_mysql_tests_bug68371
-  first line: 61
+manual_016/old.phpt
+  state: handled
+  fixture: manual_016
+  first line: 8
   flavours covered: 1
-    - line 61: message_only message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b
+    - line 8: message_only message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b
 
 ext/phar/tests/bug65028.phpt
   state: handled
@@ -614,12 +654,12 @@ ext/session/tests/session_start_error.phpt
     - line 15: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
     - line 23: class_message class_message:40a5c2e3a98b10f114ee9e82bf7c145041642dfb
 
-ext/soap/tests/bugs/protocol_relative_redirect.phpt
+manual_017/old.phpt
   state: old_only
-  fixture: ext_soap_tests_bugs_protocol_relative_redirect
-  first line: 45
+  fixture: manual_017
+  first line: 8
   flavours covered: 1
-    - line 45: message_only message_only:1ec5fa64124358dce243d2469687cdbcd868e829
+    - line 8: message_only message_only:1ec5fa64124358dce243d2469687cdbcd868e829
 
 ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt
   state: old_only
@@ -730,23 +770,23 @@ ext/standard/tests/file/file_error.phpt
     - line 13: message_only message_only:d052b6ac266a0003a7a5fc110502d03fd9364578
     - line 18: message_only message_only:d052b6ac266a0003a7a5fc110502d03fd9364578
 
-ext/standard/tests/file/file_get_contents_variation8-win32.phpt
-  state: old_only
-  fixture: ext_standard_tests_file_file_get_contents_variation8_win32
-  first line: 39
+ext/standard/tests/file/file_get_contents_variation8.phpt
+  state: handled
+  fixture: ext_standard_tests_file_file_get_contents_variation8
+  first line: 38
   flavours covered: 1
-    - line 39: class_message class_message:686c02b4fb9c21dd9bb816ca920fe5c0b65b1d0c
+    - line 38: class_message class_message:686c02b4fb9c21dd9bb816ca920fe5c0b65b1d0c
 
-ext/standard/tests/general_functions/bug44295-win.phpt
-  state: old_only
-  fixture: ext_standard_tests_general_functions_bug44295_win
+ext/standard/tests/general_functions/bug44295.phpt
+  state: handled
+  fixture: ext_standard_tests_general_functions_bug44295
   first line: 21
   flavours covered: 1
     - line 21: message_only message_only:5e4de5ddf3ec9110757ef31e59e6ccfba28b17b0
 
-ext/standard/tests/strings/printf.phpt
+ext/standard/tests/strings/printf_64bit.phpt
   state: old_only
-  fixture: ext_standard_tests_strings_printf
+  fixture: ext_standard_tests_strings_printf_64bit
   first line: 34
   flavours covered: 3
     - line 34: message_only message_only:02e1260470d1a0436b6b0813de22b405065abd5c

@@ -4,6 +4,7 @@ tests/classes/ctor_failure.phpt:25
   state: handled
   fixture: tests_classes_ctor_failure
   fingerprint: class_message:1a52c9f6293ea0de2186a091032d7f61e30f8472
+  origin: php_src
   family: class_message
   safety: descriptive_context
   expected: EXPECT
@@ -23,6 +24,7 @@ ext/session/tests/session_create_id_invalid_prefix.phpt:19
   state: handled
   fixture: ext_session_tests_session_create_id_invalid_prefix
   fingerprint: class_message:2655104d24e7570bc0d0be3c4a79a4cb46f6a818
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECTF
@@ -42,6 +44,7 @@ Zend/tests/assert/disable_assert_function.phpt:11
   state: handled
   fixture: Zend_tests_assert_disable_assert_function
   fingerprint: class_message:2b5ab22f50fe027176283f01fe88840eaa3c6e1d
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECT
@@ -61,6 +64,7 @@ ext/intl/tests/calendar_toDateTime_error.phpt:14
   state: handled
   fixture: ext_intl_tests_calendar_toDateTime_error
   fingerprint: class_message:38588428af1553498985c4175249d9c2eac072d2
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECT
@@ -76,10 +80,31 @@ ext/intl/tests/calendar_toDateTime_error.phpt:14
     16 
     17 try {
 
+ext/reflection/tests/bug74454.phpt:9
+  state: handled
+  fixture: ext_reflection_tests_bug74454
+  fingerprint: class_message:3938d63e3e745da3c6d86e96ce0b0c4d2b33bc16
+  origin: php_src
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_message newline
+  echo get_class($e), ': ', $e->getMessage(), PHP_EOL;
+
+     6 try {
+     7     $x = new ReflectionMethod('A', 'b');
+     8 } catch (\Throwable $e) {
+>    9     echo get_class($e), ': ', $e->getMessage(), PHP_EOL;
+    10 }
+    11 
+    12 function load_file() {
+
 ext/session/tests/session_start_error.phpt:23
   state: handled
   fixture: ext_session_tests_session_start_error
   fingerprint: class_message:40a5c2e3a98b10f114ee9e82bf7c145041642dfb
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECTF
@@ -95,10 +120,31 @@ ext/session/tests/session_start_error.phpt:23
     25 
     26 var_dump(session_start(['option' => false]));
 
+ext/standard/tests/file/file_get_contents_variation8.phpt:38
+  state: handled
+  fixture: ext_standard_tests_file_file_get_contents_variation8
+  fingerprint: class_message:686c02b4fb9c21dd9bb816ca920fe5c0b65b1d0c
+  origin: php_src
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_message newline
+  echo get_class($e) . ': ' . $e->getMessage(), "\n";
+
+    35     try {
+    36         var_dump(file_get_contents($names_arr[$i]));
+    37     } catch (\TypeError|\ValueError $e) {
+>   38         echo get_class($e) . ': ' . $e->getMessage(), "\n";
+    39     }
+    40 }
+    41 
+
 ext/hash/tests/hash_equals.phpt:12
   state: handled
   fixture: ext_hash_tests_hash_equals
   fingerprint: class_message:6dbf626cacf52d90febc65bb5677a477f765aac9
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECT
@@ -118,6 +164,7 @@ Zend/tests/pipe_operator/oss_fuzz_427814452.phpt:9
   state: handled
   fixture: Zend_tests_pipe_operator_oss_fuzz_427814452
   fingerprint: class_message:7c26878f3c15276262c66a0d4977ff90f4a26de8
+  origin: php_src
   family: class_message
   safety: descriptive_context
   expected: EXPECT
@@ -137,6 +184,7 @@ ext/pcntl/tests/bug81577.phpt:22
   state: handled
   fixture: ext_pcntl_tests_bug81577
   fingerprint: class_message:7c685ccbb97fc6de5c30b1ddd3e6cb3acd4d2a92
+  origin: php_src
   family: class_message
   safety: descriptive_context
   expected: EXPECT
@@ -156,6 +204,7 @@ ext/session/tests/session_gc_probability_ini.phpt:39
   state: handled
   fixture: ext_session_tests_session_gc_probability_ini
   fingerprint: class_message:7d136db541ccb5075636648d5db01c83a58f2ffe
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECTF
@@ -175,6 +224,7 @@ Zend/tests/enum/backed-mismatch.phpt:13
   state: handled
   fixture: Zend_tests_enum_backed_mismatch
   fingerprint: class_message:81ba6e437b2e511a80d25e03eaacd799aaeac355
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECT
@@ -194,6 +244,7 @@ Zend/tests/offsets/appending_containers_in_fetch.phpt:14
   state: handled
   fixture: Zend_tests_offsets_appending_containers_in_fetch
   fingerprint: class_message:8759f865d6ed3f04147723ea105efc670ffbc5cf
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECTF
@@ -213,6 +264,7 @@ Zend/tests/attributes/delayed_target_validation/has_runtime_errors.phpt:69
   state: handled
   fixture: Zend_tests_attributes_delayed_target_validation_has_runtime_errors
   fingerprint: class_message:c69459693d00856d286451544fcadcf392558259
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECTF
@@ -232,6 +284,7 @@ ext/opcache/tests/jit/mod_001.phpt:29
   state: handled
   fixture: ext_opcache_tests_jit_mod_001
   fingerprint: class_message:e109af70b13abb22587cfb0aa98ab32c77949bb4
+  origin: php_src
   family: class_message
   safety: descriptive_context
   expected: EXPECT
@@ -251,6 +304,7 @@ Zend/tests/arg_unpack/invalid_type.phpt:13
   state: handled
   fixture: Zend_tests_arg_unpack_invalid_type
   fingerprint: class_message:ea22164fdb83f284f290502160a1c8abce7f9703
+  origin: php_src
   family: class_message
   safety: canonicalizable
   expected: EXPECT
@@ -270,6 +324,7 @@ Zend/tests/attributes/deprecated/class_constants/deprecated_constant_as_message_
   state: handled
   fixture: Zend_tests_attributes_deprecated_class_constants_deprecated_constant_as_message_002
   fingerprint: message_only:003e3f4de4ac26286d48cef53d931035386c750e
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -289,6 +344,7 @@ Zend/tests/match/043.phpt:12
   state: handled
   fixture: Zend_tests_match_043
   fingerprint: message_only:00cf8f17f03acf0e463dfd81c41695aad1a33894
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -308,6 +364,7 @@ Zend/tests/array_literal_next_element_error.phpt:11
   state: handled
   fixture: Zend_tests_array_literal_next_element_error
   fingerprint: message_only:02e1260470d1a0436b6b0813de22b405065abd5c
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -327,6 +384,7 @@ Zend/tests/bug76869.phpt:19
   state: handled
   fixture: Zend_tests_bug76869
   fingerprint: message_only:0713801e5e64601b8aa6f0b4b6e42917b9e6ff48
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -346,6 +404,7 @@ Zend/tests/type_declarations/typed_properties_076.phpt:40
   state: handled
   fixture: Zend_tests_type_declarations_typed_properties_076
   fingerprint: message_only:0a9da88f4e4bb8fd3d4d71ba50f83d61a416d1f1
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -365,6 +424,7 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:72
   state: handled
   fixture: ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags
   fingerprint: message_only:0ae34191153a07b37eb2a06f76fcd58b99310f24
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -384,6 +444,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:48
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_instance
   fingerprint: message_only:12ef3d2b78bd825a2c766daf892251cbb35b0c23
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
@@ -403,6 +464,7 @@ ext/spl/tests/SplHeap_serialize_error_handling.phpt:63
   state: handled
   fixture: ext_spl_tests_SplHeap_serialize_error_handling
   fingerprint: message_only:15d9610b5a5e9d843b44d141cc0b75a51473b8cb
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -422,6 +484,7 @@ ext/dom/tests/DOM4_ParentNode_append_invalidtypes.phpt:15
   state: handled
   fixture: ext_dom_tests_DOM4_ParentNode_append_invalidtypes
   fingerprint: message_only:1e7c78ce2f438141c35d420bb92a812210d45300
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -441,6 +504,7 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:51
   state: handled
   fixture: ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags
   fingerprint: message_only:1ec58e999d204bd355d1584299a13fd070b710fa
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -460,6 +524,7 @@ ext/fileinfo/tests/finfo_open_003.phpt:14
   state: handled
   fixture: ext_fileinfo_tests_finfo_open_003
   fingerprint: message_only:20adc70b63caf4908bad5020562eb595c142948a
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -479,6 +544,7 @@ ext/hash/tests/hash_serialize_003.phpt:240
   state: handled
   fixture: ext_hash_tests_hash_serialize_003
   fingerprint: message_only:22b54e72685d40d9821d145fcb1ad5ae00e71c77
+  origin: php_src
   family: message_only
   safety: unsupported_expression
   expected: EXPECT
@@ -498,6 +564,7 @@ ext/spl/tests/multiple_iterator_001.phpt:92
   state: handled
   fixture: ext_spl_tests_multiple_iterator_001
   fingerprint: message_only:24b07a5db84901006f8ca82adcaf817a9eef2312
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
@@ -517,6 +584,7 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:35
   state: handled
   fixture: ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags
   fingerprint: message_only:24b2ad28738aac23d869fbce8a852e1e5cbf4037
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -536,6 +604,7 @@ Zend/tests/access_modifiers/access_modifiers_008.phpt:36
   state: handled
   fixture: Zend_tests_access_modifiers_access_modifiers_008
   fingerprint: message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -551,10 +620,31 @@ Zend/tests/access_modifiers/access_modifiers_008.phpt:36
     38         echo B1::ma() . "\n"; // protected method defined also in A
     39         try {
 
+Zend/tests/type_declarations/scalar_return_basic_64bit.phpt:58
+  state: handled
+  fixture: Zend_tests_type_declarations_scalar_return_basic_64bit
+  fingerprint: message_only:2e9049a84007173882ed62fac7cf85bc37533f61
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:caught exception_message literal:in_separator exception_file literal:on_line_separator exception_line newline
+  echo "*** Caught ", $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine(), PHP_EOL;
+
+    55         try {
+    56             var_dump($function($value));
+    57         } catch (TypeError $e) {
+>   58             echo "*** Caught ", $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine(), PHP_EOL;
+    59         }
+    60     }
+    61 }
+
 Zend/tests/assert/bug71922.phpt:14
   state: handled
   fixture: Zend_tests_assert_bug71922
   fingerprint: message_only:2ee034eb96bff73d8c66037540adef45a4dd77c3
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -574,6 +664,7 @@ ext/dom/tests/modern/xml/XMLDocument_xpath.phpt:49
   state: handled
   fixture: ext_dom_tests_modern_xml_XMLDocument_xpath
   fingerprint: message_only:2f6b4442a8d1300e05eaa3d95664f6e679b16806
+  origin: php_src
   family: message_only
   safety: unsupported_expression
   expected: EXPECT
@@ -593,6 +684,7 @@ ext/spl/tests/heap_corruption.phpt:58
   state: handled
   fixture: ext_spl_tests_heap_corruption
   fingerprint: message_only:454642b4f16235f0308b22a8be8518ff51ac31db
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -612,6 +704,7 @@ Zend/tests/require_parse_exception.phpt:12
   state: handled
   fixture: Zend_tests_require_parse_exception
   fingerprint: message_only:45e6e350f2839644718692fa0ed6b7177caf61c5
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -631,6 +724,7 @@ ext/standard/tests/array/bug42177.phpt:24
   state: handled
   fixture: ext_standard_tests_array_bug42177
   fingerprint: message_only:4a4e10c8ab844f28c35b8b287f0e43fe42e58fd2
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -650,6 +744,7 @@ tests/strings/002.phpt:45
   state: handled
   fixture: tests_strings_002
   fingerprint: message_only:4ace32465b6006ace0b1e173d1ada6b3cf9a5f81
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -669,6 +764,7 @@ ext/spl/tests/multiple_iterator_001.phpt:41
   state: handled
   fixture: ext_spl_tests_multiple_iterator_001
   fingerprint: message_only:5553c427f0519a3479808825c51ba18e2d870f8a
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -688,6 +784,7 @@ ext/spl/tests/SplHeap_serialize_corrupted.phpt:31
   state: handled
   fixture: ext_spl_tests_SplHeap_serialize_corrupted
   fingerprint: message_only:5784a6682057fdfac3cebdacbaaba509eb109199
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -707,6 +804,7 @@ ext/spl/tests/multiple_iterator_001.phpt:74
   state: handled
   fixture: ext_spl_tests_multiple_iterator_001
   fingerprint: message_only:5a3c2df93fc43e317b2b17c17e36e585b8e55f97
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
@@ -722,10 +820,31 @@ ext/spl/tests/multiple_iterator_001.phpt:74
     76 
     77 echo "-- Flags |= MultipleIterator::MIT_KEYS_ASSOC --\n";
 
+ext/standard/tests/general_functions/bug44295.phpt:21
+  state: handled
+  fixture: ext_standard_tests_general_functions_bug44295
+  fingerprint: message_only:5e4de5ddf3ec9110757ef31e59e6ccfba28b17b0
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:in_catch exception_message newline
+  print "in catch: ".$e->getMessage()."\n";
+
+    18         print get_class($iter) . "\n";
+    19         print "after\n";
+    20 } catch (Exception $e) {
+>   21         print "in catch: ".$e->getMessage()."\n";
+    22 }
+    23 ?>
+    24 ==DONE==
+
 tests/classes/array_access_013.phpt:22
   state: handled
   fixture: tests_classes_array_access_013
   fingerprint: message_only:5efe02aed1b9dda5dd4d1034442e3a40b1f5ab6e
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -745,6 +864,7 @@ ext/ldap/tests/gh21262.phpt:43
   state: handled
   fixture: ext_ldap_tests_gh21262
   fingerprint: message_only:60589cd4911e2fb4483215e80aeb44f46d675c39
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -764,6 +884,7 @@ ext/spl/tests/SplHeap_serialize_corrupted.phpt:59
   state: handled
   fixture: ext_spl_tests_SplHeap_serialize_corrupted
   fingerprint: message_only:62a03fb73ac565c5d674e6116e07f530dc2283ae
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -783,6 +904,7 @@ ext/standard/tests/strings/vfprintf_error4.phpt:22
   state: handled
   fixture: ext_standard_tests_strings_vfprintf_error4
   fingerprint: message_only:66b00fc5308945a6f9687cfe27bfc80f9de52ee5
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -802,6 +924,7 @@ Zend/tests/generators/throw_into_yield_from_array.phpt:23
   state: handled
   fixture: Zend_tests_generators_throw_into_yield_from_array
   fingerprint: message_only:67a1601c1f80a58d513ecadef3428abbccae578e
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -821,6 +944,7 @@ ext/dom/tests/DOMNode_removeChild_error1.phpt:17
   state: handled
   fixture: ext_dom_tests_DOMNode_removeChild_error1
   fingerprint: message_only:693b057fbbf5eb1f97ef5afdadb67dec9a0858d8
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -840,6 +964,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:71
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_dynamic
   fingerprint: message_only:6bb792fd65dccb99b611ab010d0f1765c2aa7921
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -859,6 +984,7 @@ Zend/tests/constexpr/constant_expressions_exceptions_002.phpt:8
   state: handled
   fixture: Zend_tests_constexpr_constant_expressions_exceptions_002
   fingerprint: message_only:6f6e5ea043acd6775b6dd4ab86dd62f8e194918b
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -878,6 +1004,7 @@ tests/classes/destructor_and_exceptions.phpt:49
   state: handled
   fixture: tests_classes_destructor_and_exceptions
   fingerprint: message_only:717f056961a2cf9ce94c906d5dcd6e00288a0606
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -897,6 +1024,7 @@ ext/reflection/tests/internal_parameter_default_value/check_all.phpt:12
   state: handled
   fixture: ext_reflection_tests_internal_parameter_default_value_check_all
   fingerprint: message_only:77e998e05e3bdd99308717813405be030bd6f4da
+  origin: php_src
   family: message_only
   safety: unsupported_expression
   expected: EXPECTF
@@ -916,6 +1044,7 @@ Zend/tests/add_002.phpt:14
   state: handled
   fixture: Zend_tests_add_002
   fingerprint: message_only:7879bc6cbe4e1bfa05781c7d5bf6e1ac22a530cc
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -935,6 +1064,7 @@ ext/spl/tests/SplFileObject/fileobject_003.phpt:34
   state: handled
   fixture: ext_spl_tests_SplFileObject_fileobject_003
   fingerprint: message_only:79836f7ba96de26581786ad66801016aeeb7e28f
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -954,6 +1084,7 @@ Zend/tests/ast/gh21072.phpt:13
   state: handled
   fixture: Zend_tests_ast_gh21072
   fingerprint: message_only:815c351c0d23adb97c78f1d77844c28a462c3b11
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -969,10 +1100,31 @@ Zend/tests/ast/gh21072.phpt:13
     15 ?>
     16 
 
+manual_016/old.phpt:8
+  state: handled
+  fixture: manual_016
+  fingerprint: message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b
+  origin: manual_fixture
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:err exception_message newline
+  echo "ERR {$e->getMessage()}\n";
+
+     5 try {
+     6     throw new RuntimeException('fixture message');
+     7 } catch (Throwable $e) {
+>    8     echo "ERR {$e->getMessage()}\n";
+     9 }
+    10 ?>
+    11 
+
 Zend/tests/closures/closure_instantiate.phpt:16
   state: handled
   fixture: Zend_tests_closures_closure_instantiate
   fingerprint: message_only:8974c888153c20c83d1dabb0d5897d85c706750c
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -992,6 +1144,7 @@ ext/ldap/tests/gh21262.phpt:35
   state: handled
   fixture: ext_ldap_tests_gh21262
   fingerprint: message_only:8c584058b228cb69bf8e149df5a70f23a58b30ed
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -1011,6 +1164,7 @@ ext/spl/tests/bug73629.phpt:14
   state: handled
   fixture: ext_spl_tests_bug73629
   fingerprint: message_only:8e8d4ab1dc841b37391d2235fd3f2abc0a5a604f
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1030,6 +1184,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:64
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_dynamic
   fingerprint: message_only:940059cd3c449e068b142fc1ccc87823147d9790
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
@@ -1049,6 +1204,7 @@ ext/standard/tests/array/gh16649/array_splice_uaf_add_elements.phpt:18
   state: handled
   fixture: ext_standard_tests_array_gh16649_array_splice_uaf_add_elements
   fingerprint: message_only:943b7749279d3c7af8420ebb139aa8e296e9eb02
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1068,6 +1224,7 @@ Zend/tests/bug53432.phpt:30
   state: handled
   fixture: Zend_tests_bug53432
   fingerprint: message_only:9487ef0a1ab8a5fd30e34b5a5e4f4e8ecb04ba47
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -1087,6 +1244,7 @@ ext/dom/tests/DOMElement_className.phpt:31
   state: handled
   fixture: ext_dom_tests_DOMElement_className
   fingerprint: message_only:9662d106e3caf68a258fb67957b19f856566fe28
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1106,6 +1264,7 @@ Zend/tests/arrow_functions/007.phpt:11
   state: handled
   fixture: Zend_tests_arrow_functions_007
   fingerprint: message_only:9aacfc6a28d2619145b24b2c486ec933b22213c1
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1125,6 +1284,7 @@ Zend/tests/exit_finally_2.phpt:18
   state: handled
   fixture: Zend_tests_exit_finally_2
   fingerprint: message_only:9bc8a6b37b5e50d6864de5f9d4886dbfaeea5aea
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1144,6 +1304,7 @@ Zend/tests/exceptions/bug26698.phpt:29
   state: handled
   fixture: Zend_tests_exceptions_bug26698
   fingerprint: message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1163,6 +1324,7 @@ Zend/tests/return_types/028.phpt:15
   state: handled
   fixture: Zend_tests_return_types_028
   fingerprint: message_only:a1c85d7d368e91ada3994bca051c54aee1d7abab
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -1182,6 +1344,7 @@ Zend/tests/arg_unpack/string_keys.phpt:13
   state: handled
   fixture: Zend_tests_arg_unpack_string_keys
   fingerprint: message_only:a2350f6a03bf223388395898998b6581f0ef7a72
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1197,10 +1360,31 @@ Zend/tests/arg_unpack/string_keys.phpt:13
     15 
     16 ?>
 
+ext/hash/tests/new-context.phpt:9
+  state: handled
+  fixture: ext_hash_tests_new_context
+  fingerprint: message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:exception exception_message newline
+  echo "Exception: {$e->getMessage()}\n";
+
+     6 try {
+     7   new HashContext;
+     8 } catch (Error $e) {
+>    9   echo "Exception: {$e->getMessage()}\n";
+    10 }
+    11 ?>
+    12 
+
 tests/lang/foreachLoopIteratorAggregate.002.phpt:41
   state: handled
   fixture: tests_lang_foreachLoopIteratorAggregate_002
   fingerprint: message_only:a63773d7bd97622ebacaf1d5b6d2418d55fda151
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1220,6 +1404,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt:23
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_dynamic
   fingerprint: message_only:abc81131ad0caa7d4ed1af4bdce98308420754cd
+  origin: php_src
   family: message_only
   safety: unsupported_expression
   expected: EXPECTF
@@ -1239,6 +1424,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:52
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
   fingerprint: message_only:ad310bfa9fc6bc722018b51dba552a12f14ca4dc
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
@@ -1258,6 +1444,7 @@ ext/spl/tests/heap_corruption.phpt:51
   state: handled
   fixture: ext_spl_tests_heap_corruption
   fingerprint: message_only:bb4b1445c929ad8a92165195de1316acc9893816
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -1277,6 +1464,7 @@ Zend/tests/generators/generator_throwing_during_function_call.phpt:23
   state: handled
   fixture: Zend_tests_generators_generator_throwing_during_function_call
   fingerprint: message_only:bbbd9425eecd10c52079a0b51aed62e80633f85c
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1296,6 +1484,7 @@ Zend/tests/closures/closure_instantiate.phpt:13
   state: handled
   fixture: Zend_tests_closures_closure_instantiate
   fingerprint: message_only:bde092df9e364a018abf1449bd7d5a4b53bad489
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1311,10 +1500,31 @@ Zend/tests/closures/closure_instantiate.phpt:13
     15     // This is the message that we should see for a caught error
     16     echo 'ERROR: ', $e->getMessage();
 
+manual_013/old.phpt:8
+  state: handled
+  fixture: manual_013
+  fingerprint: message_only:bfd265dcec2331332ed2146834383588669a9bff
+  origin: manual_fixture
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:safely_caught exception_message newline
+  echo "Safely caught " . $e->getMessage() . "\n";
+
+     5 try {
+     6     throw new RuntimeException('fixture message');
+     7 } catch (Throwable $e) {
+>    8     echo "Safely caught " . $e->getMessage() . "\n";
+     9 }
+    10 ?>
+    11 
+
 ext/spl/tests/iterator_047.phpt:51
   state: handled
   fixture: ext_spl_tests_iterator_047
   fingerprint: message_only:c3629babcb523665062f95cbe77036ccf27c4e76
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -1334,6 +1544,7 @@ ext/spl/tests/SplHeap_serialize_error_handling.phpt:40
   state: handled
   fixture: ext_spl_tests_SplHeap_serialize_error_handling
   fingerprint: message_only:c68ccfdfa1c3d9fb6b29974d1372657c1ba0f74a
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -1353,6 +1564,7 @@ ext/reflection/tests/ReflectionExtension_constructor_error.phpt:11
   state: handled
   fixture: ext_reflection_tests_ReflectionExtension_constructor_error
   fingerprint: message_only:c799370b7843e4c4007a0f3e6bb1ef453eac6ba4
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1372,6 +1584,7 @@ ext/phar/tests/bug65028.phpt:146
   state: handled
   fixture: ext_phar_tests_bug65028
   fingerprint: message_only:c7eadb7fcb7c1b84340d49987b5f51e48dfacc0d
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1391,6 +1604,7 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:19
   state: handled
   fixture: ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags
   fingerprint: message_only:ca0d1a481a80aff0f225943c564eb232a9bdb136
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -1410,6 +1624,7 @@ tests/classes/destructor_and_exceptions.phpt:45
   state: handled
   fixture: tests_classes_destructor_and_exceptions
   fingerprint: message_only:cf7e9653a60e115d7e6ecb3ba100961e5c51a647
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1429,6 +1644,7 @@ ext/standard/tests/file/file_error.phpt:13
   state: handled
   fixture: ext_standard_tests_file_file_error
   fingerprint: message_only:d052b6ac266a0003a7a5fc110502d03fd9364578
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
@@ -1448,6 +1664,7 @@ ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt:18
   state: handled
   fixture: ext_tokenizer_tests_token_get_all_heredoc_nowdoc
   fingerprint: message_only:d94734ff16c1b662d68cb934422748987d1f4c5f
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1463,10 +1680,51 @@ ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt:18
     20 }
     21 
 
+ext/sqlite3/tests/bug68760.phpt:27
+  state: handled
+  fixture: ext_sqlite3_tests_bug68760
+  fingerprint: message_only:ddbdfecc9307fe468ab9d75109eee17cb5869bd3
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:exception exception_message
+  echo "Exception: ".$e->getMessage();
+
+    24     $db->close();
+    25 }
+    26 catch(\Exception $e) {
+>   27     echo "Exception: ".$e->getMessage();
+    28 }
+    29 ?>
+    30 
+
+manual_015/old.phpt:8
+  state: handled
+  fixture: manual_015
+  fingerprint: message_only:ded429edd68d51d3df17dd6c275b9904b96ccaaf
+  origin: manual_fixture
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:pdoexception_message exception_message newline
+  echo 'PDOException message: ' . $e->getMessage() . "\n";
+
+     5 try {
+     6     throw new RuntimeException('fixture message');
+     7 } catch (Throwable $e) {
+>    8     echo 'PDOException message: ' . $e->getMessage() . "\n";
+     9 }
+    10 ?>
+    11 
+
 tests/classes/type_hinting_004.phpt:17
   state: handled
   fixture: tests_classes_type_hinting_004
   fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
@@ -1486,6 +1744,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:26
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_instance
   fingerprint: message_only:ea17af06280e4fbe4327c343c8366366e40bd29b
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
@@ -1501,29 +1760,31 @@ ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:26
     28 }
     29 
 
-Zend/tests/assert/expect_015.phpt:23
+Zend/tests/bug80972.phpt:23
   state: handled
-  fixture: Zend_tests_assert_expect_015
+  fixture: Zend_tests_bug80972
   fingerprint: message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
   reason: safe candidate for a canonical exception-output family
   parts: exception_message newline
-  echo $e->getMessage(), PHP_EOL;
+  echo $e->getMessage(), \PHP_EOL;
 
-    20     yield from $x;
-    21 }));
-    22 } catch (AssertionError $e) {
->   23     echo $e->getMessage(), PHP_EOL;
+    20     $string[(string) 10e120] = 'E';
+    21     var_dump($string);
+    22 } catch (\TypeError $e) {
+>   23     echo $e->getMessage(), \PHP_EOL;
     24 }
     25 
-    26 try {
+    26 /* This same bug also permits to modify the first byte of a string even if
 
 ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:44
   state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
   fingerprint: message_only:f0c074846f780625e03d06e41fa230b6bd206d9b
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
@@ -1543,6 +1804,7 @@ Zend/tests/constants/008.phpt:9
   state: handled
   fixture: Zend_tests_constants_008
   fingerprint: message_only:f99671c17dc5b51b229206cf22b75ad358a0591d
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
@@ -1562,6 +1824,7 @@ ext/hash/tests/hash_hkdf_edges.phpt:19
   state: handled
   fixture: ext_hash_tests_hash_hkdf_edges
   fingerprint: message_only:fbe5792845ba8cf33414abecc25ac1503cfc9127
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT
@@ -1581,6 +1844,7 @@ ext/dom/tests/registerNodeClass_abstract_class.phpt:17
   state: handled
   fixture: ext_dom_tests_registerNodeClass_abstract_class
   fingerprint: message_only:fbe96e8a08edd676397a88d9c6d3f809c0bdaac5
+  origin: php_src
   family: message_only
   safety: canonicalizable
   expected: EXPECT

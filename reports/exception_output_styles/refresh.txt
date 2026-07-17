@@ -1,20 +1,14 @@
 # Fixture refresh
 
 Refresh-only run: no
-Updated new/diff pairs: 7
-Stale existing new/diff pairs kept: 13
-Old-only fixture files: 54
-Failures: 4
+Updated new/diff pairs: 0
+Stale existing new/diff pairs kept: 12
+Old-only fixture files: 31
+Failures: 3
 
 ## Updated pairs
 
-- Zend_tests_constexpr_constant_expressions_exceptions_002
-- Zend_tests_offsets_appending_containers_in_fetch
-- ext_dom_tests_DOM4_ParentNode_append_invalidtypes
-- ext_session_tests_session_create_id_invalid_prefix
-- ext_session_tests_session_gc_probability_ini
-- ext_session_tests_session_start_error
-- ext_spl_tests_SplFileObject_fileobject_003
+- none
 
 ## Stale existing pairs kept
 
@@ -22,7 +16,6 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 
 - Zend_tests_pipe_operator_oss_fuzz_427814452
 - Zend_tests_type_declarations_typed_properties_076
-- ext_bcmath_tests_bcdiv_error1
 - ext_dom_tests_modern_xml_XMLDocument_xpath
 - ext_hash_tests_hash_serialize_003
 - ext_pcntl_tests_bug81577
@@ -36,64 +29,40 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 
 ## Old-only fixtures
 
-- Zend_tests_ErrorException_construct
 - Zend_tests_attributes_005_objects
-- Zend_tests_attributes_deprecated_functions_deprecated_handler_001
-- Zend_tests_bug33996
 - Zend_tests_closures_closure_from_callable_error
-- Zend_tests_exceptions_bug31102
 - Zend_tests_exceptions_bug50383
 - Zend_tests_exceptions_bug60569
-- Zend_tests_exceptions_gh10695_1
-- Zend_tests_exceptions_gh13446_1
 - Zend_tests_methods_on_non_objects_catch
 - Zend_tests_type_coercion_gh22112
-- Zend_tests_type_declarations_scalar_return_basic
 - ext_bcmath_tests_bcscale_variation001
-- ext_com_dotnet_tests_bug77177
-- ext_com_dotnet_tests_gh8750a
-- ext_com_dotnet_tests_variants
 - ext_dom_tests_modern_spec_Document_createAttributeNS
 - ext_dom_tests_modern_xml_gh22570
-- ext_ffi_tests_031
-- ext_ffi_tests_gh9698
-- ext_ftp_tests_dead_resource
 - ext_intl_tests_calendar_get_Least_Greatest_Minimum_Maximum_error
 - ext_intl_tests_calendar_uninitialized_argument_position
-- ext_intl_tests_formatter_fail
-- ext_intl_tests_msgfmt_fail2
-- ext_ldap_tests_ldap_set_option_error
-- ext_mysqli_tests_mysqli_connect_errno
-- ext_mysqli_tests_mysqli_execute_query
-- ext_mysqli_tests_mysqli_execute_query_leak
-- ext_mysqli_tests_mysqli_set_charset
-- ext_mysqli_tests_mysqli_stmt_execute_bind
-- ext_pdo_firebird_tests_autocommit
-- ext_pdo_firebird_tests_bug_77863
-- ext_pdo_firebird_tests_gh17383
-- ext_pdo_mysql_tests_bug68371
-- ext_pdo_tests_bug_44159
-- ext_pdo_tests_pecl_bug_5217
-- ext_phar_tests_bug79503
 - ext_phar_tests_phar_metadata_write4
-- ext_phar_tests_tar_badalias
-- ext_reflection_tests_ReflectionFiber_errors
-- ext_reflection_tests_bug74454
-- ext_soap_tests_bugs_gh22167
-- ext_soap_tests_bugs_protocol_relative_redirect
 - ext_spl_tests_ArrayObject_arrayObject___construct_error1
 - ext_spl_tests_gh16217
-- ext_standard_tests_file_file_get_contents_variation8_win32
-- ext_standard_tests_general_functions_bug44295_win
-- ext_standard_tests_poll_poll_stream_add_error_duplicate
-- ext_standard_tests_strings_printf
+- ext_standard_tests_mail_gh13415
+- ext_standard_tests_strings_printf_64bit
 - ext_standard_tests_strings_strpos
-- tests_classes_interfaces_001
-- tests_classes_interfaces_002
+- manual_001
+- manual_002
+- manual_003
+- manual_004
+- manual_005
+- manual_006
+- manual_007
+- manual_008
+- manual_009
+- manual_010
+- manual_011
+- manual_012
+- manual_014
+- manual_017
 
 ## Failures
 
 - Zend_tests_closures_closure_instantiate: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Closures cannot be instantiated directly [Zend/tests/closures/closure_instantiate.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
 - ext_dom_tests_DOMElement_className: rewrite failed verification: rewritten test did not pass and no .out file was produced (BORK missing section --EXPECT--, --EXPECTF-- or --EXPECTREGEX-- [ext/dom/tests/DOMElement_className.phpt])
-- ext_opcache_tests_gh20628_borked_live_range_calc: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Broken live-range calculation with QM_ASSIGN optimization [ext_opcache_tests_gh20628_bork...): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
 - ext_reflection_tests_ReflectionProperty_getMangledName_dynamic: rewrite failed verification: updated expected output did not pass verification (FAIL Test ReflectionProperty::getMangledName() with dynamic properties [ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt])
