@@ -6,7 +6,10 @@ namespace InternalsCS\Fixture;
 
 use InternalsCS\SourceFinder;
 
+use function array_push;
 use function count;
+use function glob;
+use function is_dir;
 
 final readonly class FixtureGenerator
 {
@@ -18,6 +21,7 @@ final readonly class FixtureGenerator
         private FixtureWriter $writer = new FixtureWriter(),
         private FixtureValidator $validator = new FixtureValidator(),
         private FixtureCaseName $caseName = new FixtureCaseName(),
+        private FixtureSourceRunVerifier $sourceVerifier = new FixtureSourceRunVerifier(),
     ) {}
 
     public function generate(FixtureGenerationOptions $options): FixtureGenerationResult
@@ -112,7 +116,9 @@ final readonly class FixtureGenerator
             extensions: $options->extensions,
         );
         $candidates = $this->scanner->scan($files, $options->sourceRoot);
-        $selection = $this->selector->select($candidates);
+        array_push($candidates, ...$this->manualCandidates($options));
+
+        $selection = $this->selector->select($candidates, $this->sourceFilter($options));
 
         $result->scannedFiles = count($files);
         $result->candidateFiles = $this->candidateFileCount($candidates);
@@ -125,6 +131,22 @@ final readonly class FixtureGenerator
             'candidates' => $candidates,
             'selection' => $selection,
         ];
+    }
+
+    /** @return list<FixtureCandidate> */
+    private function manualCandidates(FixtureGenerationOptions $options): array
+    {
+        if (!is_dir($options->fixturesDir)) {
+            return [];
+        }
+
+        $files = glob($options->fixturesDir . '/manual_*/old.phpt');
+
+        if (false === $files) {
+            return [];
+        }
+
+        return $this->scanner->scan($files, $options->fixturesDir);
     }
 
     private function refreshFixtures(
@@ -199,5 +221,21 @@ final readonly class FixtureGenerator
         }
 
         return count($files);
+    }
+
+    /** @return (callable(FixtureSource): bool)|null */
+    private function sourceFilter(FixtureGenerationOptions $options): ?callable
+    {
+        if (!$options->write) {
+            return null;
+        }
+
+        $results = [];
+
+        return function (FixtureSource $source) use (&$results, $options): bool {
+            $results[$source->relativePath] ??= $this->sourceVerifier->canSelect($source, $options);
+
+            return $results[$source->relativePath];
+        };
     }
 }

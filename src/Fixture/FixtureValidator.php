@@ -13,7 +13,6 @@ use function array_values;
 use function basename;
 use function glob;
 use function is_dir;
-use function is_file;
 use function realpath;
 use function sort;
 
@@ -22,6 +21,7 @@ final readonly class FixtureValidator
     public function __construct(
         private UnifiedDiff $diff = new UnifiedDiff(),
         private FileSystem $files = new FileSystem(),
+        private FixtureSourceContext $sourceContext = new FixtureSourceContext(),
     ) {}
 
     public function validate(FixtureValidationOptions $options): FixtureValidationResult
@@ -91,20 +91,11 @@ final readonly class FixtureValidator
         string $rewritePath,
         FixtureRewriteRunner $runner,
     ): array {
-        $hadRewriteTarget = is_file($rewritePath);
-        $original = $hadRewriteTarget ? $this->files->read($rewritePath, 'rewrite target') : null;
-
-        $this->files->write($rewritePath, $this->files->read($oldPath, 'fixture'), 'rewrite target');
-
-        try {
-            return $runner->printFile($this->realPath($rewritePath));
-        } finally {
-            if ($hadRewriteTarget) {
-                $this->files->write($rewritePath, (string) $original, 'rewrite target');
-            } else {
-                $this->files->deleteFileIfExists($rewritePath, 'rewrite target');
-            }
-        }
+        return $this->sourceContext->run(
+            sourcePath: $oldPath,
+            rewritePath: $rewritePath,
+            run: static fn(string $path): array => $runner->printFile($path),
+        );
     }
 
     /** @return list<string> */

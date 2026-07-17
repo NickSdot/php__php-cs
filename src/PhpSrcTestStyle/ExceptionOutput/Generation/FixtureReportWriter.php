@@ -16,6 +16,7 @@ use InternalsCS\Support\FileSystem;
 
 use function array_filter;
 use function array_slice;
+use function array_values;
 use function basename;
 use function count;
 use function glob;
@@ -23,9 +24,16 @@ use function implode;
 use function ksort;
 use function max;
 use function mb_rtrim;
+use function mb_str_pad;
+use function mb_strlen;
+use function preg_replace;
 use function sort;
+use function str_ends_with;
+use function str_repeat;
 use function str_replace;
 use function str_starts_with;
+use function strcmp;
+use function usort;
 
 final readonly class FixtureReportWriter implements FixtureReporter
 {
@@ -56,11 +64,10 @@ final readonly class FixtureReportWriter implements FixtureReporter
         $extras = $this->extraFixtureDirs($fixturesDir, $selection->fixtures);
         $legacyDuplicates = $this->legacyDuplicateDirs($extras, $selection->fixtures);
 
-        $this->writeFile($reportsDir . '/stats.txt', $this->renderStats($result, $fixtureStates, $flavourStates, $duplicateGroups, $extras, $legacyDuplicates));
+        $this->writeFile($reportsDir . '/stats.md', $this->renderStats($result, $fixtureStates, $flavourStates, $duplicateGroups, $extras, $legacyDuplicates));
         $this->writeFile($reportsDir . '/queue.txt', $this->renderQueue($flavourStates));
         $this->writeFile($reportsDir . '/handled.txt', $this->renderHandled($flavourStates));
         $this->writeFile($reportsDir . '/duplicates.txt', $this->renderDuplicates($duplicateGroups));
-        $this->writeFile($reportsDir . '/legacy_fixtures.txt', $this->renderLegacyFixtures($extras, $legacyDuplicates));
         $this->writeFile($reportsDir . '/fixtures.txt', $this->renderFixtures($fixtureStates));
         $this->writeFile($reportsDir . '/flavours.txt', $this->renderFlavourCandidates($flavours));
         $this->writeFile($reportsDir . '/candidates.txt', $this->renderCandidates($candidates));
@@ -148,20 +155,31 @@ final readonly class FixtureReportWriter implements FixtureReporter
                 $states[] = [
                     'candidate' => $candidate,
                     'dir' => '',
-                    'state' => 'missing',
+                    'state' => 'unselected',
                 ];
 
                 continue;
             }
 
             $states[] = [
-                'candidate' => $candidate,
+                'candidate' => $this->selectedCandidate($fixture, $flavourKey) ?? $candidate,
                 'dir' => $this->caseName->fromFixtureSource($fixture),
                 'state' => $stateBySource[$fixture->relativePath] ?? 'missing',
             ];
         }
 
         return $states;
+    }
+
+    private function selectedCandidate(FixtureSource $fixture, string $flavourKey): ?Candidate
+    {
+        foreach ($fixture->candidates as $candidate) {
+            if ($candidate->fixtureKey() === $flavourKey) {
+                return $this->candidate($candidate);
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -273,70 +291,250 @@ final readonly class FixtureReportWriter implements FixtureReporter
         array $extras,
         array $legacyDuplicates,
     ): string {
-        $fixtureCounts = $this->stateCounts($fixtureStates);
-        $flavourCounts = $this->stateCounts($flavourStates);
+        $coverageRows = $this->coverageRows($flavourStates);
+        $coverageCounts = $this->coverageCounts($coverageRows);
 
-        $stats = [
-            '# Exception output fixture generation',
+        $lines = [
+            '# Exception output fixture coverage',
             '',
-            'Scanned PHPT files: ' . $result->scannedFiles,
-            'Candidate files: ' . $result->candidateFiles,
-            'Candidate windows: ' . $result->candidateWindows,
-            'Candidate flavours: ' . $result->candidateFlavours,
-            'Duplicate candidate windows: ' . $result->duplicateCandidates,
-            'Duplicate flavour groups: ' . count($duplicateGroups),
-            '',
-            '# Selected source-file fixtures',
-            'Selected fixture source files: ' . count($fixtureStates),
-            'Avoided extra per-flavour fixture dirs: ' . max(0, $result->candidateFlavours - count($fixtureStates)),
-            'Handled fixture files: ' . ($fixtureCounts['handled'] ?? 0),
-            'Queued old-only fixture files: ' . ($fixtureCounts['old_only'] ?? 0),
-            'Queued stale fixture files: ' . ($fixtureCounts['stale_pair'] ?? 0),
-            'Missing fixture files: ' . ($fixtureCounts['missing'] ?? 0),
-            'Invalid fixture files: ' . ($fixtureCounts['invalid'] ?? 0),
-            'Remaining fixture queue: ' . (count($fixtureStates) - ($fixtureCounts['handled'] ?? 0)),
-            '',
-            '# Flavour coverage queue',
-            'Flavours covered by handled fixtures: ' . ($flavourCounts['handled'] ?? 0),
-            'Flavours covered by old-only fixtures: ' . ($flavourCounts['old_only'] ?? 0),
-            'Flavours covered by stale fixtures: ' . ($flavourCounts['stale_pair'] ?? 0),
-            'Missing flavour fixtures: ' . ($flavourCounts['missing'] ?? 0),
-            'Invalid flavour fixtures: ' . ($flavourCounts['invalid'] ?? 0),
-            'Remaining flavour queue: ' . (count($flavourStates) - ($flavourCounts['handled'] ?? 0)),
-            '',
-            '# Fixture directory shape',
-            'Current source-file fixture dirs: ' . count($fixtureStates),
-            'Extra fixture dirs outside source-file representatives: ' . count($extras),
-            'Legacy suffixed fixture dirs: ' . count($legacyDuplicates),
-            '',
-            '# Last write run',
-            'Created old fixtures: ' . $result->createdOld,
-            'Verified fixture files: ' . $result->verifiedPairs,
-            'Updated new/diff pairs: ' . $result->updatedPairs,
-            'Stale existing new/diff pairs: ' . $result->stalePairs,
-            'Old-only fixture files: ' . $result->oldOnly,
-            'Failures: ' . count($result->failures),
-            '',
+            '## Summary',
+            ...$this->table(
+                ['Status', 'Flavours'],
+                [
+                    ['done', $coverageCounts['done']],
+                    ['open', $coverageCounts['open']],
+                    ['ignored', $coverageCounts['ignored']],
+                    ['invalid', $coverageCounts['invalid']],
+                ],
+            ),
+            '## Flavours',
+            ...$this->table(
+                ['Status', 'Flavour', 'Fixture', 'Detail', 'Fingerprint'],
+                $coverageRows,
+            ),
+            '## Run',
+            ...$this->table(
+                ['Metric', 'Count'],
+                [
+                    ['Scanned PHPT files', $result->scannedFiles],
+                    ['Files with candidates', $result->candidateFiles],
+                    ['Candidate windows', $result->candidateWindows],
+                    ['Unique flavours', $result->candidateFlavours],
+                    ['Duplicate windows', $result->duplicateCandidates],
+                    ['Duplicate flavour groups', count($duplicateGroups)],
+                    ['Selected fixture dirs', count($fixtureStates)],
+                    ['Avoided extra dirs', max(0, $result->candidateFlavours - count($fixtureStates))],
+                    ['Extra dirs outside selection', count($extras)],
+                    ['Legacy suffixed dirs', count($legacyDuplicates)],
+                    ['Created old fixtures', $result->createdOld],
+                    ['Verified fixture files', $result->verifiedPairs],
+                    ['Updated new/diff pairs', $result->updatedPairs],
+                    ['Stale pairs kept', $result->stalePairs],
+                    ['Old-only fixture files', $result->oldOnly],
+                    ['Failures', count($result->failures)],
+                ],
+            ),
         ];
 
-        return implode("\n", $stats);
+        return implode("\n", $lines);
     }
 
     /**
-     * @param list<array{state: string}> $states
-     * @return array<string, int>
+     * @param list<array{0: string, 1: string, 2: string, 3: string, 4: string}> $rows
+     * @return array{done: int, open: int, ignored: int, invalid: int}
      */
-    private function stateCounts(array $states): array
+    private function coverageCounts(array $rows): array
     {
-        $counts = [];
+        $done = 0;
+        $open = 0;
+        $ignored = 0;
+        $invalid = 0;
 
-        foreach ($states as $state) {
-            $counts[$state['state']] = ($counts[$state['state']] ?? 0) + 1;
+        foreach ($rows as $row) {
+            match ($row[0]) {
+                'done' => $done++,
+                'open' => $open++,
+                'ignored' => $ignored++,
+                default => $invalid++,
+            };
         }
 
-        ksort($counts);
+        return [
+            'done' => $done,
+            'open' => $open,
+            'ignored' => $ignored,
+            'invalid' => $invalid,
+        ];
+    }
 
-        return $counts;
+    /**
+     * @param list<array{candidate: Candidate, dir: string, state: string}> $states
+     * @return list<array{0: string, 1: string, 2: string, 3: string, 4: string}>
+     */
+    private function coverageRows(array $states): array
+    {
+        $rows = [];
+
+        foreach ($states as $state) {
+            $candidate = $state['candidate'];
+            $status = $this->coverageStatus($state['state']);
+            $fixture = '' === $state['dir'] ? '-' : $state['dir'];
+
+            $rows[] = [
+                $status,
+                $this->oneLine($candidate->statement),
+                $fixture,
+                $this->coverageDetail($state),
+                $candidate->key,
+            ];
+        }
+
+        usort($rows, fn(array $a, array $b): int => $this->compareCoverageRows($a, $b));
+
+        return $rows;
+    }
+
+    /** @param array{candidate: Candidate, dir: string, state: string} $state */
+    private function coverageDetail(array $state): string
+    {
+        $candidate = $state['candidate'];
+        $detail = match ($state['state']) {
+            'handled' => 'verified',
+            'old_only' => 'old_only_fixture',
+            'stale_pair' => 'stale_pair_kept',
+            'missing' => 'selected_fixture_missing_files',
+            'unselected' => 'no_selected_runnable_dir',
+            default => 'invalid_fixture_shape',
+        };
+
+        if ($this->isManualFixture($candidate)) {
+            $detail = 'manual_' . $detail;
+        }
+
+        return $detail . '; ' . $candidate->relativePath . ':' . $candidate->line;
+    }
+
+    private function coverageStatus(string $state): string
+    {
+        return match ($state) {
+            'handled' => 'done',
+            'old_only', 'stale_pair', 'unselected' => 'open',
+            'ignored' => 'ignored',
+            default => 'invalid',
+        };
+    }
+
+    /**
+     * @param array{0: string, 1: string, 2: string, 3: string, 4: string} $a
+     * @param array{0: string, 1: string, 2: string, 3: string, 4: string} $b
+     */
+    private function compareCoverageRows(array $a, array $b): int
+    {
+        $status = $this->statusPriority($a[0]) <=> $this->statusPriority($b[0]);
+
+        if (0 !== $status) {
+            return $status;
+        }
+
+        $detail = strcmp($a[3], $b[3]);
+
+        if (0 !== $detail) {
+            return $detail;
+        }
+
+        return strcmp($a[1], $b[1]);
+    }
+
+    private function statusPriority(string $status): int
+    {
+        return match ($status) {
+            'open' => 0,
+            'invalid' => 1,
+            'ignored' => 2,
+            default => 3,
+        };
+    }
+
+    private function oneLine(string $value): string
+    {
+        return (string) preg_replace('/\s+/', ' ', $value);
+    }
+
+    /**
+     * @param list<string> $headers
+     * @param list<list<int|string>> $rows
+     * @return list<string>
+     */
+    private function table(array $headers, array $rows): array
+    {
+        $widths = $this->columnWidths($headers, $rows);
+        $lines = [
+            '',
+            $this->tableRow($headers, $widths),
+            $this->separatorRow($widths),
+        ];
+
+        foreach ($rows as $row) {
+            $lines[] = $this->tableRow($row, $widths);
+        }
+
+        $lines[] = '';
+
+        return $lines;
+    }
+
+    /**
+     * @param list<string> $headers
+     * @param list<list<int|string>> $rows
+     * @return list<int>
+     */
+    private function columnWidths(array $headers, array $rows): array
+    {
+        $widths = [];
+
+        foreach ($headers as $header) {
+            $widths[] = mb_strlen($this->markdownCell($header));
+        }
+
+        foreach ($rows as $row) {
+            foreach ($row as $index => $cell) {
+                $widths[$index] = max($widths[$index], mb_strlen($this->markdownCell((string) $cell)));
+            }
+        }
+
+        return array_values($widths);
+    }
+
+    /**
+     * @param list<int|string> $row
+     * @param list<int> $widths
+     */
+    private function tableRow(array $row, array $widths): string
+    {
+        $cells = [];
+
+        foreach ($row as $index => $cell) {
+            $cells[] = mb_str_pad($this->markdownCell((string) $cell), $widths[$index]);
+        }
+
+        return '| ' . implode(' | ', $cells) . ' |';
+    }
+
+    /** @param list<int> $widths */
+    private function separatorRow(array $widths): string
+    {
+        $cells = [];
+
+        foreach ($widths as $width) {
+            $cells[] = str_repeat('-', $width + 2);
+        }
+
+        return '|' . implode('|', $cells) . '|';
+    }
+
+    private function markdownCell(string $value): string
+    {
+        return str_replace('|', '\|', $value);
     }
 
     /** @param list<array{candidate: Candidate, dir: string, state: string}> $states */
@@ -414,38 +612,6 @@ final readonly class FixtureReportWriter implements FixtureReporter
         return implode("\n", $lines);
     }
 
-    /**
-     * @param list<string> $extras
-     * @param array<string, string> $legacyDuplicates
-     */
-    private function renderLegacyFixtures(array $extras, array $legacyDuplicates): string
-    {
-        $lines = ['# Fixture dirs outside the current source-file representative set', ''];
-        $lines[] = 'These are not deleted automatically.';
-        $lines[] = '';
-        $lines[] = '## Legacy suffixed dirs';
-        $lines[] = '';
-
-        foreach ($legacyDuplicates as $legacy => $representative) {
-            $lines[] = $legacy;
-            $lines[] = '  current source-file fixture dir: ' . $representative;
-            $lines[] = '';
-        }
-
-        $lines[] = '## Other extra dirs';
-        $lines[] = '';
-
-        foreach ($extras as $extra) {
-            if (isset($legacyDuplicates[$extra])) {
-                continue;
-            }
-
-            $lines[] = '- ' . $extra;
-        }
-
-        return implode("\n", $lines);
-    }
-
     /** @param list<array{fixture: FixtureSource, dir: string, state: string}> $states */
     private function renderFixtures(array $states): string
     {
@@ -501,6 +667,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
     private function appendCandidateDetails(array &$lines, Candidate $candidate): void
     {
         $lines[] = '  fingerprint: ' . $candidate->key;
+        $lines[] = '  origin: ' . ($this->isManualFixture($candidate) ? 'manual_fixture' : 'php_src');
         $lines[] = '  family: ' . $candidate->classification->family->value;
         $lines[] = '  safety: ' . $candidate->classification->safety->value;
         $lines[] = '  expected: ' . $candidate->expectedSection;
@@ -510,6 +677,12 @@ final readonly class FixtureReportWriter implements FixtureReporter
         $lines[] = '';
         $lines[] = $candidate->context;
         $lines[] = '';
+    }
+
+    private function isManualFixture(Candidate $candidate): bool
+    {
+        return str_starts_with($candidate->relativePath, 'manual_')
+            && str_ends_with($candidate->relativePath, '/old.phpt');
     }
 
     private function renderFailures(FixtureGenerationResult $result, string $fixturesDir): string

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixture;
 
+use function dirname;
 use function mb_trim;
 use function preg_replace;
+use function str_ends_with;
+use function str_replace;
 
 final readonly class FixtureCaseName
 {
@@ -21,6 +24,12 @@ final readonly class FixtureCaseName
 
     public function fromSourcePath(string $sourcePath): string
     {
+        $sourcePath = str_replace('\\', '/', $sourcePath);
+
+        if (str_ends_with($sourcePath, '/old.phpt')) {
+            return $this->slug(dirname($sourcePath));
+        }
+
         $base = preg_replace('~\.[A-Za-z0-9]+$~', '', $sourcePath);
 
         return $this->slug((string) $base);

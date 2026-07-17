@@ -89,6 +89,11 @@ final class FixtureWriterTest extends TestCase
         self::assertSame('Zend_tests_example', new FixtureCaseName()->fromCandidate($candidate));
     }
 
+    public function testManualOldFixtureCaseNameIsTheManualFixtureDirectory(): void
+    {
+        self::assertSame('manual_001', new FixtureCaseName()->fromSourcePath('manual_001/old.phpt'));
+    }
+
     private function candidate(string $source, string $relativePath): Candidate
     {
         $classification = new Classification(

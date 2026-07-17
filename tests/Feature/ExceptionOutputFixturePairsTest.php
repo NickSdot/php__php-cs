@@ -54,7 +54,6 @@ final class ExceptionOutputFixturePairsTest extends TestCase
         'Zend_tests_match_043',
         'Zend_tests_require_parse_exception',
         'Zend_tests_return_types_028',
-        'Zend_tests_try_bug72213_2',
         'ext_dom_tests_DOMNode_removeChild_error1',
         'ext_fileinfo_tests_finfo_open_003',
         'ext_hash_tests_hash_equals',

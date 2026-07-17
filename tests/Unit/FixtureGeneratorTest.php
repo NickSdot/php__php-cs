@@ -6,17 +6,20 @@ namespace Tests\Unit;
 
 use InternalsCS\Fixture\FixtureGenerationOptions;
 use InternalsCS\Fixture\FixtureGenerator;
+use InternalsCS\Fixture\FixtureOriginalRunner;
 use InternalsCS\Fixture\FixtureRewriteRunner;
 use InternalsCS\PhpSrc\PhpSrcRoot;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\FixtureReportWriter;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\Scanner;
 use PHPUnit\Framework\TestCase;
 
+use function basename;
 use function bin2hex;
 use function file_get_contents;
 use function file_put_contents;
 use function glob;
 use function implode;
+use function in_array;
 use function is_file;
 use function mkdir;
 use function random_bytes;
@@ -179,7 +182,14 @@ final class FixtureGeneratorTest extends TestCase
         self::assertSame("new\n", file_get_contents($fixtures . '/case/new.phpt'));
         self::assertTrue(is_file($fixtures . '/case/ran.diff'));
         self::assertTrue(is_file($reports . '/refresh.txt'));
-        self::assertStringContainsString('Scanned PHPT files: 1', (string) file_get_contents($reports . '/stats.txt'));
+        self::assertMatchesRegularExpression(
+            '/\| Scanned PHPT files\s+\|\s+1\s+\|/',
+            (string) file_get_contents($reports . '/stats.md'),
+        );
+        self::assertMatchesRegularExpression(
+            '/\| Status\s+\| Flavour\s+\| Fixture\s+\| Detail\s+\| Fingerprint\s+\|/',
+            (string) file_get_contents($reports . '/stats.md'),
+        );
         self::assertStringContainsString('source.phpt', (string) file_get_contents($reports . '/queue.txt'));
     }
 
@@ -213,8 +223,94 @@ final class FixtureGeneratorTest extends TestCase
             refreshOnly: false,
         ));
 
-        self::assertStringContainsString('Handled fixture files: 1', (string) file_get_contents($reports . '/stats.txt'));
-        self::assertStringContainsString('Queued stale fixture files: 0', (string) file_get_contents($reports . '/stats.txt'));
+        self::assertMatchesRegularExpression(
+            '/\| done\s+\|\s+1\s+\|/',
+            (string) file_get_contents($reports . '/stats.md'),
+        );
+        self::assertMatchesRegularExpression(
+            '/\| open\s+\|\s+0\s+\|/',
+            (string) file_get_contents($reports . '/stats.md'),
+        );
+    }
+
+    public function testWriteRunSelectsNextSourceWhenFirstRepresentativeDoesNotRun(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        $runtime = $root . '/runtime';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+        mkdir($runtime);
+
+        $this->writeSourcePhpt($phpSrc, 'a.phpt', 'echo $e->getMessage(), "\n";');
+        $this->writeSourcePhpt($phpSrc, 'b.phpt', 'echo $e->getMessage(), "\n";');
+
+        $this->generator()->generate(new FixtureGenerationOptions(
+            sourceRoot: $phpSrc,
+            fixturesDir: $fixtures,
+            reportsDir: $reports,
+            paths: [],
+            excludedRoots: [
+                $fixtures,
+            ],
+            extensions: ['phpt'],
+            runner: new SelectiveOriginalRunner(unrunnableBasenames: ['a.phpt']),
+            allowDirty: false,
+            sourceDirty: false,
+            write: true,
+            refreshOnly: false,
+            rewriteRoot: $runtime,
+        ));
+
+        $oldFixtures = glob($fixtures . '/*/old.phpt');
+
+        self::assertIsArray($oldFixtures);
+        self::assertCount(1, $oldFixtures);
+        self::assertStringContainsString('b.phpt', (string) file_get_contents($oldFixtures[0]));
+        self::assertStringContainsString('b.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
+        self::assertStringNotContainsString('a.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
+    }
+
+    public function testWriteRunUsesManualFixtureWhenNoSourceRepresentativeRuns(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        $runtime = $root . '/runtime';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+        mkdir($runtime);
+
+        $statement = 'echo "[009] ".$e->getMessage()."\n";';
+        $this->writeSourcePhpt($phpSrc, 'a.phpt', $statement);
+        $this->writeManualPhpt($fixtures, 'manual_001', $statement);
+
+        $this->generator()->generate(new FixtureGenerationOptions(
+            sourceRoot: $phpSrc,
+            fixturesDir: $fixtures,
+            reportsDir: $reports,
+            paths: [],
+            excludedRoots: [
+                $fixtures,
+            ],
+            extensions: ['phpt'],
+            runner: new SelectiveOriginalRunner(unrunnableBasenames: ['a.phpt']),
+            allowDirty: false,
+            sourceDirty: false,
+            write: true,
+            refreshOnly: false,
+            rewriteRoot: $runtime,
+        ));
+
+        self::assertFileExists($fixtures . '/manual_001/old.phpt');
+        self::assertStringContainsString('manual_001/old.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
+        self::assertStringContainsString('manual_old_only_fixture', (string) file_get_contents($reports . '/stats.md'));
+        self::assertStringNotContainsString('no_selected_runnable_dir', (string) file_get_contents($reports . '/stats.md'));
     }
 
     private function writeSourcePhpt(string $root, string $name, string $statement): string
@@ -245,6 +341,28 @@ final class FixtureGeneratorTest extends TestCase
         file_put_contents($path, $contents);
 
         return $path;
+    }
+
+    private function writeManualPhpt(string $fixtures, string $case, string $statement): void
+    {
+        mkdir($fixtures . '/' . $case);
+
+        $contents = <<<PHPT
+            --TEST--
+            Manual exception-output fixture
+            --FILE--
+            <?php
+            try {
+                throw new RuntimeException('fixture message');
+            } catch (Throwable \$e) {
+                $statement
+            }
+            --EXPECT--
+            [009] fixture message
+
+            PHPT;
+
+        file_put_contents($fixtures . '/' . $case . '/old.phpt', $contents);
     }
 
     /** @param list<string> $statements */
@@ -295,6 +413,32 @@ final readonly class ChangedFixtureRewriteRunner implements FixtureRewriteRunner
             'changed' => true,
             'failed' => false,
             'output' => $this->output,
+            'failure' => null,
+        ];
+    }
+}
+
+final readonly class SelectiveOriginalRunner implements FixtureRewriteRunner, FixtureOriginalRunner
+{
+    /** @param list<string> $unrunnableBasenames */
+    public function __construct(
+        private array $unrunnableBasenames,
+    ) {}
+
+    public function printFile(string $path): array
+    {
+        return [
+            'changed' => false,
+            'failed' => false,
+            'output' => (string) file_get_contents($path),
+            'failure' => null,
+        ];
+    }
+
+    public function runOriginalFile(string $path): array
+    {
+        return [
+            'passed' => !in_array(basename($path), $this->unrunnableBasenames, true),
             'failure' => null,
         ];
     }
