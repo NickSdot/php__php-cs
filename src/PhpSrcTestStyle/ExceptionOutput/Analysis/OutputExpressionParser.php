@@ -14,6 +14,7 @@ use PhpParser\Node\Scalar;
 
 use function array_push;
 use function count;
+use function implode;
 use function is_string;
 use function mb_strtolower;
 
@@ -28,7 +29,7 @@ final readonly class OutputExpressionParser
             array_push($parts, ...$this->parts($expr));
         }
 
-        $shape = count($expression) > 1 ? 'echo:comma' : 'echo:' . $this->shape($expression[0] ?? null);
+        $shape = 'echo:' . $this->expressionListShape($expression);
 
         return new OutputParts($parts, $shape);
     }
@@ -182,6 +183,26 @@ final readonly class OutputExpressionParser
         }
 
         return $expr->getType();
+    }
+
+    /** @param list<Expr> $expressions */
+    private function expressionListShape(array $expressions): string
+    {
+        if ([] === $expressions) {
+            return 'empty';
+        }
+
+        if (1 === count($expressions)) {
+            return $this->shape($expressions[0]);
+        }
+
+        $shape = [];
+
+        foreach ($expressions as $expr) {
+            $shape[] = $this->shape($expr);
+        }
+
+        return 'comma(' . implode(',', $shape) . ')';
     }
 
     private function variableName(Node $node): ?string

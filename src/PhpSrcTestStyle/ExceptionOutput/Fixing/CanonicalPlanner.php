@@ -8,8 +8,11 @@ use InternalsCS\PhpAst;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\AdjacentClassThenMessageOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\CatchTypeLabelOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ClassMessageOutputRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ContextLabelOutputRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\DescriptivePrefixOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\LocationOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MessageOnlyOutputRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ParenthesizedClassLabelOutputRule;
 use InternalsCS\RewriteResult;
 use InternalsCS\TextEdit;
 use PhpParser\Node\Expr;
@@ -72,7 +75,10 @@ final readonly class CanonicalPlanner
     {
         return [
             new AdjacentClassThenMessageOutputRule(),
+            new ParenthesizedClassLabelOutputRule(),
+            new ContextLabelOutputRule(),
             new CatchTypeLabelOutputRule(),
+            new DescriptivePrefixOutputRule(),
             new LocationOutputRule(),
             new ClassMessageOutputRule(),
             new MessageOnlyOutputRule(),

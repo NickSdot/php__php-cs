@@ -111,6 +111,74 @@ final class CanonicalPlannerTest extends TestCase
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
+    public function testPlansContextLabelRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new ReflectionException('x');
+            } catch (ReflectionException $e) {
+                echo "Expected exception for class-based reflection: " . $e->getMessage() . "\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'class-based reflection: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansExceptionThrownForContextLabelRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new Exception('x');
+            } catch (Exception $e) {
+                echo "Exception thrown for invalid flags: " . $e->getMessage() . "\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'invalid flags: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansPlainTrashLabelRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new PDOException('x');
+            } catch (PDOException $e) {
+                echo 'PDOException message: ' . $e->getMessage() . "\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansBracketedClassRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new TypeError('x');
+            } catch (TypeError $e) {
+                echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
     public function testPlansCatchTypeLabelRewrite(): void
     {
         $code = <<<'PHP'
@@ -119,6 +187,85 @@ final class CanonicalPlannerTest extends TestCase
                 throw new TypeError('x');
             } catch (TypeError $e) {
                 echo "TypeError: ", $e->getMessage(), "\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansUnexpectedCatchDiagnosticRewriteWithoutDuplicatingCatchType(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                throw new ValueError('x');
+            } catch (ValueError $e) {
+                echo "ldap_modify: UNEXPECTED ValueError: ", $e->getMessage(), PHP_EOL;
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'ldap_modify: UNEXPECTED: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansDescriptivePrefixRewriteWithoutDroppingContext(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new Exception('x');
+            } catch (Exception $e) {
+                echo "Valid flags rejected: " . $e->getMessage() . "\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'Valid flags rejected: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testDoesNotPlanFailedAsExpectedDiagnosticPrefixRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new Exception('x');
+            } catch (Exception $e) {
+                echo "Instance-based creation failed as expected: " . $e->getMessage() . "\n";
+            }
+            PHP;
+
+        self::assertSame([], new CanonicalPlanner()->plans($code));
+    }
+
+    public function testDoesNotPlanCompareExceptionDiagnosticPrefixRewrite(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                throw new Exception('x');
+            } catch (Exception $e) {
+                echo "Compare Exception: " . $e->getMessage() . PHP_EOL;
+            }
+            PHP_WRAP;
+
+        self::assertSame([], new CanonicalPlanner()->plans($code));
+    }
+
+    public function testPlansParenthesizedClassLabelRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new DivisionByZeroError('x');
+            } catch (DivisionByZeroError $e) {
+                echo "Exception (" . get_class($e) . "): " . $e->getMessage() . "\n";
             }
             PHP;
 

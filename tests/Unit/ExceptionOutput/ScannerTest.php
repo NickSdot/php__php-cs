@@ -43,6 +43,18 @@ final class ScannerTest extends TestCase
         self::assertNotSame($candidates[0]->key, $candidates[1]->key);
     }
 
+    public function testMixedConcatCommaAndPureCommaEchoAreDifferentFlavours(): void
+    {
+        $root = $this->makeTempDir();
+        $mixed = $this->writePhpt($root, 'mixed.phpt', 'echo $e::class . ": " . $e->getMessage(), "\n";');
+        $comma = $this->writePhpt($root, 'comma.phpt', 'echo $e::class, ": ", $e->getMessage(), "\n";');
+
+        $candidates = new Scanner()->scan([$mixed, $comma], $root);
+
+        self::assertCount(2, $candidates);
+        self::assertNotSame($candidates[0]->key, $candidates[1]->key);
+    }
+
     public function testVariableNamesDoNotSplitFlavours(): void
     {
         $root = $this->makeTempDir();
@@ -53,6 +65,18 @@ final class ScannerTest extends TestCase
 
         self::assertCount(2, $candidates);
         self::assertSame($candidates[0]->key, $candidates[1]->key);
+    }
+
+    public function testSeparatorWhitespaceSplitsClassMessageFlavours(): void
+    {
+        $root = $this->makeTempDir();
+        $canonical = $this->writePhpt($root, 'canonical.phpt', 'echo get_class($e), \': \', $e->getMessage(), "\n";');
+        $spaced = $this->writePhpt($root, 'spaced.phpt', 'echo get_class($e), " : ", $e->getMessage(), "\n";');
+
+        $candidates = new Scanner()->scan([$canonical, $spaced], $root);
+
+        self::assertCount(2, $candidates);
+        self::assertNotSame($candidates[0]->key, $candidates[1]->key);
     }
 
     public function testDescriptiveContextIsRejected(): void
@@ -77,6 +101,23 @@ final class ScannerTest extends TestCase
         self::assertCount(2, $candidates);
         self::assertSame(ClassificationSafety::Canonicalizable, $candidates[0]->classification->safety);
         self::assertSame(ClassificationSafety::Canonicalizable, $candidates[1]->classification->safety);
+    }
+
+    public function testPlainTrashLabelsAreCanonicalizable(): void
+    {
+        $root = $this->makeTempDir();
+        $safely = $this->writePhpt($root, 'safely.phpt', 'echo "Safely caught " . $e->getMessage() . "\n";');
+        $pdo = $this->writePhpt($root, 'pdo.phpt', 'echo "PDOException message: " . $e->getMessage() . "\n";');
+        $inside = $this->writePhpt($root, 'inside.phpt', 'print "in catch: " . $e->getMessage() . "\n";');
+        $ok = $this->writePhpt($root, 'ok.phpt', 'echo "OK! {$e->getMessage()}";');
+
+        $candidates = new Scanner()->scan([$safely, $pdo, $inside, $ok], $root);
+
+        self::assertCount(4, $candidates);
+
+        foreach ($candidates as $candidate) {
+            self::assertSame(ClassificationSafety::Canonicalizable, $candidate->classification->safety);
+        }
     }
 
     public function testTrashLabelsKeepDistinctFingerprints(): void

@@ -22,17 +22,20 @@ final readonly class TrashLiteralPolicy
         'caught exception with message',
         'caught fatalexception',
         'caught in',
+        'err',
         'error',
         'error found',
         'exception',
         'exception caught',
-        'exception thrown for invalid flags',
+        'exception thrown',
         'expected exception',
-        'expected exception for class-based reflection',
+        'in catch',
         'logicexception',
         'ok',
         'parse error',
+        'pdoexception message',
         'runtimeexception thrown',
+        'safely caught',
         'test',
         'unexpected exception',
         'valueerror',
@@ -48,7 +51,7 @@ final readonly class TrashLiteralPolicy
         $label = $this->normalize($literal);
 
         if ('' === $label) {
-            return 'empty';
+            return '' === $literal ? 'empty' : null;
         }
 
         if (in_array($label, self::LABELS, true)) {
@@ -62,7 +65,7 @@ final readonly class TrashLiteralPolicy
     {
         $label = str_replace(["\r", "\n", "\t"], ' ', $literal);
         $label = mb_trim($label);
-        $label = mb_trim($label, " *:-[]().\"'");
+        $label = mb_trim($label, " *:-[]().\"'!");
         $label = preg_replace('/\s+/', ' ', $label);
 
         return mb_strtolower((string) $label);

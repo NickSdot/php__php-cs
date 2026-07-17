@@ -92,6 +92,34 @@ final class CanonicalUpdaterTest extends TestCase
         self::assertSame("RuntimeException: Iterators are frozen\n", $update->output);
     }
 
+    public function testUpdatesContextLabel(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Expected exception for class-based reflection: Property TestClass::\$dynamic does not exist\n",
+            "class-based reflection: ReflectionException: Property TestClass::\$dynamic does not exist\n",
+        );
+
+        self::assertSame(
+            "class-based reflection: ReflectionException: Property TestClass::\$dynamic does not exist\n",
+            $update->output,
+        );
+    }
+
+    public function testUpdatesExceptionThrownForContextLabel(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Exception thrown for invalid flags: Invalid serialization data for SplPriorityQueue object\n",
+            "invalid flags: Exception: Invalid serialization data for SplPriorityQueue object\n",
+        );
+
+        self::assertSame(
+            "invalid flags: Exception: Invalid serialization data for SplPriorityQueue object\n",
+            $update->output,
+        );
+    }
+
     public function testUpdatesLowercaseCaughtLabel(): void
     {
         $update = new CanonicalUpdater()->update(
@@ -101,6 +129,39 @@ final class CanonicalUpdaterTest extends TestCase
         );
 
         self::assertSame("Exception: 1\n", $update->output);
+    }
+
+    public function testUpdatesPlainTrashLabel(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "PDOException message: SQLSTATE[HY000]: General error\n",
+            "PDOException: SQLSTATE[HY000]: General error\n",
+        );
+
+        self::assertSame("PDOException: SQLSTATE[HY000]: General error\n", $update->output);
+    }
+
+    public function testUpdatesParenthesizedClassLabel(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Exception (DivisionByZeroError): Modulo by zero\n",
+            "DivisionByZeroError: Modulo by zero\n",
+        );
+
+        self::assertSame("DivisionByZeroError: Modulo by zero\n", $update->output);
+    }
+
+    public function testUpdatesPreservedDescriptivePrefix(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Valid flags rejected: invalid\n",
+            "Valid flags rejected: Exception: invalid\n",
+        );
+
+        self::assertSame("Valid flags rejected: Exception: invalid\n", $update->output);
     }
 
     public function testUpdatesTestLabel(): void

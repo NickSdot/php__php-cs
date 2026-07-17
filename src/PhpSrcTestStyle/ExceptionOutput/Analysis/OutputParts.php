@@ -75,12 +75,6 @@ final readonly class OutputParts
 
     private function literalFingerprint(OutputPart $part, TrashLiteralPolicy $trash): string
     {
-        $trashLabel = $trash->label($part->value);
-
-        if (null !== $trashLabel) {
-            return 'literal:trash:' . str_replace(' ', '_', $trashLabel);
-        }
-
         if (': ' === $part->value) {
             return 'literal:colon_separator';
         }
@@ -91,6 +85,12 @@ final readonly class OutputParts
 
         if (' on line ' === $part->value) {
             return 'literal:on_line_separator';
+        }
+
+        $trashLabel = $trash->label($part->value);
+
+        if (null !== $trashLabel) {
+            return 'literal:trash:' . str_replace(' ', '_', $trashLabel);
         }
 
         return 'literal:' . sha1($part->value);

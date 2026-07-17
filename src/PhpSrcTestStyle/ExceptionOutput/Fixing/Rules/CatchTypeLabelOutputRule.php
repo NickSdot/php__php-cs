@@ -14,20 +14,12 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\RewriteResult;
 use InternalsCS\TextEdit;
 
-use function array_unique;
-use function array_values;
-use function basename;
-use function in_array;
-use function mb_ltrim;
-use function mb_strtolower;
-use function mb_trim;
-use function str_replace;
-
 final readonly class CatchTypeLabelOutputRule implements RewriteRule
 {
     public function __construct(
         private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
         private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private CatchTypeLabels $catchTypeLabels = new CatchTypeLabels(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult
@@ -108,32 +100,6 @@ final readonly class CatchTypeLabelOutputRule implements RewriteRule
             return false;
         }
 
-        return in_array($this->normalizeClassLabel($part->value), $this->catchTypeLabels($catchTypes), true);
-    }
-
-    private function normalizeClassLabel(string $label): string
-    {
-        $label = mb_trim($label);
-        $label = mb_trim($label, ': ');
-        $label = mb_ltrim($label, '\\');
-
-        return mb_strtolower($label);
-    }
-
-    /**
-     * @param list<string> $catchTypes
-     * @return list<string>
-     */
-    private function catchTypeLabels(array $catchTypes): array
-    {
-        $labels = [];
-
-        foreach ($catchTypes as $type) {
-            $type = mb_ltrim($type, '\\');
-            $labels[] = mb_strtolower($type);
-            $labels[] = mb_strtolower(basename(str_replace('\\', '/', $type)));
-        }
-
-        return array_values(array_unique($labels));
+        return $this->catchTypeLabels->contains($catchTypes, $part->value);
     }
 }

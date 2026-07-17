@@ -258,7 +258,7 @@ final readonly class CanonicalUpdater
         while ([] !== $queue) {
             $current = array_pop($queue);
 
-            foreach ($this->stripOneTrashWrapper($current) as $candidate) {
+            foreach ([...$this->replaceOneContextWrapper($current), ...$this->stripOneTrashWrapper($current)] as $candidate) {
                 if (in_array($candidate, $candidates, true)) {
                     continue;
                 }
@@ -266,6 +266,22 @@ final readonly class CanonicalUpdater
                 $candidates[] = $candidate;
                 $queue[] = $candidate;
             }
+        }
+
+        return $candidates;
+    }
+
+    /** @return list<string> */
+    private function replaceOneContextWrapper(string $line): array
+    {
+        $candidates = [];
+
+        if (str_starts_with($line, 'Expected exception for class-based reflection: ')) {
+            $candidates[] = 'class-based reflection: ' . mb_substr($line, mb_strlen('Expected exception for class-based reflection: '));
+        }
+
+        if (1 === preg_match('/^Exception thrown for ([^:]+): (.*)$/', $line, $matches)) {
+            $candidates[] = $matches[1] . ': ' . $matches[2];
         }
 
         return $candidates;
@@ -283,15 +299,14 @@ final readonly class CanonicalUpdater
             'Caught exception with message "',
             'Exception caught: ',
             'Exception thrown: ',
-            'Exception thrown for invalid flags: ',
             'RuntimeException thrown: ',
             'LogicException: ',
             'unexpected exception: ',
             'Unexpected exception: ',
             'expected exception: ',
-            'Expected exception for class-based reflection: ',
             'Assertion failure: ',
             'Error found: ',
+            'ERR ',
             'Caught in ',
             'Caught: ',
             'Caught ',
@@ -299,8 +314,12 @@ final readonly class CanonicalUpdater
             '[Error] ',
             'Error: ',
             'Exception: ',
+            'in catch: ',
             'Ok - ',
+            'OK! ',
             'Parse error: ',
+            'PDOException message: ',
+            'Safely caught ',
             'TEST:',
             'TEST: ',
         ];
@@ -331,6 +350,11 @@ final readonly class CanonicalUpdater
         }
 
         if (1 === preg_match('/^\[([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\] (.*)$/', $line, $matches)) {
+            $candidates[] = $matches[1] . ': ' . $matches[2];
+            $candidates[] = $matches[2];
+        }
+
+        if (1 === preg_match('/^Exception \(([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\): (.*)$/', $line, $matches)) {
             $candidates[] = $matches[1] . ': ' . $matches[2];
             $candidates[] = $matches[2];
         }
