@@ -6,7 +6,7 @@ $q = new SplQueue();
 try {
     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_FIFO);
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'unexpected: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 try {
     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
