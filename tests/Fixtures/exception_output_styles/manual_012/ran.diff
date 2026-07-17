@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new RuntimeException('fixture message');
+ } catch (Throwable $e) {
+-    echo '[006] '.$e->getMessage()."\n";
++    echo '[006] ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
+-[006] fixture message
++[006] RuntimeException: fixture message
