@@ -19,6 +19,17 @@ final class FixtureValidationResult
 
     public int $deletedPairs = 0;
 
+    public int $stalePairs = 0;
+
+    /** @var list<string> */
+    public array $updatedCases = [];
+
+    /** @var list<string> */
+    public array $staleCases = [];
+
+    /** @var list<string> */
+    public array $oldOnlyCases = [];
+
     public function failed(): bool
     {
         return [] !== $this->failures;

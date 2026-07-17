@@ -20,6 +20,7 @@ final readonly class FixtureGenerationOptions
         public array $extensions,
         public FixtureRewriteRunner $runner,
         public bool $allowDirty,
+        public bool $sourceDirty,
         public bool $write,
     ) {}
 }

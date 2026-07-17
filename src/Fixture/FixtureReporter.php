@@ -18,4 +18,6 @@ interface FixtureReporter
         FixtureSelection $selection,
         array $writeResults,
     ): void;
+
+    public function writeRefresh(string $reportsDir, string $fixturesDir, FixtureGenerationResult $result): void;
 }

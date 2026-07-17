@@ -122,7 +122,7 @@ final class FixtureValidatorTest extends TestCase
         );
     }
 
-    public function testRefreshDeletesGeneratedPairWhenFixerNoLongerChangesOldFixture(): void
+    public function testRefreshKeepsGeneratedPairWhenFixerNoLongerChangesOldFixture(): void
     {
         $fixtures = $this->fixturesDir();
         mkdir($fixtures . '/stale', recursive: true);
@@ -138,11 +138,12 @@ final class FixtureValidatorTest extends TestCase
         );
 
         self::assertSame([], $result->failures);
-        self::assertSame(1, $result->oldOnly);
-        self::assertSame(1, $result->deletedPairs);
+        self::assertSame(1, $result->stalePairs);
+        self::assertSame(0, $result->oldOnly);
+        self::assertSame(0, $result->deletedPairs);
         self::assertFileExists($fixtures . '/stale/old.phpt');
-        self::assertFileDoesNotExist($fixtures . '/stale/new.phpt');
-        self::assertFileDoesNotExist($fixtures . '/stale/ran.diff');
+        self::assertFileExists($fixtures . '/stale/new.phpt');
+        self::assertFileExists($fixtures . '/stale/ran.diff');
     }
 
     public function testRefreshPreservesGeneratedPairWhenRewriteVerificationFails(): void

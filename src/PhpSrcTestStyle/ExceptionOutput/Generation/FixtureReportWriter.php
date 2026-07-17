@@ -65,6 +65,13 @@ final readonly class FixtureReportWriter implements FixtureReporter
         $this->writeFile($reportsDir . '/flavours.txt', $this->renderFlavourCandidates($flavours));
         $this->writeFile($reportsDir . '/candidates.txt', $this->renderCandidates($candidates));
         $this->writeFile($reportsDir . '/failures.txt', $this->renderFailures($result, $fixturesDir));
+        $this->writeRefresh($reportsDir, $fixturesDir, $result);
+    }
+
+    public function writeRefresh(string $reportsDir, string $fixturesDir, FixtureGenerationResult $result): void
+    {
+        $this->files->ensureDirectory($reportsDir, 'report directory');
+        $this->writeFile($reportsDir . '/refresh.txt', $this->renderRefresh($result, $fixturesDir));
     }
 
     /**
@@ -322,7 +329,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
             'Created old fixtures: ' . $result->createdOld,
             'Verified fixture files: ' . $result->verifiedPairs,
             'Updated new/diff pairs: ' . $result->updatedPairs,
-            'Deleted stale new/diff pairs: ' . $result->deletedPairs,
+            'Stale existing new/diff pairs: ' . $result->stalePairs,
             'Old-only fixture files: ' . $result->oldOnly,
             'Failures: ' . count($result->failures),
             '',
@@ -530,6 +537,65 @@ final readonly class FixtureReportWriter implements FixtureReporter
         }
 
         return implode("\n", $lines) . "\n";
+    }
+
+    private function renderRefresh(FixtureGenerationResult $result, string $fixturesDir): string
+    {
+        /** @var list<string> $lines */
+        $lines = [
+            '# Fixture refresh',
+            '',
+            'Refresh-only run: ' . ($result->refreshOnly ? 'yes' : 'no'),
+            'Updated new/diff pairs: ' . $result->updatedPairs,
+            'Stale existing new/diff pairs kept: ' . $result->stalePairs,
+            'Old-only fixture files: ' . $result->oldOnly,
+            'Failures: ' . count($result->failures),
+            '',
+            '## Updated pairs',
+            '',
+        ];
+
+        $this->appendList($lines, $result->updatedPairCases);
+
+        $lines[] = '';
+        $lines[] = '## Stale existing pairs kept';
+        $lines[] = '';
+        $lines[] = 'These existing new.phpt/ran.diff pairs were kept, but the current fixer did not reproduce a change from old.phpt.';
+        $lines[] = '';
+
+        $this->appendList($lines, $result->stalePairCases);
+
+        $lines[] = '';
+        $lines[] = '## Old-only fixtures';
+        $lines[] = '';
+
+        $this->appendList($lines, $result->oldOnlyCases);
+
+        $lines[] = '';
+        $lines[] = '## Failures';
+        $lines[] = '';
+
+        foreach ($result->failures as $failure) {
+            $lines[] = '- ' . $this->normalizeFailure($failure, $fixturesDir);
+        }
+
+        return implode("\n", $lines) . "\n";
+    }
+
+    /**
+     * @param list<string> $lines
+     * @param list<string> $items
+     */
+    private function appendList(array &$lines, array $items): void
+    {
+        if ([] === $items) {
+            $lines[] = '- none';
+            return;
+        }
+
+        foreach ($items as $item) {
+            $lines[] = '- ' . $item;
+        }
     }
 
     private function normalizeFailure(string $failure, string $fixturesDir): string

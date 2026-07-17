@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace InternalsCS\Fixture;
 
 use InternalsCS\SourceFinder;
-use InternalsCS\Support\GitStatus;
 
 use function count;
 
@@ -18,15 +17,22 @@ final readonly class FixtureGenerator
         private FixtureSelector $selector = new FixtureSelector(),
         private FixtureWriter $writer = new FixtureWriter(),
         private FixtureValidator $validator = new FixtureValidator(),
-        private GitStatus $git = new GitStatus(),
     ) {}
 
     public function generate(FixtureGenerationOptions $options): FixtureGenerationResult
     {
         $result = new FixtureGenerationResult();
+        $result->dryRun = !$options->write;
 
-        if (!$options->allowDirty && $this->git->isDirty($options->sourceRoot)) {
-            $result->fail('source checkout is dirty; pass --allow-dirty to generate anyway');
+        if ($options->sourceDirty) {
+            $result->refreshOnly = true;
+            $result->warn('source checkout is dirty; skipped source discovery and old.phpt import; pass --allow-dirty to generate from dirty source');
+
+            if ($options->write) {
+                $this->refreshFixtures($result, $options);
+                $this->reports->writeRefresh($options->reportsDir, $options->fixturesDir, $result);
+            }
+
             return $result;
         }
 
@@ -45,7 +51,6 @@ final readonly class FixtureGenerator
         $result->candidateFlavours = $selection->flavourCount();
         $result->duplicateCandidates = $selection->duplicateCandidateWindows(count($candidates));
         $result->selectedFixtures = $selection->fixtureCount();
-        $result->dryRun = !$options->write;
 
         if (!$options->write) {
             return $result;
@@ -68,6 +73,15 @@ final readonly class FixtureGenerator
             $result->oldOnly += $write->oldOnly ? 1 : 0;
         }
 
+        $this->refreshFixtures($result, $options);
+
+        $this->reports->write($options->reportsDir, $options->fixturesDir, $result, $candidates, $selection, $writeResults);
+
+        return $result;
+    }
+
+    private function refreshFixtures(FixtureGenerationResult $result, FixtureGenerationOptions $options): void
+    {
         $validation = $this->validator->validate(new FixtureValidationOptions(
             fixturesDir: $options->fixturesDir,
             cases: [],
@@ -84,11 +98,11 @@ final readonly class FixtureGenerator
         $result->verifiedPairs = $validation->handled;
         $result->updatedPairs = $validation->updated;
         $result->deletedPairs = $validation->deletedPairs;
+        $result->stalePairs = $validation->stalePairs;
         $result->oldOnly = $validation->oldOnly;
-
-        $this->reports->write($options->reportsDir, $options->fixturesDir, $result, $candidates, $selection, $writeResults);
-
-        return $result;
+        $result->updatedPairCases = $validation->updatedCases;
+        $result->stalePairCases = $validation->staleCases;
+        $result->oldOnlyCases = $validation->oldOnlyCases;
     }
 
     /** @param list<FixtureCandidate> $candidates */

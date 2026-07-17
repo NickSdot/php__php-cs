@@ -67,10 +67,7 @@ final readonly class GenerateCommand implements Command
             return 2;
         }
 
-        if (!$options->allowDirty && $this->git->isDirty($options->phpSrcRoot->path)) {
-            $io->err("source checkout is dirty; pass --allow-dirty to generate anyway\n");
-            return 1;
-        }
+        $sourceDirty = !$options->allowDirty && $this->git->isDirty($options->phpSrcRoot->path);
 
         if ($options->write && $target->requiresPhpTestRuntime()) {
             try {
@@ -97,6 +94,7 @@ final readonly class GenerateCommand implements Command
             extensions: $target->sourceExtensions(),
             runner: $target->rewriteRunner($options),
             allowDirty: $options->allowDirty,
+            sourceDirty: $sourceDirty,
             write: $options->write,
         ));
 

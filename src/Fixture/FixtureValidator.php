@@ -60,7 +60,6 @@ final readonly class FixtureValidator
                 continue;
             }
 
-            $result->oldOnly++;
             $this->validateOldOnly($result, $case, $oldPath, $newPath, $diffPath, $rewrite, $options);
         }
 
@@ -123,9 +122,8 @@ final readonly class FixtureValidator
         if (!$rewrite['changed']) {
 
             if ($options->update && $options->refreshPairs) {
-                $this->deletePair($newPath, $diffPath);
-                $result->deletedPairs++;
-                $result->oldOnly++;
+                $result->stalePairs++;
+                $result->staleCases[] = $case;
                 return;
             }
 
@@ -143,6 +141,7 @@ final readonly class FixtureValidator
 
             $this->writePair($oldPath, $newPath, $diffPath, $rewrite['output']);
             $result->updated++;
+            $result->updatedCases[] = $case;
             $result->handled++;
             return;
         }
@@ -158,6 +157,7 @@ final readonly class FixtureValidator
 
             $this->writeDiff($diffPath, $diff);
             $result->updated++;
+            $result->updatedCases[] = $case;
         }
 
         $result->handled++;
@@ -174,16 +174,21 @@ final readonly class FixtureValidator
         FixtureValidationOptions $options,
     ): void {
         if ($rewrite['failed'] || !$rewrite['changed']) {
+            $result->oldOnly++;
+            $result->oldOnlyCases[] = $case;
             return;
         }
 
         if (!$options->update) {
+            $result->oldOnly++;
+            $result->oldOnlyCases[] = $case;
             $this->fail($result, $case . ': fixer now produces a verified rewrite; new.phpt is missing', $options->failFast);
             return;
         }
 
         $this->writePair($oldPath, $newPath, $diffPath, $rewrite['output']);
         $result->updated++;
+        $result->updatedCases[] = $case;
     }
 
     private function writePair(string $oldPath, string $newPath, string $diffPath, string $newContents): void
@@ -196,12 +201,6 @@ final readonly class FixtureValidator
     private function writeDiff(string $diffPath, string $diff): void
     {
         $this->files->write($diffPath, $diff, 'fixture diff');
-    }
-
-    private function deletePair(string $newPath, string $diffPath): void
-    {
-        $this->files->deleteFileIfExists($newPath, 'fixture');
-        $this->files->deleteFileIfExists($diffPath, 'fixture diff');
     }
 
     private function fail(FixtureValidationResult $result, string $message, bool $failFast): void

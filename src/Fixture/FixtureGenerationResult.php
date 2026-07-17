@@ -9,6 +9,11 @@ final class FixtureGenerationResult
     /** @var list<string> */
     public array $failures = [];
 
+    /** @var list<string> */
+    public array $warnings = [];
+
+    public bool $refreshOnly = false;
+
     public int $scannedFiles = 0;
 
     public int $candidateFiles = 0;
@@ -31,7 +36,18 @@ final class FixtureGenerationResult
 
     public int $deletedPairs = 0;
 
+    public int $stalePairs = 0;
+
     public int $oldOnly = 0;
+
+    /** @var list<string> */
+    public array $updatedPairCases = [];
+
+    /** @var list<string> */
+    public array $stalePairCases = [];
+
+    /** @var list<string> */
+    public array $oldOnlyCases = [];
 
     public function failed(): bool
     {
@@ -41,5 +57,10 @@ final class FixtureGenerationResult
     public function fail(string $message): void
     {
         $this->failures[] = $message;
+    }
+
+    public function warn(string $message): void
+    {
+        $this->warnings[] = $message;
     }
 }

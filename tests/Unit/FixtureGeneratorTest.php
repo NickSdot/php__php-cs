@@ -17,6 +17,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function glob;
 use function implode;
+use function is_file;
 use function mkdir;
 use function random_bytes;
 use function sys_get_temp_dir;
@@ -46,6 +47,7 @@ final class FixtureGeneratorTest extends TestCase
             extensions: ['phpt'],
             runner: new NoopFixtureRewriteRunner(),
             allowDirty: false,
+            sourceDirty: false,
             write: false,
         ));
 
@@ -82,6 +84,7 @@ final class FixtureGeneratorTest extends TestCase
             extensions: ['phpt'],
             runner: new NoopFixtureRewriteRunner(),
             allowDirty: false,
+            sourceDirty: false,
             write: false,
         ));
 
@@ -89,6 +92,50 @@ final class FixtureGeneratorTest extends TestCase
         self::assertSame(2, $result->candidateWindows);
         self::assertSame(2, $result->candidateFlavours);
         self::assertSame(1, $result->selectedFixtures);
+    }
+
+    public function testDirtySourceRefreshesExistingFixturesWithoutUpdatingDiscoveryReports(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+        mkdir($fixtures . '/case');
+        file_put_contents($fixtures . '/case/old.phpt', "old\n");
+        file_put_contents($reports . '/queue.txt', "existing queue\n");
+
+        $result = $this->generator()->generate(new FixtureGenerationOptions(
+            sourceRoot: $phpSrc,
+            fixturesDir: $fixtures,
+            reportsDir: $reports,
+            paths: [],
+            excludedRoots: [
+                $fixtures,
+            ],
+            extensions: ['phpt'],
+            runner: new ChangedFixtureRewriteRunner("new\n"),
+            allowDirty: false,
+            sourceDirty: true,
+            write: true,
+        ));
+
+        self::assertTrue($result->refreshOnly);
+        self::assertSame([
+            'source checkout is dirty; skipped source discovery and old.phpt import; pass --allow-dirty to generate from dirty source',
+        ], $result->warnings);
+        self::assertSame(0, $result->scannedFiles);
+        self::assertSame(0, $result->createdOld);
+        self::assertSame(1, $result->updatedPairs);
+        self::assertSame(0, $result->oldOnly);
+        self::assertSame(['case'], $result->updatedPairCases);
+        self::assertSame("old\n", file_get_contents($fixtures . '/case/old.phpt'));
+        self::assertSame("new\n", file_get_contents($fixtures . '/case/new.phpt'));
+        self::assertTrue(is_file($fixtures . '/case/ran.diff'));
+        self::assertSame("existing queue\n", file_get_contents($reports . '/queue.txt'));
+        self::assertStringContainsString('- case', (string) file_get_contents($reports . '/refresh.txt'));
     }
 
     private function writePhpt(string $root, string $name, string $statement): void
@@ -149,6 +196,23 @@ final readonly class NoopFixtureRewriteRunner implements FixtureRewriteRunner
             'changed' => false,
             'failed' => false,
             'output' => (string) file_get_contents($path),
+            'failure' => null,
+        ];
+    }
+}
+
+final readonly class ChangedFixtureRewriteRunner implements FixtureRewriteRunner
+{
+    public function __construct(
+        private string $output,
+    ) {}
+
+    public function printFile(string $path): array
+    {
+        return [
+            'changed' => true,
+            'failed' => false,
+            'output' => $this->output,
             'failure' => null,
         ];
     }
