@@ -1,39 +1,6 @@
 # Fixture generation failures
 
 - Zend_tests_closures_closure_instantiate: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Closures cannot be instantiated directly [Zend_tests_closures_closure_instantiate/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
-- Zend_tests_pipe_operator_oss_fuzz_427814452: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL OSS-Fuzz #427814452 [Zend_tests_pipe_operator_oss_fuzz_427814452/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 3 line(s), actual 3 line(s)
-- Zend_tests_stack_limit_stack_limit_011: rewritten old.phpt does not match new.phpt
-- Zend_tests_type_declarations_typed_properties_076: expected handled rewrite, but fixer reported no change
-- ext_bcmath_tests_bcdiv_error1: rewrite failed verification: original test did not pass (SKIP: Required extension missing: bcmath)
-- ext_calendar_tests_cal_days_in_month_error1: rewrite failed verification: original test did not pass (SKIP: Required extension missing: calendar)
-- ext_dom_tests_DOMElement_className: rewrite failed verification: original test did not pass (SKIP: Required extension missing: dom)
-- ext_dom_tests_DOMNode_removeChild_error1: rewrite failed verification: original test did not pass (SKIP: Required extension missing: dom)
-- ext_dom_tests_modern_xml_XMLDocument_xpath: expected handled rewrite, but fixer reported no change
-- ext_dom_tests_registerNodeClass_abstract_class: rewrite failed verification: original test did not pass (SKIP: Required extension missing: dom)
-- ext_fileinfo_tests_finfo_open_003: rewrite failed verification: original test did not pass (SKIP: Required extension missing: fileinfo)
-- ext_hash_tests_hash_serialize_003: expected handled rewrite, but fixer reported no change
-- ext_intl_tests_calendar_toDateTime_error: rewrite failed verification: original test did not pass (SKIP: Required extension missing: intl)
-- ext_intl_tests_ini_use_exceptions_basic: rewrite failed verification: original test did not pass (SKIP: Required extension missing: intl)
-- ext_intl_tests_listformatter_listformatter_clone: rewrite failed verification: original test did not pass (SKIP: intl extension not available)
-- ext_intl_tests_listformatter_listformatter_error: rewrite failed verification: original test did not pass (SKIP: Required extension missing: intl)
-- ext_ldap_tests_gh21262: rewrite failed verification: original test did not pass (SKIP: Required extension missing: ldap)
+- ext_dom_tests_DOMElement_className: rewrite failed verification: rewritten test did not pass and no .out file was produced (BORK missing section --EXPECT--, --EXPECTF-- or --EXPECTREGEX-- [ext_dom_tests_DOMElement_clas...)
 - ext_opcache_tests_gh20628_borked_live_range_calc: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Broken live-range calculation with QM_ASSIGN optimization [ext_opcache_tests_gh20628_bork...): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
-- ext_opcache_tests_jit_mod_001: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL JIT MOD: 001 [ext_opcache_tests_jit_mod_001/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 8 line(s), actual 8 line(s)
-- ext_pcntl_tests_bug81577: rewrite failed verification: original test did not pass (SKIP: Required extensions missing: pcntl, posix)
-- ext_pdo_sqlite_tests_subclasses_pdosqlite_load_extension_failure: rewrite failed verification: original test did not pass (SKIP: Required extension missing: pdo_sqlite)
-- ext_phar_tests_bug65414: rewrite failed verification: original test did not pass (SKIP: Required extension missing: phar)
-- ext_reflection_tests_ReflectionProperty_getMangledName_dynamic: rewritten old.phpt does not match new.phpt
-- ext_reflection_tests_ReflectionProperty_getMangledName_inheritance: expected handled rewrite, but fixer reported no change
-- ext_reflection_tests_ReflectionProperty_getMangledName_instance: expected handled rewrite, but fixer reported no change
-- ext_reflection_tests_internal_parameter_default_value_check_all: expected handled rewrite, but fixer reported no change
-- ext_simplexml_tests_gh12929: rewrite failed verification: original test did not pass (SKIP: Required extension missing: simplexml)
-- ext_spl_tests_SplHeap_serialize_corrupted: expected handled rewrite, but fixer reported no change
-- ext_spl_tests_SplHeap_serialize_error_handling: expected handled rewrite, but fixer reported no change
-- ext_spl_tests_SplPriorityQueue_unserialize_invalid_flags: rewritten old.phpt does not match new.phpt
-- ext_spl_tests_heap_corruption: expected handled rewrite, but fixer reported no change
-- ext_sqlite3_tests_bug68760: rewrite failed verification: original test did not pass (SKIP: Required extension missing: sqlite3)
-- ext_sqlite3_tests_sqlite3_40_setauthorizer: rewrite failed verification: original test did not pass (SKIP: Required extension missing: sqlite3)
-- ext_standard_tests_network_setcookie_array_option_error: rewrite failed verification: original test did not pass (SKIP: CGI not available)
-- ext_standard_tests_network_setrawcookie_error: rewrite failed verification: original test did not pass (SKIP: CGI not available)
-- tests_classes_ctor_failure: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL ZE2 Do not call destructors if constructor fails [tests_classes_ctor_failure/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 2 line(s), actual 2 line(s)
-- tests_classes_type_hinting_004: expected handled rewrite, but fixer reported no change
+- ext_reflection_tests_ReflectionProperty_getMangledName_dynamic: rewrite failed verification: updated expected output did not pass verification (FAIL Test ReflectionProperty::getMangledName() with dynamic properties [ext_reflection_tests_R...)

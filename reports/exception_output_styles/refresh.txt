@@ -1,14 +1,15 @@
 # Fixture refresh
 
 Refresh-only run: yes
-Updated new/diff pairs: 0
+Updated new/diff pairs: 2
 Stale existing new/diff pairs kept: 13
-Old-only fixture files: 58
-Failures: 8
+Old-only fixture files: 57
+Failures: 4
 
 ## Updated pairs
 
-- none
+- Zend_tests_stack_limit_stack_limit_011
+- ext_phar_tests_buildFromIterator_user_overrides_getMTime_errors
 
 ## Stale existing pairs kept
 
@@ -70,7 +71,6 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 - ext_pdo_mysql_tests_bug68371
 - ext_pdo_tests_pecl_bug_5217
 - ext_phar_tests_bug79503
-- ext_phar_tests_buildFromIterator_user_overrides_getMTime_errors
 - ext_phar_tests_phar_metadata_write4
 - ext_phar_tests_tar_badalias
 - ext_reflection_tests_ReflectionFiber_errors
@@ -91,11 +91,7 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 
 ## Failures
 
-- Zend_tests_assert_expect_015: rewrite failed verification: original test did not pass (FAIL AST pretty-printer [Zend_tests_assert_expect_015/old.phpt])
 - Zend_tests_closures_closure_instantiate: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Closures cannot be instantiated directly [Zend_tests_closures_closure_instantiate/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
-- Zend_tests_enum_internal_enums: rewrite failed verification: original test did not pass (SKIP: Required extension missing: zend_test)
-- Zend_tests_stack_limit_stack_limit_011: rewrite failed verification: original test did not pass (SKIP: Required extension missing: zend_test)
 - ext_dom_tests_DOMElement_className: rewrite failed verification: rewritten test did not pass and no .out file was produced (BORK missing section --EXPECT--, --EXPECTF-- or --EXPECTREGEX-- [ext_dom_tests_DOMElement_clas...)
 - ext_opcache_tests_gh20628_borked_live_range_calc: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Broken live-range calculation with QM_ASSIGN optimization [ext_opcache_tests_gh20628_bork...): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
 - ext_reflection_tests_ReflectionProperty_getMangledName_dynamic: rewrite failed verification: updated expected output did not pass verification (FAIL Test ReflectionProperty::getMangledName() with dynamic properties [ext_reflection_tests_R...)
-- ext_standard_tests_array_array_filter_invalid_mode: rewrite failed verification: original test did not pass (FAIL Test array_filter() function : usage variations - mode exception [ext_standard_tests_arra...)

@@ -3,12 +3,12 @@
 Zend/tests/closures/closure_from_callable_error.phpt:17
   state: old_only
   fixture: Zend_tests_closures_closure_from_callable_error
-  fingerprint: class_message:c90d594190e5e774e7763a15c090d6630172f9ca
+  fingerprint: class_message:23ad30aefc82923c0a477ecb92b3cb2be99def27
   family: class_message
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: literal:bf0d471d1580de4427fdec18bff0a0699e3d788b exception_class(get_class) literal:trash:empty exception_message newline
+  parts: literal:bf0d471d1580de4427fdec18bff0a0699e3d788b exception_class(get_class) literal:d98411eb70b07edf83e993ee9dba073bee0dddeb exception_message newline
   echo "Wrong exception type thrown: ".get_class($t)." : ".$t->getMessage()."\n";
 
     14     //This is the expected outcome.
@@ -22,12 +22,12 @@ Zend/tests/closures/closure_from_callable_error.phpt:17
 ext/session/tests/session_create_id_invalid_prefix.phpt:19
   state: old_only
   fixture: ext_session_tests_session_create_id_invalid_prefix
-  fingerprint: class_message:d42a1b7eff30a5666e87a87cbc6976d5ecc9dff6
+  fingerprint: class_message:2655104d24e7570bc0d0be3c4a79a4cb46f6a818
   family: class_message
   safety: canonicalizable
   expected: EXPECTF
   reason: safe candidate for a canonical exception-output family
-  parts: exception_class(static_class) literal:trash:empty exception_message newline
+  parts: exception_class(static_class) literal:colon_separator exception_message newline
   echo $e::class . ': ' . $e->getMessage() . "\n";
 
     16 try {
@@ -38,15 +38,167 @@ ext/session/tests/session_create_id_invalid_prefix.phpt:19
     21 
     22 try {
 
-ext/ffi/tests/031.phpt:16
+ext/pdo/tests/bug_44159.phpt:25
+  state: missing
+  fixture: ext_pdo_tests_bug_44159
+  fingerprint: class_message:3938d63e3e745da3c6d86e96ce0b0c4d2b33bc16
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_message newline
+  echo  get_class($e), ': ', $e->getMessage(), \PHP_EOL;
+
+    22     try {
+    23         var_dump($pdo->setAttribute($attr, NULL));
+    24     } catch (\Error $e) {
+>   25         echo  get_class($e), ': ', $e->getMessage(), \PHP_EOL;
+    26     }
+    27     try {
+    28         var_dump($pdo->setAttribute($attr, 1));
+
+ext/session/tests/session_start_error.phpt:23
   state: old_only
-  fixture: ext_ffi_tests_031
-  fingerprint: class_message:d51f8d18aa4996f4103de52c5cc98136c2883fa7
+  fixture: ext_session_tests_session_start_error
+  fingerprint: class_message:40a5c2e3a98b10f114ee9e82bf7c145041642dfb
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:colon_separator exception_message newline
+  echo $exception::class, ': ', $exception->getMessage() . "\n";
+
+    20 try {
+    21     session_start([$read_and_close]);
+    22 } catch (ValueError $exception) {
+>   23     echo $exception::class, ': ', $exception->getMessage() . "\n";
+    24 }
+    25 
+    26 var_dump(session_start(['option' => false]));
+
+ext/gmp/tests/gh22549.phpt:23
+  state: missing
+  fixture: ext_gmp_tests_gh22549
+  fingerprint: class_message:4b6763e0dc2b8cd3f2c20bd7ae6cffe153f8d115
+  family: class_message
+  safety: unsupported_expression
+  expected: EXPECTF
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_Variable) literal:colon_separator exception_class(static_class) literal:colon_separator exception_message newline
+  echo "$label: ", $e::class, ": ", $e->getMessage(), "\n";
+
+    20         $op($x);
+    21         echo "$label: no exception\n";
+    22     } catch (\Throwable $e) {
+>   23         echo "$label: ", $e::class, ": ", $e->getMessage(), "\n";
+    24     }
+    25     var_dump($x);
+    26 }
+
+ext/dom/tests/modern/xml/gh22570.phpt:31
+  state: missing
+  fixture: ext_dom_tests_modern_xml_gh22570
+  fingerprint: class_message:5d18463e5d4fc5e6974531ff87ee5a818f62675e
   family: class_message
   safety: descriptive_context
   expected: EXPECT
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_Variable) literal:4d2a116113e32bcceaf300821ede7a9665b3f990 exception_class(get_class) literal:trash:empty exception_message newline
+  parts: literal:c6fa978b8e638d01576f5e1d129675bad4c7142e exception_class(static_class) literal:colon_separator exception_message newline
+  echo "saveXml: ", $e::class, ": ", $e->getMessage(), "\n";
+
+    28 try {
+    29     $doc->saveXml();
+    30 } catch (\Error $e) {
+>   31     echo "saveXml: ", $e::class, ": ", $e->getMessage(), "\n";
+    32 }
+    33 
+    34 try {
+
+ext/standard/tests/file/file_get_contents_variation8-win32.phpt:39
+  state: missing
+  fixture: ext_standard_tests_file_file_get_contents_variation8_win32
+  fingerprint: class_message:686c02b4fb9c21dd9bb816ca920fe5c0b65b1d0c
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_message newline
+  echo get_class($e) . ': ' . $e->getMessage(), "\n";
+
+    36     try {
+    37         var_dump(file_get_contents($value));
+    38     } catch (\TypeError|\ValueError $e) {
+>   39         echo get_class($e) . ': ' . $e->getMessage(), "\n";
+    40     }
+    41 }
+    42 
+
+ext/session/tests/session_gc_probability_ini.phpt:39
+  state: missing
+  fixture: ext_session_tests_session_gc_probability_ini
+  fingerprint: class_message:7d136db541ccb5075636648d5db01c83a58f2ffe
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:colon_separator exception_message newline
+  echo $e::class, ': '. $e->getMessage(), "\n";
+
+    36     session_start($gc_setting);
+    37     session_write_close();
+    38     } catch (Throwable $e) {
+>   39         echo $e::class, ': '. $e->getMessage(), "\n";
+    40     }
+    41 }
+    42 ob_end_flush();
+
+Zend/tests/offsets/appending_containers_in_fetch.phpt:14
+  state: old_only
+  fixture: Zend_tests_offsets_appending_containers_in_fetch
+  fingerprint: class_message:8759f865d6ed3f04147723ea105efc670ffbc5cf
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(static_class) literal:colon_separator exception_message newline
+  echo $e::class, ': ', $e->getMessage(), "\n";
+
+    11         $container[][5] = 'value';
+    12         var_dump($container);
+    13     } catch (\Throwable $e) {
+>   14         echo $e::class, ': ', $e->getMessage(), "\n";
+    15     }
+    16 }
+    17 
+
+ext/dom/tests/modern/xml/gh22570.phpt:37
+  state: missing
+  fixture: ext_dom_tests_modern_xml_gh22570
+  fingerprint: class_message:c528f632c4fbba2bdc5bd63a373513919d0b0130
+  family: class_message
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:2c487df4a2bf00f3c5ce99a241d9f8c101ee8880 exception_class(static_class) literal:colon_separator exception_message newline
+  echo "innerHTML: ", $e::class, ": ", $e->getMessage(), "\n";
+
+    34 try {
+    35     $doc->documentElement->innerHTML;
+    36 } catch (\Error $e) {
+>   37     echo "innerHTML: ", $e::class, ": ", $e->getMessage(), "\n";
+    38 }
+    39 ?>
+    40 
+
+ext/ffi/tests/031.phpt:16
+  state: old_only
+  fixture: ext_ffi_tests_031
+  fingerprint: class_message:c7cd74a2c02c2abd67a926f5daa2407698fffdd0
+  family: class_message
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: unknown(Expr_Variable) literal:4d2a116113e32bcceaf300821ede7a9665b3f990 exception_class(get_class) literal:colon_separator exception_message newline
   echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
 
     13             echo "FAIL: sizeof($type) != $expected_size ($size)\n";
@@ -60,12 +212,12 @@ ext/ffi/tests/031.phpt:16
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
   state: old_only
   fixture: ext_intl_tests_calendar_get_Least_Greatest_Minimum_Maximum_error
-  fingerprint: class_message:f03ad05c9bda455fd1d1265e75e95e8b3cee6820
+  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
   family: class_message
   safety: descriptive_context
   expected: EXPECT
   reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:trash:empty unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     10 try {
@@ -95,25 +247,6 @@ Zend/tests/attributes/005_objects.phpt:44
     46 
     47 echo "\n";
 
-ext/pdo/tests/pecl_bug_5217.phpt:23
-  state: old_only
-  fixture: ext_pdo_tests_pecl_bug_5217
-  fingerprint: message_only:016cc885829d21a49e775a13ad97f9666562db58
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:8d322fac8fd54c4bd248f81ac30e40e5fe6337ac exception_message newline
-  echo "Safely caught " . $e->getMessage() . "\n";
-
-    20     $db = unserialize($ser);
-    21     $db->exec('CREATE TABLE test5217 (id int NOT NULL PRIMARY KEY, val VARCHAR(10))');
-    22 } catch (Exception $e) {
->   23     echo "Safely caught " . $e->getMessage() . "\n";
-    24 }
-    25 
-    26 echo "PHP Didn't crash!\n";
-
 ext/bcmath/tests/bcscale_variation001.phpt:13
   state: old_only
   fixture: ext_bcmath_tests_bcscale_variation001
@@ -132,6 +265,25 @@ ext/bcmath/tests/bcscale_variation001.phpt:13
     14 }
     15 ?>
     16 
+
+ext/spl/tests/gh16217.phpt:26
+  state: old_only
+  fixture: ext_spl_tests_gh16217
+  fingerprint: message_only:044551d978b7135ee381f7feffc185c017be5594
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:0d97ccf9c8f0139083d8107f4a3b25a646966782 exception_message newline
+  echo "next (READ_AHEAD): ", $e->getMessage(), "\n";
+
+    23 try {
+    24     (new ReflectionMethod(SplFileObject::class, "next"))->invoke($obj);
+    25 } catch (Error $e) {
+>   26     echo "next (READ_AHEAD): ", $e->getMessage(), "\n";
+    27 }
+    28 
+    29 echo "Done\n";
 
 ext/standard/tests/strings/printf.phpt:45
   state: old_only
@@ -171,24 +323,43 @@ Zend/tests/methods-on-non-objects-catch.phpt:13
     15 echo "Alive\n";
     16 ?>
 
-ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt:11
+ext/phar/tests/phar_metadata_write4.phpt:58
   state: old_only
-  fixture: ext_spl_tests_ArrayObject_arrayObject___construct_error1
-  fingerprint: message_only:110a558f693fb409d1e6c76f1e07660e98863040
+  fixture: ext_phar_tests_phar_metadata_write4
+  fingerprint: message_only:0f3444b319aa6b82bb6a6e57e3e5380d1ebf1b99
   family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message literal:trash:empty exception_line literal:trash:empty
-  echo $e->getMessage() . "(" . $e->getLine() .  ")\n";
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: literal:trash:caught exception_message literal:7df702c1e2a7f97f2512b0267e516708fda29ac8 exception_file literal:05a79f06cf3f67f726dae68d18a2290f6c9a50c9 exception_line newline
+  echo "Caught {$e->getMessage()} at {$e->getFile()}:{$e->getLine()}\n";
 
-     8 try {
-     9   var_dump(new ArrayObject($a, 0, "Exception"));
-    10 } catch (TypeError $e) {
->   11   echo $e->getMessage() . "(" . $e->getLine() .  ")\n";
-    12 }
-    13 
-    14 echo "Non-existent class:\n";
+    55 try {
+    56     var_dump($phar['a']->setMetadata(new ThrowsOnSerialize()));
+    57 } catch (RuntimeException $e) {
+>   58     echo "Caught {$e->getMessage()} at {$e->getFile()}:{$e->getLine()}\n";
+    59     unset($e);
+    60 }
+    61 var_dump($phar['a']->getMetadata([]));
+
+ext/soap/tests/bugs/gh22167.phpt:101
+  state: old_only
+  fixture: ext_soap_tests_bugs_gh22167
+  fingerprint: message_only:104bdc04a7c4f71c23d6f09ae9f09ad1c4774f4b
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECT
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_Variable) literal:colon_separator exception_message newline
+  echo "$name: {$e->getMessage()}\n";
+
+    98         new SoapClient($file, ["cache_wsdl" => WSDL_CACHE_NONE]);
+    99         echo "$name: parsed\n";
+   100     } catch (SoapFault $e) {
+>  101         echo "$name: {$e->getMessage()}\n";
+   102     } finally {
+   103         unlink($file);
+   104     }
 
 ext/mysqli/tests/mysqli_execute_query.phpt:82
   state: old_only
@@ -209,23 +380,23 @@ ext/mysqli/tests/mysqli_execute_query.phpt:82
     84 
     85 print "done!";
 
-ext/dom/tests/modern/spec/Document_createAttributeNS.phpt:15
+ext/dom/tests/DOM4_ParentNode_append_invalidtypes.phpt:15
   state: old_only
-  fixture: ext_dom_tests_modern_spec_Document_createAttributeNS
-  fingerprint: message_only:1c55e2bcfb96722d5c72e3915a1aef7398a3d106
+  fixture: ext_dom_tests_DOM4_ParentNode_append_invalidtypes
+  fingerprint: message_only:1e7c78ce2f438141c35d420bb92a812210d45300
   family: message_only
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:trash:empty unknown(Expr_Variable) literal:badf2839be86aaec37c49cc58baa78c81f85edae unknown(Expr_Variable) literal:trash:empty exception_message newline
-  echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:ok exception_message
+  echo "OK! {$e->getMessage()}";
 
-    12         $dom->createAttributeNS($ns, $qname);
-    13     } catch (DOMException $e) {
-    14         $ns_readable = is_null($ns) ? 'null' : "\"$ns\"";
->   15         echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
-    16     }
-    17 }
+    12 try {
+    13     $dom->documentElement->append(array());
+    14 } catch(TypeError $e) {
+>   15     echo "OK! {$e->getMessage()}";
+    16 }
+    17 ?>
     18 
 
 ext/soap/tests/bugs/protocol_relative_redirect.phpt:45
@@ -265,6 +436,44 @@ ext/pdo_firebird/tests/bug_77863.phpt:113
    114     echo $e->getTraceAsString();
    115 }
    116 ?>
+
+Zend/tests/type_coercion/gh22112.phpt:29
+  state: old_only
+  fixture: Zend_tests_type_coercion_gh22112
+  fingerprint: message_only:2a20690c6f97eeb03ecd3e3d9cc18bc948c0bc77
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:20a50f3c44c97fd2562b76f39ef221e2104b8fe8 exception_message newline
+  echo "string: ", $e->getMessage(), "\n";
+
+    26 try {
+    27     take_string($nan);
+    28 } catch (Exception $e) {
+>   29     echo "string: ", $e->getMessage(), "\n";
+    30 }
+    31 
+    32 ?>
+
+Zend/tests/type_declarations/scalar_return_basic.phpt:58
+  state: old_only
+  fixture: Zend_tests_type_declarations_scalar_return_basic
+  fingerprint: message_only:2e9049a84007173882ed62fac7cf85bc37533f61
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:caught exception_message literal:in_separator exception_file literal:on_line_separator exception_line newline
+  echo "*** Caught ", $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine(), PHP_EOL;
+
+    55         try {
+    56             var_dump($function($value));
+    57         } catch (TypeError $e) {
+>   58             echo "*** Caught ", $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine(), PHP_EOL;
+    59         }
+    60     }
+    61 }
 
 Zend/tests/attributes/005_objects.phpt:34
   state: old_only
@@ -323,62 +532,62 @@ Zend/tests/attributes/005_objects.phpt:54
     56 
     57 echo "\n";
 
-ext/phar/tests/buildFromIterator_user_overrides/getMTime_errors.phpt:83
+ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt:11
   state: old_only
-  fixture: ext_phar_tests_buildFromIterator_user_overrides_getMTime_errors
-  fingerprint: message_only:4e70645635d8b31245efb07130ee51ce9bf90945
+  fixture: ext_spl_tests_ArrayObject_arrayObject___construct_error1
+  fingerprint: message_only:4629d0d3302b4096cec9cfbe69f9c600b046cc45
   family: message_only
   safety: descriptive_context
-  expected: EXPECTF
+  expected: EXPECT
   reason: contains descriptive context that must not be dropped
-  parts: literal:6efb399bf67dc9983d8a57d2b6d1359ae036fdc7 exception_message newline
-  echo "Previous: ", $previous->getMessage(), "\n";
+  parts: exception_message literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:a35077a93b180088463ecc1cdf83178d99a53a66
+  echo $e->getMessage() . "(" . $e->getLine() .  ")\n";
 
-    80     } catch (Throwable $e) {
-    81         echo $e->getMessage(), "\n";
-    82         if ($previous = $e->getPrevious()) {
->   83             echo "Previous: ", $previous->getMessage(), "\n";
-    84         }
-    85     }
-    86 }
+     8 try {
+     9   var_dump(new ArrayObject($a, 0, "Exception"));
+    10 } catch (TypeError $e) {
+>   11   echo $e->getMessage() . "(" . $e->getLine() .  ")\n";
+    12 }
+    13 
+    14 echo "Non-existent class:\n";
 
-Zend/tests/type_declarations/scalar_return_basic.phpt:58
+ext/standard/tests/strings/strpos.phpt:87
   state: old_only
-  fixture: Zend_tests_type_declarations_scalar_return_basic
-  fingerprint: message_only:50d9580972dc48395f591ed8724b0ac3d6c8720b
+  fixture: ext_standard_tests_strings_strpos
+  fingerprint: message_only:57579d62b972731376eae16316a7924839d43461
   family: message_only
   safety: canonicalizable
   expected: EXPECTF
   reason: safe candidate for a canonical exception-output family
-  parts: literal:trash:caught exception_message literal:in_separator exception_file literal:on_line_separator exception_line newline
-  echo "*** Caught ", $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine(), PHP_EOL;
+  parts: newline exception_message newline
+  echo "\n", $e->getMessage(), "\n";
 
-    55         try {
-    56             var_dump($function($value));
-    57         } catch (TypeError $e) {
->   58             echo "*** Caught ", $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine(), PHP_EOL;
-    59         }
-    60     }
-    61 }
+    84   try {
+    85     var_dump( strpos($string, "Hello", $offset_values[$i]) );
+    86   } catch (TypeError $e) {
+>   87     echo "\n", $e->getMessage(), "\n";
+    88   }
+    89 }
+    90 
 
-Zend/tests/constexpr/constant_expressions_exceptions_002.phpt:8
+ext/standard/tests/general_functions/bug44295-win.phpt:21
   state: old_only
-  fixture: Zend_tests_constexpr_constant_expressions_exceptions_002
-  fingerprint: message_only:5a40f3590494cba77bfad25c5cdca97caabd6e75
+  fixture: ext_standard_tests_general_functions_bug44295_win
+  fingerprint: message_only:5e4de5ddf3ec9110757ef31e59e6ccfba28b17b0
   family: message_only
   safety: canonicalizable
-  expected: EXPECTF
+  expected: EXPECT
   reason: safe candidate for a canonical exception-output family
-  parts: literal:trash:exception exception_message literal:in_separator exception_file literal:on_line_separator exception_line newline
-  echo "\nException: " . $e->getMessage() . " in " , $e->getFile() . " on line " . $e->getLine() . "\n";
+  parts: literal:trash:in_catch exception_message newline
+  print "in catch: ".$e->getMessage()."\n";
 
-     5 try {
-     6     require("constant_expressions_exceptions.inc");
-     7 } catch (Error $e) {
->    8     echo "\nException: " . $e->getMessage() . " in " , $e->getFile() . " on line " . $e->getLine() . "\n";
-     9 }
-    10 ?>
-    11 DONE
+    18         print get_class($iter) . "\n";
+    19         print "after\n";
+    20 } catch (Exception $e) {
+>   21         print "in catch: ".$e->getMessage()."\n";
+    22 }
+    23 ?>
+    24 ==DONE==
 
 ext/mysqli/tests/mysqli_execute_query.phpt:67
   state: old_only
@@ -399,62 +608,62 @@ ext/mysqli/tests/mysqli_execute_query.phpt:67
     69 
     70 // check if insert_id is copied
 
-ext/dom/tests/DOM4_ParentNode_append_invalidtypes.phpt:15
+ext/intl/tests/calendar_uninitialized_argument_position.phpt:15
   state: old_only
-  fixture: ext_dom_tests_DOM4_ParentNode_append_invalidtypes
-  fingerprint: message_only:646df97825556cf144cf1bf6984fdb201d1664e7
+  fixture: ext_intl_tests_calendar_uninitialized_argument_position
+  fingerprint: message_only:6118fe02f515a7838680f4caedfa7c8f735839da
   family: message_only
-  safety: descriptive_context
+  safety: unsupported_expression
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:5eea5dca99f5f818cfe8d0da1467d1e841f7b5a7 exception_message
-  echo "OK! {$e->getMessage()}";
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_Variable) literal:colon_separator exception_message newline
+  echo $method, ': ', $e->getMessage(), PHP_EOL;
 
-    12 try {
-    13     $dom->documentElement->append(array());
-    14 } catch(TypeError $e) {
->   15     echo "OK! {$e->getMessage()}";
-    16 }
-    17 ?>
+    12     try {
+    13         $calendar->$method($uninitialized);
+    14     } catch (Error $e) {
+>   15         echo $method, ': ', $e->getMessage(), PHP_EOL;
+    16     }
+    17 }
     18 
 
-ext/phar/tests/bug65028.phpt:146
+Zend/tests/type_coercion/gh22112.phpt:23
   state: old_only
-  fixture: ext_phar_tests_bug65028
-  fingerprint: message_only:6dcad3f658966dfb6c642ee6cb54fef68a236764
+  fixture: Zend_tests_type_coercion_gh22112
+  fingerprint: message_only:639a87a493642087ffdbe24d080fe18f7eb42f13
   family: message_only
   safety: descriptive_context
   expected: EXPECT
   reason: contains descriptive context that must not be dropped
-  parts: literal:5b7fcd02693f4e19857699d656f6302228b3a1e1 exception_message newline
-  echo "Exception thrown: " . $ex->getMessage() . "\n";
+  parts: literal:f85593a9e1e8eb9ae3a5ad8f277af222092e9e68 exception_message newline
+  echo "bool: ", $e->getMessage(), "\n";
 
-   143 }
-   144 catch(UnexpectedValueException $ex)
-   145 {
->  146     echo "Exception thrown: " . $ex->getMessage() . "\n";
-   147 }
-   148 ?>
-   149 
+    20 try {
+    21     take_bool($nan);
+    22 } catch (Exception $e) {
+>   23     echo "bool: ", $e->getMessage(), "\n";
+    24 }
+    25 
+    26 try {
 
-ext/spl/tests/gh16217.phpt:18
+Zend/tests/constexpr/constant_expressions_exceptions_002.phpt:8
   state: old_only
-  fixture: ext_spl_tests_gh16217
-  fingerprint: message_only:716ee8c95ea1d69abe8fea0b71b26c8e4f654890
+  fixture: Zend_tests_constexpr_constant_expressions_exceptions_002
+  fingerprint: message_only:6f6e5ea043acd6775b6dd4ab86dd62f8e194918b
   family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:8d725dede340685b7ca4112a4fc95d81b1119ef1 exception_message newline
-  echo "next: ", $e->getMessage(), "\n";
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:exception exception_message literal:in_separator exception_file literal:on_line_separator exception_line newline
+  echo "\nException: " . $e->getMessage() . " in " , $e->getFile() . " on line " . $e->getLine() . "\n";
 
-    15 try {
-    16     (new ReflectionMethod(SplFileObject::class, "next"))->invoke(uninitialized());
-    17 } catch (Error $e) {
->   18     echo "next: ", $e->getMessage(), "\n";
-    19 }
-    20 
-    21 $obj = uninitialized();
+     5 try {
+     6     require("constant_expressions_exceptions.inc");
+     7 } catch (Error $e) {
+>    8     echo "\nException: " . $e->getMessage() . " in " , $e->getFile() . " on line " . $e->getLine() . "\n";
+     9 }
+    10 ?>
+    11 DONE
 
 ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:107
   state: old_only
@@ -474,6 +683,25 @@ ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:107
    108 }
    109 $stmt = null;
    110 
+
+ext/pdo_firebird/tests/autocommit.phpt:39
+  state: old_only
+  fixture: ext_pdo_firebird_tests_autocommit
+  fingerprint: message_only:76a960474bbd083b5f59edf3fe0334bb56f9c65d
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
+  echo $e->getMessage()."\n\n";
+
+    36 try {
+    37     $dbh->exec("INSERT INTO {$table} VALUES (35)");
+    38 } catch (PDOException $e) {
+>   39     echo $e->getMessage()."\n\n";
+    40 }
+    41 
+    42 echo "select, expect error\n";
 
 Zend/tests/attributes/005_objects.phpt:70
   state: old_only
@@ -513,24 +741,81 @@ ext/spl/tests/SplFileObject/fileobject_003.phpt:34
     36     try {
     37         $fo = $o->openFile();
 
-Zend/tests/type_coercion/gh22112.phpt:29
+ext/pgsql/tests/pg_fetch_object_ctor_paths.phpt:49
+  state: missing
+  fixture: ext_pgsql_tests_pg_fetch_object_ctor_paths
+  fingerprint: message_only:7f95606250626ced9e1d03c1f19c0ab7f2905459
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:caught exception_message newline
+  echo "caught: ", $e->getMessage(), "\n";
+
+    46 try {
+    47     pg_fetch_object(pg_query($db, $sql), null, 'ThrowingCtor');
+    48 } catch (RuntimeException $e) {
+>   49     echo "caught: ", $e->getMessage(), "\n";
+    50 }
+    51 
+    52 // 3) Constructor sees row properties already merged onto $this
+
+ext/dom/tests/modern/spec/Document_createAttributeNS.phpt:15
   state: old_only
-  fixture: Zend_tests_type_coercion_gh22112
-  fingerprint: message_only:8ef6d7177cfdf01d930695a195dc85230c285a08
+  fixture: ext_dom_tests_modern_spec_Document_createAttributeNS
+  fingerprint: message_only:85b5c22c326f219e22be45140faf2fd2d2cb0a9c
   family: message_only
   safety: descriptive_context
   expected: EXPECT
   reason: contains descriptive context that must not be dropped
-  parts: literal:20a50f3c44c97fd2562b76f39ef221e2104b8fe8 exception_message newline
-  echo "string: ", $e->getMessage(), "\n";
+  parts: literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 unknown(Expr_Variable) literal:badf2839be86aaec37c49cc58baa78c81f85edae unknown(Expr_Variable) literal:ea6e2fdbde7c52722e937e9db194872a02c5e039 exception_message newline
+  echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
 
-    26 try {
-    27     take_string($nan);
-    28 } catch (Exception $e) {
->   29     echo "string: ", $e->getMessage(), "\n";
-    30 }
-    31 
-    32 ?>
+    12         $dom->createAttributeNS($ns, $qname);
+    13     } catch (DOMException $e) {
+    14         $ns_readable = is_null($ns) ? 'null' : "\"$ns\"";
+>   15         echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
+    16     }
+    17 }
+    18 
+
+ext/pdo_mysql/tests/bug68371.phpt:61
+  state: old_only
+  fixture: ext_pdo_mysql_tests_bug68371
+  fingerprint: message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:err exception_message newline
+  echo "ERR {$e->getMessage()}\n";
+
+    58             if ($e->getCode() == 'IM001') {
+    59                 echo "ERR\n";
+    60             } else {
+>   61                 echo "ERR {$e->getMessage()}\n";
+    62             }
+    63         }
+    64     }
+
+ext/curl/tests/curl_setopt_error_nul_byte.phpt:27
+  state: missing
+  fixture: ext_curl_tests_curl_setopt_error_nul_byte
+  fingerprint: message_only:8efbcbb13b8d05c9ebde432449bca7e0857682c1
+  family: message_only
+  safety: unsupported_expression
+  expected: EXPECT
+  reason: contains an unsupported expression shape
+  parts: unknown(Expr_Variable) literal:colon_separator exception_message literal:71853c6197a6a7f222db0f1978c7cb232b87c5ee
+  echo $option . ": " . $exception->getMessage() . "\n\n";
+
+    24     try {
+    25         curl_setopt($ch, constant($option), ["Something: foo\0bar"]);
+    26     } catch (ValueError $exception) {
+>   27         echo $option . ": " . $exception->getMessage() . "\n\n";
+    28     }
+    29 }
+    30 
 
 Zend/tests/exceptions/bug50383.phpt:26
   state: old_only
@@ -589,101 +874,6 @@ ext/com_dotnet/tests/bug77177.phpt:13
     15 }
     16 
 
-ext/intl/tests/calendar_uninitialized_argument_position.phpt:15
-  state: old_only
-  fixture: ext_intl_tests_calendar_uninitialized_argument_position
-  fingerprint: message_only:a68142c702e6993b598af1351256a8a70f9fb7e9
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECT
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_Variable) literal:trash:empty exception_message newline
-  echo $method, ': ', $e->getMessage(), PHP_EOL;
-
-    12     try {
-    13         $calendar->$method($uninitialized);
-    14     } catch (Error $e) {
->   15         echo $method, ': ', $e->getMessage(), PHP_EOL;
-    16     }
-    17 }
-    18 
-
-Zend/tests/type_coercion/gh22112.phpt:23
-  state: old_only
-  fixture: Zend_tests_type_coercion_gh22112
-  fingerprint: message_only:a736447623bc062609549b57511689aca5964dac
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:f85593a9e1e8eb9ae3a5ad8f277af222092e9e68 exception_message newline
-  echo "bool: ", $e->getMessage(), "\n";
-
-    20 try {
-    21     take_bool($nan);
-    22 } catch (Exception $e) {
->   23     echo "bool: ", $e->getMessage(), "\n";
-    24 }
-    25 
-    26 try {
-
-ext/soap/tests/bugs/gh22167.phpt:101
-  state: old_only
-  fixture: ext_soap_tests_bugs_gh22167
-  fingerprint: message_only:a8673607ef55b12296cc1d901d9837f4395435dd
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECT
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_Variable) literal:trash:empty exception_message newline
-  echo "$name: {$e->getMessage()}\n";
-
-    98         new SoapClient($file, ["cache_wsdl" => WSDL_CACHE_NONE]);
-    99         echo "$name: parsed\n";
-   100     } catch (SoapFault $e) {
->  101         echo "$name: {$e->getMessage()}\n";
-   102     } finally {
-   103         unlink($file);
-   104     }
-
-ext/phar/tests/phar_metadata_write4.phpt:58
-  state: old_only
-  fixture: ext_phar_tests_phar_metadata_write4
-  fingerprint: message_only:a9729e75b4df027b5cf393d95ba07b084bd946d9
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:trash:caught exception_message literal:7df702c1e2a7f97f2512b0267e516708fda29ac8 exception_file literal:trash:empty exception_line newline
-  echo "Caught {$e->getMessage()} at {$e->getFile()}:{$e->getLine()}\n";
-
-    55 try {
-    56     var_dump($phar['a']->setMetadata(new ThrowsOnSerialize()));
-    57 } catch (RuntimeException $e) {
->   58     echo "Caught {$e->getMessage()} at {$e->getFile()}:{$e->getLine()}\n";
-    59     unset($e);
-    60 }
-    61 var_dump($phar['a']->getMetadata([]));
-
-ext/pdo_firebird/tests/gh17383.phpt:25
-  state: old_only
-  fixture: ext_pdo_firebird_tests_gh17383
-  fingerprint: message_only:abaf9784b9e9d3c33cf1078bc14b2ba54605db34
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:85c3c746fa0bfab039f0acacf30893572524ad87 exception_message newline
-  echo 'PDOException message: ' . $e->getMessage() . "\n";
-
-    22         $dbh = new PDO($dsn, $user, $pass);
-    23     } catch (PDOException $e) {
-    24 		echo 'PDOException code: ' . $e->getCode() . "\n";
->   25 		echo 'PDOException message: ' . $e->getMessage() . "\n";
-    26         echo "\n";
-    27     }
-    28 }
-
 ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:80
   state: old_only
   fixture: ext_mysqli_tests_mysqli_stmt_execute_bind
@@ -702,44 +892,6 @@ ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:80
     81 }
     82 $stmt = null;
     83 
-
-ext/spl/tests/gh16217.phpt:26
-  state: old_only
-  fixture: ext_spl_tests_gh16217
-  fingerprint: message_only:b92dae3943857a7c8b986f2c353d7d05abdd3365
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:0d97ccf9c8f0139083d8107f4a3b25a646966782 exception_message newline
-  echo "next (READ_AHEAD): ", $e->getMessage(), "\n";
-
-    23 try {
-    24     (new ReflectionMethod(SplFileObject::class, "next"))->invoke($obj);
-    25 } catch (Error $e) {
->   26     echo "next (READ_AHEAD): ", $e->getMessage(), "\n";
-    27 }
-    28 
-    29 echo "Done\n";
-
-ext/pdo_mysql/tests/bug68371.phpt:61
-  state: old_only
-  fixture: ext_pdo_mysql_tests_bug68371
-  fingerprint: message_only:bb2251784b278c78cf4133fb258659d0336b8597
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:74be45df2b04afffa7d65d1d4873136c0abdbb34 exception_message newline
-  echo "ERR {$e->getMessage()}\n";
-
-    58             if ($e->getCode() == 'IM001') {
-    59                 echo "ERR\n";
-    60             } else {
->   61                 echo "ERR {$e->getMessage()}\n";
-    62             }
-    63         }
-    64     }
 
 ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:53
   state: old_only
@@ -760,6 +912,25 @@ ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:53
     55 $stmt = null;
     56 
 
+ext/pdo/tests/pecl_bug_5217.phpt:23
+  state: old_only
+  fixture: ext_pdo_tests_pecl_bug_5217
+  fingerprint: message_only:bfd265dcec2331332ed2146834383588669a9bff
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:safely_caught exception_message newline
+  echo "Safely caught " . $e->getMessage() . "\n";
+
+    20     $db = unserialize($ser);
+    21     $db->exec('CREATE TABLE test5217 (id int NOT NULL PRIMARY KEY, val VARCHAR(10))');
+    22 } catch (Exception $e) {
+>   23     echo "Safely caught " . $e->getMessage() . "\n";
+    24 }
+    25 
+    26 echo "PHP Didn't crash!\n";
+
 ext/mysqli/tests/mysqli_execute_query.phpt:62
   state: old_only
   fixture: ext_mysqli_tests_mysqli_execute_query
@@ -778,25 +949,6 @@ ext/mysqli/tests/mysqli_execute_query.phpt:62
     63 }
     64 try {
     65     $link->execute_query('SELECT label, ? AS anon, ? AS num FROM test WHERE id=?', ['foo' => 42]);
-
-ext/spl/tests/gh16217.phpt:12
-  state: old_only
-  fixture: ext_spl_tests_gh16217
-  fingerprint: message_only:c4e813951622c9195e432588c8c894ab86d1809b
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: literal:655e160b092da5278409ae30c74866baad30966d exception_message newline
-  echo "fputcsv: ", $e->getMessage(), "\n";
-
-     9 try {
-    10     (new ReflectionMethod(SplFileObject::class, "fputcsv"))->invoke(uninitialized(), []);
-    11 } catch (Error $e) {
->   12     echo "fputcsv: ", $e->getMessage(), "\n";
-    13 }
-    14 
-    15 try {
 
 ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:71
   state: old_only
@@ -836,6 +988,25 @@ ext/com_dotnet/tests/variants.phpt:37
     39             }
     40         }
 
+ext/pdo_firebird/tests/gh17383.phpt:25
+  state: old_only
+  fixture: ext_pdo_firebird_tests_gh17383
+  fingerprint: message_only:ded429edd68d51d3df17dd6c275b9904b96ccaaf
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: literal:trash:pdoexception_message exception_message newline
+  echo 'PDOException message: ' . $e->getMessage() . "\n";
+
+    22         $dbh = new PDO($dsn, $user, $pass);
+    23     } catch (PDOException $e) {
+    24 		echo 'PDOException code: ' . $e->getCode() . "\n";
+>   25 		echo 'PDOException message: ' . $e->getMessage() . "\n";
+    26         echo "\n";
+    27     }
+    28 }
+
 ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:62
   state: old_only
   fixture: ext_mysqli_tests_mysqli_stmt_execute_bind
@@ -874,43 +1045,24 @@ Zend/tests/attributes/005_objects.phpt:82
     84 
     85 ?>
 
-ext/standard/tests/strings/strpos.phpt:87
+ext/spl/tests/gh16217.phpt:18
   state: old_only
-  fixture: ext_standard_tests_strings_strpos
-  fingerprint: message_only:e866c8cb53d8aa383f5ba3667154846bbb6149c9
+  fixture: ext_spl_tests_gh16217
+  fingerprint: message_only:f2a7072ad93e1d4681de1bc8e66da90bbffd850d
   family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: newline exception_message newline
-  echo "\n", $e->getMessage(), "\n";
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:8d725dede340685b7ca4112a4fc95d81b1119ef1 exception_message newline
+  echo "next: ", $e->getMessage(), "\n";
 
-    84   try {
-    85     var_dump( strpos($string, "Hello", $offset_values[$i]) );
-    86   } catch (TypeError $e) {
->   87     echo "\n", $e->getMessage(), "\n";
-    88   }
-    89 }
-    90 
-
-ext/pdo_firebird/tests/autocommit.phpt:39
-  state: old_only
-  fixture: ext_pdo_firebird_tests_autocommit
-  fingerprint: message_only:ec0799d54bb9e7ccb9f2aa469efd94f178f93a1f
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_message literal:trash:empty
-  echo $e->getMessage()."\n\n";
-
-    36 try {
-    37     $dbh->exec("INSERT INTO {$table} VALUES (35)");
-    38 } catch (PDOException $e) {
->   39     echo $e->getMessage()."\n\n";
-    40 }
-    41 
-    42 echo "select, expect error\n";
+    15 try {
+    16     (new ReflectionMethod(SplFileObject::class, "next"))->invoke(uninitialized());
+    17 } catch (Error $e) {
+>   18     echo "next: ", $e->getMessage(), "\n";
+    19 }
+    20 
+    21 $obj = uninitialized();
 
 ext/mysqli/tests/mysqli_execute_query_leak.phpt:19
   state: old_only
@@ -931,6 +1083,25 @@ ext/mysqli/tests/mysqli_execute_query_leak.phpt:19
     21 
     22 try {
 
+ext/spl/tests/gh16217.phpt:12
+  state: old_only
+  fixture: ext_spl_tests_gh16217
+  fingerprint: message_only:f59f6daa590005b1c04487988f184dcc4122e8c5
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECT
+  reason: contains descriptive context that must not be dropped
+  parts: literal:655e160b092da5278409ae30c74866baad30966d exception_message newline
+  echo "fputcsv: ", $e->getMessage(), "\n";
+
+     9 try {
+    10     (new ReflectionMethod(SplFileObject::class, "fputcsv"))->invoke(uninitialized(), []);
+    11 } catch (Error $e) {
+>   12     echo "fputcsv: ", $e->getMessage(), "\n";
+    13 }
+    14 
+    15 try {
+
 Zend/tests/exceptions/bug60569.phpt:9
   state: old_only
   fixture: Zend_tests_exceptions_bug60569
@@ -949,22 +1120,3 @@ Zend/tests/exceptions/bug60569.phpt:9
     10 }
     11 ?>
     12 
-
-ext/standard/tests/general_functions/bug44295-win.phpt:21
-  state: old_only
-  fixture: ext_standard_tests_general_functions_bug44295_win
-  fingerprint: message_only:fda58ac6a3e491515dd9c8376609c7a9447d4dd0
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: literal:147a1c0d5afb8a11dde80f409b1ff4e6e3b70598 exception_message newline
-  print "in catch: ".$e->getMessage()."\n";
-
-    18         print get_class($iter) . "\n";
-    19         print "after\n";
-    20 } catch (Exception $e) {
->   21         print "in catch: ".$e->getMessage()."\n";
-    22 }
-    23 ?>
-    24 ==DONE==

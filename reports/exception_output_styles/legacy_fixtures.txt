@@ -10,8 +10,6 @@ These are not deleted automatically.
 - Zend_tests_add_006
 - Zend_tests_arg_unpack_non_integer_keys
 - Zend_tests_arg_unpack_traversable_throwing_exception
-- Zend_tests_assert_disable_assert_function
-- Zend_tests_assert_expect_015
 - Zend_tests_attributes_deprecated_functions_deprecated_handler_001
 - Zend_tests_bug33996
 - Zend_tests_bug80972
@@ -31,7 +29,6 @@ These are not deleted automatically.
 - Zend_tests_gh19306
 - Zend_tests_in_de_crement_overloaded_access
 - Zend_tests_numeric_strings_invalid_numeric_string_must_generate_warning_assign
-- Zend_tests_offsets_appending_containers_in_fetch
 - Zend_tests_readonly_props_visibility_change
 - Zend_tests_stack_limit_stack_limit_011
 - Zend_tests_throw_001
@@ -59,7 +56,6 @@ These are not deleted automatically.
 - ext_mysqli_tests_mysqli_connect_errno
 - ext_mysqli_tests_mysqli_set_charset
 - ext_opcache_tests_jit_fetch_obj_001
-- ext_pcntl_tests_bug81577
 - ext_pdo_sqlite_tests_subclasses_pdosqlite_load_extension_failure
 - ext_phar_tests_bug65414
 - ext_phar_tests_bug79503
@@ -69,7 +65,6 @@ These are not deleted automatically.
 - ext_reflection_tests_ReflectionFiber_errors
 - ext_reflection_tests_ReflectionMethod_invoke_basic
 - ext_reflection_tests_bug74454
-- ext_session_tests_session_start_error
 - ext_simplexml_tests_gh12929
 - ext_spl_tests_ArrayObject_arrayObject_exchangeArray_basic3
 - ext_spl_tests_SplFixedArray__construct_param_array
