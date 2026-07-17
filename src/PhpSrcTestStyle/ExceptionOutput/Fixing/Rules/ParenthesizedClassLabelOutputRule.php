@@ -14,6 +14,8 @@ use InternalsCS\RewriteResult;
 use InternalsCS\TextEdit;
 
 use function count;
+use function mb_trim;
+use function str_replace;
 
 final readonly class ParenthesizedClassLabelOutputRule implements RewriteRule
 {
@@ -49,6 +51,10 @@ final readonly class ParenthesizedClassLabelOutputRule implements RewriteRule
     /** @param list<OutputPart> $parts */
     private function isParenthesizedClassMessage(array $parts): bool
     {
+        if ($this->isCaughtParenthesizedClassMessage($parts)) {
+            return true;
+        }
+
         if (count($parts) < 4) {
             return false;
         }
@@ -78,8 +84,55 @@ final readonly class ParenthesizedClassLabelOutputRule implements RewriteRule
         return true;
     }
 
+    /** @param list<OutputPart> $parts */
+    private function isCaughtParenthesizedClassMessage(array $parts): bool
+    {
+        if (count($parts) < 5) {
+            return false;
+        }
+
+        if (!$this->isLiteral($parts[0], 'Caught ')) {
+            return false;
+        }
+
+        if (OutputPartKind::ExceptionClass !== $parts[1]->kind) {
+            return false;
+        }
+
+        if (!$this->isLiteral($parts[2], '(')) {
+            return false;
+        }
+
+        if (OutputPartKind::ExceptionMessage !== $parts[3]->kind) {
+            return false;
+        }
+
+        for ($i = 4; $i < count($parts); $i++) {
+            if ($this->isClosingParenOrNewline($parts[$i])) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     private function isLiteral(OutputPart $part, string $value): bool
     {
         return OutputPartKind::Literal === $part->kind && $part->value === $value;
+    }
+
+    private function isClosingParenOrNewline(OutputPart $part): bool
+    {
+        if (OutputPartKind::Newline === $part->kind) {
+            return true;
+        }
+
+        if (OutputPartKind::Literal !== $part->kind) {
+            return false;
+        }
+
+        return ')' === mb_trim(str_replace(["\r", "\n", "\t"], ' ', $part->value));
     }
 }

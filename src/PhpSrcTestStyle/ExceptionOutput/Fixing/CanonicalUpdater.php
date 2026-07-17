@@ -86,29 +86,39 @@ final readonly class CanonicalUpdater
      */
     private function updatedExpectLines(array $expectedLines, array $actualLines): ?array
     {
-        if (count($expectedLines) !== count($actualLines)) {
-            return null;
-        }
-
         $updated = [];
+        $expectedIndex = 0;
+        $actualIndex = 0;
 
-        foreach ($expectedLines as $index => $expectedLine) {
-            $actualLine = $actualLines[$index];
+        while ($expectedIndex < count($expectedLines) && $actualIndex < count($actualLines)) {
+            $expectedLine = $expectedLines[$expectedIndex];
+            $actualLine = $actualLines[$actualIndex];
 
             if ($expectedLine === $actualLine) {
                 $updated[] = $actualLine;
+                $expectedIndex++;
+                $actualIndex++;
                 continue;
             }
 
             if ($this->lineCanCanonicalizeToActual($expectedLine, $actualLine, exact: true)) {
                 $updated[] = $actualLine;
+                $expectedIndex++;
+                $actualIndex++;
+                continue;
+            }
+
+            if ('' === $expectedLine) {
+                $expectedIndex++;
                 continue;
             }
 
             return null;
         }
 
-        return $updated;
+        return $this->remainingLinesAreBlank($expectedLines, $expectedIndex) && $actualIndex === count($actualLines)
+            ? $updated
+            : null;
     }
 
     /**
@@ -118,17 +128,18 @@ final readonly class CanonicalUpdater
      */
     private function updatedExpectfLines(array $expectedLines, array $actualLines): ?array
     {
-        if (count($expectedLines) !== count($actualLines)) {
-            return null;
-        }
-
         $updated = [];
+        $expectedIndex = 0;
+        $actualIndex = 0;
 
-        foreach ($expectedLines as $index => $expectedLine) {
-            $actualLine = $actualLines[$index];
+        while ($expectedIndex < count($expectedLines) && $actualIndex < count($actualLines)) {
+            $expectedLine = $expectedLines[$expectedIndex];
+            $actualLine = $actualLines[$actualIndex];
 
             if ($this->expectfLineMatches($expectedLine, $actualLine)) {
                 $updated[] = $expectedLine;
+                $expectedIndex++;
+                $actualIndex++;
                 continue;
             }
 
@@ -136,13 +147,34 @@ final readonly class CanonicalUpdater
 
             if (null !== $updatedLine) {
                 $updated[] = $updatedLine;
+                $expectedIndex++;
+                $actualIndex++;
+                continue;
+            }
+
+            if ('' === $expectedLine) {
+                $expectedIndex++;
                 continue;
             }
 
             return null;
         }
 
-        return $updated;
+        return $this->remainingLinesAreBlank($expectedLines, $expectedIndex) && $actualIndex === count($actualLines)
+            ? $updated
+            : null;
+    }
+
+    /** @param list<string> $lines */
+    private function remainingLinesAreBlank(array $lines, int $offset): bool
+    {
+        for ($i = $offset; $i < count($lines); $i++) {
+            if ('' !== $lines[$i]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -213,7 +245,7 @@ final readonly class CanonicalUpdater
         return null;
     }
 
-    /** @return list<array{prefix: string, class: string, message: string, line: string|null}> */
+    /** @return list<array{prefix: string, class: string, message: string, file: string|null, line: string|null}> */
     private function canonicalLines(string $line): array
     {
         if (false === preg_match_all('/([A-Za-z_\\\\][A-Za-z0-9_\\\\]*): /', $line, $matches, PREG_OFFSET_CAPTURE)) {
@@ -231,9 +263,14 @@ final readonly class CanonicalUpdater
 
             $separatorOffset = $classOffset + mb_strlen($class);
             $message = mb_substr($line, $separatorOffset + 2);
+            $sourceFile = null;
             $sourceLine = null;
 
-            if (1 === preg_match('/^(.*) on line (\d+)$/', $message, $lineMatches)) {
+            if (1 === preg_match('/^(.*) in (.+) on line (\d+)$/', $message, $lineMatches)) {
+                $message = $lineMatches[1];
+                $sourceFile = $lineMatches[2];
+                $sourceLine = $lineMatches[3];
+            } elseif (1 === preg_match('/^(.*) on line (\d+)$/', $message, $lineMatches)) {
                 $message = $lineMatches[1];
                 $sourceLine = $lineMatches[2];
             }
@@ -242,6 +279,7 @@ final readonly class CanonicalUpdater
                 'prefix' => mb_substr($line, 0, $classOffset),
                 'class' => $class,
                 'message' => $message,
+                'file' => $sourceFile,
                 'line' => $sourceLine,
             ];
         }
@@ -323,7 +361,7 @@ final readonly class CanonicalUpdater
             'TEST:',
             'TEST: ',
         ];
-        $suffixes = [' failed', '()"', '()', '".', '"', '.'];
+        $suffixes = ['<br />', '<br>', ' failed', '()"', '()', '".', '"', '.'];
 
         foreach ($prefixes as $prefix) {
             if (str_starts_with($line, $prefix)) {
@@ -359,6 +397,16 @@ final readonly class CanonicalUpdater
             $candidates[] = $matches[2];
         }
 
+        if (1 === preg_match('/^([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\s+:\s+(.*)$/', $line, $matches) && $this->isLikelyExceptionClass($matches[1])) {
+            $candidates[] = $matches[1] . ': ' . $matches[2];
+            $candidates[] = $matches[2];
+        }
+
+        if (1 === preg_match('/^([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\((.*)\)$/', $line, $matches) && $this->isLikelyExceptionClass($matches[1])) {
+            $candidates[] = $matches[1] . ': ' . $matches[2];
+            $candidates[] = $matches[2];
+        }
+
         if (1 === preg_match('/^string\((?:\d+|%d)\) "(.*)"$/', $line, $matches)) {
             $candidates[] = stripcslashes($matches[1]);
         }
@@ -366,13 +414,13 @@ final readonly class CanonicalUpdater
         return array_values(array_unique($candidates));
     }
 
-    /** @param array{prefix: string, class: string, message: string, line: string|null} $actual */
+    /** @param array{prefix: string, class: string, message: string, file: string|null, line: string|null} $actual */
     private function candidateMatchesActual(string $candidate, array $actual, bool $exact): bool
     {
         return array_any($this->expectedForms($actual), fn($form) => $exact ? $candidate === $form : $this->expectfLineMatches($candidate, $form));
     }
 
-    /** @param array{prefix: string, class: string, message: string, line: string|null} $actual */
+    /** @param array{prefix: string, class: string, message: string, file: string|null, line: string|null} $actual */
     private function canonicalExpectfLine(string $candidate, array $actual): string
     {
         $prefix = $actual['prefix'];
@@ -380,6 +428,14 @@ final readonly class CanonicalUpdater
 
         if (1 === preg_match('/^((?:[+-]?\d+|%d|%i)): (.+)$/', $candidate, $matches)) {
             return $prefix . $class . ': ' . $matches[2] . ' on line ' . $matches[1];
+        }
+
+        if (1 === preg_match('/^(.*)\(((?:[+-]?\d+|%d|%i))\)$/', $candidate, $matches)) {
+            return $prefix . $class . ': ' . $matches[1] . ' on line ' . $matches[2];
+        }
+
+        if (1 === preg_match('/^(.*) at (.+):((?:[+-]?\d+|%d|%i))$/', $candidate, $matches)) {
+            return $prefix . $class . ': ' . $matches[1] . ' in ' . $matches[2] . ' on line ' . $matches[3];
         }
 
         if (str_starts_with($candidate, $class . ': ')) {
@@ -390,7 +446,7 @@ final readonly class CanonicalUpdater
     }
 
     /**
-     * @param array{prefix: string, class: string, message: string, line: string|null} $actual
+     * @param array{prefix: string, class: string, message: string, file: string|null, line: string|null} $actual
      * @return list<string>
      */
     private function expectedForms(array $actual): array
@@ -408,6 +464,15 @@ final readonly class CanonicalUpdater
             $forms[] = $classMessage . ' on line ' . $actual['line'];
             $forms[] = $actual['line'] . ': ' . $actual['message'];
             $forms[] = $actual['line'] . ': ' . $classMessage;
+            $forms[] = $actual['message'] . '(' . $actual['line'] . ')';
+            $forms[] = $classMessage . '(' . $actual['line'] . ')';
+        }
+
+        if (null !== $actual['file'] && null !== $actual['line']) {
+            $forms[] = $actual['message'] . ' in ' . $actual['file'] . ' on line ' . $actual['line'];
+            $forms[] = $classMessage . ' in ' . $actual['file'] . ' on line ' . $actual['line'];
+            $forms[] = $actual['message'] . ' at ' . $actual['file'] . ':' . $actual['line'];
+            $forms[] = $classMessage . ' at ' . $actual['file'] . ':' . $actual['line'];
         }
 
         return array_values(array_unique($forms));
@@ -421,7 +486,7 @@ final readonly class CanonicalUpdater
 
     private function isLikelyExceptionClass(string $class): bool
     {
-        return 1 === preg_match('/(?:Exception|Error|Throwable)$/', $class);
+        return 1 === preg_match('/(?:Exception|Error|Throwable|SoapFault)$/', $class);
     }
 
     private function expectfLineMatches(string $expected, string $actual): bool

@@ -153,6 +153,28 @@ final class CanonicalUpdaterTest extends TestCase
         self::assertSame("DivisionByZeroError: Modulo by zero\n", $update->output);
     }
 
+    public function testUpdatesClassLabelWithSpacedColon(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Exception : Signal\n",
+            "Exception: Signal\n",
+        );
+
+        self::assertSame("Exception: Signal\n", $update->output);
+    }
+
+    public function testUpdatesCaughtParenthesizedClassMessage(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Caught Exception(Hello)\n",
+            "Exception: Hello\n",
+        );
+
+        self::assertSame("Exception: Hello\n", $update->output);
+    }
+
     public function testUpdatesPreservedDescriptivePrefix(): void
     {
         $update = new CanonicalUpdater()->update(
@@ -201,5 +223,74 @@ final class CanonicalUpdaterTest extends TestCase
             "printf test 30:ValueError: Argument number specifier must be greater than zero and less than 2147483647\n",
             $update->output,
         );
+    }
+
+    public function testUpdatesLeadingBlankMessageOutput(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "\nmessage\n",
+            "Exception: message\n",
+        );
+
+        self::assertSame("Exception: message\n", $update->output);
+    }
+
+    public function testUpdatesDroppedInternalBlankMessageOutput(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "First:\nmessage\n\nSecond:\nmessage\n",
+            "First:\nException: message\nSecond:\nException: message\n",
+        );
+
+        self::assertSame("First:\nException: message\nSecond:\nException: message\n", $update->output);
+    }
+
+    public function testUpdatesHtmlBreakSuffix(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "message<br>\n",
+            "Exception: message\n",
+        );
+
+        self::assertSame("Exception: message\n", $update->output);
+    }
+
+    public function testUpdatesParenthesizedLineSuffix(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "message(6)\n",
+            "TypeError: message on line 6\n",
+        );
+
+        self::assertSame("TypeError: message on line 6\n", $update->output);
+    }
+
+    public function testUpdatesExpectfAtFileLineLocation(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "Caught In sleep at %sphar_metadata_write4.php:12\n",
+            "RuntimeException: In sleep in /tmp/phar_metadata_write4.php on line 12\n",
+        );
+
+        self::assertSame(
+            "RuntimeException: In sleep in %sphar_metadata_write4.php on line 12\n",
+            $update->output,
+        );
+    }
+
+    public function testUpdatesSoapFaultCatchTypeLabel(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "fixture message\n",
+            "SoapFault: fixture message\n",
+        );
+
+        self::assertSame("SoapFault: fixture message\n", $update->output);
     }
 }

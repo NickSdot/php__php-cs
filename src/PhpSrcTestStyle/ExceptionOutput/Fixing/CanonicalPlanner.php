@@ -6,11 +6,13 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing;
 
 use InternalsCS\PhpAst;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\AdjacentClassThenMessageOutputRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\AdjacentMessageThenNewlineOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\CatchTypeLabelOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ClassMessageOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ContextLabelOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\DescriptivePrefixOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\LocationOutputRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\LocationWrapperOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MessageOnlyOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ParenthesizedClassLabelOutputRule;
 use InternalsCS\RewriteResult;
@@ -75,10 +77,12 @@ final readonly class CanonicalPlanner
     {
         return [
             new AdjacentClassThenMessageOutputRule(),
+            new AdjacentMessageThenNewlineOutputRule(),
             new ParenthesizedClassLabelOutputRule(),
             new ContextLabelOutputRule(),
             new CatchTypeLabelOutputRule(),
             new DescriptivePrefixOutputRule(),
+            new LocationWrapperOutputRule(),
             new LocationOutputRule(),
             new ClassMessageOutputRule(),
             new MessageOnlyOutputRule(),

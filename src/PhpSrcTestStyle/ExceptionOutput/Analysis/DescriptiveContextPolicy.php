@@ -29,12 +29,12 @@ final readonly class DescriptiveContextPolicy
 
     private function isStructuralLiteral(string $literal): bool
     {
-        if (in_array($literal, [': ', ' in ', ' on line ', '.', ' failed', '()', '[', '] '], true)) {
+        if (in_array($literal, [': ', ' : ', ' in ', ' on line ', '.', ' failed', '()', '[', '] ', '<br>', '<br />'], true)) {
             return true;
         }
 
         $normalized = mb_trim(str_replace(["\r", "\n", "\t"], ' ', $literal));
 
-        return in_array($normalized, ['.', 'failed', '()', '()"', '"', '[', ']'], true);
+        return in_array($normalized, ['.', 'failed', '()', '()"', '"', '[', ']', '<br>', '<br />'], true);
     }
 }
