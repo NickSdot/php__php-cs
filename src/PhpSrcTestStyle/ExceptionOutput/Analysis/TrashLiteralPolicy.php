@@ -37,7 +37,6 @@ final readonly class TrashLiteralPolicy
         'runtimeexception thrown',
         'safely caught',
         'test',
-        'unexpected exception',
         'valueerror',
     ];
 

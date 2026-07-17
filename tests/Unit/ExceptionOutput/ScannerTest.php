@@ -141,6 +141,37 @@ final class ScannerTest extends TestCase
         self::assertNotSame($candidates[0]->key, $candidates[3]->key);
     }
 
+    public function testMarkerPrefixesAreCanonicalizable(): void
+    {
+        $root = $this->makeTempDir();
+        $bracketed = $this->writePhpt($root, 'bracketed.phpt', 'echo "[001] " . $e->getMessage() . "\n";');
+        $error = $this->writePhpt($root, 'error.phpt', "var_dump('ERROR 3', \$e->getMessage());");
+        $variable = $this->writePhpt($root, 'variable.phpt', 'echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";');
+
+        $candidates = new Scanner()->scan([$bracketed, $error, $variable], $root);
+
+        self::assertCount(3, $candidates);
+
+        foreach ($candidates as $candidate) {
+            self::assertSame(ClassificationSafety::Canonicalizable, $candidate->classification->safety);
+        }
+    }
+
+    public function testMarkerPrefixNumbersDoNotSplitFlavours(): void
+    {
+        $root = $this->makeTempDir();
+        $firstBracketed = $this->writePhpt($root, 'bracketed-first.phpt', 'echo "[001] " . $e->getMessage() . "\n";');
+        $secondBracketed = $this->writePhpt($root, 'bracketed-second.phpt', 'echo "[012] " . $e->getMessage() . "\n";');
+        $firstError = $this->writePhpt($root, 'error-first.phpt', "var_dump('ERROR 1', \$e->getMessage());");
+        $secondError = $this->writePhpt($root, 'error-second.phpt', "var_dump('ERROR 3', \$e->getMessage());");
+
+        $candidates = new Scanner()->scan([$firstBracketed, $secondBracketed, $firstError, $secondError], $root);
+
+        self::assertCount(4, $candidates);
+        self::assertSame($candidates[0]->key, $candidates[1]->key);
+        self::assertSame($candidates[2]->key, $candidates[3]->key);
+    }
+
     public function testIgnoresMessageCallsOutsideCatchBlocks(): void
     {
         $root = $this->makeTempDir();

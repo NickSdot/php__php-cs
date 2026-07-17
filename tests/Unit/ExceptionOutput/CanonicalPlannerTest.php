@@ -205,6 +205,23 @@ final class CanonicalPlannerTest extends TestCase
         self::assertSame("echo 'class-based reflection: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
+    public function testPlansUnexpectedExceptionLabelRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new ReflectionException('x');
+            } catch (ReflectionException $e) {
+                echo "Unexpected exception: " . $e->getMessage() . "\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'unexpected: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
     public function testPlansExceptionThrownForContextLabelRewrite(): void
     {
         $code = <<<'PHP'

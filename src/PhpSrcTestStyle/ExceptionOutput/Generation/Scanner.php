@@ -96,7 +96,10 @@ final readonly class Scanner implements FixtureScanner
         for ($line = $first; $line <= $last; $line++) {
             $marker = $line >= $startLine && $line <= $endLine ? '>' : ' ';
             $number = $sectionStartLine + $line - 1;
-            $context[] = sprintf('%s%5d %s', $marker, $number, $lines[$line - 1] ?? '');
+            $sourceLine = $lines[$line - 1] ?? '';
+            $context[] = '' === $sourceLine
+                ? sprintf('%s%5d', $marker, $number)
+                : sprintf('%s%5d %s', $marker, $number, $sourceLine);
         }
 
         return implode("\n", $context);

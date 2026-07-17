@@ -71,6 +71,10 @@ final readonly class ContextLabelOutputRule implements RewriteRule
             return $this->suffix($label, 'exception thrown for ');
         }
 
+        if ('unexpected exception' === $label) {
+            return 'unexpected';
+        }
+
         return null;
     }
 

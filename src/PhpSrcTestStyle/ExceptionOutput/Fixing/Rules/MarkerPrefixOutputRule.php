@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\MarkerPrefixPolicy;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
@@ -13,7 +14,6 @@ use InternalsCS\RewriteResult;
 use InternalsCS\TextEdit;
 
 use function count;
-use function preg_match;
 use function str_ends_with;
 use function str_replace;
 
@@ -21,6 +21,7 @@ final readonly class MarkerPrefixOutputRule implements RewriteRule
 {
     public function __construct(
         private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private MarkerPrefixPolicy $markers = new MarkerPrefixPolicy(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult
@@ -68,7 +69,7 @@ final readonly class MarkerPrefixOutputRule implements RewriteRule
             return false;
         }
 
-        if (1 !== preg_match('/^\[\d+\]\s+$/', $parts[0]->value)) {
+        if (!$this->markers->isBracketedNumeric($parts[0]->value)) {
             return false;
         }
 
@@ -82,7 +83,7 @@ final readonly class MarkerPrefixOutputRule implements RewriteRule
             return false;
         }
 
-        return 1 === preg_match('/^ERROR \d+$/', $parts[0]->value);
+        return $this->markers->isErrorNumber($parts[0]->value);
     }
 
     /** @param list<OutputPart> $parts */

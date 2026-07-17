@@ -15,6 +15,7 @@ final readonly class OutputParts
     public function __construct(
         public array $parts,
         public string $shape,
+        private MarkerPrefixPolicy $markers = new MarkerPrefixPolicy(),
     ) {}
 
     public function has(OutputPartKind $kind): bool
@@ -85,6 +86,18 @@ final readonly class OutputParts
 
         if (' on line ' === $part->value) {
             return 'literal:on_line_separator';
+        }
+
+        if ($this->markers->isBracketedNumeric($part->value)) {
+            return 'literal:marker:bracketed_numeric';
+        }
+
+        if ($this->markers->isErrorNumber($part->value)) {
+            return 'literal:marker:error_number';
+        }
+
+        if ($this->markers->isVariableMarkerSeparator($part->value)) {
+            return 'literal:marker:variable_separator';
         }
 
         $trashLabel = $trash->label($part->value);

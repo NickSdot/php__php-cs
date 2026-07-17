@@ -368,6 +368,10 @@ final readonly class CanonicalUpdater
             $candidates[] = $matches[1] . ': ' . $matches[2];
         }
 
+        if (1 === preg_match('/^Unexpected exception: (.*)$/i', $line, $matches)) {
+            $candidates[] = 'unexpected: ' . $matches[1];
+        }
+
         return $candidates;
     }
 
@@ -471,28 +475,38 @@ final readonly class CanonicalUpdater
     {
         $prefix = $actual['prefix'];
         $class = $actual['class'];
+        $candidateBody = $this->candidateBody($candidate, $prefix);
 
-        if (1 === preg_match('/^((?:[+-]?\d+|%d|%i)): (.+)$/', $candidate, $matches)) {
+        if (1 === preg_match('/^((?:[+-]?\d+|%d|%i)): (.+)$/', $candidateBody, $matches)) {
             return $prefix . $class . ': ' . $matches[2] . ' on line ' . $matches[1];
         }
 
-        if (1 === preg_match('/^(.*)\(((?:[+-]?\d+|%d|%i))\)$/', $candidate, $matches)) {
+        if (1 === preg_match('/^(.*)\(((?:[+-]?\d+|%d|%i))\)$/', $candidateBody, $matches)) {
             return $prefix . $class . ': ' . $matches[1] . ' on line ' . $matches[2];
         }
 
-        if (1 === preg_match('/^(.*) at (.+):((?:[+-]?\d+|%d|%i))$/', $candidate, $matches)) {
+        if (1 === preg_match('/^(.*) at (.+):((?:[+-]?\d+|%d|%i))$/', $candidateBody, $matches)) {
             return $prefix . $class . ': ' . $matches[1] . ' in ' . $matches[2] . ' on line ' . $matches[3];
         }
 
-        if ('' !== $prefix && str_starts_with($candidate, $prefix)) {
-            return $prefix . $class . ': ' . mb_substr($candidate, mb_strlen($prefix));
+        if (1 === preg_match('/^(.*) in (.+) on line ((?:[+-]?\d+|%d|%i))$/', $candidateBody, $matches)) {
+            return $prefix . $class . ': ' . $matches[1] . ' in ' . $matches[2] . ' on line ' . $matches[3];
         }
 
-        if (str_starts_with($candidate, $class . ': ')) {
-            return $prefix . $candidate;
+        if (str_starts_with($candidateBody, $class . ': ')) {
+            return $prefix . $candidateBody;
         }
 
-        return $prefix . $class . ': ' . $candidate;
+        return $prefix . $class . ': ' . $candidateBody;
+    }
+
+    private function candidateBody(string $candidate, string $prefix): string
+    {
+        if ('' === $prefix || !str_starts_with($candidate, $prefix)) {
+            return $candidate;
+        }
+
+        return mb_substr($candidate, mb_strlen($prefix));
     }
 
     /**
@@ -512,17 +526,27 @@ final readonly class CanonicalUpdater
         if (null !== $actual['line']) {
             $forms[] = $actual['message'] . ' on line ' . $actual['line'];
             $forms[] = $classMessage . ' on line ' . $actual['line'];
+            $forms[] = $actual['prefix'] . $actual['message'] . ' on line ' . $actual['line'];
+            $forms[] = $actual['prefix'] . $classMessage . ' on line ' . $actual['line'];
             $forms[] = $actual['line'] . ': ' . $actual['message'];
             $forms[] = $actual['line'] . ': ' . $classMessage;
+            $forms[] = $actual['prefix'] . $actual['line'] . ': ' . $actual['message'];
+            $forms[] = $actual['prefix'] . $actual['line'] . ': ' . $classMessage;
             $forms[] = $actual['message'] . '(' . $actual['line'] . ')';
             $forms[] = $classMessage . '(' . $actual['line'] . ')';
+            $forms[] = $actual['prefix'] . $actual['message'] . '(' . $actual['line'] . ')';
+            $forms[] = $actual['prefix'] . $classMessage . '(' . $actual['line'] . ')';
         }
 
         if (null !== $actual['file'] && null !== $actual['line']) {
             $forms[] = $actual['message'] . ' in ' . $actual['file'] . ' on line ' . $actual['line'];
             $forms[] = $classMessage . ' in ' . $actual['file'] . ' on line ' . $actual['line'];
+            $forms[] = $actual['prefix'] . $actual['message'] . ' in ' . $actual['file'] . ' on line ' . $actual['line'];
+            $forms[] = $actual['prefix'] . $classMessage . ' in ' . $actual['file'] . ' on line ' . $actual['line'];
             $forms[] = $actual['message'] . ' at ' . $actual['file'] . ':' . $actual['line'];
             $forms[] = $classMessage . ' at ' . $actual['file'] . ':' . $actual['line'];
+            $forms[] = $actual['prefix'] . $actual['message'] . ' at ' . $actual['file'] . ':' . $actual['line'];
+            $forms[] = $actual['prefix'] . $classMessage . ' at ' . $actual['file'] . ':' . $actual['line'];
         }
 
         return array_values(array_unique($forms));

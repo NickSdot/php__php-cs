@@ -12,11 +12,16 @@ final readonly class DescriptiveContextPolicy
 {
     public function __construct(
         private TrashLiteralPolicy $trash = new TrashLiteralPolicy(),
+        private MarkerPrefixPolicy $markers = new MarkerPrefixPolicy(),
     ) {}
 
     public function isDescriptiveLiteral(string $literal): bool
     {
         if ($this->trash->isTrash($literal)) {
+            return false;
+        }
+
+        if ($this->markers->isMarkerLiteral($literal)) {
             return false;
         }
 

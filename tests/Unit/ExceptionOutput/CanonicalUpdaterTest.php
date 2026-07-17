@@ -106,6 +106,17 @@ final class CanonicalUpdaterTest extends TestCase
         );
     }
 
+    public function testUpdatesUnexpectedExceptionContextLabel(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Unexpected exception: fixture message\n",
+            "unexpected: ReflectionException: fixture message\n",
+        );
+
+        self::assertSame("unexpected: ReflectionException: fixture message\n", $update->output);
+    }
+
     public function testUpdatesExceptionThrownForContextLabel(): void
     {
         $update = new CanonicalUpdater()->update(
@@ -245,6 +256,53 @@ final class CanonicalUpdaterTest extends TestCase
         );
 
         self::assertSame("ERROR 1: RuntimeException: fixture message\n", $update->output);
+    }
+
+    public function testUpdatesRepeatedVarDumpErrorMarkerPrefixes(): void
+    {
+        $expected = <<<'OUTPUT'
+            string(2) "A1"
+            string(4) "test"
+            int(50)
+
+            string(7) "ERROR 1"
+            string(%d) "Too few arguments to function A1::__construct(), 0 passed in %s005_objects.php on line 26 and at least 1 expected"
+
+            string(7) "ERROR 2"
+            string(%d) "A1::__construct(): Argument #1 ($name) must be of type string, array given, called in %s005_objects.php on line 36"
+
+            string(7) "ERROR 3"
+            string(30) "Attribute class "A2" not found"
+            OUTPUT;
+        $actual = <<<'OUTPUT'
+            string(2) "A1"
+            string(4) "test"
+            int(50)
+
+            ERROR 1: ArgumentCountError: Too few arguments to function A1::__construct(), 0 passed in /tmp/005_objects.php on line 26 and at least 1 expected
+
+            ERROR 2: TypeError: A1::__construct(): Argument #1 ($name) must be of type string, array given, called in /tmp/005_objects.php on line 36
+
+            ERROR 3: Error: Attribute class "A2" not found
+            OUTPUT;
+
+        $update = new CanonicalUpdater()->update('EXPECTF', $expected . "\n", $actual . "\n");
+
+        self::assertSame(
+            <<<'OUTPUT'
+                string(2) "A1"
+                string(4) "test"
+                int(50)
+
+                ERROR 1: ArgumentCountError: Too few arguments to function A1::__construct(), 0 passed in %s005_objects.php on line 26 and at least 1 expected
+
+                ERROR 2: TypeError: A1::__construct(): Argument #1 ($name) must be of type string, array given, called in %s005_objects.php on line 36
+
+                ERROR 3: Error: Attribute class "A2" not found
+
+                OUTPUT,
+            $update->output,
+        );
     }
 
     public function testUpdatesLeadingBlankMessageOutput(): void
