@@ -17,7 +17,7 @@ function fixtureSoapFault(): SoapFault {
 try {
     throw fixtureSoapFault();
 } catch (SoapFault $e) {
-    echo "SoapFault: " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 ?>
 --EXPECT--

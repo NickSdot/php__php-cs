@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -17,7 +17,7 @@
+ try {
+     throw fixtureSoapFault();
+ } catch (SoapFault $e) {
+-    echo "SoapFault: " . $e->getMessage() . "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
