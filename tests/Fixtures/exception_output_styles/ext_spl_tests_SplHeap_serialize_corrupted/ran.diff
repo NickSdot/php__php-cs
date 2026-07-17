@@ -5,7 +5,7 @@
      echo "FAIL: Serialization should have thrown\n";
  } catch (Exception $e) {
 -    echo "Serialization failed: " . $e->getMessage() . "\n";
-+    echo "Serialization failed: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
++    echo 'Serialization failed: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
  }
  
  class ThrowingPQ extends SplPriorityQueue {
@@ -14,7 +14,7 @@
      echo "FAIL: PQ Serialization should have thrown\n";
  } catch (Exception $e) {
 -    echo "PQ Serialization failed: " . $e->getMessage() . "\n";
-+    echo "PQ Serialization failed: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
++    echo 'PQ Serialization failed: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
  }
  
  ?>

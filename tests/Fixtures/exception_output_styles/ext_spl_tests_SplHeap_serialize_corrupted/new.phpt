@@ -28,7 +28,7 @@ try {
     serialize($heap);
     echo "FAIL: Serialization should have thrown\n";
 } catch (Exception $e) {
-    echo "Serialization failed: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'Serialization failed: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 class ThrowingPQ extends SplPriorityQueue {
@@ -56,7 +56,7 @@ try {
     serialize($pq);
     echo "FAIL: PQ Serialization should have thrown\n";
 } catch (Exception $e) {
-    echo "PQ Serialization failed: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'PQ Serialization failed: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 ?>
