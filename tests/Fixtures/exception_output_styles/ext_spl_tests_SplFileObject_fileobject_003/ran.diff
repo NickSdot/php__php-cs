@@ -1,0 +1,18 @@
+--- old.phpt
++++ new.phpt
+@@ -31,13 +31,13 @@
+         $l = substr($f->getPath(), -1);
+         var_dump($l != '/' && $l != '\\' && $l == $lp);
+     } catch (LogicException $e) {
+-        echo "LogicException: ".$e->getMessage()."\n";
++        echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+     }
+     try {
+         $fo = $o->openFile();
+         var_dump($fo->getPathName(), $fo->getFileName(), $fo->getPath());
+     } catch (LogicException $e) {
+-        echo "LogicException: ".$e->getMessage()."\n";
++        echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+     }
+ }
+ 
