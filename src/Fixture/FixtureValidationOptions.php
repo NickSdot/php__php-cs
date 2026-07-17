@@ -6,7 +6,10 @@ namespace InternalsCS\Fixture;
 
 final readonly class FixtureValidationOptions
 {
-    /** @param list<string> $cases */
+    /**
+     * @param list<string> $cases
+     * @param array<string, string> $rewritePathsByCase
+     */
     public function __construct(
         public string $fixturesDir,
         public array $cases,
@@ -14,5 +17,6 @@ final readonly class FixtureValidationOptions
         public bool $update,
         public bool $failFast,
         public bool $refreshPairs = false,
+        public array $rewritePathsByCase = [],
     ) {}
 }

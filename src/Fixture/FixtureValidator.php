@@ -13,6 +13,7 @@ use function array_values;
 use function basename;
 use function glob;
 use function is_dir;
+use function is_file;
 use function realpath;
 use function sort;
 
@@ -52,7 +53,7 @@ final readonly class FixtureValidator
                 continue;
             }
 
-            $rewrite = $options->runner->printFile($this->realPath($oldPath));
+            $rewrite = $this->rewrite($oldPath, $case, $options);
 
             if ($hasNew) {
                 $this->validateHandled($result, $case, $oldPath, $newPath, $diffPath, $rewrite, $options);
@@ -70,6 +71,40 @@ final readonly class FixtureValidator
         $realPath = realpath($path);
 
         return false === $realPath ? $path : $realPath;
+    }
+
+    /** @return array{changed: bool, failed: bool, output: string, failure: string|null} */
+    private function rewrite(string $oldPath, string $case, FixtureValidationOptions $options): array
+    {
+        $rewritePath = $options->rewritePathsByCase[$case] ?? null;
+
+        if (null === $rewritePath) {
+            return $options->runner->printFile($this->realPath($oldPath));
+        }
+
+        return $this->rewriteFixtureInSourceContext($oldPath, $rewritePath, $options->runner);
+    }
+
+    /** @return array{changed: bool, failed: bool, output: string, failure: string|null} */
+    private function rewriteFixtureInSourceContext(
+        string $oldPath,
+        string $rewritePath,
+        FixtureRewriteRunner $runner,
+    ): array {
+        $hadRewriteTarget = is_file($rewritePath);
+        $original = $hadRewriteTarget ? $this->files->read($rewritePath, 'rewrite target') : null;
+
+        $this->files->write($rewritePath, $this->files->read($oldPath, 'fixture'), 'rewrite target');
+
+        try {
+            return $runner->printFile($this->realPath($rewritePath));
+        } finally {
+            if ($hadRewriteTarget) {
+                $this->files->write($rewritePath, (string) $original, 'rewrite target');
+            } else {
+                $this->files->deleteFileIfExists($rewritePath, 'rewrite target');
+            }
+        }
     }
 
     /** @return list<string> */

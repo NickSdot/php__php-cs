@@ -196,11 +196,40 @@ final class FixtureValidatorTest extends TestCase
         self::assertSame("new\n", file_get_contents($fixtures . '/case/new.phpt'));
     }
 
+    public function testRefreshCanRewriteOldFixtureFromSourceContextPath(): void
+    {
+        $fixtures = $this->fixturesDir();
+        $source = $this->sourceDir();
+        $runner = $this->recordingRunner("new\n");
+
+        mkdir($fixtures . '/case', recursive: true);
+        file_put_contents($fixtures . '/case/old.phpt', "fixture old\n");
+        file_put_contents($source . '/case.phpt', "runtime source\n");
+
+        $result = $this->validate(
+            fixtures: $fixtures,
+            runner: $runner,
+            update: true,
+            refreshPairs: true,
+            rewritePathsByCase: [
+                'case' => $source . '/case.phpt',
+            ],
+        );
+
+        self::assertSame([], $result->failures);
+        self::assertSame(realpath($source . '/case.phpt'), $runner->paths[0] ?? null);
+        self::assertSame("fixture old\n", $runner->contents[0] ?? null);
+        self::assertSame("runtime source\n", file_get_contents($source . '/case.phpt'));
+        self::assertSame("new\n", file_get_contents($fixtures . '/case/new.phpt'));
+    }
+
+    /** @param array<string, string> $rewritePathsByCase */
     private function validate(
         string $fixtures,
         ?FixtureRewriteRunner $runner = null,
         bool $update = false,
         bool $refreshPairs = false,
+        array $rewritePathsByCase = [],
     ): \InternalsCS\Fixture\FixtureValidationResult {
         return new FixtureValidator()->validate(new FixtureValidationOptions(
             fixturesDir: $fixtures,
@@ -209,6 +238,7 @@ final class FixtureValidatorTest extends TestCase
             update: $update,
             failFast: false,
             refreshPairs: $refreshPairs,
+            rewritePathsByCase: $rewritePathsByCase,
         ));
     }
 
@@ -233,6 +263,14 @@ final class FixtureValidatorTest extends TestCase
         mkdir($root . '/fixtures');
 
         return $root . '/fixtures';
+    }
+
+    private function sourceDir(): string
+    {
+        $root = sys_get_temp_dir() . '/fixture-source-' . bin2hex(random_bytes(6));
+        mkdir($root);
+
+        return $root;
     }
 
     private function recordingRunner(string $output): RecordingFixtureRewriteRunner
@@ -266,6 +304,9 @@ final class RecordingFixtureRewriteRunner implements FixtureRewriteRunner
     /** @var list<string> */
     public array $paths = [];
 
+    /** @var list<string> */
+    public array $contents = [];
+
     public function __construct(
         private readonly string $output,
     ) {}
@@ -273,6 +314,7 @@ final class RecordingFixtureRewriteRunner implements FixtureRewriteRunner
     public function printFile(string $path): array
     {
         $this->paths[] = $path;
+        $this->contents[] = (string) file_get_contents($path);
 
         return [
             'changed' => true,

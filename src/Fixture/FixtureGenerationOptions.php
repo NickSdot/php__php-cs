@@ -23,5 +23,6 @@ final readonly class FixtureGenerationOptions
         public bool $sourceDirty,
         public bool $write,
         public bool $refreshOnly,
+        public ?string $rewriteRoot = null,
     ) {}
 }

@@ -17,6 +17,7 @@ final readonly class FixtureGenerator
         private FixtureSelector $selector = new FixtureSelector(),
         private FixtureWriter $writer = new FixtureWriter(),
         private FixtureValidator $validator = new FixtureValidator(),
+        private FixtureCaseName $caseName = new FixtureCaseName(),
     ) {}
 
     public function generate(FixtureGenerationOptions $options): FixtureGenerationResult
@@ -138,6 +139,7 @@ final readonly class FixtureGenerator
             update: true,
             failFast: false,
             refreshPairs: true,
+            rewritePathsByCase: $this->rewritePathsByCase($selection, $options),
         ));
 
         foreach ($validation->failures as $failure) {
@@ -152,6 +154,24 @@ final readonly class FixtureGenerator
         $result->updatedPairCases = $validation->updatedCases;
         $result->stalePairCases = $validation->staleCases;
         $result->oldOnlyCases = $validation->oldOnlyCases;
+    }
+
+    /** @return array<string, string> */
+    private function rewritePathsByCase(?FixtureSelection $selection, FixtureGenerationOptions $options): array
+    {
+        if (null === $selection || null === $options->rewriteRoot) {
+            return [];
+        }
+
+        $paths = [];
+
+        foreach ($selection->fixtures as $fixture) {
+            $paths[$this->caseName->fromFixtureSource($fixture)] = $options->rewriteRoot
+                . DIRECTORY_SEPARATOR
+                . $fixture->relativePath;
+        }
+
+        return $paths;
     }
 
     /**

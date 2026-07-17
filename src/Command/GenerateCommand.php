@@ -101,6 +101,7 @@ final readonly class GenerateCommand implements Command
             sourceDirty: $sourceDirty,
             write: $options->write,
             refreshOnly: $options->refreshOnly,
+            rewriteRoot: $options->phpTestRuntimeRoot->path,
         ));
 
         return $target->printResult($result, $io);
