@@ -13,6 +13,7 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ContextLabelOutputR
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\DescriptivePrefixOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\LocationOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\LocationWrapperOutputRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MarkerPrefixOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MessageOnlyOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ParenthesizedClassLabelOutputRule;
 use InternalsCS\RewriteResult;
@@ -82,6 +83,7 @@ final readonly class CanonicalPlanner
             new ContextLabelOutputRule(),
             new CatchTypeLabelOutputRule(),
             new DescriptivePrefixOutputRule(),
+            new MarkerPrefixOutputRule(),
             new LocationWrapperOutputRule(),
             new LocationOutputRule(),
             new ClassMessageOutputRule(),

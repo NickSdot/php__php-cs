@@ -7,29 +7,45 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputParts;
 
+use function implode;
 use function str_replace;
 
 final readonly class CanonicalStatementBuilder
 {
     public function build(string $variable, OutputParts $parts, string $prefix = ''): string
     {
-        $statement = 'echo ';
+        $segments = [];
 
         if ('' !== $prefix) {
-            $statement .= '\'' . $this->quote($prefix . ': ') . '\', ';
+            $segments[] = '\'' . $this->quote($prefix . ': ') . '\'';
         }
 
-        $statement .= '$' . $variable . '::class, \': \', $' . $variable . '->getMessage()';
+        return $this->buildWithPrefixSegments($variable, $parts, $segments);
+    }
+
+    /** @param list<string> $prefixSegments */
+    public function buildWithPrefixSegments(string $variable, OutputParts $parts, array $prefixSegments): string
+    {
+        $segments = [
+            ...$prefixSegments,
+            '$' . $variable . '::class',
+            '\': \'',
+            '$' . $variable . '->getMessage()',
+        ];
 
         if ($parts->has(OutputPartKind::ExceptionFile)) {
-            $statement .= ', \' in \', $' . $variable . '->getFile()';
+            $segments[] = '\' in \'';
+            $segments[] = '$' . $variable . '->getFile()';
         }
 
         if ($parts->has(OutputPartKind::ExceptionLine)) {
-            $statement .= ', \' on line \', $' . $variable . '->getLine()';
+            $segments[] = '\' on line \'';
+            $segments[] = '$' . $variable . '->getLine()';
         }
 
-        return $statement . ', \\PHP_EOL;';
+        $segments[] = '\\PHP_EOL';
+
+        return 'echo ' . implode(', ', $segments) . ';';
     }
 
     private function quote(string $value): string

@@ -8,6 +8,7 @@ enum OutputPartKind: string
 {
     case Literal = 'literal';
     case Newline = 'newline';
+    case OtherVariable = 'other_variable';
     case ExceptionClass = 'exception_class';
     case ExceptionMessage = 'exception_message';
     case ExceptionFile = 'exception_file';

@@ -239,6 +239,59 @@ final class CanonicalPlannerTest extends TestCase
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
+    public function testPlansBracketedNumericMarkerPrefixRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new RuntimeException('x');
+            } catch (Throwable $e) {
+                echo '[001] '.$e->getMessage()."\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo '[001] ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansErrorNumberVarDumpMarkerPrefixRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new RuntimeException('x');
+            } catch (Throwable $e) {
+                var_dump('ERROR 1', $e->getMessage());
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'ERROR 1: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansVariableClassMessageMarkerPrefixRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            $type = 'manual_type';
+
+            try {
+                throw new RuntimeException('x');
+            } catch (Throwable $e) {
+                echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$type, '=>', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
     public function testPlansBracketedClassRewrite(): void
     {
         $code = <<<'PHP'

@@ -225,6 +225,28 @@ final class CanonicalUpdaterTest extends TestCase
         );
     }
 
+    public function testUpdatesBracketedNumericMarkerPrefix(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "[001] fixture message\n",
+            "[001] RuntimeException: fixture message\n",
+        );
+
+        self::assertSame("[001] RuntimeException: fixture message\n", $update->output);
+    }
+
+    public function testUpdatesVarDumpErrorMarkerPrefix(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "string(7) \"ERROR 1\"\nstring(%d) \"fixture message\"\n",
+            "ERROR 1: RuntimeException: fixture message\n",
+        );
+
+        self::assertSame("ERROR 1: RuntimeException: fixture message\n", $update->output);
+    }
+
     public function testUpdatesLeadingBlankMessageOutput(): void
     {
         $update = new CanonicalUpdater()->update(

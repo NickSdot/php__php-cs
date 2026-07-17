@@ -92,6 +92,12 @@ final readonly class OutputExpressionParser
             return [$part];
         }
 
+        $variable = $this->variableName($expr);
+
+        if (null !== $variable) {
+            return [OutputPart::otherVariable($variable)];
+        }
+
         return [OutputPart::unknown($expr->getType())];
     }
 

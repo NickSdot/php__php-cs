@@ -27,6 +27,11 @@ final readonly class OutputPart
         return new self(OutputPartKind::Newline, '\n');
     }
 
+    public static function otherVariable(string $variable): self
+    {
+        return new self(OutputPartKind::OtherVariable, variable: $variable);
+    }
+
     public static function exceptionClass(string $variable, string $source): self
     {
         return new self(OutputPartKind::ExceptionClass, variable: $variable, source: $source);

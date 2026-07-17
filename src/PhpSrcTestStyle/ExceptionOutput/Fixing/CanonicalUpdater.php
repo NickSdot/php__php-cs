@@ -190,6 +190,14 @@ final readonly class CanonicalUpdater
             $sequences[] = $merged;
         }
 
+        foreach ($sequences as $sequence) {
+            $merged = $this->mergeVarDumpMarkerMessageLines($sequence);
+
+            if (!in_array($merged, $sequences, true)) {
+                $sequences[] = $merged;
+            }
+        }
+
         return $sequences;
     }
 
@@ -215,6 +223,44 @@ final readonly class CanonicalUpdater
         }
 
         return $merged;
+    }
+
+    /**
+     * @param list<string> $lines
+     * @return list<string>
+     */
+    private function mergeVarDumpMarkerMessageLines(array $lines): array
+    {
+        $merged = [];
+
+        for ($i = 0; $i < count($lines); $i++) {
+            $line = $lines[$i];
+            $nextLine = $lines[$i + 1] ?? null;
+
+            if (null !== $nextLine && $this->isVarDumpErrorMarker($line) && 1 === preg_match('/^string\((?:\d+|%d)\) "(.*)"$/', $nextLine, $matches)) {
+                $merged[] = $this->varDumpStringValue($line) . ': ' . stripcslashes($matches[1]);
+                $i++;
+                continue;
+            }
+
+            $merged[] = $line;
+        }
+
+        return $merged;
+    }
+
+    private function isVarDumpErrorMarker(string $line): bool
+    {
+        return 1 === preg_match('/^string\((?:\d+|%d)\) "ERROR \d+"$/', $line);
+    }
+
+    private function varDumpStringValue(string $line): string
+    {
+        if (1 === preg_match('/^string\((?:\d+|%d)\) "(.*)"$/', $line, $matches)) {
+            return stripcslashes($matches[1]);
+        }
+
+        throw new \LogicException('Expected a var_dump string line');
     }
 
     private function lineCanCanonicalizeToActual(string $expectedLine, string $actualLine, bool $exact): bool
@@ -436,6 +482,10 @@ final readonly class CanonicalUpdater
 
         if (1 === preg_match('/^(.*) at (.+):((?:[+-]?\d+|%d|%i))$/', $candidate, $matches)) {
             return $prefix . $class . ': ' . $matches[1] . ' in ' . $matches[2] . ' on line ' . $matches[3];
+        }
+
+        if ('' !== $prefix && str_starts_with($candidate, $prefix)) {
+            return $prefix . $class . ': ' . mb_substr($candidate, mb_strlen($prefix));
         }
 
         if (str_starts_with($candidate, $class . ': ')) {
