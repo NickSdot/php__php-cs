@@ -1,0 +1,11 @@
+--- old.phpt
++++ new.phpt
+@@ -6,7 +6,7 @@
+ try {
+     $x = new ReflectionMethod('A', 'b');
+ } catch (\Throwable $e) {
+-    echo get_class($e), ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ function load_file() {
