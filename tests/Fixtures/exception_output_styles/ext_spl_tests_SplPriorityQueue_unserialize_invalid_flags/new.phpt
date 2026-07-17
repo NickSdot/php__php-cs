@@ -16,7 +16,7 @@ try {
     $queue->__unserialize($data);
     echo "Should have thrown exception for invalid flags\n";
 } catch (Exception $e) {
-    echo "Exception thrown for invalid flags: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'invalid flags: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 try {
@@ -32,7 +32,7 @@ try {
     $queue->__unserialize($data);
     echo "Should have thrown exception for zero flags\n";
 } catch (Exception $e) {
-    echo "Exception thrown for zero flags: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'zero flags: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 try {
@@ -48,7 +48,7 @@ try {
     $queue->__unserialize($data);
     echo "Valid flags accepted\n";
 } catch (Exception $e) {
-    echo "Valid flags rejected: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'Valid flags rejected: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 try {
@@ -69,12 +69,12 @@ try {
         echo "Flags not properly masked, got: " . $queue->getExtractFlags() . "\n";
     }
 } catch (Exception $e) {
-    echo "Flags with extra bits should be masked: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'Flags with extra bits should be masked: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Exception thrown for invalid flags: Exception: Invalid serialization data for SplPriorityQueue object
-Exception thrown for zero flags: Exception: Invalid serialization data for SplPriorityQueue object
+invalid flags: Exception: Invalid serialization data for SplPriorityQueue object
+zero flags: Exception: Invalid serialization data for SplPriorityQueue object
 Valid flags accepted
 Flags properly masked
