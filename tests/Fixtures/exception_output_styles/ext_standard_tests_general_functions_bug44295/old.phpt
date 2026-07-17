@@ -2,12 +2,12 @@
 user defined error handler + set_error_handling(EH_THROW)
 --SKIPIF--
 <?php
-if (substr(PHP_OS, 0, 3) != "WIN") die("skip Windows only");
-if (is_dir('c:\\not\\exists\\here')) die("skip directory c:\\not\\exists\\here already exists");
+if (substr(PHP_OS, 0, 3) == "WIN") die("skip Not for Windows");
+if (is_dir('/this/path/does/not/exist')) die("skip directory /this/path/does/not/exist already exists");
 ?>
 --FILE--
 <?php
-$dir = 'c:\\not\\exists\\here';
+$dir = '/this/path/does/not/exist';
 
 set_error_handler('my_error_handler');
 function my_error_handler() {$a = func_get_args(); print "in error handler\n"; }
@@ -23,7 +23,7 @@ try {
 ?>
 ==DONE==
 <?php exit(0); ?>
---EXPECTF--
+--EXPECT--
 before
-in catch: DirectoryIterator::__construct(c:\not\exists\here): %s (code: 3)
+in catch: DirectoryIterator::__construct(/this/path/does/not/exist): Failed to open directory: No such file or directory
 ==DONE==
