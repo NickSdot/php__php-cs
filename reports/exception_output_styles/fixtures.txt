@@ -163,7 +163,7 @@ Zend/tests/constants/008.phpt
     - line 9: message_only message_only:f99671c17dc5b51b229206cf22b75ad358a0591d
 
 Zend/tests/constexpr/constant_expressions_exceptions_002.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_constexpr_constant_expressions_exceptions_002
   first line: 8
   flavours covered: 1
@@ -239,7 +239,7 @@ Zend/tests/methods-on-non-objects-catch.phpt
     - line 13: message_only message_only:0ee545d0d92e5f915dbe3bd1d1d93ab058897975
 
 Zend/tests/offsets/appending_containers_in_fetch.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_offsets_appending_containers_in_fetch
   first line: 14
   flavours covered: 1
@@ -315,7 +315,7 @@ ext/com_dotnet/tests/variants.phpt
     - line 37: message_only message_only:ddbdfecc9307fe468ab9d75109eee17cb5869bd3
 
 ext/dom/tests/DOM4_ParentNode_append_invalidtypes.phpt
-  state: old_only
+  state: handled
   fixture: ext_dom_tests_DOM4_ParentNode_append_invalidtypes
   first line: 15
   flavours covered: 1
@@ -592,7 +592,7 @@ ext/reflection/tests/internal_parameter_default_value/check_all.phpt
     - line 12: message_only message_only:77e998e05e3bdd99308717813405be030bd6f4da
 
 ext/session/tests/session_create_id_invalid_prefix.phpt
-  state: old_only
+  state: handled
   fixture: ext_session_tests_session_create_id_invalid_prefix
   first line: 19
   flavours covered: 1
@@ -600,14 +600,14 @@ ext/session/tests/session_create_id_invalid_prefix.phpt
     - line 25: class_message class_message:2655104d24e7570bc0d0be3c4a79a4cb46f6a818
 
 ext/session/tests/session_gc_probability_ini.phpt
-  state: old_only
+  state: handled
   fixture: ext_session_tests_session_gc_probability_ini
   first line: 39
   flavours covered: 1
     - line 39: class_message class_message:7d136db541ccb5075636648d5db01c83a58f2ffe
 
 ext/session/tests/session_start_error.phpt
-  state: old_only
+  state: handled
   fixture: ext_session_tests_session_start_error
   first line: 15
   flavours covered: 2
@@ -630,7 +630,7 @@ ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt
     - line 18: message_only message_only:4629d0d3302b4096cec9cfbe69f9c600b046cc45
 
 ext/spl/tests/SplFileObject/fileobject_003.phpt
-  state: old_only
+  state: handled
   fixture: ext_spl_tests_SplFileObject_fileobject_003
   first line: 34
   flavours covered: 1

@@ -19,25 +19,6 @@ Zend/tests/closures/closure_from_callable_error.phpt:17
     19 
     20 
 
-ext/session/tests/session_create_id_invalid_prefix.phpt:19
-  state: old_only
-  fixture: ext_session_tests_session_create_id_invalid_prefix
-  fingerprint: class_message:2655104d24e7570bc0d0be3c4a79a4cb46f6a818
-  family: class_message
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_class(static_class) literal:colon_separator exception_message newline
-  echo $e::class . ': ' . $e->getMessage() . "\n";
-
-    16 try {
-    17     var_dump(session_create_id('ABTgdPs68S3M4HMaqKwj33TzqLMv5PHpWQxJbfpeogEhrJRY7o9f33pKLCmhf0tXCtoBkIu0yxXYCSHfJhPd2miPUW4MIpd91dnEiOwWDfaBnfdJZOwgvgmYLSfDGaebqmnCAoyuzlcq2j59nNRhccgJIkr9ytY3RwFTTXszpcjpx6mlJuG9GksKAhPsnnaEwSEb0eFyqvn80gYI2roKSjaFSmJxg0xgXuCF4csMo8DxiSvovho5QTKx5u7h8VyQL'));
-    18 } catch (Throwable $e) {
->   19     echo $e::class . ': ' . $e->getMessage() . "\n";
-    20 }
-    21 
-    22 try {
-
 ext/pdo/tests/bug_44159.phpt:25
   state: old_only
   fixture: ext_pdo_tests_bug_44159
@@ -56,25 +37,6 @@ ext/pdo/tests/bug_44159.phpt:25
     26     }
     27     try {
     28         var_dump($pdo->setAttribute($attr, 1));
-
-ext/session/tests/session_start_error.phpt:23
-  state: old_only
-  fixture: ext_session_tests_session_start_error
-  fingerprint: class_message:40a5c2e3a98b10f114ee9e82bf7c145041642dfb
-  family: class_message
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_class(static_class) literal:colon_separator exception_message newline
-  echo $exception::class, ': ', $exception->getMessage() . "\n";
-
-    20 try {
-    21     session_start([$read_and_close]);
-    22 } catch (ValueError $exception) {
->   23     echo $exception::class, ': ', $exception->getMessage() . "\n";
-    24 }
-    25 
-    26 var_dump(session_start(['option' => false]));
 
 ext/dom/tests/modern/xml/gh22570.phpt:31
   state: old_only
@@ -113,44 +75,6 @@ ext/standard/tests/file/file_get_contents_variation8-win32.phpt:39
     40     }
     41 }
     42 
-
-ext/session/tests/session_gc_probability_ini.phpt:39
-  state: old_only
-  fixture: ext_session_tests_session_gc_probability_ini
-  fingerprint: class_message:7d136db541ccb5075636648d5db01c83a58f2ffe
-  family: class_message
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_class(static_class) literal:colon_separator exception_message newline
-  echo $e::class, ': '. $e->getMessage(), "\n";
-
-    36     session_start($gc_setting);
-    37     session_write_close();
-    38     } catch (Throwable $e) {
->   39         echo $e::class, ': '. $e->getMessage(), "\n";
-    40     }
-    41 }
-    42 ob_end_flush();
-
-Zend/tests/offsets/appending_containers_in_fetch.phpt:14
-  state: old_only
-  fixture: Zend_tests_offsets_appending_containers_in_fetch
-  fingerprint: class_message:8759f865d6ed3f04147723ea105efc670ffbc5cf
-  family: class_message
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: exception_class(static_class) literal:colon_separator exception_message newline
-  echo $e::class, ': ', $e->getMessage(), "\n";
-
-    11         $container[][5] = 'value';
-    12         var_dump($container);
-    13     } catch (\Throwable $e) {
->   14         echo $e::class, ': ', $e->getMessage(), "\n";
-    15     }
-    16 }
-    17 
 
 ext/dom/tests/modern/xml/gh22570.phpt:37
   state: old_only
@@ -341,25 +265,6 @@ ext/mysqli/tests/mysqli_execute_query.phpt:82
     83 }
     84 
     85 print "done!";
-
-ext/dom/tests/DOM4_ParentNode_append_invalidtypes.phpt:15
-  state: old_only
-  fixture: ext_dom_tests_DOM4_ParentNode_append_invalidtypes
-  fingerprint: message_only:1e7c78ce2f438141c35d420bb92a812210d45300
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECT
-  reason: safe candidate for a canonical exception-output family
-  parts: literal:trash:ok exception_message
-  echo "OK! {$e->getMessage()}";
-
-    12 try {
-    13     $dom->documentElement->append(array());
-    14 } catch(TypeError $e) {
->   15     echo "OK! {$e->getMessage()}";
-    16 }
-    17 ?>
-    18 
 
 ext/soap/tests/bugs/protocol_relative_redirect.phpt:45
   state: old_only
@@ -608,25 +513,6 @@ Zend/tests/type_coercion/gh22112.phpt:23
     25 
     26 try {
 
-Zend/tests/constexpr/constant_expressions_exceptions_002.phpt:8
-  state: old_only
-  fixture: Zend_tests_constexpr_constant_expressions_exceptions_002
-  fingerprint: message_only:6f6e5ea043acd6775b6dd4ab86dd62f8e194918b
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: literal:trash:exception exception_message literal:in_separator exception_file literal:on_line_separator exception_line newline
-  echo "\nException: " . $e->getMessage() . " in " , $e->getFile() . " on line " . $e->getLine() . "\n";
-
-     5 try {
-     6     require("constant_expressions_exceptions.inc");
-     7 } catch (Error $e) {
->    8     echo "\nException: " . $e->getMessage() . " in " , $e->getFile() . " on line " . $e->getLine() . "\n";
-     9 }
-    10 ?>
-    11 DONE
-
 ext/mysqli/tests/mysqli_stmt_execute_bind.phpt:107
   state: old_only
   fixture: ext_mysqli_tests_mysqli_stmt_execute_bind
@@ -683,25 +569,6 @@ Zend/tests/attributes/005_objects.phpt:70
     71 }
     72 
     73 echo "\n";
-
-ext/spl/tests/SplFileObject/fileobject_003.phpt:34
-  state: old_only
-  fixture: ext_spl_tests_SplFileObject_fileobject_003
-  fingerprint: message_only:79836f7ba96de26581786ad66801016aeeb7e28f
-  family: message_only
-  safety: canonicalizable
-  expected: EXPECTF
-  reason: safe candidate for a canonical exception-output family
-  parts: literal:trash:logicexception exception_message newline
-  echo "LogicException: ".$e->getMessage()."\n";
-
-    31         $l = substr($f->getPath(), -1);
-    32         var_dump($l != '/' && $l != '\\' && $l == $lp);
-    33     } catch (LogicException $e) {
->   34         echo "LogicException: ".$e->getMessage()."\n";
-    35     }
-    36     try {
-    37         $fo = $o->openFile();
 
 ext/dom/tests/modern/spec/Document_createAttributeNS.phpt:15
   state: old_only

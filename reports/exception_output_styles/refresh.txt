@@ -1,14 +1,20 @@
 # Fixture refresh
 
 Refresh-only run: no
-Updated new/diff pairs: 0
+Updated new/diff pairs: 7
 Stale existing new/diff pairs kept: 13
-Old-only fixture files: 61
+Old-only fixture files: 54
 Failures: 4
 
 ## Updated pairs
 
-- none
+- Zend_tests_constexpr_constant_expressions_exceptions_002
+- Zend_tests_offsets_appending_containers_in_fetch
+- ext_dom_tests_DOM4_ParentNode_append_invalidtypes
+- ext_session_tests_session_create_id_invalid_prefix
+- ext_session_tests_session_gc_probability_ini
+- ext_session_tests_session_start_error
+- ext_spl_tests_SplFileObject_fileobject_003
 
 ## Stale existing pairs kept
 
@@ -35,21 +41,18 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 - Zend_tests_attributes_deprecated_functions_deprecated_handler_001
 - Zend_tests_bug33996
 - Zend_tests_closures_closure_from_callable_error
-- Zend_tests_constexpr_constant_expressions_exceptions_002
 - Zend_tests_exceptions_bug31102
 - Zend_tests_exceptions_bug50383
 - Zend_tests_exceptions_bug60569
 - Zend_tests_exceptions_gh10695_1
 - Zend_tests_exceptions_gh13446_1
 - Zend_tests_methods_on_non_objects_catch
-- Zend_tests_offsets_appending_containers_in_fetch
 - Zend_tests_type_coercion_gh22112
 - Zend_tests_type_declarations_scalar_return_basic
 - ext_bcmath_tests_bcscale_variation001
 - ext_com_dotnet_tests_bug77177
 - ext_com_dotnet_tests_gh8750a
 - ext_com_dotnet_tests_variants
-- ext_dom_tests_DOM4_ParentNode_append_invalidtypes
 - ext_dom_tests_modern_spec_Document_createAttributeNS
 - ext_dom_tests_modern_xml_gh22570
 - ext_ffi_tests_031
@@ -76,13 +79,9 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 - ext_phar_tests_tar_badalias
 - ext_reflection_tests_ReflectionFiber_errors
 - ext_reflection_tests_bug74454
-- ext_session_tests_session_create_id_invalid_prefix
-- ext_session_tests_session_gc_probability_ini
-- ext_session_tests_session_start_error
 - ext_soap_tests_bugs_gh22167
 - ext_soap_tests_bugs_protocol_relative_redirect
 - ext_spl_tests_ArrayObject_arrayObject___construct_error1
-- ext_spl_tests_SplFileObject_fileobject_003
 - ext_spl_tests_gh16217
 - ext_standard_tests_file_file_get_contents_variation8_win32
 - ext_standard_tests_general_functions_bug44295_win
@@ -94,7 +93,7 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 
 ## Failures
 
-- Zend_tests_closures_closure_instantiate: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Closures cannot be instantiated directly [Zend_tests_closures_closure_instantiate/old.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
-- ext_dom_tests_DOMElement_className: rewrite failed verification: rewritten test did not pass and no .out file was produced (BORK missing section --EXPECT--, --EXPECTF-- or --EXPECTREGEX-- [ext_dom_tests_DOMElement_clas...)
+- Zend_tests_closures_closure_instantiate: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Closures cannot be instantiated directly [Zend/tests/closures/closure_instantiate.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
+- ext_dom_tests_DOMElement_className: rewrite failed verification: rewritten test did not pass and no .out file was produced (BORK missing section --EXPECT--, --EXPECTF-- or --EXPECTREGEX-- [ext/dom/tests/DOMElement_className.phpt])
 - ext_opcache_tests_gh20628_borked_live_range_calc: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Broken live-range calculation with QM_ASSIGN optimization [ext_opcache_tests_gh20628_bork...): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
-- ext_reflection_tests_ReflectionProperty_getMangledName_dynamic: rewrite failed verification: updated expected output did not pass verification (FAIL Test ReflectionProperty::getMangledName() with dynamic properties [ext_reflection_tests_R...)
+- ext_reflection_tests_ReflectionProperty_getMangledName_dynamic: rewrite failed verification: updated expected output did not pass verification (FAIL Test ReflectionProperty::getMangledName() with dynamic properties [ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt])
