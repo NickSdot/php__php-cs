@@ -48,14 +48,14 @@ try {
     $heap->extract();
 }
 catch (Exception $e) {
-    echo "Compare Exception: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'Compare: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 try {
     $heap->top();
 }
 catch (Exception $e) {
-    echo "Corruption Exception: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'Corruption: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 var_dump($heap->isCorrupted());
@@ -64,7 +64,7 @@ var_dump($heap->isCorrupted());
 ?>
 --EXPECT--
 bool(false)
-Compare Exception: Exception: Compare exception
-Corruption Exception: RuntimeException: Heap is corrupted, heap properties are no longer ensured.
+Compare: Exception: Compare exception
+Corruption: RuntimeException: Heap is corrupted, heap properties are no longer ensured.
 bool(true)
 bool(false)
