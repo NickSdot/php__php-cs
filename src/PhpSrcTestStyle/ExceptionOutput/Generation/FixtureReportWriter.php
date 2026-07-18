@@ -42,21 +42,16 @@ final readonly class FixtureReportWriter implements FixtureReporter
         private FileSystem $files = new FileSystem(),
     ) {}
 
-    /**
-     * @param list<FixtureCandidate> $candidates
-     * @param array<string, FixtureWriteResult> $writeResults
-     */
+    /** @param array<string, FixtureWriteResult> $writeResults */
     public function write(
         string $reportsDir,
         string $fixturesDir,
         FixtureGenerationResult $result,
-        array $candidates,
         FixtureSelection $selection,
         array $writeResults,
     ): void {
         $this->files->ensureDirectory($reportsDir, 'report directory');
 
-        $candidates = $this->candidates($candidates);
         $flavours = $this->candidateGroups($selection->flavours);
         $fixtureStates = $this->fixtureStates($fixturesDir, $selection->fixtures, $writeResults);
         $flavourStates = $this->flavourStates($selection, $flavours, $fixtureStates);
@@ -70,7 +65,6 @@ final readonly class FixtureReportWriter implements FixtureReporter
         $this->writeFile($reportsDir . '/duplicates.txt', $this->renderDuplicates($duplicateGroups));
         $this->writeFile($reportsDir . '/fixtures.txt', $this->renderFixtures($fixtureStates));
         $this->writeFile($reportsDir . '/flavours.txt', $this->renderFlavourCandidates($flavours));
-        $this->writeFile($reportsDir . '/candidates.txt', $this->renderCandidates($candidates));
         $this->writeFile($reportsDir . '/failures.txt', $this->renderFailures($result, $fixturesDir));
         $this->writeRefresh($reportsDir, $fixturesDir, $result);
     }

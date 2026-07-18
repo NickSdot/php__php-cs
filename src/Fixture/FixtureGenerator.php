@@ -37,9 +37,7 @@ final readonly class FixtureGenerator
             return $this->dirtySource($result, $options);
         }
 
-        $scan = $this->scan($result, $options);
-        $candidates = $scan['candidates'];
-        $selection = $scan['selection'];
+        $selection = $this->scan($result, $options);
 
         if (!$options->write) {
             return $result;
@@ -64,7 +62,7 @@ final readonly class FixtureGenerator
 
         $this->refreshFixtures($result, $options, $selection);
 
-        $this->writeDiscoveryReports($result, $options, $candidates, $selection, $writeResults);
+        $this->writeDiscoveryReports($result, $options, $selection, $writeResults);
 
         return $result;
     }
@@ -84,9 +82,9 @@ final readonly class FixtureGenerator
             return $result;
         }
 
-        $scan = $this->scan($result, $options);
-        $this->refreshFixtures($result, $options, $scan['selection']);
-        $this->writeDiscoveryReports($result, $options, $scan['candidates'], $scan['selection'], []);
+        $selection = $this->scan($result, $options);
+        $this->refreshFixtures($result, $options, $selection);
+        $this->writeDiscoveryReports($result, $options, $selection, []);
 
         return $result;
     }
@@ -106,8 +104,7 @@ final readonly class FixtureGenerator
         return $result;
     }
 
-    /** @return array{candidates: list<FixtureCandidate>, selection: FixtureSelection} */
-    private function scan(FixtureGenerationResult $result, FixtureGenerationOptions $options): array
+    private function scan(FixtureGenerationResult $result, FixtureGenerationOptions $options): FixtureSelection
     {
         $files = $this->finder->find(
             rootDir: $options->sourceRoot,
@@ -127,10 +124,7 @@ final readonly class FixtureGenerator
         $result->duplicateCandidates = $selection->duplicateCandidateWindows(count($candidates));
         $result->selectedFixtures = $selection->fixtureCount();
 
-        return [
-            'candidates' => $candidates,
-            'selection' => $selection,
-        ];
+        return $selection;
     }
 
     /** @return list<FixtureCandidate> */
@@ -196,18 +190,14 @@ final readonly class FixtureGenerator
         return $paths;
     }
 
-    /**
-     * @param list<FixtureCandidate> $candidates
-     * @param array<string, FixtureWriteResult> $writeResults
-     */
+    /** @param array<string, FixtureWriteResult> $writeResults */
     private function writeDiscoveryReports(
         FixtureGenerationResult $result,
         FixtureGenerationOptions $options,
-        array $candidates,
         FixtureSelection $selection,
         array $writeResults,
     ): void {
-        $this->reports->write($options->reportsDir, $options->fixturesDir, $result, $candidates, $selection, $writeResults);
+        $this->reports->write($options->reportsDir, $options->fixturesDir, $result, $selection, $writeResults);
         $result->discoveryReportsWritten = true;
     }
 
