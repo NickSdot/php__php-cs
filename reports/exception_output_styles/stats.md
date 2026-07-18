@@ -4,8 +4,8 @@
 
 | Status  | Flavours |
 |---------|----------|
-| done    | 118      |
-| open    | 1        |
+| done    | 119      |
+| open    | 0        |
 | ignored | 0        |
 | invalid | 0        |
 
@@ -13,7 +13,6 @@
 
 | Status | Flavour                                                                                                | Fixture                                                                             | Detail                                                                                                | Fingerprint                                            |
 |--------|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
-| open   | var_dump($e->getMessage(), $msg);                                                                      | Zend_tests_exceptions_bug60569                                                      | old_only_fixture; Zend/tests/exceptions/bug60569.phpt:9                                               | message_only:dbe267cf0c1911a07020b93e3746e026b8eac66e  |
 | done   | echo $type . "=>" . get_class($e) . ": " . $e->getMessage()."\n";                                      | manual_001                                                                          | manual_verified; manual_001/old.phpt:10                                                               | class_message:0c65a3c6ae95d881da1786ab56e48194f83a0fcb |
 | done   | echo '[001] '.$e->getMessage()."\n";                                                                   | manual_005                                                                          | manual_verified; manual_005/old.phpt:8                                                                | message_only:815f31b82e031eabb16ff93787ef394bb67f7914  |
 | done   | echo "Safely caught " . $e->getMessage() . "\n";                                                       | manual_013                                                                          | manual_verified; manual_013/old.phpt:8                                                                | message_only:bfd265dcec2331332ed2146834383588669a9bff  |
@@ -44,6 +43,7 @@
 | done   | echo get_class($e), ': ', $e->getMessage(), "\n";                                                      | Zend_tests_enum_backed_mismatch                                                     | verified; Zend/tests/enum/backed-mismatch.phpt:13                                                     | class_message:81ba6e437b2e511a80d25e03eaacd799aaeac355 |
 | done   | echo 'Caught: '.$e->getMessage()."\n";                                                                 | Zend_tests_exceptions_bug26698                                                      | verified; Zend/tests/exceptions/bug26698.phpt:29                                                      | message_only:a1b9184d8031ef9fa546b49392e689c4df72240c  |
 | done   | print $e->getMessage();                                                                                | Zend_tests_exceptions_bug50383                                                      | verified; Zend/tests/exceptions/bug50383.phpt:26                                                      | message_only:9b34b7ac716be04c0d4c41d7bb0e14a724f7fd27  |
+| done   | var_dump($e->getMessage(), $msg);                                                                      | Zend_tests_exceptions_bug60569                                                      | verified; Zend/tests/exceptions/bug60569.phpt:9                                                       | message_only:dbe267cf0c1911a07020b93e3746e026b8eac66e  |
 | done   | echo "Caught {$e->getMessage()}\n";                                                                    | Zend_tests_exit_finally_2                                                           | verified; Zend/tests/exit_finally_2.phpt:18                                                           | message_only:9bc8a6b37b5e50d6864de5f9d4886dbfaeea5aea  |
 | done   | echo 'Caught exception with message "', $e->getMessage(), '"', "\n";                                   | Zend_tests_generators_generator_throwing_during_function_call                       | verified; Zend/tests/generators/generator_throwing_during_function_call.phpt:23                       | message_only:bbbd9425eecd10c52079a0b51aed62e80633f85c  |
 | done   | echo "{$e->getMessage()}\n";                                                                           | Zend_tests_generators_throw_into_yield_from_array                                   | verified; Zend/tests/generators/throw_into_yield_from_array.phpt:23                                   | message_only:67a1601c1f80a58d513ecadef3428abbccae578e  |
@@ -149,7 +149,7 @@
 | Legacy suffixed dirs         | 0     |
 | Created old fixtures         | 0     |
 | Verified fixture files       | 87    |
-| Updated new/diff pairs       | 0     |
+| Updated new/diff pairs       | 1     |
 | Stale pairs kept             | 9     |
-| Old-only fixture files       | 1     |
+| Old-only fixture files       | 0     |
 | Failures                     | 2     |

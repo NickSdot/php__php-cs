@@ -193,7 +193,7 @@ Zend/tests/exceptions/bug50383.phpt
     - line 33: message_only message_only:9b34b7ac716be04c0d4c41d7bb0e14a724f7fd27
 
 Zend/tests/exceptions/bug60569.phpt
-  state: old_only
+  state: handled
   fixture: Zend_tests_exceptions_bug60569
   first line: 9
   flavours covered: 1

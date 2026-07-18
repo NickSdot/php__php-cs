@@ -1,14 +1,14 @@
 # Fixture refresh
 
 Refresh-only run: no
-Updated new/diff pairs: 0
+Updated new/diff pairs: 1
 Stale existing new/diff pairs kept: 9
-Old-only fixture files: 1
+Old-only fixture files: 0
 Failures: 2
 
 ## Updated pairs
 
-- none
+- Zend_tests_exceptions_bug60569
 
 ## Stale existing pairs kept
 
@@ -26,7 +26,7 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 
 ## Old-only fixtures
 
-- Zend_tests_exceptions_bug60569
+- none
 
 ## Failures
 

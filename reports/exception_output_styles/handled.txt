@@ -2120,6 +2120,26 @@ ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt:18
     20 }
     21
 
+Zend/tests/exceptions/bug60569.phpt:9
+  state: handled
+  fixture: Zend_tests_exceptions_bug60569
+  fingerprint: message_only:dbe267cf0c1911a07020b93e3746e026b8eac66e
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_message other_variable
+  var_dump($e->getMessage(), $msg);
+
+     6     $msg = "Some error \x00 message";
+     7     throw new Exception($msg);
+     8 } catch(Exception $e) {
+>    9     var_dump($e->getMessage(), $msg);
+    10 }
+    11 ?>
+    12
+
 ext/sqlite3/tests/bug68760.phpt:27
   state: handled
   fixture: ext_sqlite3_tests_bug68760
