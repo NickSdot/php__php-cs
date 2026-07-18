@@ -836,6 +836,26 @@ final class CanonicalPlannerTest extends TestCase
         self::assertStringNotContainsString('ho $e->getMessage()', $fixed);
     }
 
+    public function testPlansSameStatementMessageTraceRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new Exception('x');
+            } catch (Exception $e) {
+                echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame(
+            "echo '  ', \$e::class . ': ' . \$e->getMessage(), \\PHP_EOL, \$e->getTraceAsString();",
+            $plans[0]->replacement,
+        );
+    }
+
     public function testDoesNotPlanDescriptiveContextRewrite(): void
     {
         $code = <<<'PHP'

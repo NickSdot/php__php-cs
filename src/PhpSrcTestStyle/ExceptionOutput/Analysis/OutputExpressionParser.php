@@ -157,7 +157,7 @@ final readonly class OutputExpressionParser
             'getcode' => OutputPart::exceptionCode($variable),
             'getfile' => OutputPart::exceptionFile($variable),
             'getline' => OutputPart::exceptionLine($variable),
-            'gettrace' => OutputPart::exceptionTrace($variable),
+            'gettrace', 'gettraceasstring' => OutputPart::exceptionTrace($variable),
             default => null,
         };
     }

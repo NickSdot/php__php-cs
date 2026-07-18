@@ -12,17 +12,17 @@
 | Duplicate flavour groups     | 64    |
 | Selected fixture files       | 99    |
 | Created old fixtures         | 0     |
-| Verified fixture pairs       | 92    |
-| Updated fixture pairs        | 0     |
-| Stale fixture pairs          | 8     |
+| Verified fixture pairs       | 93    |
+| Updated fixture pairs        | 1     |
+| Stale fixture pairs          | 7     |
 | Failures                     | 0     |
 
 ## Summary
 
 | Status  | Flavours |
 |---------|----------|
-| done    | 107      |
-| open    | 12       |
+| done    | 108      |
+| open    | 11       |
 | ignored | 0        |
 | invalid | 0        |
 
@@ -31,7 +31,6 @@
 | Status | Flavour                                                                                                | Fixture                                                                             | Detail                                                                                                | Fingerprint                                            |
 |--------|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
 | open   | echo "Valid assignment $prop1 =& $prop2 threw {$e->getMessage()}\n";                                   | Zend_tests_type_declarations_typed_properties_076                                   | stale_pair_kept; Zend/tests/type_declarations/typed_properties_076.phpt:40                            | message_only:1d6d45d286175da0e57b42b7b8ca3b1d586264a2  |
-| open   | echo " ", $e->getMessage(), "\n", $e->getTraceAsString();                                              | ext_hash_tests_hash_serialize_003                                                   | stale_pair_kept; ext/hash/tests/hash_serialize_003.phpt:240                                           | message_only:22b54e72685d40d9821d145fcb1ad5ae00e71c77  |
 | open   | echo "Instance-based creation failed as expected: " . $e->getMessage() . "\n";                         | ext_reflection_tests_ReflectionProperty_getMangledName_inheritance                  | stale_pair_kept; ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:44           | message_only:f0c074846f780625e03d06e41fa230b6bd206d9b  |
 | open   | echo "Object-based creation failed as expected: " . $e->getMessage() . "\n";                           | ext_reflection_tests_ReflectionProperty_getMangledName_inheritance                  | stale_pair_kept; ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt:52           | message_only:ad310bfa9fc6bc722018b51dba552a12f14ca4dc  |
 | open   | echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";                        | ext_reflection_tests_ReflectionProperty_getMangledName_instance                     | stale_pair_kept; ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:26              | message_only:e54b33988ec2fd1a67b9a2626fcf97959e839e53  |
@@ -96,6 +95,7 @@
 | done   | echo "TEST:" . $ex->getMessage() . PHP_EOL;                                                            | ext_fileinfo_tests_finfo_open_003                                                   | verified; ext/fileinfo/tests/finfo_open_003.phpt:14                                                   | message_only:20adc70b63caf4908bad5020562eb595c142948a  |
 | done   | echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";                                             | ext_hash_tests_hash_equals                                                          | verified; ext/hash/tests/hash_equals.phpt:12                                                          | class_message:6dbf626cacf52d90febc65bb5677a477f765aac9 |
 | done   | echo '[Error] ' . $e->getMessage() . "\n";                                                             | ext_hash_tests_hash_hkdf_edges                                                      | verified; ext/hash/tests/hash_hkdf_edges.phpt:19                                                      | message_only:fbe5792845ba8cf33414abecc25ac1503cfc9127  |
+| done   | echo " ", $e->getMessage(), "\n", $e->getTraceAsString();                                              | ext_hash_tests_hash_serialize_003                                                   | verified; ext/hash/tests/hash_serialize_003.phpt:240                                                  | message_only:446cc00ffc5dea211cebba2fdfdb833643fe3897  |
 | done   | echo "Exception: {$e->getMessage()}\n";                                                                | ext_hash_tests_new_context                                                          | verified; ext/hash/tests/new-context.phpt:9                                                           | message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e  |
 | done   | echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;                        | ext_intl_tests_calendar_get_Least_Greatest_Minimum_Maximum_error                    | verified; ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13                    | class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5 |
 | done   | echo ' ', $previous::class, ': ', $previous->getMessage(), PHP_EOL;                                    | ext_intl_tests_calendar_toDateTime_error                                            | verified; ext/intl/tests/calendar_toDateTime_error.phpt:14                                            | class_message:38588428af1553498985c4175249d9c2eac072d2 |

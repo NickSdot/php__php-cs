@@ -387,11 +387,11 @@ ext/hash/tests/hash_hkdf_edges.phpt
     - line 19: message_only message_only:fbe5792845ba8cf33414abecc25ac1503cfc9127
 
 ext/hash/tests/hash_serialize_003.phpt
-  state: stale_pair
+  state: handled
   fixture: ext_hash_tests_hash_serialize_003
   first line: 240
   flavours covered: 1
-    - line 240: message_only message_only:22b54e72685d40d9821d145fcb1ad5ae00e71c77
+    - line 240: message_only message_only:446cc00ffc5dea211cebba2fdfdb833643fe3897
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt
   state: handled
