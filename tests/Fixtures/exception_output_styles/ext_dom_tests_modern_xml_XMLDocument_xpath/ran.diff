@@ -5,7 +5,7 @@
      var_dump($xpath->evaluate("//*/namespace::*"));
  } catch (DOMException $e) {
 -    echo $e->getCode(), ": ", $e->getMessage(), "\n";
-+    echo $e->getCode(), ": ", $e::class . ': ' . $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
  }
  
  ?>
@@ -14,4 +14,4 @@
  string(9) " comment "
  --- Get a namespace node ---
 -9: The namespace axis is not well-defined in the living DOM specification. Use Dom\Element::getInScopeNamespaces() or Dom\Element::getDescendantNamespaces() instead.
-+9: DOMException: The namespace axis is not well-defined in the living DOM specification. Use Dom\Element::getInScopeNamespaces() or Dom\Element::getDescendantNamespaces() instead.
++DOMException: 9: The namespace axis is not well-defined in the living DOM specification. Use Dom\Element::getInScopeNamespaces() or Dom\Element::getDescendantNamespaces() instead.
