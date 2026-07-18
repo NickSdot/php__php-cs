@@ -12,7 +12,7 @@ function testErrorCase($dom, $ns, $qname) {
         $dom->createAttributeNS($ns, $qname);
     } catch (DOMException $e) {
         $ns_readable = is_null($ns) ? 'null' : "\"$ns\"";
-        echo '(', $ns_readable, ', "', $qname, '"): ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo "($ns_readable, \"$qname\"): ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
     }
 }
 
