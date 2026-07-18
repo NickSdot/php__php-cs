@@ -237,24 +237,6 @@ class_message:c69459693d00856d286451544fcadcf392558259
     - ext/date/tests/getSetMicroseconds.phpt:56
     - +126 more
 
-class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
-  count: 11
-  representative: ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
-  family: class_message
-  safety: descriptive_context
-  first statement: echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
-  duplicates:
-    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:18
-    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:23
-    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:28
-    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:34
-    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:39
-    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:44
-    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:49
-    - ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:13
-    - ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:18
-    - ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:23
-
 class_message:e109af70b13abb22587cfb0aa98ab32c77949bb4
   count: 6
   representative: ext/opcache/tests/jit/mod_001.phpt:29
@@ -279,6 +261,24 @@ class_message:ea22164fdb83f284f290502160a1c8abce7f9703
     - Zend/tests/arg_unpack/invalid_type.phpt:23
     - Zend/tests/arg_unpack/invalid_type.phpt:29
     - Zend/tests/arg_unpack/invalid_type.phpt:34
+
+class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
+  count: 11
+  representative: ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
+  family: class_message
+  safety: canonicalizable
+  first statement: echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
+  duplicates:
+    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:18
+    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:23
+    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:28
+    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:34
+    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:39
+    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:44
+    - ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:49
+    - ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:13
+    - ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:18
+    - ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:23
 
 message_only:003e3f4de4ac26286d48cef53d931035386c750e
   count: 16
@@ -382,15 +382,6 @@ message_only:0aaa03c325d1bebdfa8c891eb2e355a4381bde9e
   first statement: print('Error found: '.$e->getMessage());
   duplicates:
     - ext/standard/tests/strings/printf_64bit.phpt:45
-
-message_only:0ee545d0d92e5f915dbe3bd1d1d93ab058897975
-  count: 2
-  representative: Zend/tests/methods-on-non-objects-catch.phpt:13
-  family: message_only
-  safety: unsupported_expression
-  first statement: var_dump($e->getCode(), $e->getMessage());
-  duplicates:
-    - Zend/tests/methods-on-non-objects-usort.phpt:15
 
 message_only:1d6d45d286175da0e57b42b7b8ca3b1d586264a2
   count: 2
@@ -864,6 +855,31 @@ message_only:a2b80e5d4f5a0b5ab73f5c7bf4a8c516deaa408e
     - ext/pdo_pgsql/tests/copy_to.phpt:67
     - ext/pdo_pgsql/tests/copy_to.phpt:74
 
+message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
+  count: 18
+  representative: tests/classes/type_hinting_004.phpt:17
+  family: message_only
+  safety: descriptive_context
+  first statement: echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
+  duplicates:
+    - tests/classes/type_hinting_004.phpt:22
+    - tests/classes/type_hinting_004.phpt:27
+    - tests/classes/type_hinting_004.phpt:32
+    - tests/classes/type_hinting_004.phpt:37
+    - tests/classes/type_hinting_004.phpt:42
+    - tests/classes/type_hinting_004.phpt:66
+    - tests/classes/type_hinting_004.phpt:71
+    - tests/classes/type_hinting_004.phpt:76
+    - tests/classes/type_hinting_004.phpt:81
+    - tests/classes/type_hinting_004.phpt:86
+    - tests/classes/type_hinting_004.phpt:91
+    - tests/classes/type_hinting_004.phpt:116
+    - tests/classes/type_hinting_004.phpt:121
+    - tests/classes/type_hinting_004.phpt:126
+    - tests/classes/type_hinting_004.phpt:131
+    - tests/classes/type_hinting_004.phpt:136
+    - tests/classes/type_hinting_004.phpt:141
+
 message_only:bbbd9425eecd10c52079a0b51aed62e80633f85c
   count: 2
   representative: Zend/tests/generators/generator_throwing_during_function_call.phpt:23
@@ -918,6 +934,15 @@ message_only:d052b6ac266a0003a7a5fc110502d03fd9364578
   duplicates:
     - ext/standard/tests/file/file_error.phpt:18
 
+message_only:d79505347b3f8c1792eb386cdb36916fdc6e93b2
+  count: 2
+  representative: Zend/tests/methods-on-non-objects-catch.phpt:13
+  family: message_only
+  safety: canonicalizable
+  first statement: var_dump($e->getCode(), $e->getMessage());
+  duplicates:
+    - Zend/tests/methods-on-non-objects-usort.phpt:15
+
 message_only:ddbdfecc9307fe468ab9d75109eee17cb5869bd3
   count: 6
   representative: ext/com_dotnet/tests/variants.phpt:37
@@ -939,31 +964,6 @@ message_only:ded429edd68d51d3df17dd6c275b9904b96ccaaf
   first statement: echo 'PDOException message: ' . $e->getMessage() . "\n";
   duplicates:
     - manual_015/old.phpt:9
-
-message_only:e46062ddabb913d5065299ce17326448faa6446c
-  count: 18
-  representative: tests/classes/type_hinting_004.phpt:17
-  family: message_only
-  safety: descriptive_context
-  first statement: echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
-  duplicates:
-    - tests/classes/type_hinting_004.phpt:22
-    - tests/classes/type_hinting_004.phpt:27
-    - tests/classes/type_hinting_004.phpt:32
-    - tests/classes/type_hinting_004.phpt:37
-    - tests/classes/type_hinting_004.phpt:42
-    - tests/classes/type_hinting_004.phpt:66
-    - tests/classes/type_hinting_004.phpt:71
-    - tests/classes/type_hinting_004.phpt:76
-    - tests/classes/type_hinting_004.phpt:81
-    - tests/classes/type_hinting_004.phpt:86
-    - tests/classes/type_hinting_004.phpt:91
-    - tests/classes/type_hinting_004.phpt:116
-    - tests/classes/type_hinting_004.phpt:121
-    - tests/classes/type_hinting_004.phpt:126
-    - tests/classes/type_hinting_004.phpt:131
-    - tests/classes/type_hinting_004.phpt:136
-    - tests/classes/type_hinting_004.phpt:141
 
 message_only:e8b3afad693a6d862bf3363ca0182e4f0c9f2940
   count: 2

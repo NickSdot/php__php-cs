@@ -324,24 +324,6 @@ Zend/tests/attributes/delayed_target_validation/has_runtime_errors.phpt:69
     71 }
     72
 
-ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
-  origin: php_src
-  family: class_message
-  safety: descriptive_context
-  expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
-  echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
-
-    10 try {
-    11     var_dump($c->getLeastMaximum(-1));
-    12 } catch (Error $e) {
->   13     echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
-    14 }
-    15 try {
-    16     var_dump($c->getMaximum(-1));
-
 ext/opcache/tests/jit/mod_001.phpt:29
   fingerprint: class_message:e109af70b13abb22587cfb0aa98ab32c77949bb4
   origin: php_src
@@ -377,6 +359,24 @@ Zend/tests/arg_unpack/invalid_type.phpt:13
     14 }
     15 try {
     16     test(...42);
+
+ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
+  origin: php_src
+  family: class_message
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
+
+    10 try {
+    11     var_dump($c->getLeastMaximum(-1));
+    12 } catch (Error $e) {
+>   13     echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
+    14 }
+    15 try {
+    16     var_dump($c->getMaximum(-1));
 
 Zend/tests/attributes/deprecated/class_constants/deprecated_constant_as_message_002.phpt:24
   fingerprint: message_only:003e3f4de4ac26286d48cef53d931035386c750e
@@ -540,24 +540,6 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:72
     74
     75 ?>
 
-Zend/tests/methods-on-non-objects-catch.phpt:13
-  fingerprint: message_only:0ee545d0d92e5f915dbe3bd1d1d93ab058897975
-  origin: php_src
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECTF
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_MethodCall) exception_message
-  var_dump($e->getCode(), $e->getMessage());
-
-    10 try {
-    11     var_dump($x->method());
-    12 } catch (Error $e) {
->   13   var_dump($e->getCode(), $e->getMessage());
-    14 }
-    15 echo "Alive\n";
-    16 ?>
-
 ext/phar/tests/phar_metadata_write4.phpt:58
   fingerprint: message_only:0f3444b319aa6b82bb6a6e57e3e5380d1ebf1b99
   origin: php_src
@@ -702,6 +684,24 @@ ext/fileinfo/tests/finfo_open_003.phpt:14
     16 ?>
     17
 
+ext/dom/tests/modern/xml/XMLDocument_xpath.phpt:49
+  fingerprint: message_only:217db8535c24a2cb17c8523ceb22ffacd5c05012
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECT
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_code literal:colon_separator exception_message newline
+  echo $e->getCode(), ": ", $e->getMessage(), "\n";
+
+    46 try {
+    47     var_dump($xpath->evaluate("//*/namespace::*"));
+    48 } catch (DOMException $e) {
+>   49     echo $e->getCode(), ": ", $e->getMessage(), "\n";
+    50 }
+    51
+    52 ?>
+
 ext/hash/tests/hash_serialize_003.phpt:240
   fingerprint: message_only:22b54e72685d40d9821d145fcb1ad5ae00e71c77
   origin: php_src
@@ -845,24 +845,6 @@ Zend/tests/assert/bug71922.phpt:14
     15 }
     16
     17 ?>
-
-ext/dom/tests/modern/xml/XMLDocument_xpath.phpt:49
-  fingerprint: message_only:2f6b4442a8d1300e05eaa3d95664f6e679b16806
-  origin: php_src
-  family: message_only
-  safety: unsupported_expression
-  expected: EXPECT
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message newline
-  echo $e->getCode(), ": ", $e->getMessage(), "\n";
-
-    46 try {
-    47     var_dump($xpath->evaluate("//*/namespace::*"));
-    48 } catch (DOMException $e) {
->   49     echo $e->getCode(), ": ", $e->getMessage(), "\n";
-    50 }
-    51
-    52 ?>
 
 ext/spl/tests/heap_corruption.phpt:58
   fingerprint: message_only:454642b4f16235f0308b22a8be8518ff51ac31db
@@ -1674,6 +1656,24 @@ ext/spl/tests/SplHeap_serialize_error_handling.phpt:40
     42 }
     43
 
+tests/classes/type_hinting_004.phpt:17
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
+  origin: php_src
+  family: message_only
+  safety: descriptive_context
+  expected: EXPECTF
+  reason: contains descriptive context that must not be dropped
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
+
+    14   try {
+    15     call_user_func('f1', 1);
+    16   } catch (Error $ex) {
+>   17     echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
+    18   }
+    19   try {
+    20     call_user_func('f1', new A);
+
 ext/spl/tests/heap_corruption.phpt:51
   fingerprint: message_only:bb4b1445c929ad8a92165195de1316acc9893816
   origin: php_src
@@ -1872,6 +1872,24 @@ ext/standard/tests/file/file_error.phpt:13
     15 try {
     16     var_dump( file($filename, FILE_APPEND) );  //  Incorrect flag
 
+Zend/tests/methods-on-non-objects-catch.phpt:13
+  fingerprint: message_only:d79505347b3f8c1792eb386cdb36916fdc6e93b2
+  origin: php_src
+  family: message_only
+  safety: canonicalizable
+  expected: EXPECTF
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_code exception_message
+  var_dump($e->getCode(), $e->getMessage());
+
+    10 try {
+    11     var_dump($x->method());
+    12 } catch (Error $e) {
+>   13   var_dump($e->getCode(), $e->getMessage());
+    14 }
+    15 echo "Alive\n";
+    16 ?>
+
 ext/tokenizer/tests/token_get_all_heredoc_nowdoc.phpt:18
   fingerprint: message_only:d94734ff16c1b662d68cb934422748987d1f4c5f
   origin: php_src
@@ -1961,24 +1979,6 @@ ext/spl/tests/bug73629.phpt:9
     10 }
     11 try {
     12     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
-
-tests/classes/type_hinting_004.phpt:17
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
-  origin: php_src
-  family: message_only
-  safety: descriptive_context
-  expected: EXPECTF
-  reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
-  echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
-
-    14   try {
-    15     call_user_func('f1', 1);
-    16   } catch (Error $ex) {
->   17     echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
-    18   }
-    19   try {
-    20     call_user_func('f1', new A);
 
 ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt:26
   fingerprint: message_only:e54b33988ec2fd1a67b9a2626fcf97959e839e53

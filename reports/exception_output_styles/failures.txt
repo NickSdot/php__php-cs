@@ -1,4 +1,4 @@
 # Fixture generation failures
 
 - Zend_tests_closures_closure_instantiate: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Closures cannot be instantiated directly [Zend/tests/closures/closure_instantiate.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
-- ext_dom_tests_DOMElement_className: rewrite failed verification: rewritten test did not pass and no .out file was produced (BORK missing section --EXPECT--, --EXPECTF-- or --EXPECTREGEX-- [ext/dom/tests/DOMElement_className.phpt])
+- ext_dom_tests_DOMElement_className: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL DOMElement::className [ext/dom/tests/DOMElement_className.phpt]): expected output did not match a canonical exception-output rewrite; expected 10 line(s), actual 1 line(s)

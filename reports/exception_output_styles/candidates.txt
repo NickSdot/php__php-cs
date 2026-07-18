@@ -13051,13 +13051,13 @@ Zend/tests/methods-on-non-objects-call-user-func.phpt:9
     12
 
 Zend/tests/methods-on-non-objects-catch.phpt:13
-  fingerprint: message_only:0ee545d0d92e5f915dbe3bd1d1d93ab058897975
+  fingerprint: message_only:d79505347b3f8c1792eb386cdb36916fdc6e93b2
   origin: php_src
   family: message_only
-  safety: unsupported_expression
+  safety: canonicalizable
   expected: EXPECTF
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_MethodCall) exception_message
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_code exception_message
   var_dump($e->getCode(), $e->getMessage());
 
     10 try {
@@ -13069,13 +13069,13 @@ Zend/tests/methods-on-non-objects-catch.phpt:13
     16 ?>
 
 Zend/tests/methods-on-non-objects-usort.phpt:15
-  fingerprint: message_only:0ee545d0d92e5f915dbe3bd1d1d93ab058897975
+  fingerprint: message_only:d79505347b3f8c1792eb386cdb36916fdc6e93b2
   origin: php_src
   family: message_only
-  safety: unsupported_expression
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_MethodCall) exception_message
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_code exception_message
   var_dump($e->getCode(), $e->getMessage());
 
     12   try {
@@ -38326,13 +38326,13 @@ ext/dom/tests/modern/xml/XMLDocument_fromString_03.phpt:15
     18 foreach ($flags as $flag) {
 
 ext/dom/tests/modern/xml/XMLDocument_xpath.phpt:49
-  fingerprint: message_only:2f6b4442a8d1300e05eaa3d95664f6e679b16806
+  fingerprint: message_only:217db8535c24a2cb17c8523ceb22ffacd5c05012
   origin: php_src
   family: message_only
-  safety: unsupported_expression
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains an unsupported expression shape
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_code literal:colon_separator exception_message newline
   echo $e->getCode(), ": ", $e->getMessage(), "\n";
 
     46 try {
@@ -50888,13 +50888,13 @@ ext/intl/tests/calendar_getWeekendTransition_error.phpt:13
     16 ?>
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     10 try {
@@ -50906,13 +50906,13 @@ ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:13
     16     var_dump($c->getMaximum(-1));
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:18
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     15 try {
@@ -50924,13 +50924,13 @@ ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:18
     21     var_dump($c->getGreatestMinimum(-1));
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:23
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     20 try {
@@ -50942,13 +50942,13 @@ ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:23
     26     var_dump($c->getMinimum(-1));
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:28
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     25 try {
@@ -50960,13 +50960,13 @@ ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:28
     31 try {
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:34
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     31 try {
@@ -50978,13 +50978,13 @@ ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:34
     37     var_dump(intlcal_get_maximum($c, -1));
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:39
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     36 try {
@@ -50996,13 +50996,13 @@ ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:39
     42     var_dump(intlcal_get_greatest_minimum($c, -1));
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:44
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     41 try {
@@ -51014,13 +51014,13 @@ ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:44
     47     var_dump(intlcal_get_minimum($c, -1));
 
 ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt:49
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     46 try {
@@ -51086,13 +51086,13 @@ ext/intl/tests/calendar_get_getActualMaximum_Minumum_error.phpt:23
     26 ?>
 
 ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:13
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     10 try {
@@ -51104,13 +51104,13 @@ ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:13
     16     var_dump(intlcal_get_actual_maximum($c, -1));
 
 ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:18
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     15 try {
@@ -51122,13 +51122,13 @@ ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:18
     21     var_dump(intlcal_get_actual_minimum($c, -1));
 
 ext/intl/tests/calendar_get_getActualMaximum_Minumum_error2.phpt:23
-  fingerprint: class_message:d3b3b9ee336a86b1be93fb8973703a968754459b
+  fingerprint: class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
   origin: php_src
   family: class_message
-  safety: descriptive_context
+  safety: canonicalizable
   expected: EXPECT
-  reason: contains descriptive context that must not be dropped
-  parts: exception_class(get_class) literal:colon_separator unknown(Expr_MethodCall) literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
+  reason: safe candidate for a canonical exception-output family
+  parts: exception_class(get_class) literal:colon_separator exception_code literal:d3bc9a378daaa1dddba1b19c1aa641d3e9683c46 exception_message newline
   echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
 
     20 try {
@@ -120999,13 +120999,13 @@ tests/classes/tostring_004.phpt:49
     52 ?>
 
 tests/classes/type_hinting_004.phpt:17
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     14   try {
@@ -121017,13 +121017,13 @@ tests/classes/type_hinting_004.phpt:17
     20     call_user_func('f1', new A);
 
 tests/classes/type_hinting_004.phpt:22
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     19   try {
@@ -121035,13 +121035,13 @@ tests/classes/type_hinting_004.phpt:22
     25     call_user_func('f2', 1);
 
 tests/classes/type_hinting_004.phpt:27
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     24   try {
@@ -121053,13 +121053,13 @@ tests/classes/type_hinting_004.phpt:27
     30     call_user_func('f2');
 
 tests/classes/type_hinting_004.phpt:32
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     29   try {
@@ -121071,13 +121071,13 @@ tests/classes/type_hinting_004.phpt:32
     35     call_user_func('f2', new A);
 
 tests/classes/type_hinting_004.phpt:37
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     34   try {
@@ -121089,13 +121089,13 @@ tests/classes/type_hinting_004.phpt:37
     40     call_user_func('f2', null);
 
 tests/classes/type_hinting_004.phpt:42
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     39   try {
@@ -121107,13 +121107,13 @@ tests/classes/type_hinting_004.phpt:42
     45   echo "\n\n---> Type hints with callback static method:\n";
 
 tests/classes/type_hinting_004.phpt:66
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     63   try {
@@ -121125,13 +121125,13 @@ tests/classes/type_hinting_004.phpt:66
     69     call_user_func(array('C', 'f1'), new A);
 
 tests/classes/type_hinting_004.phpt:71
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     68   try {
@@ -121143,13 +121143,13 @@ tests/classes/type_hinting_004.phpt:71
     74     call_user_func(array('C', 'f2'), 1);
 
 tests/classes/type_hinting_004.phpt:76
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     73   try {
@@ -121161,13 +121161,13 @@ tests/classes/type_hinting_004.phpt:76
     79     call_user_func(array('C', 'f2'));
 
 tests/classes/type_hinting_004.phpt:81
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     78   try {
@@ -121179,13 +121179,13 @@ tests/classes/type_hinting_004.phpt:81
     84     call_user_func(array('C', 'f2'), new A);
 
 tests/classes/type_hinting_004.phpt:86
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     83   try {
@@ -121197,13 +121197,13 @@ tests/classes/type_hinting_004.phpt:86
     89     call_user_func(array('C', 'f2'), null);
 
 tests/classes/type_hinting_004.phpt:91
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
     88   try {
@@ -121215,13 +121215,13 @@ tests/classes/type_hinting_004.phpt:91
     94   echo "\n\n---> Type hints with callback instance method:\n";
 
 tests/classes/type_hinting_004.phpt:116
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
    113   try {
@@ -121233,13 +121233,13 @@ tests/classes/type_hinting_004.phpt:116
    119     call_user_func(array($d, 'f1'), new A);
 
 tests/classes/type_hinting_004.phpt:121
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
    118   try {
@@ -121251,13 +121251,13 @@ tests/classes/type_hinting_004.phpt:121
    124     call_user_func(array($d, 'f2'), 1);
 
 tests/classes/type_hinting_004.phpt:126
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
    123   try {
@@ -121269,13 +121269,13 @@ tests/classes/type_hinting_004.phpt:126
    129     call_user_func(array($d, 'f2'));
 
 tests/classes/type_hinting_004.phpt:131
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
    128   try {
@@ -121287,13 +121287,13 @@ tests/classes/type_hinting_004.phpt:131
    134     call_user_func(array($d, 'f2'), new A);
 
 tests/classes/type_hinting_004.phpt:136
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
    133   try {
@@ -121305,13 +121305,13 @@ tests/classes/type_hinting_004.phpt:136
    139     call_user_func(array($d, 'f2'), null);
 
 tests/classes/type_hinting_004.phpt:141
-  fingerprint: message_only:e46062ddabb913d5065299ce17326448faa6446c
+  fingerprint: message_only:b5c4f1aa3ad6119441cc675b2cc4a0405801bf21
   origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECTF
   reason: contains descriptive context that must not be dropped
-  parts: unknown(Expr_MethodCall) literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
+  parts: exception_code literal:colon_separator exception_message literal:fc02e199eaa2a6900aec454ad22baa13b6e8f8e6 exception_file literal:28ed3a797da3c48c309a4ef792147f3c56cfec40 exception_line literal:f489a4d1c3e2f805d23e28b706d80b654810b2ac
   echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
 
    138   try {

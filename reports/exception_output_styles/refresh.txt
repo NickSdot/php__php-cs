@@ -1,16 +1,14 @@
 # Fixture refresh
 
 Refresh-only run: no
-Updated new/diff pairs: 3
-Stale existing new/diff pairs kept: 10
-Old-only fixture files: 13
+Updated new/diff pairs: 0
+Stale existing new/diff pairs kept: 9
+Old-only fixture files: 1
 Failures: 2
 
 ## Updated pairs
 
-- ext_reflection_tests_ReflectionProperty_getMangledName_dynamic
-- ext_spl_tests_bug73629
-- manual_015
+- none
 
 ## Stale existing pairs kept
 
@@ -18,7 +16,6 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 
 - Zend_tests_pipe_operator_oss_fuzz_427814452
 - Zend_tests_type_declarations_typed_properties_076
-- ext_dom_tests_modern_xml_XMLDocument_xpath
 - ext_hash_tests_hash_serialize_003
 - ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
 - ext_reflection_tests_ReflectionProperty_getMangledName_instance
@@ -29,21 +26,9 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 
 ## Old-only fixtures
 
-- Zend_tests_closures_closure_from_callable_error
-- Zend_tests_exceptions_bug50383
 - Zend_tests_exceptions_bug60569
-- Zend_tests_methods_on_non_objects_catch
-- Zend_tests_type_coercion_gh22112
-- ext_bcmath_tests_bcscale_variation001
-- ext_dom_tests_modern_spec_Document_createAttributeNS
-- ext_dom_tests_modern_xml_gh22570
-- ext_intl_tests_calendar_get_Least_Greatest_Minimum_Maximum_error
-- ext_intl_tests_calendar_uninitialized_argument_position
-- ext_spl_tests_gh16217
-- ext_standard_tests_strings_printf_64bit
-- ext_standard_tests_strings_strpos
 
 ## Failures
 
 - Zend_tests_closures_closure_instantiate: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Closures cannot be instantiated directly [Zend/tests/closures/closure_instantiate.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
-- ext_dom_tests_DOMElement_className: rewrite failed verification: rewritten test did not pass and no .out file was produced (BORK missing section --EXPECT--, --EXPECTF-- or --EXPECTREGEX-- [ext/dom/tests/DOMElement_className.phpt])
+- ext_dom_tests_DOMElement_className: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL DOMElement::className [ext/dom/tests/DOMElement_className.phpt]): expected output did not match a canonical exception-output rewrite; expected 10 line(s), actual 1 line(s)
