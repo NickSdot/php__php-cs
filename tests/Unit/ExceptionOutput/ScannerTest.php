@@ -194,6 +194,27 @@ final class ScannerTest extends TestCase
         self::assertSame('echo $e->getMessage() . "\n";', $candidates[0]->statement);
     }
 
+    public function testReportsFullStatementAfterUtf8BytesBeforeCatchOutput(): void
+    {
+        $root = $this->makeTempDir();
+        $apostrophe = "\xE2\x80\x99";
+        $source = $this->writeRawPhpt($root, 'utf8.phpt', <<<PHP
+            <?php
+            echo "Can{$apostrophe}t";
+
+            try {
+                throw new RuntimeException('inside');
+            } catch (Throwable \$e) {
+                echo "  ", \$e->getMessage(), "\\n", \$e->getTraceAsString();
+            }
+            PHP);
+
+        $candidates = new Scanner()->scan([$source], $root);
+
+        self::assertCount(1, $candidates);
+        self::assertSame('echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();', $candidates[0]->statement);
+    }
+
     private function writePhpt(string $root, string $name, string $statement): string
     {
         $path = $root . '/' . $name;

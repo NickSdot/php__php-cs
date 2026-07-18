@@ -308,15 +308,15 @@ final readonly class CanonicalPlanner
             return null;
         }
 
-        $source = mb_substr($code, $output->startOffset, $output->endOffset - $output->startOffset);
+        $source = mb_substr($code, $output->startOffset, $output->endOffset - $output->startOffset, '8bit');
         $trimmed = mb_rtrim($source);
 
         if (!str_ends_with($trimmed, ';')) {
             return null;
         }
 
-        $tail = mb_substr($source, mb_strlen($trimmed));
-        $replacement = mb_substr($trimmed, 0, -1) . ', \PHP_EOL;' . $tail;
+        $tail = mb_substr($source, mb_strlen($trimmed, '8bit'), null, '8bit');
+        $replacement = mb_substr($trimmed, 0, -1, '8bit') . ', \PHP_EOL;' . $tail;
 
         return new TextEdit(
             startOffset: $output->startOffset,

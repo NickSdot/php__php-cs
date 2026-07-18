@@ -9,6 +9,7 @@ use InternalsCS\TextEdit;
 use PHPUnit\Framework\TestCase;
 
 use function mb_substr;
+use function str_replace;
 use function usort;
 
 final class CanonicalPlannerTest extends TestCase
@@ -811,6 +812,30 @@ final class CanonicalPlannerTest extends TestCase
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
+    public function testPlansRewriteAfterUtf8BytesBeforeCatchOutput(): void
+    {
+        $code = str_replace('{APOSTROPHE}', "\xE2\x80\x99", <<<'PHP'
+            <?php
+            $message = "Can{APOSTROPHE}t";
+
+            try {
+                throw new Exception('x');
+            } catch (Exception $e) {
+                echo $e->getMessage(), "\n";
+            }
+            PHP);
+
+        $plans = new CanonicalPlanner()->plans($code);
+        $fixed = self::applyPlans($code, $plans);
+
+        self::assertCount(1, $plans);
+        self::assertStringContainsString(
+            "echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;",
+            $fixed,
+        );
+        self::assertStringNotContainsString('ho $e->getMessage()', $fixed);
+    }
+
     public function testDoesNotPlanDescriptiveContextRewrite(): void
     {
         $code = <<<'PHP'
@@ -831,9 +856,9 @@ final class CanonicalPlannerTest extends TestCase
         usort($plans, fn(TextEdit $a, TextEdit $b): int => $b->startOffset <=> $a->startOffset);
 
         foreach ($plans as $plan) {
-            $code = mb_substr($code, 0, $plan->startOffset)
+            $code = mb_substr($code, 0, $plan->startOffset, '8bit')
                 . $plan->replacement
-                . mb_substr($code, $plan->endOffset);
+                . mb_substr($code, $plan->endOffset, null, '8bit');
         }
 
         return $code;

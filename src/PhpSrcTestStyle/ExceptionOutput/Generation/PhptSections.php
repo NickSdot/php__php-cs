@@ -41,13 +41,13 @@ final readonly class PhptSections
                 continue;
             }
 
-            $contentStart = $matches[0][$i][1] + mb_strlen($matches[0][$i][0]);
-            $contentEnd = $i + 1 < $count ? $matches[0][$i + 1][1] : mb_strlen($contents);
+            $contentStart = $matches[0][$i][1] + mb_strlen($matches[0][$i][0], '8bit');
+            $contentEnd = $i + 1 < $count ? $matches[0][$i + 1][1] : mb_strlen($contents, '8bit');
 
             return new PhptSection(
                 name: $name,
-                contents: mb_substr($contents, $contentStart, $contentEnd - $contentStart),
-                startLine: mb_substr_count(mb_substr($contents, 0, $contentStart), "\n") + 1,
+                contents: mb_substr($contents, $contentStart, $contentEnd - $contentStart, '8bit'),
+                startLine: mb_substr_count(mb_substr($contents, 0, $contentStart, '8bit'), "\n", '8bit') + 1,
             );
         }
 

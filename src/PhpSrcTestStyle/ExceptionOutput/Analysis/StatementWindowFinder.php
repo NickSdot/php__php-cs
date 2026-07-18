@@ -108,7 +108,7 @@ final readonly class StatementWindowFinder
             endOffset: $end,
             startLine: $statement->getStartLine(),
             endLine: $statement->getEndLine(),
-            statement: mb_trim(mb_substr($code, $start, $end - $start + 1)),
+            statement: mb_trim(mb_substr($code, $start, $end - $start + 1, '8bit')),
             parts: $parts,
         );
     }
