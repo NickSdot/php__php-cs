@@ -1,0 +1,16 @@
+--- old.phpt
++++ new.phpt
+@@ -10,11 +10,10 @@
+ try {
+     var_dump($x->method());
+ } catch (Error $e) {
+-  var_dump($e->getCode(), $e->getMessage());
++  echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+ }
+ echo "Alive\n";
+ ?>
+ --EXPECTF--
+-int(0)
+-string(%d) "Call to a member function method() on null"
++Error: 0: Call to a member function method() on null
+ Alive
