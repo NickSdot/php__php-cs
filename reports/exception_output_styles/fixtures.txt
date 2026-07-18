@@ -280,7 +280,7 @@ Zend/tests/type_declarations/scalar_return_basic_64bit.phpt
     - line 58: message_only message_only:2e9049a84007173882ed62fac7cf85bc37533f61
 
 Zend/tests/type_declarations/typed_properties_076.phpt
-  state: handled
+  state: stale_pair
   fixture: Zend_tests_type_declarations_typed_properties_076
   first line: 40
   flavours covered: 1
@@ -387,7 +387,7 @@ ext/hash/tests/hash_hkdf_edges.phpt
     - line 19: message_only message_only:fbe5792845ba8cf33414abecc25ac1503cfc9127
 
 ext/hash/tests/hash_serialize_003.phpt
-  state: handled
+  state: stale_pair
   fixture: ext_hash_tests_hash_serialize_003
   first line: 240
   flavours covered: 1
@@ -539,7 +539,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt
     - line 71: message_only message_only:148a618e7ced665c3a3a27f8d419d9079d8521c2
 
 ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt
-  state: handled
+  state: stale_pair
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
   first line: 44
   flavours covered: 2
@@ -547,7 +547,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt
     - line 52: message_only message_only:ad310bfa9fc6bc722018b51dba552a12f14ca4dc
 
 ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt
-  state: handled
+  state: stale_pair
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_instance
   first line: 26
   flavours covered: 2
@@ -555,7 +555,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt
     - line 48: message_only message_only:10a1e8ff201331c1b4f513353f78066198c27cd6
 
 ext/reflection/tests/internal_parameter_default_value/check_all.phpt
-  state: handled
+  state: stale_pair
   fixture: ext_reflection_tests_internal_parameter_default_value_check_all
   first line: 12
   flavours covered: 1
@@ -616,7 +616,7 @@ ext/spl/tests/SplHeap_serialize_corrupted.phpt
     - line 59: message_only message_only:62a03fb73ac565c5d674e6116e07f530dc2283ae
 
 ext/spl/tests/SplHeap_serialize_error_handling.phpt
-  state: handled
+  state: stale_pair
   fixture: ext_spl_tests_SplHeap_serialize_error_handling
   first line: 40
   flavours covered: 2
@@ -651,7 +651,7 @@ ext/spl/tests/gh16217.phpt
     - line 26: message_only message_only:044551d978b7135ee381f7feffc185c017be5594
 
 ext/spl/tests/heap_corruption.phpt
-  state: handled
+  state: stale_pair
   fixture: ext_spl_tests_heap_corruption
   first line: 51
   flavours covered: 2
@@ -774,7 +774,7 @@ tests/classes/destructor_and_exceptions.phpt
     - line 49: message_only message_only:717f056961a2cf9ce94c906d5dcd6e00288a0606
 
 tests/classes/type_hinting_004.phpt
-  state: handled
+  state: stale_pair
   fixture: tests_classes_type_hinting_004
   first line: 17
   flavours covered: 1

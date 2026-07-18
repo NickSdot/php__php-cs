@@ -110,7 +110,7 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($phpSrc);
         mkdir($fixtures . '/case');
         file_put_contents($fixtures . '/case/old.phpt', "old\n");
-        file_put_contents($reports . '/queue.txt', "existing queue\n");
+        file_put_contents($reports . '/stats.md', "existing stats\n");
 
         $result = $this->generator()->generate(new FixtureGenerationOptions(
             sourceRoot: $phpSrc,
@@ -140,7 +140,7 @@ final class FixtureGeneratorTest extends TestCase
         self::assertSame("old\n", file_get_contents($fixtures . '/case/old.phpt'));
         self::assertSame("new\n", file_get_contents($fixtures . '/case/new.phpt'));
         self::assertTrue(is_file($fixtures . '/case/ran.diff'));
-        self::assertSame("existing queue\n", file_get_contents($reports . '/queue.txt'));
+        self::assertSame("existing stats\n", file_get_contents($reports . '/stats.md'));
         self::assertStringContainsString('- case', (string) file_get_contents($reports . '/refresh.txt'));
     }
 
@@ -183,14 +183,14 @@ final class FixtureGeneratorTest extends TestCase
         self::assertTrue(is_file($fixtures . '/case/ran.diff'));
         self::assertTrue(is_file($reports . '/refresh.txt'));
         self::assertMatchesRegularExpression(
-            '/\| Scanned PHPT files\s+\|\s+1\s+\|/',
+            '/\| Scanned source files\s+\|\s+1\s+\|/',
             (string) file_get_contents($reports . '/stats.md'),
         );
         self::assertMatchesRegularExpression(
             '/\| Status\s+\| Flavour\s+\| Fixture\s+\| Detail\s+\| Fingerprint\s+\|/',
             (string) file_get_contents($reports . '/stats.md'),
         );
-        self::assertStringContainsString('source.phpt', (string) file_get_contents($reports . '/queue.txt'));
+        self::assertStringContainsString('source.phpt', (string) file_get_contents($reports . '/stats.md'));
     }
 
     public function testWriteRunReportsPostRefreshHandledFixtureState(): void
@@ -203,6 +203,7 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($reports);
         mkdir($phpSrc);
         mkdir($fixtures . '/source');
+        file_put_contents($phpSrc . '/run-tests.php', '<?php');
 
         $sourcePath = $this->writeSourcePhpt($phpSrc, 'source.phpt', 'echo $e->getMessage(), "\n";');
         file_put_contents($fixtures . '/source/old.phpt', (string) file_get_contents($sourcePath));
@@ -231,6 +232,46 @@ final class FixtureGeneratorTest extends TestCase
             '/\| open\s+\|\s+0\s+\|/',
             (string) file_get_contents($reports . '/stats.md'),
         );
+    }
+
+    public function testWriteRunReportsStaleFixturePairsAsOpen(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+        mkdir($fixtures . '/source');
+        file_put_contents($phpSrc . '/run-tests.php', '<?php');
+
+        $sourcePath = $this->writeSourcePhpt($phpSrc, 'source.phpt', 'echo $e->getMessage(), "\n";');
+        file_put_contents($fixtures . '/source/old.phpt', (string) file_get_contents($sourcePath));
+        file_put_contents($fixtures . '/source/new.phpt', "new\n");
+        file_put_contents($fixtures . '/source/ran.diff', "diff\n");
+
+        $this->generator()->generate(new FixtureGenerationOptions(
+            sourceRoot: PhpSrcRoot::fromPath($phpSrc)->path,
+            fixturesDir: $fixtures,
+            reportsDir: $reports,
+            paths: [],
+            excludedRoots: [
+                $fixtures,
+            ],
+            extensions: ['phpt'],
+            runner: new NoopFixtureRewriteRunner(),
+            allowDirty: false,
+            sourceDirty: false,
+            write: true,
+            refreshOnly: false,
+        ));
+
+        self::assertMatchesRegularExpression(
+            '/\| open\s+\|\s+1\s+\|/',
+            (string) file_get_contents($reports . '/stats.md'),
+        );
+        self::assertStringContainsString('stale_pair_kept; source.phpt:8', (string) file_get_contents($reports . '/stats.md'));
     }
 
     public function testWriteRunSelectsNextSourceWhenFirstRepresentativeDoesNotRun(): void

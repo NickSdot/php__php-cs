@@ -333,7 +333,7 @@ message_only:00cf8f17f03acf0e463dfd81c41695aad1a33894
     - +47 more
 
 message_only:02e1260470d1a0436b6b0813de22b405065abd5c
-  count: 2084
+  count: 2096
   representative: Zend/tests/array_literal_next_element_error.phpt:11
   family: message_only
   safety: canonicalizable
@@ -359,7 +359,7 @@ message_only:02e1260470d1a0436b6b0813de22b405065abd5c
     - Zend/tests/assign_dim_obj_null_return.phpt:55
     - Zend/tests/assign_dim_obj_null_return.phpt:61
     - Zend/tests/assign_dim_obj_null_return.phpt:66
-    - +2063 more
+    - +2075 more
 
 message_only:0713801e5e64601b8aa6f0b4b6e42917b9e6ff48
   count: 6
@@ -422,7 +422,7 @@ message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86
     - manual_014/old.phpt:8
 
 message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
-  count: 2390
+  count: 2393
   representative: Zend/tests/access_modifiers/access_modifiers_008.phpt:36
   family: message_only
   safety: canonicalizable
@@ -448,7 +448,7 @@ message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
     - Zend/tests/bug72038.phpt:16
     - Zend/tests/bug80972.phpt:32
     - Zend/tests/constant_arrays.phpt:37
-    - +2369 more
+    - +2372 more
 
 message_only:2e9049a84007173882ed62fac7cf85bc37533f61
   count: 2
@@ -726,7 +726,7 @@ message_only:9662d106e3caf68a258fb67957b19f856566fe28
   representative: ext/dom/tests/DOMElement_className.phpt:31
   family: message_only
   safety: canonicalizable
-  first statement: cho "Error: ", $e->getMessage(), "\n";
+  first statement: echo "Error: ", $e->getMessage(), "\n";
   duplicates:
     - ext/dom/tests/DOMElement_id.phpt:32
     - ext/standard/tests/general_functions/type.phpt:53
@@ -975,7 +975,7 @@ message_only:e8b3afad693a6d862bf3363ca0182e4f0c9f2940
     - ext/reflection/tests/ReflectionProperty_getMangledName_hooks.phpt:35
 
 message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
-  count: 392
+  count: 396
   representative: Zend/tests/assert/expect_015.phpt:23
   family: message_only
   safety: canonicalizable
@@ -1001,7 +1001,7 @@ message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
     - Zend/tests/clone/ast.phpt:78
     - Zend/tests/exit/die_string_cast_exception.phpt:9
     - Zend/tests/function_arguments/sensitive_parameter_correctly_captures_original.phpt:18
-    - +371 more
+    - +375 more
 
 message_only:fbe96e8a08edd676397a88d9c6d3f809c0bdaac5
   count: 3

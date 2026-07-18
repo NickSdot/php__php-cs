@@ -14,12 +14,11 @@ use InternalsCS\Fixture\FixtureSource;
 use InternalsCS\Fixture\FixtureWriteResult;
 use InternalsCS\Support\FileSystem;
 
+use function array_fill_keys;
 use function array_filter;
 use function array_slice;
 use function array_values;
-use function basename;
 use function count;
-use function glob;
 use function implode;
 use function ksort;
 use function max;
@@ -27,7 +26,6 @@ use function mb_rtrim;
 use function mb_str_pad;
 use function mb_strlen;
 use function preg_replace;
-use function sort;
 use function str_ends_with;
 use function str_repeat;
 use function str_replace;
@@ -53,18 +51,13 @@ final readonly class FixtureReportWriter implements FixtureReporter
         $this->files->ensureDirectory($reportsDir, 'report directory');
 
         $flavours = $this->candidateGroups($selection->flavours);
-        $fixtureStates = $this->fixtureStates($fixturesDir, $selection->fixtures, $writeResults);
+        $fixtureStates = $this->fixtureStates($fixturesDir, $selection->fixtures, $writeResults, $result);
         $flavourStates = $this->flavourStates($selection, $flavours, $fixtureStates);
         $duplicateGroups = $this->duplicateGroups($flavours);
-        $extras = $this->extraFixtureDirs($fixturesDir, $selection->fixtures);
-        $legacyDuplicates = $this->legacyDuplicateDirs($extras, $selection->fixtures);
 
-        $this->writeFile($reportsDir . '/stats.md', $this->renderStats($result, $fixtureStates, $flavourStates, $duplicateGroups, $extras, $legacyDuplicates));
-        $this->writeFile($reportsDir . '/queue.txt', $this->renderQueue($flavourStates));
-        $this->writeFile($reportsDir . '/handled.txt', $this->renderHandled($flavourStates));
+        $this->writeFile($reportsDir . '/stats.md', $this->renderStats($result, $flavourStates, $duplicateGroups));
         $this->writeFile($reportsDir . '/duplicates.txt', $this->renderDuplicates($duplicateGroups));
         $this->writeFile($reportsDir . '/fixtures.txt', $this->renderFixtures($fixtureStates));
-        $this->writeFile($reportsDir . '/flavours.txt', $this->renderFlavourCandidates($flavours));
         $this->writeFile($reportsDir . '/failures.txt', $this->renderFailures($result, $fixturesDir));
         $this->writeRefresh($reportsDir, $fixturesDir, $result);
     }
@@ -80,8 +73,14 @@ final readonly class FixtureReportWriter implements FixtureReporter
      * @param array<string, FixtureWriteResult> $writeResults
      * @return list<array{fixture: FixtureSource, dir: string, state: string}>
      */
-    private function fixtureStates(string $fixturesDir, array $fixtures, array $writeResults): array
-    {
+    private function fixtureStates(
+        string $fixturesDir,
+        array $fixtures,
+        array $writeResults,
+        FixtureGenerationResult $result,
+    ): array {
+        $staleCases = array_fill_keys($result->stalePairCases, true);
+        $oldOnlyCases = array_fill_keys($result->oldOnlyCases, true);
         $states = [];
 
         foreach ($fixtures as $fixture) {
@@ -92,17 +91,34 @@ final readonly class FixtureReportWriter implements FixtureReporter
             $states[] = [
                 'fixture' => $fixture,
                 'dir' => $dir,
-                'state' => $this->stateAfterWrite($fileState, $write),
+                'state' => $this->stateAfterRun($dir, $fileState, $write, $staleCases, $oldOnlyCases),
             ];
         }
 
         return $states;
     }
 
-    private function stateAfterWrite(string $fileState, ?FixtureWriteResult $write): string
-    {
+    /**
+     * @param array<string, true> $staleCases
+     * @param array<string, true> $oldOnlyCases
+     */
+    private function stateAfterRun(
+        string $dir,
+        string $fileState,
+        ?FixtureWriteResult $write,
+        array $staleCases,
+        array $oldOnlyCases,
+    ): string {
         if (null !== $write?->failure) {
             return 'invalid';
+        }
+
+        if (isset($staleCases[$dir])) {
+            return 'stale_pair';
+        }
+
+        if (isset($oldOnlyCases[$dir])) {
+            return 'old_only';
         }
 
         return $fileState;
@@ -204,86 +220,13 @@ final readonly class FixtureReportWriter implements FixtureReporter
     }
 
     /**
-     * @param list<FixtureSource> $fixtures
-     * @return list<string>
-     */
-    private function extraFixtureDirs(string $fixturesDir, array $fixtures): array
-    {
-        $expected = [];
-
-        foreach ($fixtures as $fixture) {
-            $expected[$this->caseName->fromFixtureSource($fixture)] = true;
-        }
-
-        $extras = [];
-        $fixtureDirs = glob($fixturesDir . '/*', GLOB_ONLYDIR);
-
-        if (false === $fixtureDirs) {
-            return [];
-        }
-
-        foreach ($fixtureDirs as $dir) {
-            if (!new FixturePairFiles($dir)->containsFixtureFiles()) {
-                continue;
-            }
-
-            $name = basename($dir);
-
-            if (!isset($expected[$name])) {
-                $extras[] = $name;
-            }
-        }
-
-        sort($extras);
-
-        return $extras;
-    }
-
-    /**
-     * @param list<string> $extras
-     * @param list<FixtureSource> $fixtures
-     * @return array<string, string>
-     */
-    private function legacyDuplicateDirs(array $extras, array $fixtures): array
-    {
-        $sourceDirs = [];
-
-        foreach ($fixtures as $fixture) {
-            $sourceDirs[$this->caseName->fromFixtureSource($fixture)] = true;
-        }
-
-        $duplicates = [];
-
-        foreach ($extras as $extra) {
-            foreach ($sourceDirs as $sourceDir => $_) {
-                if (!str_starts_with($extra, $sourceDir . '__')) {
-                    continue;
-                }
-
-                $duplicates[$extra] = $sourceDir;
-                break;
-            }
-        }
-
-        ksort($duplicates);
-
-        return $duplicates;
-    }
-
-    /**
-     * @param list<array{fixture: FixtureSource, dir: string, state: string}> $fixtureStates
      * @param list<array{candidate: Candidate, dir: string, state: string}> $flavourStates
      * @param array<string, list<Candidate>> $duplicateGroups
-     * @param list<string> $extras
-     * @param array<string, string> $legacyDuplicates
      */
     private function renderStats(
         FixtureGenerationResult $result,
-        array $fixtureStates,
         array $flavourStates,
         array $duplicateGroups,
-        array $extras,
-        array $legacyDuplicates,
     ): string {
         $coverageRows = $this->coverageRows($flavourStates);
         $coverageCounts = $this->coverageCounts($coverageRows);
@@ -291,6 +234,24 @@ final readonly class FixtureReportWriter implements FixtureReporter
         $lines = [
             '# Exception output fixture coverage',
             '',
+            '## Run',
+            ...$this->table(
+                ['Metric', 'Count'],
+                [
+                    ['Scanned source files', $result->scannedFiles],
+                    ['Source files with candidates', $result->candidateFiles],
+                    ['Candidate windows', $result->candidateWindows],
+                    ['Unique flavours', $result->candidateFlavours],
+                    ['Duplicate candidate windows', $result->duplicateCandidates],
+                    ['Duplicate flavour groups', count($duplicateGroups)],
+                    ['Selected fixture files', $result->selectedFixtures],
+                    ['Created old fixtures', $result->createdOld],
+                    ['Verified fixture pairs', $result->verifiedPairs],
+                    ['Updated fixture pairs', $result->updatedPairs],
+                    ['Stale fixture pairs', $result->stalePairs],
+                    ['Failures', count($result->failures)],
+                ],
+            ),
             '## Summary',
             ...$this->table(
                 ['Status', 'Flavours'],
@@ -305,28 +266,6 @@ final readonly class FixtureReportWriter implements FixtureReporter
             ...$this->table(
                 ['Status', 'Flavour', 'Fixture', 'Detail', 'Fingerprint'],
                 $coverageRows,
-            ),
-            '## Run',
-            ...$this->table(
-                ['Metric', 'Count'],
-                [
-                    ['Scanned PHPT files', $result->scannedFiles],
-                    ['Files with candidates', $result->candidateFiles],
-                    ['Candidate windows', $result->candidateWindows],
-                    ['Unique flavours', $result->candidateFlavours],
-                    ['Duplicate windows', $result->duplicateCandidates],
-                    ['Duplicate flavour groups', count($duplicateGroups)],
-                    ['Selected fixture dirs', count($fixtureStates)],
-                    ['Avoided extra dirs', max(0, $result->candidateFlavours - count($fixtureStates))],
-                    ['Extra dirs outside selection', count($extras)],
-                    ['Legacy suffixed dirs', count($legacyDuplicates)],
-                    ['Created old fixtures', $result->createdOld],
-                    ['Verified fixture files', $result->verifiedPairs],
-                    ['Updated new/diff pairs', $result->updatedPairs],
-                    ['Stale pairs kept', $result->stalePairs],
-                    ['Old-only fixture files', $result->oldOnly],
-                    ['Failures', count($result->failures)],
-                ],
             ),
         ];
 
@@ -531,52 +470,6 @@ final readonly class FixtureReportWriter implements FixtureReporter
         return str_replace('|', '\|', $value);
     }
 
-    /** @param list<array{candidate: Candidate, dir: string, state: string}> $states */
-    private function renderQueue(array $states): string
-    {
-        $lines = ['# Exception output flavour queue', ''];
-
-        foreach ($states as $state) {
-            if ('handled' === $state['state']) {
-                continue;
-            }
-
-            $this->appendFlavourState($lines, $state);
-        }
-
-        return implode("\n", $lines);
-    }
-
-    /** @param list<array{candidate: Candidate, dir: string, state: string}> $states */
-    private function renderHandled(array $states): string
-    {
-        $lines = ['# Exception output flavours covered by handled fixtures', ''];
-
-        foreach ($states as $state) {
-            if ('handled' !== $state['state']) {
-                continue;
-            }
-
-            $this->appendFlavourState($lines, $state);
-        }
-
-        return implode("\n", $lines);
-    }
-
-    /**
-     * @param list<string> $lines
-     * @param array{candidate: Candidate, dir: string, state: string} $state
-     */
-    private function appendFlavourState(array &$lines, array $state): void
-    {
-        $candidate = $state['candidate'];
-        $lines[] = $candidate->relativePath . ':' . $candidate->line;
-        $lines[] = '  state: ' . $state['state'];
-        $lines[] = '  fixture: ' . $state['dir'];
-
-        $this->appendCandidateDetails($lines, $candidate);
-    }
-
     /** @param array<string, list<Candidate>> $duplicates */
     private function renderDuplicates(array $duplicates): string
     {
@@ -629,48 +522,6 @@ final readonly class FixtureReportWriter implements FixtureReporter
         }
 
         return implode("\n", $lines);
-    }
-
-    /** @param array<string, list<Candidate>> $flavours */
-    private function renderFlavourCandidates(array $flavours): string
-    {
-        $candidates = [];
-
-        foreach ($flavours as $group) {
-            $candidates[] = $group[0];
-        }
-
-        return $this->renderCandidates($candidates, 'Exception output flavours');
-    }
-
-    /** @param list<Candidate> $candidates */
-    private function renderCandidates(array $candidates, string $title = 'Exception output candidates'): string
-    {
-        $lines = ['# ' . $title, ''];
-
-        foreach ($candidates as $candidate) {
-            $lines[] = $candidate->relativePath . ':' . $candidate->line;
-
-            $this->appendCandidateDetails($lines, $candidate);
-        }
-
-        return implode("\n", $lines);
-    }
-
-    /** @param list<string> $lines */
-    private function appendCandidateDetails(array &$lines, Candidate $candidate): void
-    {
-        $lines[] = '  fingerprint: ' . $candidate->key;
-        $lines[] = '  origin: ' . ($this->isManualFixture($candidate) ? 'manual_fixture' : 'php_src');
-        $lines[] = '  family: ' . $candidate->classification->family->value;
-        $lines[] = '  safety: ' . $candidate->classification->safety->value;
-        $lines[] = '  expected: ' . $candidate->expectedSection;
-        $lines[] = '  reason: ' . $candidate->classification->reason;
-        $lines[] = '  parts: ' . $candidate->classification->partsSummary;
-        $lines[] = '  ' . $candidate->statement;
-        $lines[] = '';
-        $lines[] = $candidate->context;
-        $lines[] = '';
     }
 
     private function isManualFixture(Candidate $candidate): bool

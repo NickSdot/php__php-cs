@@ -1,14 +1,14 @@
 # Fixture refresh
 
 Refresh-only run: no
-Updated new/diff pairs: 1
+Updated new/diff pairs: 0
 Stale existing new/diff pairs kept: 8
 Old-only fixture files: 0
 Failures: 0
 
 ## Updated pairs
 
-- ext_soap_tests_bugs_protocol_relative_redirect
+- none
 
 ## Stale existing pairs kept
 
