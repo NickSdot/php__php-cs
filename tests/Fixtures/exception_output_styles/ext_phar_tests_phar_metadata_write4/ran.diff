@@ -18,3 +18,10 @@
  In __wakeup 3
  object(EchoesOnWakeup)#3 (0) {
  }
+@@ -98,4 +98,4 @@
+ object(__PHP_Incomplete_Class)#4 (1) {
+   ["__PHP_Incomplete_Class_Name"]=>
+   string(14) "EchoesOnWakeup"
+-}
+\ No newline at end of file
++}
