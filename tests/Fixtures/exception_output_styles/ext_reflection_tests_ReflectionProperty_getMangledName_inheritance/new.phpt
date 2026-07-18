@@ -41,7 +41,7 @@ try {
     $reflection = new ReflectionProperty('ChildClass', 'parentOnly');
     echo "ERROR: Should have failed\n";
 } catch (ReflectionException $e) {
-    echo "Instance-based creation failed as expected: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'Instance-based creation failed as expected: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 try {
@@ -49,7 +49,7 @@ try {
     $reflection = new ReflectionProperty($obj, 'parentOnly');
     echo "ERROR: Should have failed\n";
 } catch (ReflectionException $e) {
-    echo "Object-based creation failed as expected: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
+    echo 'Object-based creation failed as expected: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
 }
 
 ?>

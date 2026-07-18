@@ -5,7 +5,7 @@
      echo "ERROR: Should have failed\n";
  } catch (ReflectionException $e) {
 -    echo "Instance-based creation failed as expected: " . $e->getMessage() . "\n";
-+    echo "Instance-based creation failed as expected: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
++    echo 'Instance-based creation failed as expected: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
  }
  
  try {
@@ -14,7 +14,7 @@
      echo "ERROR: Should have failed\n";
  } catch (ReflectionException $e) {
 -    echo "Object-based creation failed as expected: " . $e->getMessage() . "\n";
-+    echo "Object-based creation failed as expected: " . $e::class . ': ' . $e->getMessage() . \PHP_EOL;
++    echo 'Object-based creation failed as expected: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
  }
  
  ?>
