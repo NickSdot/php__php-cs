@@ -58,7 +58,7 @@ final class PhptFile
     public function relativePath(): string
     {
         if (str_starts_with($this->path, $this->rootDir . DIRECTORY_SEPARATOR)) {
-            return mb_substr($this->path, mb_strlen($this->rootDir) + 1);
+            return mb_substr($this->path, mb_strlen($this->rootDir, '8bit') + 1, null, '8bit');
         }
         return $this->path;
     }
@@ -242,17 +242,17 @@ final class PhptFile
             return;
         }
 
-        $this->prefix = mb_substr($contents, 0, $matches[0][0][1]);
+        $this->prefix = mb_substr($contents, 0, $matches[0][0][1], '8bit');
         $count = count($matches[0]);
         for ($i = 0; $i < $count; $i++) {
             $header = $matches[0][$i][0];
             $name = $matches[1][$i][0];
-            $contentStart = $matches[0][$i][1] + mb_strlen($header);
-            $contentEnd = $i + 1 < $count ? $matches[0][$i + 1][1] : mb_strlen($contents);
+            $contentStart = $matches[0][$i][1] + mb_strlen($header, '8bit');
+            $contentEnd = $i + 1 < $count ? $matches[0][$i + 1][1] : mb_strlen($contents, '8bit');
             $this->sections[] = [
                 'name' => $name,
                 'header' => $header,
-                'content' => mb_substr($contents, $contentStart, $contentEnd - $contentStart),
+                'content' => mb_substr($contents, $contentStart, $contentEnd - $contentStart, '8bit'),
             ];
         }
     }

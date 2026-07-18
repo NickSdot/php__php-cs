@@ -161,7 +161,7 @@ abstract class VerifiedPhptFixer implements Fixer
 
     protected function markLineForOffset(string $code, int $offset): void
     {
-        $this->markLine(mb_substr_count(mb_substr($code, 0, $offset), "\n") + 1);
+        $this->markLine(mb_substr_count(mb_substr($code, 0, $offset, '8bit'), "\n", '8bit') + 1);
     }
 
     protected function markLine(int $line): void

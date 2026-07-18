@@ -17,7 +17,7 @@ final readonly class CanonicalStatementBuilder
         $segments = [];
 
         if ('' !== $prefix) {
-            $segments[] = '\'' . $this->quote($prefix . ': ') . '\'';
+            $segments[] = $this->literalSegment($prefix . ': ');
         }
 
         return $this->buildWithPrefixSegments($variable, $parts, $segments);
@@ -29,23 +29,41 @@ final readonly class CanonicalStatementBuilder
         $segments = [
             ...$prefixSegments,
             '$' . $variable . '::class',
-            '\': \'',
-            '$' . $variable . '->getMessage()',
         ];
 
+        if ($parts->has(OutputPartKind::ExceptionCode)) {
+            $segments[] = $this->literalSegment(': ');
+            $segments[] = '$' . $variable . '->getCode()';
+            $segments[] = $this->literalSegment(': ');
+        } else {
+            $segments[] = $this->literalSegment(': ');
+        }
+
+        $segments[] = '$' . $variable . '->getMessage()';
+
         if ($parts->has(OutputPartKind::ExceptionFile)) {
-            $segments[] = '\' in \'';
+            $segments[] = $this->literalSegment(' in ');
             $segments[] = '$' . $variable . '->getFile()';
         }
 
         if ($parts->has(OutputPartKind::ExceptionLine)) {
-            $segments[] = '\' on line \'';
+            $segments[] = $this->literalSegment(' on line ');
             $segments[] = '$' . $variable . '->getLine()';
         }
 
         $segments[] = '\\PHP_EOL';
 
         return 'echo ' . implode(', ', $segments) . ';';
+    }
+
+    public function literalSegment(string $value): string
+    {
+        return '\'' . $this->quote($value) . '\'';
+    }
+
+    public function variableSegment(string $variable): string
+    {
+        return '$' . $variable;
     }
 
     private function quote(string $value): string

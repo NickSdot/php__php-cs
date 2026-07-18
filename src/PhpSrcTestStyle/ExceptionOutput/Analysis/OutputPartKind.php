@@ -11,7 +11,9 @@ enum OutputPartKind: string
     case OtherVariable = 'other_variable';
     case ExceptionClass = 'exception_class';
     case ExceptionMessage = 'exception_message';
+    case ExceptionCode = 'exception_code';
     case ExceptionFile = 'exception_file';
     case ExceptionLine = 'exception_line';
+    case ExceptionTrace = 'exception_trace';
     case Unknown = 'unknown';
 }

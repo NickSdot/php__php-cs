@@ -54,6 +54,14 @@ final readonly class OutputExpressionParser
         return new OutputParts($parts, 'var_dump');
     }
 
+    public function fromPrintR(Expr $expr): OutputParts
+    {
+        return new OutputParts(
+            parts: $this->parts($expr),
+            shape: 'print_r:' . $this->shape($expr),
+        );
+    }
+
     /** @return list<OutputPart> */
     private function parts(Expr|InterpolatedStringPart $expr): array
     {
@@ -146,8 +154,10 @@ final readonly class OutputExpressionParser
 
         return match (mb_strtolower($method)) {
             'getmessage' => OutputPart::exceptionMessage($variable),
+            'getcode' => OutputPart::exceptionCode($variable),
             'getfile' => OutputPart::exceptionFile($variable),
             'getline' => OutputPart::exceptionLine($variable),
+            'gettrace' => OutputPart::exceptionTrace($variable),
             default => null,
         };
     }

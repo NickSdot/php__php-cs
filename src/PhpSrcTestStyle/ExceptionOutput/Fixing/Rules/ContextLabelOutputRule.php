@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalRewriteSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputPartMatcher;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\RewriteResult;
@@ -24,6 +24,7 @@ final readonly class ContextLabelOutputRule implements RewriteRule
     public function __construct(
         private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
         private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private OutputPartMatcher $parts = new OutputPartMatcher(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult
@@ -39,7 +40,7 @@ final readonly class ContextLabelOutputRule implements RewriteRule
             return null;
         }
 
-        if (!$statement->parts->has(OutputPartKind::ExceptionMessage)) {
+        if (null === $this->parts->exceptionMessageOffset($statement->parts->parts, $context->catchVariable)) {
             return null;
         }
 
@@ -57,7 +58,7 @@ final readonly class ContextLabelOutputRule implements RewriteRule
 
     private function canonicalPrefix(?OutputPart $part): ?string
     {
-        if (!$part instanceof OutputPart || OutputPartKind::Literal !== $part->kind) {
+        if (!$part instanceof OutputPart || !$this->parts->isLiteral($part)) {
             return null;
         }
 

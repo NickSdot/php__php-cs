@@ -10,6 +10,7 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\TrashLiteralPolicy;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalRewriteSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputPartMatcher;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Statement;
@@ -27,6 +28,7 @@ final readonly class LocationWrapperOutputRule implements RewriteRule
         private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
         private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
         private TrashLiteralPolicy $trash = new TrashLiteralPolicy(),
+        private OutputPartMatcher $parts = new OutputPartMatcher(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult
@@ -74,7 +76,7 @@ final readonly class LocationWrapperOutputRule implements RewriteRule
     private function hasSupportedLocationWrappers(Statement $statement): bool
     {
         foreach ($statement->parts->parts as $part) {
-            if (OutputPartKind::Literal !== $part->kind) {
+            if (!$this->parts->isLiteral($part)) {
                 continue;
             }
 

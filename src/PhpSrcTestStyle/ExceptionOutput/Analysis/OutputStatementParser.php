@@ -51,6 +51,12 @@ final readonly class OutputStatementParser
             return $this->expressions->fromVarDump($args);
         }
 
+        if ($statement->expr instanceof Expr\FuncCall && $this->ast->isNamedCall($statement->expr, 'print_r')) {
+            $firstArg = $statement->expr->args[0]->value ?? null;
+
+            return $firstArg instanceof Expr ? $this->expressions->fromPrintR($firstArg) : null;
+        }
+
         return null;
     }
 }

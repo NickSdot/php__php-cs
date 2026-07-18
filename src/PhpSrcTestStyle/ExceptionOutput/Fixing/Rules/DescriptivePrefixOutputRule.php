@@ -7,9 +7,9 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\ClassificationSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputFamily;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalRewriteSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputPartMatcher;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\RewriteResult;
@@ -33,12 +33,13 @@ final readonly class DescriptivePrefixOutputRule implements RewriteRule
         private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
         private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
         private CatchTypeLabels $catchTypeLabels = new CatchTypeLabels(),
+        private OutputPartMatcher $partMatcher = new OutputPartMatcher(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult
     {
         $statement = $context->statement;
-        $prefix = $this->prefix($statement->parts->parts, $context->catchTypes);
+        $prefix = $this->prefix($statement->parts->parts, $context->catchTypes, $context->catchVariable);
 
         if (null === $prefix) {
             return null;
@@ -72,24 +73,22 @@ final readonly class DescriptivePrefixOutputRule implements RewriteRule
      * @param list<OutputPart> $parts
      * @param list<string> $catchTypes
      */
-    private function prefix(array $parts, array $catchTypes): ?string
+    private function prefix(array $parts, array $catchTypes, string $catchVariable): ?string
     {
         if (count($parts) < 2) {
             return null;
         }
 
-        if (OutputPartKind::Literal !== $parts[0]->kind) {
+        if (!$this->partMatcher->isLiteral($parts[0])) {
             return null;
         }
 
-        if (OutputPartKind::ExceptionMessage !== $parts[1]->kind) {
+        if (!$this->partMatcher->isExceptionMessage($parts[1], $catchVariable)) {
             return null;
         }
 
-        for ($i = 2; $i < count($parts); $i++) {
-            if (OutputPartKind::Newline !== $parts[$i]->kind) {
-                return null;
-            }
+        if (!$this->partMatcher->onlyNewlinesAfter($parts, 2)) {
+            return null;
         }
 
         $original = $this->trimLabel($parts[0]->value);

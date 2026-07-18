@@ -42,6 +42,11 @@ final readonly class OutputPart
         return new self(OutputPartKind::ExceptionMessage, variable: $variable);
     }
 
+    public static function exceptionCode(string $variable): self
+    {
+        return new self(OutputPartKind::ExceptionCode, variable: $variable);
+    }
+
     public static function exceptionFile(string $variable): self
     {
         return new self(OutputPartKind::ExceptionFile, variable: $variable);
@@ -50,6 +55,11 @@ final readonly class OutputPart
     public static function exceptionLine(string $variable): self
     {
         return new self(OutputPartKind::ExceptionLine, variable: $variable);
+    }
+
+    public static function exceptionTrace(string $variable): self
+    {
+        return new self(OutputPartKind::ExceptionTrace, variable: $variable);
     }
 
     public static function unknown(string $source): self

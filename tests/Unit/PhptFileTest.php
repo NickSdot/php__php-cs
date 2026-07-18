@@ -60,6 +60,15 @@ final class PhptFileTest extends TestCase
         self::assertStringContainsString("--EXPECT--\nvalue exact\n", $file->contents());
     }
 
+    public function testPreservesBinaryExpectedOutputBytes(): void
+    {
+        $path = $this->writeTempPhpt("--TEST--\nsample\n--FILE--\n<?php\n--EXPECTF--\n\xbd\n");
+        $file = new PhptFile($path, dirname($path));
+
+        self::assertSame("\xbd\n", $file->getSection('EXPECTF'));
+        self::assertStringContainsString("--EXPECTF--\n\xbd\n", $file->contents());
+    }
+
     private function writeTempPhpt(string $contents): string
     {
         $path = tempnam(sys_get_temp_dir(), 'phpt-file-');

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\MarkerPrefixPolicy;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
@@ -15,13 +14,24 @@ use InternalsCS\RewriteResult;
 use InternalsCS\TextEdit;
 
 use function count;
-use function str_ends_with;
+use function in_array;
 
-final readonly class MarkerPrefixOutputRule implements RewriteRule
+final readonly class PreservedPrefixOutputRule implements RewriteRule
 {
+    /** @var list<string> */
+    private const array LITERAL_PREFIXES = [
+        'Wrong exception type thrown: ',
+        'saveXml: ',
+        'innerHTML: ',
+        'fputcsv: ',
+        'next: ',
+        'next (READ_AHEAD): ',
+        'bool: ',
+        'string: ',
+    ];
+
     public function __construct(
         private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
-        private MarkerPrefixPolicy $markers = new MarkerPrefixPolicy(),
         private OutputPartMatcher $parts = new OutputPartMatcher(),
     ) {}
 
@@ -48,15 +58,15 @@ final readonly class MarkerPrefixOutputRule implements RewriteRule
      */
     private function prefixSegments(array $parts, string $catchVariable): ?array
     {
-        if ($this->isBracketedNumericMessage($parts, $catchVariable)) {
+        if ($this->isLiteralPrefixMessage($parts, $catchVariable)) {
             return [$this->builder->literalSegment($parts[0]->value)];
         }
 
-        if ($this->isErrorNumberVarDump($parts, $catchVariable)) {
-            return [$this->builder->literalSegment($parts[0]->value . ': ')];
+        if ($this->isLiteralPrefixClassMessage($parts, $catchVariable)) {
+            return [$this->builder->literalSegment($parts[0]->value)];
         }
 
-        if ($this->isVariableClassMessageMarker($parts, $catchVariable)) {
+        if ($this->isVariablePrefixMessage($parts, $catchVariable)) {
             return [$this->builder->variableSegment((string) $parts[0]->variable), $this->builder->literalSegment($parts[1]->value)];
         }
 
@@ -64,13 +74,9 @@ final readonly class MarkerPrefixOutputRule implements RewriteRule
     }
 
     /** @param list<OutputPart> $parts */
-    private function isBracketedNumericMessage(array $parts, string $catchVariable): bool
+    private function isLiteralPrefixMessage(array $parts, string $catchVariable): bool
     {
-        if (count($parts) < 2 || !$this->parts->isLiteral($parts[0]) || !$this->parts->isExceptionMessage($parts[1], $catchVariable)) {
-            return false;
-        }
-
-        if (!$this->markers->isBracketedNumeric($parts[0]->value)) {
+        if (count($parts) < 2 || !$this->isAllowedLiteral($parts[0]) || !$this->parts->isExceptionMessage($parts[1], $catchVariable)) {
             return false;
         }
 
@@ -78,42 +84,43 @@ final readonly class MarkerPrefixOutputRule implements RewriteRule
     }
 
     /** @param list<OutputPart> $parts */
-    private function isErrorNumberVarDump(array $parts, string $catchVariable): bool
+    private function isLiteralPrefixClassMessage(array $parts, string $catchVariable): bool
     {
-        if (2 !== count($parts) || !$this->parts->isLiteral($parts[0]) || !$this->parts->isExceptionMessage($parts[1], $catchVariable)) {
+        if (count($parts) < 4 || !$this->isAllowedLiteral($parts[0]) || !$this->parts->isExceptionClass($parts[1], $catchVariable)) {
             return false;
         }
 
-        return $this->markers->isErrorNumber($parts[0]->value);
+        if (!$this->parts->isLiteral($parts[2]) || !in_array($parts[2]->value, [': ', ' : '], true)) {
+            return false;
+        }
+
+        if (!$this->parts->isExceptionMessage($parts[3], $catchVariable)) {
+            return false;
+        }
+
+        return $this->parts->onlyNewlinesAfter($parts, 4);
     }
 
     /** @param list<OutputPart> $parts */
-    private function isVariableClassMessageMarker(array $parts, string $catchVariable): bool
+    private function isVariablePrefixMessage(array $parts, string $catchVariable): bool
     {
-        if (count($parts) < 5) {
+        if (count($parts) < 3 || OutputPartKind::OtherVariable !== $parts[0]->kind || null === $parts[0]->variable) {
             return false;
         }
 
-        if (OutputPartKind::OtherVariable !== $parts[0]->kind || null === $parts[0]->variable) {
+        if (!$this->parts->isLiteral($parts[1], ': ')) {
             return false;
         }
 
-        if (!$this->parts->isLiteral($parts[1]) || !str_ends_with($parts[1]->value, '=>')) {
+        if (!$this->parts->isExceptionMessage($parts[2], $catchVariable)) {
             return false;
         }
 
-        if (!$this->parts->isExceptionClass($parts[2], $catchVariable)) {
-            return false;
-        }
+        return $this->parts->onlyNewlinesAfter($parts, 3);
+    }
 
-        if (!$this->parts->isLiteral($parts[3], ': ')) {
-            return false;
-        }
-
-        if (!$this->parts->isExceptionMessage($parts[4], $catchVariable)) {
-            return false;
-        }
-
-        return $this->parts->onlyNewlinesAfter($parts, 5);
+    private function isAllowedLiteral(OutputPart $part): bool
+    {
+        return $this->parts->isLiteral($part) && in_array($part->value, self::LITERAL_PREFIXES, true);
     }
 }

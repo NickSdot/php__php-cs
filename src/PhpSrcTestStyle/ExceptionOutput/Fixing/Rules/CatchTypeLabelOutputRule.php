@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputParts;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalRewriteSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputPartMatcher;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\RewriteResult;
@@ -20,6 +20,7 @@ final readonly class CatchTypeLabelOutputRule implements RewriteRule
         private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
         private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
         private CatchTypeLabels $catchTypeLabels = new CatchTypeLabels(),
+        private OutputPartMatcher $partMatcher = new OutputPartMatcher(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult
@@ -34,7 +35,7 @@ final readonly class CatchTypeLabelOutputRule implements RewriteRule
             return null;
         }
 
-        if (!$statement->parts->has(OutputPartKind::ExceptionMessage)) {
+        if (null === $this->partMatcher->exceptionMessageOffset($statement->parts->parts, $context->catchVariable)) {
             return null;
         }
 
@@ -42,7 +43,7 @@ final readonly class CatchTypeLabelOutputRule implements RewriteRule
             return null;
         }
 
-        if (!$this->hasOnlyCatchTypeLabelAndMessage($statement->parts, $context->catchTypes)) {
+        if (!$this->hasOnlyCatchTypeLabelAndMessage($statement->parts, $context->catchTypes, $context->catchVariable)) {
             return null;
         }
 
@@ -55,13 +56,13 @@ final readonly class CatchTypeLabelOutputRule implements RewriteRule
     }
 
     /** @param list<string> $catchTypes */
-    private function hasOnlyCatchTypeLabelAndMessage(OutputParts $parts, array $catchTypes): bool
+    private function hasOnlyCatchTypeLabelAndMessage(OutputParts $parts, array $catchTypes, string $catchVariable): bool
     {
         $matchedLabel = false;
         $matchedMessage = false;
 
         foreach ($parts->parts as $part) {
-            if (OutputPartKind::ExceptionMessage === $part->kind) {
+            if ($this->partMatcher->isExceptionMessage($part, $catchVariable)) {
                 if ($matchedMessage) {
                     return false;
                 }
@@ -70,7 +71,7 @@ final readonly class CatchTypeLabelOutputRule implements RewriteRule
                 continue;
             }
 
-            if (OutputPartKind::Newline === $part->kind && $matchedMessage) {
+            if ($this->partMatcher->isNewline($part) && $matchedMessage) {
                 continue;
             }
 
@@ -96,7 +97,7 @@ final readonly class CatchTypeLabelOutputRule implements RewriteRule
             return false;
         }
 
-        if (OutputPartKind::Literal !== $part->kind) {
+        if (!$this->partMatcher->isLiteral($part)) {
             return false;
         }
 

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalRewriteSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputPartMatcher;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\RewriteResult;
@@ -22,13 +22,14 @@ final readonly class ParenthesizedClassLabelOutputRule implements RewriteRule
     public function __construct(
         private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
         private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private OutputPartMatcher $parts = new OutputPartMatcher(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult
     {
         $statement = $context->statement;
 
-        if (!$this->isParenthesizedClassMessage($statement->parts->parts)) {
+        if (!$this->isParenthesizedClassMessage($statement->parts->parts, $context->catchVariable)) {
             return null;
         }
 
@@ -49,9 +50,9 @@ final readonly class ParenthesizedClassLabelOutputRule implements RewriteRule
     }
 
     /** @param list<OutputPart> $parts */
-    private function isParenthesizedClassMessage(array $parts): bool
+    private function isParenthesizedClassMessage(array $parts, string $catchVariable): bool
     {
-        if ($this->isCaughtParenthesizedClassMessage($parts)) {
+        if ($this->isCaughtParenthesizedClassMessage($parts, $catchVariable)) {
             return true;
         }
 
@@ -59,51 +60,45 @@ final readonly class ParenthesizedClassLabelOutputRule implements RewriteRule
             return false;
         }
 
-        if (!$this->isLiteral($parts[0], 'Exception (')) {
+        if (!$this->parts->isLiteral($parts[0], 'Exception (')) {
             return false;
         }
 
-        if (OutputPartKind::ExceptionClass !== $parts[1]->kind) {
+        if (!$this->parts->isExceptionClass($parts[1], $catchVariable)) {
             return false;
         }
 
-        if (!$this->isLiteral($parts[2], '): ')) {
+        if (!$this->parts->isLiteral($parts[2], '): ')) {
             return false;
         }
 
-        if (OutputPartKind::ExceptionMessage !== $parts[3]->kind) {
+        if (!$this->parts->isExceptionMessage($parts[3], $catchVariable)) {
             return false;
         }
 
-        for ($i = 4; $i < count($parts); $i++) {
-            if (OutputPartKind::Newline !== $parts[$i]->kind) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->parts->onlyNewlinesAfter($parts, 4);
     }
 
     /** @param list<OutputPart> $parts */
-    private function isCaughtParenthesizedClassMessage(array $parts): bool
+    private function isCaughtParenthesizedClassMessage(array $parts, string $catchVariable): bool
     {
         if (count($parts) < 5) {
             return false;
         }
 
-        if (!$this->isLiteral($parts[0], 'Caught ')) {
+        if (!$this->parts->isLiteral($parts[0], 'Caught ')) {
             return false;
         }
 
-        if (OutputPartKind::ExceptionClass !== $parts[1]->kind) {
+        if (!$this->parts->isExceptionClass($parts[1], $catchVariable)) {
             return false;
         }
 
-        if (!$this->isLiteral($parts[2], '(')) {
+        if (!$this->parts->isLiteral($parts[2], '(')) {
             return false;
         }
 
-        if (OutputPartKind::ExceptionMessage !== $parts[3]->kind) {
+        if (!$this->parts->isExceptionMessage($parts[3], $catchVariable)) {
             return false;
         }
 
@@ -118,18 +113,13 @@ final readonly class ParenthesizedClassLabelOutputRule implements RewriteRule
         return true;
     }
 
-    private function isLiteral(OutputPart $part, string $value): bool
-    {
-        return OutputPartKind::Literal === $part->kind && $part->value === $value;
-    }
-
     private function isClosingParenOrNewline(OutputPart $part): bool
     {
-        if (OutputPartKind::Newline === $part->kind) {
+        if ($this->parts->isNewline($part)) {
             return true;
         }
 
-        if (OutputPartKind::Literal !== $part->kind) {
+        if (!$this->parts->isLiteral($part)) {
             return false;
         }
 

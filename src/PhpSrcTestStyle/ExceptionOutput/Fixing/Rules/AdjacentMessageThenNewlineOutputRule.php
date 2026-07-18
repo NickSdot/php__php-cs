@@ -8,6 +8,7 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputFamily;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalRewriteSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputPartMatcher;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Statement;
@@ -19,6 +20,7 @@ final readonly class AdjacentMessageThenNewlineOutputRule implements RewriteRule
     public function __construct(
         private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
         private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private OutputPartMatcher $parts = new OutputPartMatcher(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult
@@ -62,7 +64,7 @@ final readonly class AdjacentMessageThenNewlineOutputRule implements RewriteRule
     private function isNewlineOnlyOutput(Statement $statement): bool
     {
         foreach ($statement->parts->parts as $part) {
-            if (OutputPartKind::Newline !== $part->kind) {
+            if (!$this->parts->isNewline($part)) {
                 return false;
             }
         }

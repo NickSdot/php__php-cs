@@ -81,6 +81,17 @@ final class CanonicalUpdaterTest extends TestCase
         self::assertSame("Exception: test\n", $update->output);
     }
 
+    public function testMatchesExpectfNullByteFollowedByZero(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "Position of '%00' is => int(58)\nmessage\n",
+            "Position of '" . "\0" . "0' is => int(58)\nException: message\n",
+        );
+
+        self::assertSame("Position of '%00' is => int(58)\nException: message\n", $update->output);
+    }
+
     public function testUpdatesExpectedExceptionLabel(): void
     {
         $update = new CanonicalUpdater()->update(
@@ -173,6 +184,17 @@ final class CanonicalUpdaterTest extends TestCase
         );
 
         self::assertSame("Exception: Signal\n", $update->output);
+    }
+
+    public function testUpdatesPreservedPrefixClassLabelWithSpacedColon(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Wrong exception type thrown: TypeError : fixture message\n",
+            "Wrong exception type thrown: TypeError: fixture message\n",
+        );
+
+        self::assertSame("Wrong exception type thrown: TypeError: fixture message\n", $update->output);
     }
 
     public function testUpdatesCaughtParenthesizedClassMessage(): void
@@ -349,6 +371,39 @@ final class CanonicalUpdaterTest extends TestCase
         self::assertSame("TypeError: message on line 6\n", $update->output);
     }
 
+    public function testUpdatesClassCodeMessageOrder(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "ValueError: 0, fixture message\n",
+            "ValueError: 0: fixture message\n",
+        );
+
+        self::assertSame("ValueError: 0: fixture message\n", $update->output);
+    }
+
+    public function testUpdatesVarDumpCodeMessageOutput(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "int(0)\nstring(%d) \"fixture message\"\n",
+            "Error: 0: fixture message\n",
+        );
+
+        self::assertSame("Error: 0: fixture message\n", $update->output);
+    }
+
+    public function testUpdatesCodeColonMessageOutput(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "0: fixture message\n",
+            "DOMException: 0: fixture message\n",
+        );
+
+        self::assertSame("DOMException: 0: fixture message\n", $update->output);
+    }
+
     public function testUpdatesExpectfAtFileLineLocation(): void
     {
         $update = new CanonicalUpdater()->update(
@@ -361,6 +416,29 @@ final class CanonicalUpdaterTest extends TestCase
             "RuntimeException: In sleep in %sphar_metadata_write4.php on line 12\n",
             $update->output,
         );
+    }
+
+    public function testUpdatesExpectfWithBinaryUnchangedLines(): void
+    {
+        $binary = "\xbd";
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            $binary . "\nmessage\n",
+            $binary . "\nException: message\n",
+        );
+
+        self::assertSame($binary . "\nException: message\n", $update->output);
+    }
+
+    public function testUpdatesExpectfWithRawRegexUnchangedLines(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "    [2] => %r%%r05s\nmessage\n",
+            "    [2] => %05s\nException: message\n",
+        );
+
+        self::assertSame("    [2] => %r%%r05s\nException: message\n", $update->output);
     }
 
     public function testUpdatesSoapFaultCatchTypeLabel(): void

@@ -9,6 +9,7 @@ use InternalsCS\TextEdit;
 use PHPUnit\Framework\TestCase;
 
 use function mb_substr;
+use function usort;
 
 final class CanonicalPlannerTest extends TestCase
 {
@@ -132,6 +133,40 @@ final class CanonicalPlannerTest extends TestCase
             "echo \$e::class, ': ', \$e->getMessage(), ' in ', \$e->getFile(), ' on line ', \$e->getLine(), \\PHP_EOL;",
             $plans[0]->replacement,
         );
+    }
+
+    public function testPlansCodeRewriteAfterMessage(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                throw new ValueError('x', 3);
+            } catch (ValueError $e) {
+                echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$e::class, ': ', \$e->getCode(), ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansVarDumpCodeMessageRewriteAfterMessage(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new Error('x', 0);
+            } catch (Error $e) {
+                var_dump($e->getCode(), $e->getMessage());
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$e::class, ': ', \$e->getCode(), ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
     public function testPlansHtmlBreakSuffixRewrite(): void
@@ -307,6 +342,76 @@ final class CanonicalPlannerTest extends TestCase
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$type, '=>', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansPreservedLiteralMessagePrefixRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new TypeError('x');
+            } catch (TypeError $e) {
+                echo "bool: ", $e->getMessage(), "\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'bool: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansPreservedLiteralClassMessagePrefixRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new TypeError('x');
+            } catch (Throwable $t) {
+                echo "Wrong exception type thrown: ".get_class($t)." : ".$t->getMessage()."\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'Wrong exception type thrown: ', \$t::class, ': ', \$t->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansPreservedVariableMessagePrefixRewrite(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            foreach (['getMinimum'] as $method) {
+                try {
+                    throw new Error('x');
+                } catch (Error $e) {
+                    echo $method, ': ', $e->getMessage(), PHP_EOL;
+                }
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$method, ': ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansDynamicParenthesizedContextPrefixRewrite(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                throw new DOMException('x');
+            } catch (DOMException $e) {
+                echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo '(', \$ns_readable, ', \"', \$qname, '\"): ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
     public function testPlansBracketedClassRewrite(): void
@@ -493,6 +598,143 @@ final class CanonicalPlannerTest extends TestCase
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
+    public function testPlansLeadingSeparatorRewrite(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                throw new ValueError('x');
+            } catch (ValueError $e) {
+                echo \PHP_EOL . $e->getMessage() . \PHP_EOL;
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \\PHP_EOL, \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansMovesLeadingSeparatorToPreviousLiteralEcho(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            echo "Position is => ";
+            try {
+                throw new TypeError('x');
+            } catch (TypeError $e) {
+                echo "\n", $e->getMessage(), "\n";
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+        $fixed = self::applyPlans($code, $plans);
+
+        self::assertCount(2, $plans);
+        self::assertStringContainsString("echo \"Position is => \", \\PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $fixed);
+        self::assertStringNotContainsString("echo \\PHP_EOL, \$e::class", $fixed);
+    }
+
+    public function testDoesNotMoveLeadingSeparatorBeforeTryOutput(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            echo "Position is => ";
+            try {
+                var_dump(strpos('test', 't', 'bad'));
+            } catch (TypeError $e) {
+                echo "\n", $e->getMessage(), "\n";
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \\PHP_EOL, \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansMovesLeadingSeparatorToPreviousFunctionEcho(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            echo bcdiv("20.56", "4");
+            try {
+                bcscale(-4);
+            } catch (\ValueError $e) {
+                echo \PHP_EOL . $e->getMessage() . \PHP_EOL;
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+        $fixed = self::applyPlans($code, $plans);
+
+        self::assertCount(2, $plans);
+        self::assertStringContainsString("echo bcdiv(\"20.56\", \"4\"), \\PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $fixed);
+        self::assertStringNotContainsString("echo \\PHP_EOL, \$e::class", $fixed);
+    }
+
+    public function testPlansMessageBeforeTraceWithoutAddingBlankLine(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                throw new Exception("x\n");
+            } catch (Exception $e) {
+                print $e->getMessage();
+                print_r($e->getTrace());
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage();", $plans[0]->replacement);
+    }
+
+    public function testPlansTrailingCatchMessageBeforeLeadingNewlineSection(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                throw new ArgumentCountError('x');
+            } catch (ArgumentCountError $e) {
+                print('Error found: '.$e->getMessage());
+            }
+
+            echo "\n*** Next section ***\n";
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+        $fixed = self::applyPlans($code, $plans);
+
+        self::assertCount(2, $plans);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo \"*** Next section ***\\n\";", $fixed);
+    }
+
+    public function testPlansPlainTrailingCatchMessageBeforeLeadingNewlineSection(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                throw new ValueError('x');
+            } catch (ValueError $e) {
+                echo $e->getMessage();
+            }
+
+            echo "\n\n*** Next section ***\n";
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+        $fixed = self::applyPlans($code, $plans);
+
+        self::assertCount(2, $plans);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo \"\\n*** Next section ***\\n\";", $fixed);
+    }
+
     public function testPlansCatchInsideClassMethod(): void
     {
         $code = <<<'PHP'
@@ -550,6 +792,8 @@ final class CanonicalPlannerTest extends TestCase
     /** @param list<TextEdit> $plans */
     private static function applyPlans(string $code, array $plans): string
     {
+        usort($plans, fn(TextEdit $a, TextEdit $b): int => $b->startOffset <=> $a->startOffset);
+
         foreach ($plans as $plan) {
             $code = mb_substr($code, 0, $plan->startOffset)
                 . $plan->replacement
