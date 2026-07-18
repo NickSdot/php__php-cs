@@ -40,7 +40,8 @@ final readonly class PhpBuild
             return $buildRoot;
         }
 
-        $this->runner->build($buildRoot, $this->profile, $paths, $jobs = $this->defaultJobs(), $io);
+        $this->runner->build($buildRoot, $this->profile, $paths, $this->defaultJobs(), $io);
+
         $this->checkout->clean($buildRoot);
         $current->write($paths->metadata());
 

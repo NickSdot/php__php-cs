@@ -16,6 +16,7 @@ use InternalsCS\Support\FileSystem;
 
 use function array_fill_keys;
 use function array_filter;
+use function array_map;
 use function array_slice;
 use function array_values;
 use function count;
@@ -211,13 +212,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
     /** @return array<string, string> */
     private function selectedFixturesByFlavour(FixtureSelection $selection): array
     {
-        $fixtures = [];
-
-        foreach ($selection->fixtureByFlavour() as $flavourKey => $fixture) {
-            $fixtures[$flavourKey] = $this->caseName->fromFixtureSource($fixture);
-        }
-
-        return $fixtures;
+        return array_map($this->caseName->fromFixtureSource(...), $selection->fixtureByFlavour());
     }
 
     /**
@@ -651,13 +646,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
      */
     private function candidates(array $candidates): array
     {
-        $typed = [];
-
-        foreach ($candidates as $candidate) {
-            $typed[] = $this->candidate($candidate);
-        }
-
-        return $typed;
+        return array_map($this->candidate(...), $candidates);
     }
 
     /**
@@ -666,12 +655,6 @@ final readonly class FixtureReportWriter implements FixtureReporter
      */
     private function candidateGroups(array $groups): array
     {
-        $typed = [];
-
-        foreach ($groups as $key => $candidates) {
-            $typed[$key] = $this->candidates($candidates);
-        }
-
-        return $typed;
+        return array_map($this->candidates(...), $groups);
     }
 }

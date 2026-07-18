@@ -15,6 +15,7 @@ use function fclose;
 use function file_get_contents;
 use function file_put_contents;
 use function getenv;
+use function is_array;
 use function is_executable;
 use function is_file;
 use function is_int;
@@ -264,7 +265,7 @@ final class PhptFile
 
     public function readActualOutput(): ?string
     {
-        $path = $this->artifactBase() . 'out';
+        $path = $this->artifactBase() . '.out';
         if (!is_file($path)) {
             return null;
         }
@@ -293,7 +294,7 @@ final class PhptFile
             return;
         }
 
-        $this->prefix = mb_substr($contents, 0, $matches[0][0][1], '8bit');
+        $this->prefix = mb_substr($contents, 0, $this->matchOffset($matches[0][0]), '8bit');
         $count = count($matches[0]);
 
         for ($i = 0; $i < $count; $i++) {
@@ -311,21 +312,31 @@ final class PhptFile
         }
     }
 
-    /** @param array{0: mixed, 1: mixed} $match */
-    private function matchText(array $match): string
+    private function matchText(mixed $match): string
     {
-        if (is_string($match[0])) {
-            return $match[0];
+        if (!is_array($match)) {
+            throw new \RuntimeException("Invalid PHPT section match in {$this->path}");
+        }
+
+        $text = $match[0] ?? null;
+
+        if (is_string($text)) {
+            return $text;
         }
 
         throw new \RuntimeException("Invalid PHPT section match in {$this->path}");
     }
 
-    /** @param array{0: mixed, 1: mixed} $match */
-    private function matchOffset(array $match): int
+    private function matchOffset(mixed $match): int
     {
-        if (is_int($match[1])) {
-            return $match[1];
+        if (!is_array($match)) {
+            throw new \RuntimeException("Invalid PHPT section offset in {$this->path}");
+        }
+
+        $offset = $match[1] ?? null;
+
+        if (is_int($offset)) {
+            return $offset;
         }
 
         throw new \RuntimeException("Invalid PHPT section offset in {$this->path}");

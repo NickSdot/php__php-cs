@@ -6,6 +6,9 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation;
 
 use function count;
 use function in_array;
+use function is_array;
+use function is_int;
+use function is_string;
 use function mb_strlen;
 use function mb_substr;
 use function mb_substr_count;
@@ -30,14 +33,22 @@ final readonly class PhptSections
         $count = count($matches[0]);
 
         for ($i = 0; $i < $count; $i++) {
-            $name = $matches[1][$i][0];
+            $name = $this->matchText($matches[1][$i]);
 
-            if (!in_array($name, $names, true)) {
+            if (null === $name || !in_array($name, $names, true)) {
                 continue;
             }
 
-            $contentStart = $matches[0][$i][1] + mb_strlen($matches[0][$i][0], '8bit');
-            $contentEnd = $i + 1 < $count ? $matches[0][$i + 1][1] : mb_strlen($contents, '8bit');
+            $header = $this->matchText($matches[0][$i]);
+            $start = $this->matchOffset($matches[0][$i]);
+            $nextStart = $i + 1 < $count ? $this->matchOffset($matches[0][$i + 1]) : null;
+
+            if (null === $header || null === $start) {
+                continue;
+            }
+
+            $contentStart = $start + mb_strlen($header, '8bit');
+            $contentEnd = $nextStart ?? mb_strlen($contents, '8bit');
 
             return new PhptSection(
                 contents: mb_substr($contents, $contentStart, $contentEnd - $contentStart, '8bit'),
@@ -46,5 +57,27 @@ final readonly class PhptSections
         }
 
         return null;
+    }
+
+    private function matchText(mixed $match): ?string
+    {
+        if (!is_array($match)) {
+            return null;
+        }
+
+        $text = $match[0] ?? null;
+
+        return is_string($text) ? $text : null;
+    }
+
+    private function matchOffset(mixed $match): ?int
+    {
+        if (!is_array($match)) {
+            return null;
+        }
+
+        $offset = $match[1] ?? null;
+
+        return is_int($offset) ? $offset : null;
     }
 }

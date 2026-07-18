@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use InternalsCS\Fixture\FixtureRewriteRunner;
 use InternalsCS\Fixture\FixtureValidationOptions;
+use InternalsCS\Fixture\FixtureValidationResult;
 use InternalsCS\Fixture\FixtureValidator;
 use InternalsCS\Support\UnifiedDiff;
 use PHPUnit\Framework\TestCase;
@@ -230,7 +231,7 @@ final class FixtureValidatorTest extends TestCase
         bool $update = false,
         bool $refreshPairs = false,
         array $rewritePathsByCase = [],
-    ): \InternalsCS\Fixture\FixtureValidationResult {
+    ): FixtureValidationResult {
         return new FixtureValidator()->validate(new FixtureValidationOptions(
             fixturesDir: $fixtures,
             cases: [],

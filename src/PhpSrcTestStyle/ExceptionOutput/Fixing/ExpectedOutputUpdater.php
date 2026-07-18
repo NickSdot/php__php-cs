@@ -12,6 +12,9 @@ use function count;
 use function explode;
 use function implode;
 use function in_array;
+use function is_array;
+use function is_int;
+use function is_string;
 use function mb_rtrim;
 use function mb_strlen;
 use function mb_strpos;
@@ -343,11 +346,11 @@ final readonly class ExpectedOutputUpdater
         $normalised = [];
 
         foreach ($matches as $match) {
-            $fullMatch = $match[0][0] ?? null;
-            $class = $match[1][0] ?? null;
-            $classOffset = $match[1][1];
+            $fullMatch = $this->matchText($match[0]);
+            $class = $this->matchText($match[1]);
+            $classOffset = $this->matchOffset($match[1]);
 
-            if (null === $fullMatch || null === $class || $classOffset < 0) {
+            if (null === $fullMatch || null === $class || null === $classOffset || $classOffset < 0) {
                 continue;
             }
 
@@ -355,7 +358,8 @@ final readonly class ExpectedOutputUpdater
                 continue;
             }
 
-            $message = mb_substr($line, $classOffset + mb_strlen($fullMatch));
+            $messageStart = $classOffset + mb_strlen($fullMatch);
+            $message = mb_substr($line, $messageStart);
             $code = $match[2][0] ?? null;
             $sourceFile = null;
             $sourceLine = null;
@@ -374,6 +378,28 @@ final readonly class ExpectedOutputUpdater
         }
 
         return $normalised;
+    }
+
+    private function matchText(mixed $match): ?string
+    {
+        if (!is_array($match)) {
+            return null;
+        }
+
+        $text = $match[0] ?? null;
+
+        return is_string($text) ? $text : null;
+    }
+
+    private function matchOffset(mixed $match): ?int
+    {
+        if (!is_array($match)) {
+            return null;
+        }
+
+        $offset = $match[1] ?? null;
+
+        return is_int($offset) ? $offset : null;
     }
 
     /** @return array{string, string|null} */

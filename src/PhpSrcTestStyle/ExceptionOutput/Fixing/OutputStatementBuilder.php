@@ -33,11 +33,10 @@ final readonly class OutputStatementBuilder
             '$' . $variable . '::class',
         ];
 
+        $segments[] = $this->literalSegment(': ');
+
         if ($parts->has(OutputPartKind::ExceptionCode)) {
-            $segments[] = $this->literalSegment(': ');
             $segments[] = '$' . $variable . '->getCode()';
-            $segments[] = $this->literalSegment(': ');
-        } else {
             $segments[] = $this->literalSegment(': ');
         }
 
