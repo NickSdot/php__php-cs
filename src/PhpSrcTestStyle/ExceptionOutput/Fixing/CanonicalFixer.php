@@ -55,15 +55,15 @@ final class CanonicalFixer extends VerifiedPhptFixer
         $changed = false;
 
         foreach ($plans as $plan) {
-            $current = mb_substr($code, $plan->startOffset, $plan->endOffset - $plan->startOffset);
+            $current = mb_substr($code, $plan->startOffset, $plan->endOffset - $plan->startOffset, '8bit');
 
             if ($current === $plan->replacement) {
                 continue;
             }
 
-            $code = mb_substr($code, 0, $plan->startOffset)
+            $code = mb_substr($code, 0, $plan->startOffset, '8bit')
                 . $plan->replacement
-                . mb_substr($code, $plan->endOffset);
+                . mb_substr($code, $plan->endOffset, null, '8bit');
 
             $this->markLineForOffset($code, $plan->startOffset);
             $changed = true;

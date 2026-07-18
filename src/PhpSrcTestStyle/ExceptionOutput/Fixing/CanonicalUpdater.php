@@ -455,6 +455,8 @@ final readonly class CanonicalUpdater
             'Exception thrown: ',
             'RuntimeException thrown: ',
             'LogicException: ',
+            'EXCEPTION: ',
+            'ERROR: ',
             'unexpected exception: ',
             'Unexpected exception: ',
             'expected exception: ',

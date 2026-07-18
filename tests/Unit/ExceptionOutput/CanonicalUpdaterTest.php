@@ -117,6 +117,17 @@ final class CanonicalUpdaterTest extends TestCase
         self::assertSame("RuntimeException: Iterators are frozen\n", $update->output);
     }
 
+    public function testUpdatesUppercaseErrorLabel(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "ERROR: Instantiation of class Closure is not allowed\n",
+            "Error: Instantiation of class Closure is not allowed\n",
+        );
+
+        self::assertSame("Error: Instantiation of class Closure is not allowed\n", $update->output);
+    }
+
     public function testUpdatesContextLabel(): void
     {
         $update = new CanonicalUpdater()->update(

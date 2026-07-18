@@ -148,8 +148,8 @@
 | Extra dirs outside selection | 0     |
 | Legacy suffixed dirs         | 0     |
 | Created old fixtures         | 0     |
-| Verified fixture files       | 87    |
-| Updated new/diff pairs       | 1     |
+| Verified fixture files       | 90    |
+| Updated new/diff pairs       | 0     |
 | Stale pairs kept             | 9     |
 | Old-only fixture files       | 0     |
-| Failures                     | 2     |
+| Failures                     | 0     |

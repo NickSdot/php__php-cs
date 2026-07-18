@@ -683,9 +683,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
     {
         $lines = ['# Fixture generation failures', ''];
 
-        foreach ($result->failures as $failure) {
-            $lines[] = '- ' . $this->normalizeFailure($failure, $fixturesDir);
-        }
+        $this->appendFailures($lines, $result, $fixturesDir);
 
         return implode("\n", $lines) . "\n";
     }
@@ -726,11 +724,22 @@ final readonly class FixtureReportWriter implements FixtureReporter
         $lines[] = '## Failures';
         $lines[] = '';
 
+        $this->appendFailures($lines, $result, $fixturesDir);
+
+        return implode("\n", $lines) . "\n";
+    }
+
+    /** @param list<string> $lines */
+    private function appendFailures(array &$lines, FixtureGenerationResult $result, string $fixturesDir): void
+    {
+        if ([] === $result->failures) {
+            $lines[] = '- none';
+            return;
+        }
+
         foreach ($result->failures as $failure) {
             $lines[] = '- ' . $this->normalizeFailure($failure, $fixturesDir);
         }
-
-        return implode("\n", $lines) . "\n";
     }
 
     /**

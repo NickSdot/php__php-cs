@@ -1,14 +1,14 @@
 # Fixture refresh
 
 Refresh-only run: no
-Updated new/diff pairs: 1
+Updated new/diff pairs: 0
 Stale existing new/diff pairs kept: 9
 Old-only fixture files: 0
-Failures: 2
+Failures: 0
 
 ## Updated pairs
 
-- Zend_tests_exceptions_bug60569
+- none
 
 ## Stale existing pairs kept
 
@@ -30,5 +30,4 @@ These existing new.phpt/ran.diff pairs were kept, but the current fixer did not 
 
 ## Failures
 
-- Zend_tests_closures_closure_instantiate: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL Closures cannot be instantiated directly [Zend/tests/closures/closure_instantiate.phpt]): expected output did not match a canonical exception-output rewrite; expected 1 line(s), actual 1 line(s)
-- ext_dom_tests_DOMElement_className: rewrite failed verification: EXPECT update was not provable after rewritten test failed (FAIL DOMElement::className [ext/dom/tests/DOMElement_className.phpt]): expected output did not match a canonical exception-output rewrite; expected 10 line(s), actual 1 line(s)
+- none
