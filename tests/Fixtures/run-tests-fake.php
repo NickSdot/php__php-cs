@@ -7,7 +7,7 @@ $contents = \file_get_contents($target);
 $old = \file_get_contents((string) \getenv('FIXTURE_OLD_PHPT'));
 $new = \file_get_contents((string) \getenv('FIXTURE_NEW_PHPT'));
 
-if ($contents === $old || expectedSection($contents) === expectedSection($new)) {
+if ($contents === $old || comparableExpectedSection($contents) === comparableExpectedSection($new)) {
     echo "PASS $target\n";
     exit(0);
 }
@@ -37,6 +37,11 @@ function expectedSection(string $phpt): string
     exit(1);
 }
 
+function comparableExpectedSection(string $phpt): string
+{
+    return \trim(expectedSection($phpt));
+}
+
 function actualOutput(string $phpt): string
 {
     if (1 === \preg_match('/^--EXPECT--[ \t]*(?:\r\n|\n|\r)(.*?)(?=^--[A-Z_]+--|\z)/ms', $phpt, $matches)) {
@@ -54,7 +59,7 @@ function actualOutput(string $phpt): string
 function concreteExpectf(string $expected): string
 {
     $output = '';
-    $length = \mb_strlen($expected);
+    $length = \strlen($expected);
 
     for ($i = 0; $i < $length; $i++) {
         if ('%' !== $expected[$i] || $i + 1 >= $length) {
@@ -65,10 +70,10 @@ function concreteExpectf(string $expected): string
         $placeholder = $expected[++$i];
 
         if ('r' === $placeholder) {
-            $end = \mb_strpos($expected, '%r', $i + 1);
+            $end = \strpos($expected, '%r', $i + 1);
 
             if (false !== $end) {
-                $output .= \mb_substr($expected, $i + 1, $end - $i - 1);
+                $output .= \substr($expected, $i + 1, $end - $i - 1);
                 $i = $end + 1;
                 continue;
             }
