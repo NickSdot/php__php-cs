@@ -169,6 +169,25 @@ final class CanonicalPlannerTest extends TestCase
         self::assertSame("echo \$e::class, ': ', \$e->getCode(), ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
+    public function testPlansMixedVarDumpMessageAndVariableRewrite(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                $msg = "Some error \x00 message";
+                throw new Exception($msg);
+            } catch(Exception $e) {
+                var_dump($e->getMessage(), $msg);
+            }
+            PHP_WRAP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+        $fixed = self::applyPlans($code, $plans);
+
+        self::assertCount(1, $plans);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;\n    var_dump(\$msg);", $fixed);
+    }
+
     public function testPlansHtmlBreakSuffixRewrite(): void
     {
         $code = <<<'PHP'

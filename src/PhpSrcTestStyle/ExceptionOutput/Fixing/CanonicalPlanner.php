@@ -20,6 +20,7 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\LocationWrapperOutp
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MarkerPrefixOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MessageBeforeTraceOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MessageOnlyOutputRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MixedVarDumpMessageOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ParenthesizedClassLabelOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\PreservedPrefixOutputRule;
 use InternalsCS\RewriteResult;
@@ -109,6 +110,7 @@ final readonly class CanonicalPlanner
             new DescriptivePrefixOutputRule(),
             new DynamicContextPrefixOutputRule(),
             new MarkerPrefixOutputRule(),
+            new MixedVarDumpMessageOutputRule(),
             new PreservedPrefixOutputRule(),
             new LeadingSeparatorOutputRule(),
             new MessageBeforeTraceOutputRule(),

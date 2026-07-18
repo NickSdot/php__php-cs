@@ -92,6 +92,20 @@ final class CanonicalUpdaterTest extends TestCase
         self::assertSame("Position of '%00' is => int(58)\nException: message\n", $update->output);
     }
 
+    public function testUpdatesFirstVarDumpStringWhenRemainingDumpStays(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "string(20) \"Some error %0 message\"\nstring(20) \"Some error %0 message\"\n",
+            "Exception: Some error \0 message\nstring(20) \"Some error \0 message\"\n",
+        );
+
+        self::assertSame(
+            "Exception: Some error %0 message\nstring(20) \"Some error %0 message\"\n",
+            $update->output,
+        );
+    }
+
     public function testUpdatesExpectedExceptionLabel(): void
     {
         $update = new CanonicalUpdater()->update(

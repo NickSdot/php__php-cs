@@ -13,6 +13,7 @@ final readonly class Statement
         public int $startOffset,
         public int $endOffset,
         public int $line,
+        public string $indent,
         public OutputParts $parts,
         public Classification $classification,
     ) {}

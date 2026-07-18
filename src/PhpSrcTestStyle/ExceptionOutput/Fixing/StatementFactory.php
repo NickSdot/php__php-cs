@@ -10,8 +10,10 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputStatementParser;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\Window;
 use PhpParser\Node\Stmt;
 
+use function mb_strrpos;
 use function mb_substr;
 use function mb_trim;
+use function preg_match;
 
 final readonly class StatementFactory
 {
@@ -49,8 +51,19 @@ final readonly class StatementFactory
             startOffset: $start,
             endOffset: $end + 1,
             line: $statement->getStartLine(),
+            indent: $this->indent($code, $start),
             parts: $parts,
             classification: $classification,
         );
+    }
+
+    private function indent(string $code, int $start): string
+    {
+        $beforeStatement = mb_substr($code, 0, $start, '8bit');
+        $lineStart = mb_strrpos($beforeStatement, "\n", 0, '8bit');
+        $indentStart = false === $lineStart ? 0 : $lineStart + 1;
+        $indent = mb_substr($code, $indentStart, $start - $indentStart, '8bit');
+
+        return 1 === preg_match('/^[ \t]*$/', $indent) ? $indent : '';
     }
 }
