@@ -5,7 +5,7 @@
          echo "\n";
      } catch (ReflectionException $e) {
 -        echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
-+        echo "Property $property from class: EXCEPTION - " . $e::class . ': ' . $e->getMessage() . "\n\n";
++        echo "Property $property from class: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
      }
  }
  
@@ -14,16 +14,17 @@
          echo "\n";
      } catch (ReflectionException $e) {
 -        echo "Property $property from instance: EXCEPTION - " . $e->getMessage() . "\n\n";
-+        echo "Property $property from instance: EXCEPTION - " . $e::class . ': ' . $e->getMessage() . "\n\n";
++        echo "Property $property from instance: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
      }
  }
  
-@@ -74,7 +74,7 @@
+@@ -74,8 +74,7 @@
    getName(): private
    getMangledName(): %0TestClass%0private
  
 -Property dynamic from class: EXCEPTION - Property TestClass::$dynamic does not exist
-+Property dynamic from class: EXCEPTION - ReflectionException: Property TestClass::$dynamic does not exist
- 
+-
++Property dynamic from class: ReflectionException: Property TestClass::$dynamic does not exist
  === Testing ReflectionProperty from INSTANCE ===
  Property public from instance:
+   getName(): public
