@@ -5,7 +5,7 @@
          echo "\n";
      } catch (ReflectionException $e) {
 -        echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
-+        echo $description, ': ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo "$description: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
      }
  }
  
