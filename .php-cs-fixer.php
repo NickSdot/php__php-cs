@@ -76,7 +76,7 @@ $finder = new PhpCsFixer\Finder()
         __DIR__ . '/tests',
     ])
     ->exclude([
-        __DIR__ . '/tests/Fixtures',
+        'Fixtures',
     ])
 ;
 
