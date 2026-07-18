@@ -20,7 +20,7 @@ function testDynamicProperty($obj, $property, $description) {
         echo "  Found in array cast: " . (array_key_exists($reflection->getMangledName(), $array) ? "yes" : "no") . "\n";
         echo "\n";
     } catch (ReflectionException $e) {
-        echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
+        echo $description, ': ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
     }
 }
 

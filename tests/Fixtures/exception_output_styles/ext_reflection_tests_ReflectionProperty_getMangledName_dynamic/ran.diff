@@ -1,5 +1,14 @@
 --- old.phpt
 +++ new.phpt
+@@ -20,7 +20,7 @@
+         echo "  Found in array cast: " . (array_key_exists($reflection->getMangledName(), $array) ? "yes" : "no") . "\n";
+         echo "\n";
+     } catch (ReflectionException $e) {
+-        echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
++        echo $description, ': ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+     }
+ }
+ 
 @@ -61,14 +61,14 @@
      $reflection = new ReflectionProperty('TestClass', 'dynamic');
      echo "This should not be reached\n";
