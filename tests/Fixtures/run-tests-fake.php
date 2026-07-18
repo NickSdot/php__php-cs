@@ -53,19 +53,42 @@ function actualOutput(string $phpt): string
 
 function concreteExpectf(string $expected): string
 {
-    return \strtr($expected, [
-        '%%' => '%',
-        '%0' => "\0",
-        '%e' => DIRECTORY_SEPARATOR,
-        '%s' => __FILE__,
-        '%S' => __FILE__,
-        '%a' => 'anything',
-        '%A' => "anything\nmultiple lines",
-        '%w' => '',
-        '%i' => '123',
-        '%d' => '123',
-        '%x' => '7b',
-        '%f' => '1.5',
-        '%c' => 'x',
-    ]);
+    $output = '';
+    $length = \mb_strlen($expected);
+
+    for ($i = 0; $i < $length; $i++) {
+        if ('%' !== $expected[$i] || $i + 1 >= $length) {
+            $output .= $expected[$i];
+            continue;
+        }
+
+        $placeholder = $expected[++$i];
+
+        if ('r' === $placeholder) {
+            $end = \mb_strpos($expected, '%r', $i + 1);
+
+            if (false !== $end) {
+                $output .= \mb_substr($expected, $i + 1, $end - $i - 1);
+                $i = $end + 1;
+                continue;
+            }
+        }
+
+        $output .= match ($placeholder) {
+            '%' => '%',
+            '0' => "\0",
+            'e' => DIRECTORY_SEPARATOR,
+            's', 'S' => __FILE__,
+            'a' => 'anything',
+            'A' => "anything\nmultiple lines",
+            'w' => '',
+            'i', 'd' => '123',
+            'x' => '7b',
+            'f' => '1.5',
+            'c' => 'x',
+            default => '%' . $placeholder,
+        };
+    }
+
+    return $output;
 }

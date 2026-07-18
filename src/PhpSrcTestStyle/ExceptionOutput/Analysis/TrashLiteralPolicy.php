@@ -7,6 +7,7 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis;
 use function in_array;
 use function mb_strtolower;
 use function mb_trim;
+use function preg_match;
 use function preg_replace;
 use function str_replace;
 
@@ -55,6 +56,10 @@ final readonly class TrashLiteralPolicy
 
         if (in_array($label, self::LABELS, true)) {
             return $label;
+        }
+
+        if (1 === preg_match('/^(?:[a-z_\\\\][a-z0-9_\\\\]*(?:exception|error)|soapfault)(?: thrown)?$/', $label)) {
+            return 'exception type';
         }
 
         return null;

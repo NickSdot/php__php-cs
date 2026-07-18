@@ -21,12 +21,12 @@ use function mb_strtolower;
 final readonly class OutputExpressionParser
 {
     /** @param list<Expr> $expression */
-    public function fromEcho(array $expression): OutputParts
+    public function fromEcho(array $expression, ?ExpressionSource $source = null): OutputParts
     {
         $parts = [];
 
         foreach ($expression as $expr) {
-            array_push($parts, ...$this->parts($expr));
+            array_push($parts, ...$this->parts($expr, $source, inInterpolatedString: false));
         }
 
         $shape = 'echo:' . $this->expressionListShape($expression);
@@ -34,54 +34,56 @@ final readonly class OutputExpressionParser
         return new OutputParts($parts, $shape);
     }
 
-    public function fromPrint(Expr $expr): OutputParts
+    public function fromPrint(Expr $expr, ?ExpressionSource $source = null): OutputParts
     {
         return new OutputParts(
-            parts: $this->parts($expr),
+            parts: $this->parts($expr, $source, inInterpolatedString: false),
             shape: 'print:' . $this->shape($expr),
         );
     }
 
     /** @param list<Arg> $args */
-    public function fromVarDump(array $args): OutputParts
+    public function fromVarDump(array $args, ?ExpressionSource $source = null): OutputParts
     {
         $parts = [];
 
         foreach ($args as $arg) {
-            array_push($parts, ...$this->parts($arg->value));
+            array_push($parts, ...$this->parts($arg->value, $source, inInterpolatedString: false));
         }
 
         return new OutputParts($parts, 'var_dump');
     }
 
-    public function fromPrintR(Expr $expr): OutputParts
+    public function fromPrintR(Expr $expr, ?ExpressionSource $source = null): OutputParts
     {
         return new OutputParts(
-            parts: $this->parts($expr),
+            parts: $this->parts($expr, $source, inInterpolatedString: false),
             shape: 'print_r:' . $this->shape($expr),
         );
     }
 
     /** @return list<OutputPart> */
-    private function parts(Expr|InterpolatedStringPart $expr): array
+    private function parts(Expr|InterpolatedStringPart $expr, ?ExpressionSource $source, bool $inInterpolatedString): array
     {
+        $partSource = $inInterpolatedString ? OutputPart::SOURCE_INTERPOLATED_STRING : null;
+
         if ($expr instanceof InterpolatedStringPart) {
-            return [OutputPart::literal($expr->value)];
+            return [OutputPart::literal($expr->value, $partSource)];
         }
 
         if ($expr instanceof Expr\BinaryOp\Concat) {
             return [
-                ...$this->parts($expr->left),
-                ...$this->parts($expr->right),
+                ...$this->parts($expr->left, $source, $inInterpolatedString),
+                ...$this->parts($expr->right, $source, $inInterpolatedString),
             ];
         }
 
         if ($expr instanceof Scalar\String_) {
-            return [OutputPart::literal($expr->value)];
+            return [OutputPart::literal($expr->value, $partSource)];
         }
 
         if ($expr instanceof Scalar\InterpolatedString) {
-            return $this->interpolatedStringParts($expr);
+            return $this->interpolatedStringParts($expr, $source);
         }
 
         if ($this->isPhpEol($expr)) {
@@ -103,19 +105,25 @@ final readonly class OutputExpressionParser
         $variable = $this->variableName($expr);
 
         if (null !== $variable) {
-            return [OutputPart::otherVariable($variable)];
+            return [OutputPart::otherVariable($variable, $partSource)];
+        }
+
+        $expressionSource = $source?->forNode($expr);
+
+        if (null !== $expressionSource) {
+            return [OutputPart::otherExpression($expressionSource)];
         }
 
         return [OutputPart::unknown($expr->getType())];
     }
 
     /** @return list<OutputPart> */
-    private function interpolatedStringParts(Scalar\InterpolatedString $expr): array
+    private function interpolatedStringParts(Scalar\InterpolatedString $expr, ?ExpressionSource $source): array
     {
         $parts = [];
 
         foreach ($expr->parts as $part) {
-            array_push($parts, ...$this->parts($part));
+            array_push($parts, ...$this->parts($part, $source, inInterpolatedString: true));
         }
 
         return $parts;

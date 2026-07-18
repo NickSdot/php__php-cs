@@ -136,6 +136,26 @@ final class CanonicalPlannerTest extends TestCase
         );
     }
 
+    public function testPlansCodeMessageHyphenFileLineRewriteAsCanonicalLocationOutput(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new TypeError('x');
+            } catch (TypeError $ex) {
+                echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame(
+            "echo \$ex::class, ': ', \$ex->getCode(), ': ', \$ex->getMessage(), ' in ', \$ex->getFile(), ' on line ', \$ex->getLine(), \\PHP_EOL;",
+            $plans[0]->replacement,
+        );
+    }
+
     public function testPlansCodeRewriteAfterMessage(): void
     {
         $code = <<<'PHP_WRAP'
@@ -311,6 +331,23 @@ final class CanonicalPlannerTest extends TestCase
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
+    public function testPlansExceptionTypeThrownLabelRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new InvalidArgumentException('x');
+            } catch (InvalidArgumentException $e) {
+                echo "InvalidArgumentException thrown: " . $e->getMessage() . "\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
     public function testPlansBracketedNumericMarkerPrefixRewrite(): void
     {
         $code = <<<'PHP'
@@ -431,7 +468,7 @@ final class CanonicalPlannerTest extends TestCase
         $plans = new CanonicalPlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo '(', \$ns_readable, ', \"', \$qname, '\"): ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \"(\$ns_readable, \\\"\$qname\\\"): \", \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
     public function testPlansBracketedClassRewrite(): void
@@ -536,7 +573,7 @@ final class CanonicalPlannerTest extends TestCase
         self::assertSame("echo 'Valid flags rejected: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
-    public function testDoesNotPlanFailedAsExpectedDiagnosticPrefixRewrite(): void
+    public function testPlansFailedAsExpectedDiagnosticPrefixRewrite(): void
     {
         $code = <<<'PHP'
             <?php
@@ -547,10 +584,13 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        self::assertSame([], new CanonicalPlanner()->plans($code));
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'Instance-based creation failed as expected: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
-    public function testDoesNotPlanCompareExceptionDiagnosticPrefixRewrite(): void
+    public function testPlansCompareExceptionDiagnosticPrefixRewrite(): void
     {
         $code = <<<'PHP_WRAP'
             <?php
@@ -561,7 +601,10 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        self::assertSame([], new CanonicalPlanner()->plans($code));
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo 'Compare: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
     public function testPlansParenthesizedClassLabelRewrite(): void
@@ -856,7 +899,7 @@ final class CanonicalPlannerTest extends TestCase
         );
     }
 
-    public function testDoesNotPlanDescriptiveContextRewrite(): void
+    public function testPlansDescriptiveDynamicContextRewrite(): void
     {
         $code = <<<'PHP'
             <?php
@@ -867,7 +910,61 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        self::assertSame([], new CanonicalPlanner()->plans($code));
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \"PQ Case \$i: \", \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansDynamicContextRewriteWithoutExceptionMarker(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new ReflectionException('x');
+            } catch (ReflectionException $e) {
+                echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \"Property \$property from class: \", \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansDynamicContextRewriteWithoutThrownMarker(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new TypeError('x');
+            } catch (TypeError $e) {
+                echo "Valid assignment $prop2 =& $prop1 threw {$e->getMessage()}\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \"Valid assignment \$prop2 =& \$prop1 \", \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
+    public function testPlansExpressionContextPrefixRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new Exception('x');
+            } catch (Exception $e) {
+                echo "{$rf->getName()}: {$e->getMessage()}\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$rf->getName(), ': ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
     /** @param list<TextEdit> $plans */

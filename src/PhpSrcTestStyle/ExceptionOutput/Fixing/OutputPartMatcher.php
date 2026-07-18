@@ -8,12 +8,18 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 
 use function count;
+use function preg_match;
 
 final readonly class OutputPartMatcher
 {
     public function isNewline(OutputPart $part): bool
     {
-        return OutputPartKind::Newline === $part->kind;
+        if (OutputPartKind::Newline === $part->kind) {
+            return true;
+        }
+
+        return OutputPartKind::Literal === $part->kind
+            && 1 === preg_match('/^(?:\r\n|\n|\r)+$/', $part->value);
     }
 
     public function isLiteral(OutputPart $part, ?string $value = null): bool
@@ -61,7 +67,7 @@ final readonly class OutputPartMatcher
     public function onlyNewlinesAfter(array $parts, int $offset): bool
     {
         for ($i = $offset; $i < count($parts); $i++) {
-            if (OutputPartKind::Newline !== $parts[$i]->kind) {
+            if (!$this->isNewline($parts[$i])) {
                 return false;
             }
         }

@@ -1,26 +1,20 @@
 # Fixture refresh
 
 Refresh-only run: no
-Updated new/diff pairs: 1
-Stale existing new/diff pairs kept: 7
+Updated new/diff pairs: 0
+Stale existing new/diff pairs kept: 0
 Old-only fixture files: 0
 Failures: 0
 
 ## Updated pairs
 
-- ext_hash_tests_hash_serialize_003
+- none
 
 ## Stale existing pairs kept
 
 These existing new.phpt/ran.diff pairs were kept, but the current fixer did not reproduce a change from old.phpt.
 
-- Zend_tests_type_declarations_typed_properties_076
-- ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
-- ext_reflection_tests_ReflectionProperty_getMangledName_instance
-- ext_reflection_tests_internal_parameter_default_value_check_all
-- ext_spl_tests_SplHeap_serialize_error_handling
-- ext_spl_tests_heap_corruption
-- tests_classes_type_hinting_004
+- none
 
 ## Old-only fixtures
 

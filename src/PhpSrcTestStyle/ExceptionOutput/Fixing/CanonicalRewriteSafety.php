@@ -71,7 +71,7 @@ final readonly class CanonicalRewriteSafety
     public function usesOnlyVariable(OutputParts $parts, string $catchVariable): bool
     {
         foreach ($parts->parts as $part) {
-            if (OutputPartKind::OtherVariable === $part->kind) {
+            if (OutputPartKind::OtherVariable === $part->kind || OutputPartKind::OtherExpression === $part->kind) {
                 return false;
             }
 

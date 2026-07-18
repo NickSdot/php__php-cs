@@ -69,7 +69,9 @@ final readonly class OutputParts
     {
         return match ($part->kind) {
             OutputPartKind::Literal => $this->literalFingerprint($part, $trash),
-            OutputPartKind::ExceptionClass, OutputPartKind::Unknown => $this->sourceAwareFingerprint($part),
+            OutputPartKind::ExceptionClass,
+            OutputPartKind::OtherExpression,
+            OutputPartKind::Unknown => $this->sourceAwareFingerprint($part),
             default => $part->kind->value,
         };
     }

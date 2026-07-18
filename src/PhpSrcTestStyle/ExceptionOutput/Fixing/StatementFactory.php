@@ -6,6 +6,7 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing;
 
 use InternalsCS\PhpAst;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\Classifier;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\ExpressionSource;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputStatementParser;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\Window;
 use PhpParser\Node\Stmt;
@@ -25,7 +26,7 @@ final readonly class StatementFactory
 
     public function fromStatement(Stmt $statement, string $code, int $offsetDelta): ?Statement
     {
-        $parts = $this->outputs->parts($statement);
+        $parts = $this->outputs->parts($statement, new ExpressionSource($code, $offsetDelta));
 
         if (null === $parts) {
             return null;

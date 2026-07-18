@@ -266,6 +266,31 @@ final class CanonicalUpdaterTest extends TestCase
         self::assertSame("Valid flags rejected: Exception: invalid\n", $update->output);
     }
 
+    public function testUpdatesDescriptivePrefixWithoutExceptionMarker(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Property dynamic from class: EXCEPTION - Property TestClass::\$dynamic does not exist\n",
+            "Property dynamic from class: ReflectionException: Property TestClass::\$dynamic does not exist\n",
+        );
+
+        self::assertSame(
+            "Property dynamic from class: ReflectionException: Property TestClass::\$dynamic does not exist\n",
+            $update->output,
+        );
+    }
+
+    public function testUpdatesComparePrefixWithoutExceptionMarker(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Compare Exception: Compare exception\n",
+            "Compare: Exception: Compare exception\n",
+        );
+
+        self::assertSame("Compare: Exception: Compare exception\n", $update->output);
+    }
+
     public function testUpdatesTestLabel(): void
     {
         $update = new CanonicalUpdater()->update(
@@ -301,6 +326,34 @@ final class CanonicalUpdaterTest extends TestCase
 
         self::assertSame(
             "printf test 30:ValueError: Argument number specifier must be greater than zero and less than 2147483647\n",
+            $update->output,
+        );
+    }
+
+    public function testUpdatesExceptionTypeThrownLabel(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "InvalidArgumentException thrown: Sub-Iterator is associated with NULL\n",
+            "InvalidArgumentException: Sub-Iterator is associated with NULL\n",
+        );
+
+        self::assertSame(
+            "InvalidArgumentException: Sub-Iterator is associated with NULL\n",
+            $update->output,
+        );
+    }
+
+    public function testUpdatesDynamicContextThrownMarker(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "Valid assignment foo =& bar threw fixture message\n",
+            "Valid assignment foo =& bar TypeError: fixture message\n",
+        );
+
+        self::assertSame(
+            "Valid assignment foo =& bar TypeError: fixture message\n",
             $update->output,
         );
     }
@@ -465,6 +518,34 @@ final class CanonicalUpdaterTest extends TestCase
         );
     }
 
+    public function testUpdatesExpectfCodeMessageFileLinePlaceholder(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "0: f1(): Argument #1 (\$a) must be of type A, int given%s(%d)\n",
+            "TypeError: 0: f1(): Argument #1 (\$a) must be of type A, int given in /tmp/type_hinting_004.php on line 17\n",
+        );
+
+        self::assertSame(
+            "TypeError: 0: f1(): Argument #1 (\$a) must be of type A, int given in %s on line %d\n",
+            $update->output,
+        );
+    }
+
+    public function testUpdatesExpectfCodeMessageWithMessageSuffixAndFileLinePlaceholder(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "0: f1(): Argument #1 (\$a) must be of type A, int given%s(%d)\n",
+            "TypeError: 0: f1(): Argument #1 (\$a) must be of type A, int given, called in /tmp/type_hinting_004.php on line 12 in /tmp/type_hinting_004.php on line 5\n",
+        );
+
+        self::assertSame(
+            "TypeError: 0: f1(): Argument #1 (\$a) must be of type A, int given%s in %s on line %d\n",
+            $update->output,
+        );
+    }
+
     public function testUpdatesExpectfWithBinaryUnchangedLines(): void
     {
         $binary = "\xbd";
@@ -486,6 +567,20 @@ final class CanonicalUpdaterTest extends TestCase
         );
 
         self::assertSame("    [2] => %r%%r05s\nException: message\n", $update->output);
+    }
+
+    public function testUpdatesExpectfWithEscapedPercentUnchangedLines(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECTF',
+            "*** Output for '%%%.2f' as the format parameter ***\nmessage\n",
+            "*** Output for '%%.2f' as the format parameter ***\nException: message\n",
+        );
+
+        self::assertSame(
+            "*** Output for '%%%.2f' as the format parameter ***\nException: message\n",
+            $update->output,
+        );
     }
 
     public function testUpdatesSoapFaultCatchTypeLabel(): void

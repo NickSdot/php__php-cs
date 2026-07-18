@@ -54,9 +54,10 @@ final readonly class FixtureReportWriter implements FixtureReporter
         $fixtureStates = $this->fixtureStates($fixturesDir, $selection->fixtures, $writeResults, $result);
         $flavourStates = $this->flavourStates($selection, $flavours, $fixtureStates);
         $duplicateGroups = $this->duplicateGroups($flavours);
+        $selectedFixtures = $this->selectedFixturesByFlavour($selection);
 
         $this->writeFile($reportsDir . '/stats.md', $this->renderStats($result, $flavourStates, $duplicateGroups));
-        $this->writeFile($reportsDir . '/duplicates.txt', $this->renderDuplicates($duplicateGroups));
+        $this->writeFile($reportsDir . '/duplicates.txt', $this->renderDuplicates($duplicateGroups, $selectedFixtures));
         $this->writeFile($reportsDir . '/fixtures.txt', $this->renderFixtures($fixtureStates));
         $this->writeFile($reportsDir . '/failures.txt', $this->renderFailures($result, $fixturesDir));
         $this->writeRefresh($reportsDir, $fixturesDir, $result);
@@ -205,6 +206,18 @@ final readonly class FixtureReportWriter implements FixtureReporter
         }
 
         return $states;
+    }
+
+    /** @return array<string, string> */
+    private function selectedFixturesByFlavour(FixtureSelection $selection): array
+    {
+        $fixtures = [];
+
+        foreach ($selection->fixtureByFlavour() as $flavourKey => $fixture) {
+            $fixtures[$flavourKey] = $this->caseName->fromFixtureSource($fixture);
+        }
+
+        return $fixtures;
     }
 
     /**
@@ -470,8 +483,11 @@ final readonly class FixtureReportWriter implements FixtureReporter
         return str_replace('|', '\|', $value);
     }
 
-    /** @param array<string, list<Candidate>> $duplicates */
-    private function renderDuplicates(array $duplicates): string
+    /**
+     * @param array<string, list<Candidate>> $duplicates
+     * @param array<string, string> $selectedFixtures
+     */
+    private function renderDuplicates(array $duplicates, array $selectedFixtures): string
     {
         $lines = ['# Duplicate candidate windows by flavour', ''];
 
@@ -479,7 +495,8 @@ final readonly class FixtureReportWriter implements FixtureReporter
             $first = $candidates[0];
             $lines[] = $fingerprint;
             $lines[] = '  count: ' . count($candidates);
-            $lines[] = '  representative: ' . $first->relativePath . ':' . $first->line;
+            $lines[] = '  selected fixture: ' . ($selectedFixtures[$fingerprint] ?? 'none');
+            $lines[] = '  first candidate: ' . $first->relativePath . ':' . $first->line;
             $lines[] = '  family: ' . $first->classification->family->value;
             $lines[] = '  safety: ' . $first->classification->safety->value;
             $lines[] = '  first statement: ' . $first->statement;

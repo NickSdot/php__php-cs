@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\ExceptionOutput;
 
 use InternalsCS\PhpAst;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\ExpressionSource;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputStatementParser;
 use PHPUnit\Framework\TestCase;
@@ -46,6 +47,23 @@ final class OutputStatementParserTest extends TestCase
             PHP);
 
         self::assertNull(new OutputStatementParser()->parts($statements[0]));
+    }
+
+    public function testPreservesUnknownExpressionSourceWhenCodeIsProvided(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            echo "{$rf->getName()}: {$e->getMessage()}\n";
+            PHP;
+
+        $parsed = new PhpAst()->parse($code);
+        self::assertNotNull($parsed);
+
+        $parts = new OutputStatementParser()->parts($parsed->statements[0], new ExpressionSource($code, $parsed->offsetDelta));
+        self::assertNotNull($parts);
+
+        self::assertSame(OutputPartKind::OtherExpression, $parts->parts[0]->kind);
+        self::assertSame('$rf->getName()', $parts->parts[0]->source);
     }
 
     /** @return list<\PhpParser\Node\Stmt> */

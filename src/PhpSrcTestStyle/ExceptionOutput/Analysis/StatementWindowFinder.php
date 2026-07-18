@@ -97,7 +97,7 @@ final readonly class StatementWindowFinder
             return null;
         }
 
-        $parts = $this->outputs->parts($statement);
+        $parts = $this->outputs->parts($statement, new ExpressionSource($code, $offsetDelta));
 
         if (null === $parts) {
             return null;

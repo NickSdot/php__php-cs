@@ -136,6 +136,13 @@ final readonly class CanonicalUpdater
             $expectedLine = $expectedLines[$expectedIndex];
             $actualLine = $actualLines[$actualIndex];
 
+            if ($expectedLine === $actualLine) {
+                $updated[] = $expectedLine;
+                $expectedIndex++;
+                $actualIndex++;
+                continue;
+            }
+
             if ($this->expectfLineMatches($expectedLine, $actualLine)) {
                 $updated[] = $expectedLine;
                 $expectedIndex++;
@@ -455,6 +462,7 @@ final readonly class CanonicalUpdater
             'Exception thrown: ',
             'RuntimeException thrown: ',
             'LogicException: ',
+            'EXCEPTION - ',
             'EXCEPTION: ',
             'ERROR: ',
             'unexpected exception: ',
@@ -503,6 +511,23 @@ final readonly class CanonicalUpdater
             if (str_ends_with($line, $suffix)) {
                 $candidates[] = mb_substr($line, 0, -mb_strlen($suffix));
             }
+        }
+
+        if (1 === preg_match('/^(.*)%s\(%d\)$/', $line, $matches)) {
+            $candidates[] = $matches[1] . '%s in %s on line %d';
+            $candidates[] = $matches[1] . ' in %s on line %d';
+        }
+
+        if (1 === preg_match('/^(.*?)(?::\s*|\s+)(?:exception|error)\s*[-:]\s*(.*)$/i', $line, $matches)) {
+            $candidates[] = mb_rtrim($matches[1]) . ': ' . $matches[2];
+        }
+
+        if (1 === preg_match('/^(.*\S)\s+threw\s+(.*)$/i', $line, $matches)) {
+            $candidates[] = $matches[1] . ' ' . $matches[2];
+        }
+
+        if (1 === preg_match('/^([A-Za-z_\\\\][A-Za-z0-9_\\\\]*(?:Exception|Error)|SoapFault) thrown: (.*)$/', $line, $matches)) {
+            $candidates[] = $matches[2];
         }
 
         if (1 === preg_match('/^\[([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\] (.*)$/', $line, $matches)) {
@@ -555,6 +580,10 @@ final readonly class CanonicalUpdater
         $candidateBody = $this->candidateBody($candidate, $prefix);
         $code = $actual['code'];
 
+        if (null !== $actual['file'] && null !== $actual['line'] && null !== $code && 1 === preg_match('/^((?:[+-]?\d+|%d|%i)): (.*)%s\(%d\)$/', $candidateBody, $matches)) {
+            return $prefix . $class . ': ' . $matches[1] . ': ' . $this->canonicalFileLineMessage($matches[2], $actual['message']);
+        }
+
         if (null !== $code && 1 === preg_match('/^' . preg_quote($class, '/') . ': ((?:[+-]?\d+|%d|%i)): (.+)$/', $candidateBody, $matches)) {
             return $prefix . $class . ': ' . $matches[1] . ': ' . $matches[2];
         }
@@ -600,6 +629,15 @@ final readonly class CanonicalUpdater
         }
 
         return $prefix . $class . ': ' . $candidateBody;
+    }
+
+    private function canonicalFileLineMessage(string $message, string $actualMessage): string
+    {
+        if ($this->expectfLineMatches($message, $actualMessage)) {
+            return $message . ' in %s on line %d';
+        }
+
+        return $message . '%s in %s on line %d';
     }
 
     private function candidateBody(string $candidate, string $prefix): string
@@ -761,6 +799,7 @@ final readonly class CanonicalUpdater
             }
 
             $regex .= match ($placeholder) {
+                '%' => '%',
                 'e' => preg_quote(DIRECTORY_SEPARATOR, '/'),
                 's' => '[^\r\n]+',
                 'S' => '[^\r\n]*',

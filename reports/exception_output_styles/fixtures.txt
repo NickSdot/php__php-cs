@@ -156,7 +156,7 @@ Zend/tests/constants/008.phpt
   fixture: Zend_tests_constants_008
   first line: 9
   flavours covered: 1
-    - line 9: message_only message_only:f99671c17dc5b51b229206cf22b75ad358a0591d
+    - line 9: message_only message_only:661de98eb2a79878f4278471053a3c141a6486ff
 
 Zend/tests/constexpr/constant_expressions_exceptions_002.phpt
   state: handled
@@ -280,7 +280,7 @@ Zend/tests/type_declarations/scalar_return_basic_64bit.phpt
     - line 58: message_only message_only:2e9049a84007173882ed62fac7cf85bc37533f61
 
 Zend/tests/type_declarations/typed_properties_076.phpt
-  state: stale_pair
+  state: handled
   fixture: Zend_tests_type_declarations_typed_properties_076
   first line: 40
   flavours covered: 1
@@ -327,7 +327,7 @@ ext/dom/tests/DOMNode_removeChild_error1.phpt
   fixture: ext_dom_tests_DOMNode_removeChild_error1
   first line: 17
   flavours covered: 1
-    - line 17: message_only message_only:693b057fbbf5eb1f97ef5afdadb67dec9a0858d8
+    - line 17: message_only message_only:4bead76507738369429d435fded3974a1e9f3aec
 
 ext/dom/tests/modern/spec/Document_createAttributeNS.phpt
   state: handled
@@ -539,7 +539,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_dynamic.phpt
     - line 71: message_only message_only:148a618e7ced665c3a3a27f8d419d9079d8521c2
 
 ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt
-  state: stale_pair
+  state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_inheritance
   first line: 44
   flavours covered: 2
@@ -547,7 +547,7 @@ ext/reflection/tests/ReflectionProperty_getMangledName_inheritance.phpt
     - line 52: message_only message_only:ad310bfa9fc6bc722018b51dba552a12f14ca4dc
 
 ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt
-  state: stale_pair
+  state: handled
   fixture: ext_reflection_tests_ReflectionProperty_getMangledName_instance
   first line: 26
   flavours covered: 2
@@ -555,11 +555,11 @@ ext/reflection/tests/ReflectionProperty_getMangledName_instance.phpt
     - line 48: message_only message_only:10a1e8ff201331c1b4f513353f78066198c27cd6
 
 ext/reflection/tests/internal_parameter_default_value/check_all.phpt
-  state: stale_pair
+  state: handled
   fixture: ext_reflection_tests_internal_parameter_default_value_check_all
   first line: 12
   flavours covered: 1
-    - line 12: message_only message_only:77e998e05e3bdd99308717813405be030bd6f4da
+    - line 12: message_only message_only:1e222d8138310df9bf90b12d5a04575df37185fb
 
 ext/session/tests/session_create_id_invalid_prefix.phpt
   state: handled
@@ -584,12 +584,18 @@ ext/session/tests/session_start_error.phpt
     - line 15: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
     - line 23: class_message class_message:40a5c2e3a98b10f114ee9e82bf7c145041642dfb
 
-ext/soap/tests/bugs/protocol_relative_redirect.phpt
+ext/spl/tests/multiple_iterator_001.phpt
   state: handled
-  fixture: ext_soap_tests_bugs_protocol_relative_redirect
-  first line: 45
-  flavours covered: 1
-    - line 45: message_only message_only:1ec5fa64124358dce243d2469687cdbcd868e829
+  fixture: ext_spl_tests_multiple_iterator_001
+  first line: 19
+  flavours covered: 3
+    - line 19: message_only message_only:02e1260470d1a0436b6b0813de22b405065abd5c
+    - line 24: message_only message_only:02e1260470d1a0436b6b0813de22b405065abd5c
+    - line 41: message_only message_only:5553c427f0519a3479808825c51ba18e2d870f8a
+    - line 46: message_only message_only:5553c427f0519a3479808825c51ba18e2d870f8a
+    - line 74: message_only message_only:46962d750bc52f0a79d869a4a92a4e4ac246705c
+    - line 92: message_only message_only:46962d750bc52f0a79d869a4a92a4e4ac246705c
+    - line 100: message_only message_only:46962d750bc52f0a79d869a4a92a4e4ac246705c
 
 ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt
   state: handled
@@ -616,7 +622,7 @@ ext/spl/tests/SplHeap_serialize_corrupted.phpt
     - line 59: message_only message_only:62a03fb73ac565c5d674e6116e07f530dc2283ae
 
 ext/spl/tests/SplHeap_serialize_error_handling.phpt
-  state: stale_pair
+  state: handled
   fixture: ext_spl_tests_SplHeap_serialize_error_handling
   first line: 40
   flavours covered: 2
@@ -651,7 +657,7 @@ ext/spl/tests/gh16217.phpt
     - line 26: message_only message_only:044551d978b7135ee381f7feffc185c017be5594
 
 ext/spl/tests/heap_corruption.phpt
-  state: stale_pair
+  state: handled
   fixture: ext_spl_tests_heap_corruption
   first line: 51
   flavours covered: 2
@@ -664,19 +670,6 @@ ext/spl/tests/iterator_047.phpt
   first line: 51
   flavours covered: 1
     - line 51: message_only message_only:c3629babcb523665062f95cbe77036ccf27c4e76
-
-ext/spl/tests/multiple_iterator_001.phpt
-  state: handled
-  fixture: ext_spl_tests_multiple_iterator_001
-  first line: 19
-  flavours covered: 4
-    - line 19: message_only message_only:02e1260470d1a0436b6b0813de22b405065abd5c
-    - line 24: message_only message_only:02e1260470d1a0436b6b0813de22b405065abd5c
-    - line 41: message_only message_only:5553c427f0519a3479808825c51ba18e2d870f8a
-    - line 46: message_only message_only:5553c427f0519a3479808825c51ba18e2d870f8a
-    - line 74: message_only message_only:5a3c2df93fc43e317b2b17c17e36e585b8e55f97
-    - line 92: message_only message_only:24b07a5db84901006f8ca82adcaf817a9eef2312
-    - line 100: message_only message_only:5a3c2df93fc43e317b2b17c17e36e585b8e55f97
 
 ext/standard/tests/array/bug42177.phpt
   state: handled
@@ -774,7 +767,7 @@ tests/classes/destructor_and_exceptions.phpt
     - line 49: message_only message_only:717f056961a2cf9ce94c906d5dcd6e00288a0606
 
 tests/classes/type_hinting_004.phpt
-  state: stale_pair
+  state: handled
   fixture: tests_classes_type_hinting_004
   first line: 17
   flavours covered: 1

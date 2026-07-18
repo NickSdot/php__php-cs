@@ -96,7 +96,7 @@ final readonly class LocationWrapperOutputRule implements RewriteRule
             return true;
         }
 
-        return in_array($this->normalized($part->value), [':', 'at', 'in', 'on line', '(', ')'], true);
+        return in_array($this->normalized($part->value), [':', 'at', 'in', 'on line', '-', '(', ')'], true);
     }
 
     private function normalized(string $literal): string

@@ -6,6 +6,8 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis;
 
 final readonly class OutputPart
 {
+    public const string SOURCE_INTERPOLATED_STRING = 'interpolated_string';
+
     private function __construct(
         public OutputPartKind $kind,
         public string $value = '',
@@ -13,13 +15,13 @@ final readonly class OutputPart
         public ?string $source = null,
     ) {}
 
-    public static function literal(string $value): self
+    public static function literal(string $value, ?string $source = null): self
     {
         if ("\n" === $value || "\r\n" === $value || "\r" === $value) {
             return self::newline();
         }
 
-        return new self(OutputPartKind::Literal, $value);
+        return new self(OutputPartKind::Literal, $value, source: $source);
     }
 
     public static function newline(): self
@@ -27,9 +29,14 @@ final readonly class OutputPart
         return new self(OutputPartKind::Newline, '\n');
     }
 
-    public static function otherVariable(string $variable): self
+    public static function otherVariable(string $variable, ?string $source = null): self
     {
-        return new self(OutputPartKind::OtherVariable, variable: $variable);
+        return new self(OutputPartKind::OtherVariable, variable: $variable, source: $source);
+    }
+
+    public static function otherExpression(string $source): self
+    {
+        return new self(OutputPartKind::OtherExpression, source: $source);
     }
 
     public static function exceptionClass(string $variable, string $source): self
