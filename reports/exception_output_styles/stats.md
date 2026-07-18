@@ -19,7 +19,6 @@
 | done   | echo $e->getMessage() . '<br>';                                                                        | manual_014                                                                          | manual_verified; manual_014/old.phpt:8                                                                | message_only:2500d2978b69aaf5feaa7e05b3ac438e5e84fa86  |
 | done   | echo 'PDOException message: ' . $e->getMessage() . "\n";                                               | manual_015                                                                          | manual_verified; manual_015/old.phpt:9                                                                | message_only:ded429edd68d51d3df17dd6c275b9904b96ccaaf  |
 | done   | echo "ERR {$e->getMessage()}\n";                                                                       | manual_016                                                                          | manual_verified; manual_016/old.phpt:8                                                                | message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b  |
-| done   | echo "SoapFault: " . $e->getMessage() . "\n";                                                          | manual_017                                                                          | manual_verified; manual_017/old.phpt:20                                                               | message_only:1ec5fa64124358dce243d2469687cdbcd868e829  |
 | done   | echo $e->getMessage() . "\n";                                                                          | Zend_tests_access_modifiers_access_modifiers_008                                    | verified; Zend/tests/access_modifiers/access_modifiers_008.phpt:36                                    | message_only:27e195afad2704ad67dcfda98d01c5caaebff15e  |
 | done   | echo "\nException: " . $e->getMessage() . "\n";                                                        | Zend_tests_add_002                                                                  | verified; Zend/tests/add_002.phpt:14                                                                  | message_only:7879bc6cbe4e1bfa05781c7d5bf6e1ac22a530cc  |
 | done   | echo $e::class . ": " . $e->getMessage(), "\n";                                                        | Zend_tests_arg_unpack_invalid_type                                                  | verified; Zend/tests/arg_unpack/invalid_type.phpt:13                                                  | class_message:ea22164fdb83f284f290502160a1c8abce7f9703 |
@@ -93,6 +92,7 @@
 | done   | echo $e::class . ': ' . $e->getMessage() . "\n";                                                       | ext_session_tests_session_create_id_invalid_prefix                                  | verified; ext/session/tests/session_create_id_invalid_prefix.phpt:19                                  | class_message:2655104d24e7570bc0d0be3c4a79a4cb46f6a818 |
 | done   | echo $e::class, ': '. $e->getMessage(), "\n";                                                          | ext_session_tests_session_gc_probability_ini                                        | verified; ext/session/tests/session_gc_probability_ini.phpt:39                                        | class_message:7d136db541ccb5075636648d5db01c83a58f2ffe |
 | done   | echo $exception::class, ': ', $exception->getMessage() . "\n";                                         | ext_session_tests_session_start_error                                               | verified; ext/session/tests/session_start_error.phpt:23                                               | class_message:40a5c2e3a98b10f114ee9e82bf7c145041642dfb |
+| done   | echo "SoapFault: " . $e->getMessage() . "\n";                                                          | ext_soap_tests_bugs_protocol_relative_redirect                                      | verified; ext/soap/tests/bugs/protocol_relative_redirect.phpt:45                                      | message_only:1ec5fa64124358dce243d2469687cdbcd868e829  |
 | done   | echo $e->getMessage() . "(" . $e->getLine() . ")\n";                                                   | ext_spl_tests_ArrayObject_arrayObject___construct_error1                            | verified; ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt:11                            | message_only:4629d0d3302b4096cec9cfbe69f9c600b046cc45  |
 | done   | echo "LogicException: ".$e->getMessage()."\n";                                                         | ext_spl_tests_SplFileObject_fileobject_003                                          | verified; ext/spl/tests/SplFileObject/fileobject_003.phpt:34                                          | message_only:79836f7ba96de26581786ad66801016aeeb7e28f  |
 | done   | echo "Serialization failed: " . $e->getMessage() . "\n";                                               | ext_spl_tests_SplHeap_serialize_corrupted                                           | verified; ext/spl/tests/SplHeap_serialize_corrupted.phpt:31                                           | message_only:5784a6682057fdfac3cebdacbaaba509eb109199  |
@@ -145,11 +145,11 @@
 | Duplicate flavour groups     | 64    |
 | Selected fixture dirs        | 99    |
 | Avoided extra dirs           | 20    |
-| Extra dirs outside selection | 0     |
+| Extra dirs outside selection | 1     |
 | Legacy suffixed dirs         | 0     |
-| Created old fixtures         | 0     |
-| Verified fixture files       | 90    |
-| Updated new/diff pairs       | 0     |
-| Stale pairs kept             | 9     |
+| Created old fixtures         | 1     |
+| Verified fixture files       | 91    |
+| Updated new/diff pairs       | 1     |
+| Stale pairs kept             | 8     |
 | Old-only fixture files       | 0     |
 | Failures                     | 0     |

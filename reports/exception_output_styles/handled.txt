@@ -720,11 +720,11 @@ ext/spl/tests/SplPriorityQueue_unserialize_invalid_flags.phpt:51
     53
     54 try {
 
-manual_017/old.phpt:20
+ext/soap/tests/bugs/protocol_relative_redirect.phpt:45
   state: handled
-  fixture: manual_017
+  fixture: ext_soap_tests_bugs_protocol_relative_redirect
   fingerprint: message_only:1ec5fa64124358dce243d2469687cdbcd868e829
-  origin: manual_fixture
+  origin: php_src
   family: message_only
   safety: descriptive_context
   expected: EXPECT
@@ -732,13 +732,13 @@ manual_017/old.phpt:20
   parts: literal:f09e12db9a502e1f3fb20d8ac729daf4b47d6cbb exception_message newline
   echo "SoapFault: " . $e->getMessage() . "\n";
 
-    17 try {
-    18     throw fixtureSoapFault();
-    19 } catch (SoapFault $e) {
->   20     echo "SoapFault: " . $e->getMessage() . "\n";
-    21 }
-    22 ?>
-    23
+    42     $client->__soapCall("foo", []);
+    43     echo "redirect followed\n";
+    44 } catch (SoapFault $e) {
+>   45     echo "SoapFault: " . $e->getMessage() . "\n";
+    46 }
+    47 ?>
+    48
 
 ext/fileinfo/tests/finfo_open_003.phpt:14
   state: handled

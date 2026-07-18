@@ -211,6 +211,28 @@ final class CanonicalUpdaterTest extends TestCase
         self::assertSame("Exception: Signal\n", $update->output);
     }
 
+    public function testUpdatesQuotedClassMessageWrapper(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "AssertionError: ''\n",
+            "AssertionError: \n",
+        );
+
+        self::assertSame("AssertionError: \n", $update->output);
+    }
+
+    public function testUpdatesRepeatedQuotedEmptyClassMessageWrapper(): void
+    {
+        $update = new CanonicalUpdater()->update(
+            'EXPECT',
+            "AssertionError: ''\nAssertionError: ''\nAssertionError: ''\n",
+            "AssertionError: \nAssertionError: \nAssertionError:\n",
+        );
+
+        self::assertSame("AssertionError: \nAssertionError: \nAssertionError:\n", $update->output);
+    }
+
     public function testUpdatesPreservedPrefixClassLabelWithSpacedColon(): void
     {
         $update = new CanonicalUpdater()->update(

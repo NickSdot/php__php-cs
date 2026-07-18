@@ -23,6 +23,7 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MessageOnlyOutputRu
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\MixedVarDumpMessageOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\ParenthesizedClassLabelOutputRule;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\PreservedPrefixOutputRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules\QuotedClassMessageOutputRule;
 use InternalsCS\RewriteResult;
 use InternalsCS\TextEdit;
 use PhpParser\Node\Expr;
@@ -116,6 +117,7 @@ final readonly class CanonicalPlanner
             new MessageBeforeTraceOutputRule(),
             new LocationWrapperOutputRule(),
             new LocationOutputRule(),
+            new QuotedClassMessageOutputRule(),
             new ClassMessageOutputRule(),
             new MessageOnlyOutputRule(),
         ];

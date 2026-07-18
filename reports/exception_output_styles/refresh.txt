@@ -1,20 +1,19 @@
 # Fixture refresh
 
 Refresh-only run: no
-Updated new/diff pairs: 0
-Stale existing new/diff pairs kept: 9
+Updated new/diff pairs: 1
+Stale existing new/diff pairs kept: 8
 Old-only fixture files: 0
 Failures: 0
 
 ## Updated pairs
 
-- none
+- ext_soap_tests_bugs_protocol_relative_redirect
 
 ## Stale existing pairs kept
 
 These existing new.phpt/ran.diff pairs were kept, but the current fixer did not reproduce a change from old.phpt.
 
-- Zend_tests_pipe_operator_oss_fuzz_427814452
 - Zend_tests_type_declarations_typed_properties_076
 - ext_hash_tests_hash_serialize_003
 - ext_reflection_tests_ReflectionProperty_getMangledName_inheritance

@@ -327,7 +327,7 @@ final readonly class CanonicalUpdater
     private function canonicalLines(string $line): array
     {
         if (false === preg_match_all(
-            '/([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)(?:\(((?:[+-]?\d+|%d|%i))\))?: /',
+            '/([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)(?:\(((?:[+-]?\d+|%d|%i))\))?:(?: |\z)/',
             $line,
             $matches,
             PREG_SET_ORDER | PREG_OFFSET_CAPTURE | PREG_UNMATCHED_AS_NULL,
@@ -518,6 +518,11 @@ final readonly class CanonicalUpdater
         if (1 === preg_match('/^([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\s+:\s+(.*)$/', $line, $matches) && $this->isLikelyExceptionClass($matches[1])) {
             $candidates[] = $matches[1] . ': ' . $matches[2];
             $candidates[] = $matches[2];
+        }
+
+        if (1 === preg_match('/^([A-Za-z_\\\\][A-Za-z0-9_\\\\]*): ([\'"])(.*)\2$/', $line, $matches) && $this->isLikelyExceptionClass($matches[1])) {
+            $candidates[] = $matches[1] . ': ' . $matches[3];
+            $candidates[] = $matches[3];
         }
 
         if (1 === preg_match('/^(.*?)([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\s+:\s+(.*)$/', $line, $matches) && $this->isLikelyExceptionClass($matches[2])) {

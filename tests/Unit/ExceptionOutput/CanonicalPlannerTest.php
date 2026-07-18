@@ -467,6 +467,23 @@ final class CanonicalPlannerTest extends TestCase
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
+    public function testPlansQuotedClassMessageWrapperRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new AssertionError('');
+            } catch (AssertionError $e) {
+                echo $e::class, ": '", $e->getMessage(), "'\n";
+            }
+            PHP;
+
+        $plans = new CanonicalPlanner()->plans($code);
+
+        self::assertCount(1, $plans);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
+    }
+
     public function testPlansCatchTypeLabelRewrite(): void
     {
         $code = <<<'PHP'

@@ -584,12 +584,12 @@ ext/session/tests/session_start_error.phpt
     - line 15: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
     - line 23: class_message class_message:40a5c2e3a98b10f114ee9e82bf7c145041642dfb
 
-manual_017/old.phpt
+ext/soap/tests/bugs/protocol_relative_redirect.phpt
   state: handled
-  fixture: manual_017
-  first line: 20
+  fixture: ext_soap_tests_bugs_protocol_relative_redirect
+  first line: 45
   flavours covered: 1
-    - line 20: message_only message_only:1ec5fa64124358dce243d2469687cdbcd868e829
+    - line 45: message_only message_only:1ec5fa64124358dce243d2469687cdbcd868e829
 
 ext/spl/tests/ArrayObject/arrayObject___construct_error1.phpt
   state: handled
