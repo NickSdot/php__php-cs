@@ -38,7 +38,7 @@ final class PhptFileTest extends TestCase
         $file->setExpectedOutput("new\n");
 
         self::assertStringContainsString("echo \"new\\n\";", $file->contents());
-        self::assertStringContainsString("--EXPECT--\nnew\n", $file->contents());
+        self::assertStringContainsString("--EXPECT--\nnew", $file->contents());
     }
 
     public function testExpectedOutputNormalizesExpectfToExpect(): void
@@ -57,7 +57,27 @@ final class PhptFileTest extends TestCase
         $file->setExpectedOutput('value exact');
 
         self::assertSame('EXPECT', $file->expectedSectionName());
-        self::assertStringContainsString("--EXPECT--\nvalue exact\n", $file->contents());
+        self::assertStringContainsString("--EXPECT--\nvalue exact", $file->contents());
+    }
+
+    public function testExpectedOutputPreservesMissingTerminalNewlineInLastSection(): void
+    {
+        $path = $this->writeTempPhpt("--TEST--\nsample\n--FILE--\n<?php\n--EXPECT--\nold");
+        $file = new PhptFile($path, dirname($path));
+
+        $file->setExpectedOutput('new');
+
+        self::assertSame("--TEST--\nsample\n--FILE--\n<?php\n--EXPECT--\nnew", $file->contents());
+    }
+
+    public function testExpectedSectionPreservesSectionNameAndMissingTerminalNewline(): void
+    {
+        $path = $this->writeTempPhpt("--TEST--\nsample\n--FILE--\n<?php\n--EXPECTF--\nold %s");
+        $file = new PhptFile($path, dirname($path));
+
+        $file->setExpectedSection('EXPECTF', "new %s\n");
+
+        self::assertSame("--TEST--\nsample\n--FILE--\n<?php\n--EXPECTF--\nnew %s", $file->contents());
     }
 
     public function testPreservesBinaryExpectedOutputBytes(): void
@@ -67,6 +87,17 @@ final class PhptFileTest extends TestCase
 
         self::assertSame("\xbd\n", $file->getSection('EXPECTF'));
         self::assertStringContainsString("--EXPECTF--\n\xbd\n", $file->contents());
+    }
+
+    public function testCanReplaceContentsAndReparseSections(): void
+    {
+        $path = $this->writeTempPhpt("--TEST--\nold\n--FILE--\n<?php\n--EXPECT--\nold\n");
+        $file = new PhptFile($path, dirname($path));
+
+        $file->replaceContents("--TEST--\nnew\n--FILE--\n<?php\n--EXPECTF--\nnew %s\n");
+
+        self::assertSame('EXPECTF', $file->expectedSectionName());
+        self::assertSame("new %s\n", $file->getSection('EXPECTF'));
     }
 
     private function writeTempPhpt(string $contents): string

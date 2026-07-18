@@ -61,7 +61,7 @@ final readonly class Application
         $this->io->out("Usage: php bin/$script <command> [options]\n");
         $this->io->out("\n");
         $this->io->out("Commands:\n");
-        $this->io->out("  fix       Apply or check exception-message output style in php-src PHPT files\n");
+        $this->io->out("  fix       Apply or check php-src PHPT style fixes\n");
         $this->io->out("  generate  Run fixture/data generators\n");
         $this->io->out("\n");
         $this->io->out("Run php bin/$script <command> --help for command options.\n");

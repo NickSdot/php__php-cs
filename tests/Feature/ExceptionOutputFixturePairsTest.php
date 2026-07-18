@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use InternalsCS\Console\Application;
 use InternalsCS\Console\ConsoleIo;
+use InternalsCS\FinalNewline;
 use InternalsCS\Support\UnifiedDiff;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -71,6 +72,44 @@ final class ExceptionOutputFixturePairsTest extends TestCase
         }
 
         self::assertSame([], $leaks);
+    }
+
+    public function testGeneratedNewFixturesUseFinalNewlineStyle(): void
+    {
+        $finalNewline = new FinalNewline();
+        $badFixtures = [];
+        $files = glob(self::fixturesDir() . '/*/new.phpt');
+
+        if (false === $files) {
+            $files = [];
+        }
+
+        sort($files);
+
+        foreach ($files as $file) {
+            $contents = file_get_contents($file);
+            self::assertIsString($contents, $file);
+
+            if (!$finalNewline->isNormalized($contents)) {
+                $badFixtures[] = basename(dirname($file));
+            }
+        }
+
+        self::assertSame([], $badFixtures);
+    }
+
+    public function testFixturesCoverFinalNewlineRewrite(): void
+    {
+        $finalNewline = new FinalNewline();
+        $fixtureDir = self::fixturesDir() . '/ext_phar_tests_phar_metadata_write4';
+
+        $old = file_get_contents($fixtureDir . '/old.phpt');
+        $new = file_get_contents($fixtureDir . '/new.phpt');
+
+        self::assertIsString($old);
+        self::assertIsString($new);
+        self::assertFalse($finalNewline->isNormalized($old));
+        self::assertTrue($finalNewline->isNormalized($new));
     }
 
     #[DataProvider('fixtureDirectories')]

@@ -7,11 +7,11 @@ namespace InternalsCS\Command;
 use InternalsCS\Console\Command;
 use InternalsCS\Console\ConsoleIo;
 use InternalsCS\Console\StderrConsoleIo;
+use InternalsCS\FixerRegistry;
 use InternalsCS\FixerRunner;
 use InternalsCS\PhpSrc\PhpBuild;
 use InternalsCS\PhpSrc\PhpBuildPaths;
 use InternalsCS\PhpSrc\PhpSrcRoot;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalFixer;
 use InternalsCS\Support\Paths;
 
 use function count;
@@ -27,6 +27,7 @@ final readonly class FixCommand implements Command
     public function __construct(
         private Paths $paths = new Paths(),
         private PhpBuild $phpBuild = new PhpBuild(),
+        private FixerRegistry $fixers = new FixerRegistry(),
     ) {}
 
     public function run(string $script, array $args, ConsoleIo $io): int
@@ -73,6 +74,7 @@ final readonly class FixCommand implements Command
         $check = false;
         $print = false;
         $forcePhpBinaryRebuild = false;
+        $fixers = [];
         $targets = [];
 
         for ($i = 0; $i < count($args); $i++) {
@@ -95,6 +97,16 @@ final readonly class FixCommand implements Command
 
             if ('--force-php-binary-rebuild' === $arg) {
                 $forcePhpBinaryRebuild = true;
+                continue;
+            }
+
+            if ('--fixer' === $arg) {
+                $fixers[] = $this->value($args, ++$i, '--fixer');
+                continue;
+            }
+
+            if (str_starts_with($arg, '--fixer=')) {
+                $fixers[] = mb_substr($arg, mb_strlen('--fixer='));
                 continue;
             }
 
@@ -126,6 +138,7 @@ final readonly class FixCommand implements Command
         return new FixOptions(
             phpSrcRoot: PhpSrcRoot::fromPath($phpSrcDir),
             targets: $targets,
+            fixerClasses: $this->fixerClasses($fixers),
             check: $check,
             print: $print,
             forcePhpBinaryRebuild: $forcePhpBinaryRebuild,
@@ -144,9 +157,7 @@ final readonly class FixCommand implements Command
             );
         }
 
-        $runner = new FixerRunner($options->phpSrcRoot->path, [
-            CanonicalFixer::class,
-        ]);
+        $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses);
         $files = $runner->collectFiles($options->targets);
 
         return $runner->run($files, $options->check);
@@ -162,11 +173,22 @@ final readonly class FixCommand implements Command
             io: new StderrConsoleIo($io),
         );
 
-        $runner = new FixerRunner($options->phpSrcRoot->path, [
-            CanonicalFixer::class,
-        ]);
+        $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses);
 
         return $runner->print($runner->collectFiles($options->targets));
+    }
+
+    /**
+     * @param list<string> $names
+     * @return list<class-string<\InternalsCS\Fixer>>
+     */
+    private function fixerClasses(array $names): array
+    {
+        try {
+            return $this->fixers->selected($names);
+        } catch (\InvalidArgumentException $e) {
+            throw new CommandFailure($e->getMessage());
+        }
     }
 
     /** @param array{changed: bool, failed: bool, output: string, failure: string|null} $result */
@@ -190,6 +212,7 @@ final readonly class FixCommand implements Command
 
     private function usage(string $script, ConsoleIo $io): void
     {
-        $io->out("Usage: php bin/$script --php-src-dir dir [--check|--print] [--force-php-binary-rebuild] [path ...]\n");
+        $io->out("Usage: php bin/$script --php-src-dir dir [--check|--print] [--fixer name] [--force-php-binary-rebuild] [path ...]\n");
+        $io->out("Known fixers: " . $this->fixers->knownFixers() . "\n");
     }
 }

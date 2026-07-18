@@ -43,14 +43,14 @@ abstract class VerifiedPhptFixer implements Fixer
     {
         $this->file = new PhptFile($file->path, $file->rootDir);
 
-        return $this->collectPhpt();
+        return $this->planPhptRewrite();
     }
 
     final public function persist(): bool
     {
         $file = $this->phptFile();
 
-        if (!$this->isCollected()) {
+        if (!$this->hasPlannedRewrite()) {
             return $this->fail('internal error: collect() did not prepare a rewrite');
         }
 
@@ -97,7 +97,7 @@ abstract class VerifiedPhptFixer implements Fixer
             );
         }
 
-        $file->setSection($expectedSection, $updated);
+        $file->setExpectedSection($expectedSection, $updated);
         $file->save();
 
         $verified = $file->run();
@@ -135,11 +135,11 @@ abstract class VerifiedPhptFixer implements Fixer
         return $this->failureReason ?? 'unknown reason';
     }
 
-    abstract protected function collectPhpt(): bool;
+    abstract protected function planPhptRewrite(): bool;
 
     abstract protected function apply(): void;
 
-    abstract protected function isCollected(): bool;
+    abstract protected function hasPlannedRewrite(): bool;
 
     protected function changesOutput(): bool
     {

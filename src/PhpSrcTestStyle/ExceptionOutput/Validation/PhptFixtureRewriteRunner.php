@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Validation;
 
+use InternalsCS\FixerRegistry;
 use InternalsCS\FixerRunner;
 use InternalsCS\Fixture\FixtureOriginalRunner;
 use InternalsCS\Fixture\FixtureRewriteRunner;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalFixer;
 use InternalsCS\PhpSrcTestStyle\PhptFile;
 
 final readonly class PhptFixtureRewriteRunner implements FixtureRewriteRunner, FixtureOriginalRunner
@@ -17,9 +17,7 @@ final readonly class PhptFixtureRewriteRunner implements FixtureRewriteRunner, F
     public function __construct(
         private string $phpSrcDir,
     ) {
-        $this->runner = new FixerRunner($phpSrcDir, [
-            CanonicalFixer::class,
-        ]);
+        $this->runner = new FixerRunner($phpSrcDir, new FixerRegistry()->all());
     }
 
     public function printFile(string $path): array

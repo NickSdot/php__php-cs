@@ -8,6 +8,7 @@ use InternalsCS\Support\ProcessEnvironment;
 
 use function array_any;
 use function array_find;
+use function array_last;
 use function count;
 use function dirname;
 use function fclose;
@@ -23,6 +24,7 @@ use function mb_substr;
 use function pathinfo;
 use function preg_match;
 use function preg_match_all;
+use function preg_replace;
 use function proc_close;
 use function proc_open;
 use function str_contains;
@@ -125,15 +127,46 @@ final class PhptFile
             throw new \RuntimeException("No expected output section in {$this->path}");
         }
 
+        $finalLineEndingSuffix = $this->finalLineEndingSuffix($this->contents());
+        $expectedSectionIsLast = $this->isLastSection($section);
+
         if ('EXPECT' !== $section) {
             $this->renameSection($section, 'EXPECT');
         }
 
         $output = str_replace(["\r\n", "\r"], "\n", $output);
+
+        $this->setSection('EXPECT', $this->expectedSectionContent(
+            output: $output,
+            sectionIsLast: $expectedSectionIsLast,
+            finalLineEndingSuffix: $finalLineEndingSuffix,
+        ));
+    }
+
+    public function setExpectedSection(string $section, string $output): void
+    {
+        if (!$this->hasSection($section)) {
+            throw new \RuntimeException("Section $section not found in {$this->path}");
+        }
+
+        $this->setSection($section, $this->expectedSectionContent(
+            output: str_replace(["\r\n", "\r"], "\n", $output),
+            sectionIsLast: $this->isLastSection($section),
+            finalLineEndingSuffix: $this->finalLineEndingSuffix($this->contents()),
+        ));
+    }
+
+    private function expectedSectionContent(string $output, bool $sectionIsLast, string $finalLineEndingSuffix): string
+    {
+        if ($sectionIsLast) {
+            return $this->withFinalLineEndingSuffix($output, $finalLineEndingSuffix);
+        }
+
         if ('' !== $output && !str_ends_with($output, "\n")) {
             $output .= "\n";
         }
-        $this->setSection('EXPECT', $output);
+
+        return $output;
     }
 
     public function save(): void
@@ -154,6 +187,38 @@ final class PhptFile
     public function contents(): string
     {
         return $this->render();
+    }
+
+    public function replaceContents(string $contents): void
+    {
+        $this->parse($contents);
+    }
+
+    private function isLastSection(string $name): bool
+    {
+        $last = array_last($this->sections) ?? null;
+
+        return null !== $last && $last['name'] === $name;
+    }
+
+    private function finalLineEndingSuffix(string $contents): string
+    {
+        if (1 !== preg_match('/(?:\r\n|\n|\r)*\z/', $contents, $matches)) {
+            throw new \RuntimeException("Cannot read final line ending suffix in {$this->path}");
+        }
+
+        return $matches[0];
+    }
+
+    private function withFinalLineEndingSuffix(string $contents, string $suffix): string
+    {
+        $rewritten = preg_replace('/(?:\r\n|\n|\r)+\z/', '', $contents);
+
+        if (null === $rewritten) {
+            throw new \RuntimeException("Cannot write final line ending suffix in {$this->path}");
+        }
+
+        return $rewritten . $suffix;
     }
 
     /** @return array{status: string, output: string, exitCode: int} */

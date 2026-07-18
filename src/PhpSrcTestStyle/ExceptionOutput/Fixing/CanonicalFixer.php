@@ -26,7 +26,7 @@ final class CanonicalFixer extends VerifiedPhptFixer
         return 'canonical-exception-output';
     }
 
-    protected function collectPhpt(): bool
+    protected function planPhptRewrite(): bool
     {
         $this->resetDiagnostics();
         $this->codeSection = null;
@@ -78,7 +78,7 @@ final class CanonicalFixer extends VerifiedPhptFixer
         return true;
     }
 
-    protected function isCollected(): bool
+    protected function hasPlannedRewrite(): bool
     {
         return null !== $this->codeSection && null !== $this->newCode;
     }
