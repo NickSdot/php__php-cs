@@ -31,8 +31,8 @@ final class PhpBuildCheckoutTest extends TestCase
 
         mkdir($source);
         $this->git($source, 'init', '-b', 'master');
-        $this->git($source, 'config', 'user.email', 'internals-cs@example.test');
-        $this->git($source, 'config', 'user.name', 'Internals CS');
+        $this->git($source, 'config', 'user.email', 'php-src-cs@example.test');
+        $this->git($source, 'config', 'user.name', 'PHP Src CS');
         file_put_contents($source . '/run-tests.php', "<?php\n// master\n");
         $this->git($source, 'add', 'run-tests.php');
         $this->git($source, 'commit', '-m', 'Initial master');
@@ -51,7 +51,7 @@ final class PhpBuildCheckoutTest extends TestCase
 
     private function makeTempDir(): string
     {
-        $path = sys_get_temp_dir() . '/internals-cs-build-checkout-' . bin2hex(random_bytes(6));
+        $path = sys_get_temp_dir() . '/php-src-cs-build-checkout-' . bin2hex(random_bytes(6));
         mkdir($path);
 
         return $path;

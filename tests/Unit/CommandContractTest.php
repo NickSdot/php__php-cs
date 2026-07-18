@@ -14,7 +14,7 @@ final class CommandContractTest extends TestCase
     {
         $io = new BufferConsoleIo();
 
-        self::assertSame(2, new Application($io)->run(['php-cs.php', 'fix']));
+        self::assertSame(2, new Application($io)->run(['php-src-cs.php', 'fix']));
         self::assertSame("--php-src-dir /path/to/php-src is required\n", $io->stderr);
     }
 
@@ -22,7 +22,7 @@ final class CommandContractTest extends TestCase
     {
         $io = new BufferConsoleIo();
 
-        self::assertSame(2, new Application($io)->run(['php-cs.php', 'generate']));
+        self::assertSame(2, new Application($io)->run(['php-src-cs.php', 'generate']));
         self::assertSame("--php-src-dir /path/to/php-src is required\n", $io->stderr);
     }
 
@@ -31,10 +31,10 @@ final class CommandContractTest extends TestCase
         $io = new BufferConsoleIo();
         $app = new Application($io);
 
-        self::assertSame(0, $app->run(['php-cs.php', 'fix', '--help']));
-        self::assertSame(0, $app->run(['php-cs.php', 'generate', '--help']));
-        self::assertStringContainsString('Usage: php bin/php-cs.php fix', $io->stdout);
-        self::assertStringContainsString('Usage: php bin/php-cs.php generate', $io->stdout);
+        self::assertSame(0, $app->run(['php-src-cs.php', 'fix', '--help']));
+        self::assertSame(0, $app->run(['php-src-cs.php', 'generate', '--help']));
+        self::assertStringContainsString('Usage: php bin/php-src-cs.php fix', $io->stdout);
+        self::assertStringContainsString('Usage: php bin/php-src-cs.php generate', $io->stdout);
         self::assertStringContainsString('--force-php-binary-rebuild', $io->stdout);
     }
 }

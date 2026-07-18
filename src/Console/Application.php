@@ -19,7 +19,7 @@ final readonly class Application
     /** @param list<string> $argv */
     public function run(array $argv): int
     {
-        $script = basename($argv[0] ?? 'php-cs.php');
+        $script = basename($argv[0] ?? 'php-src-cs.php');
         $commandName = $argv[1] ?? null;
 
         if (null === $commandName) {

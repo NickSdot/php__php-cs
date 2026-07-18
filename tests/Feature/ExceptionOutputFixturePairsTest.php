@@ -107,7 +107,7 @@ final class ExceptionOutputFixturePairsTest extends TestCase
         $io = new CapturingConsoleIo();
         $this->withFixtureEnvironment($old, $new, function () use ($io, $root, $target): void {
             $exitCode = new Application($io)->run([
-                'php-cs.php',
+                'php-src-cs.php',
                 'fix',
                 '--php-src-dir',
                 $root,

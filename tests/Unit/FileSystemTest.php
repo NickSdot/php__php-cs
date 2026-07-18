@@ -28,7 +28,7 @@ final class FileSystemTest extends TestCase
 
     public function testReadFailureMentionsLabelAndPath(): void
     {
-        $path = sys_get_temp_dir() . '/php-cs-missing-' . bin2hex(random_bytes(8));
+        $path = sys_get_temp_dir() . '/php-src-cs-missing-' . bin2hex(random_bytes(8));
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Cannot read fixture: ' . $path);
@@ -38,7 +38,7 @@ final class FileSystemTest extends TestCase
 
     private function tempDir(): string
     {
-        $dir = sys_get_temp_dir() . '/php-cs-' . bin2hex(random_bytes(8));
+        $dir = sys_get_temp_dir() . '/php-src-cs-' . bin2hex(random_bytes(8));
         self::assertTrue(mkdir($dir));
 
         return $dir;
