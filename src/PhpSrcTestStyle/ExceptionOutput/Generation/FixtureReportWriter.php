@@ -484,31 +484,64 @@ final readonly class FixtureReportWriter implements FixtureReporter
      */
     private function renderDuplicates(array $duplicates, array $selectedFixtures): string
     {
-        $lines = ['# Duplicate candidate windows by flavour', ''];
+        return implode("\n", [
+            '# Duplicate candidate windows by flavour',
+            ...$this->table(
+                ['Count', 'Fixture', 'First', 'Duplicates', 'Detail', 'Fingerprint'],
+                $this->duplicateRows($duplicates, $selectedFixtures),
+            ),
+        ]);
+    }
+
+    /**
+     * @param array<string, list<Candidate>> $duplicates
+     * @param array<string, string> $selectedFixtures
+     * @return list<array{0: int, 1: string, 2: string, 3: string, 4: string, 5: string}>
+     */
+    private function duplicateRows(array $duplicates, array $selectedFixtures): array
+    {
+        $rows = [];
 
         foreach ($duplicates as $fingerprint => $candidates) {
+            if ([] === $candidates) {
+                continue;
+            }
+
             $first = $candidates[0];
-            $lines[] = $fingerprint;
-            $lines[] = '  count: ' . count($candidates);
-            $lines[] = '  selected fixture: ' . ($selectedFixtures[$fingerprint] ?? 'none');
-            $lines[] = '  first candidate: ' . $first->relativePath . ':' . $first->line;
-            $lines[] = '  family: ' . $first->classification->family->value;
-            $lines[] = '  safety: ' . $first->classification->safety->value;
-            $lines[] = '  first statement: ' . $first->statement;
-            $lines[] = '  duplicates:';
-
-            foreach (array_slice($candidates, 1, 20) as $candidate) {
-                $lines[] = '    - ' . $candidate->relativePath . ':' . $candidate->line;
-            }
-
-            if (count($candidates) > 21) {
-                $lines[] = '    - +' . (count($candidates) - 21) . ' more';
-            }
-
-            $lines[] = '';
+            $rows[] = [
+                count($candidates),
+                $selectedFixtures[$fingerprint] ?? 'none',
+                $this->candidateLocation($first),
+                $this->duplicateLocations($candidates),
+                $first->classification->family->value . '/' . $first->classification->safety->value,
+                $fingerprint,
+            ];
         }
 
-        return implode("\n", $lines);
+        return $rows;
+    }
+
+    /** @param list<Candidate> $candidates */
+    private function duplicateLocations(array $candidates): string
+    {
+        $locations = [];
+
+        foreach (array_slice($candidates, 1, 3) as $candidate) {
+            $locations[] = $this->candidateLocation($candidate);
+        }
+
+        $remaining = count($candidates) - 4;
+
+        if ($remaining > 0) {
+            $locations[] = '+' . $remaining . ' more';
+        }
+
+        return implode(', ', $locations);
+    }
+
+    private function candidateLocation(Candidate $candidate): string
+    {
+        return $candidate->relativePath . ':' . $candidate->line;
     }
 
     /** @param list<array{fixture: FixtureSource, dir: string, state: string}> $states */

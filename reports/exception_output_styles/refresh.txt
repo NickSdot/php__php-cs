@@ -1,14 +1,14 @@
 # Fixture refresh
 
 Refresh-only run: yes
-Updated new/diff pairs: 1
+Updated new/diff pairs: 0
 Stale existing new/diff pairs kept: 0
 Old-only fixture files: 0
 Failures: 0
 
 ## Updated pairs
 
-- ext_phar_tests_phar_metadata_write4
+- none
 
 ## Stale existing pairs kept
 

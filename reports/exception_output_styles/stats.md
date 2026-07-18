@@ -13,7 +13,7 @@
 | Selected fixture files       | 98    |
 | Created old fixtures         | 0     |
 | Verified fixture pairs       | 99    |
-| Updated fixture pairs        | 1     |
+| Updated fixture pairs        | 0     |
 | Stale fixture pairs          | 0     |
 | Failures                     | 0     |
 
