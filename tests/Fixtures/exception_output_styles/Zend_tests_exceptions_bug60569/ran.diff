@@ -1,0 +1,15 @@
+--- old.phpt
++++ new.phpt
+@@ -6,9 +6,10 @@
+     $msg = "Some error \x00 message";
+     throw new Exception($msg);
+ } catch(Exception $e) {
+-    var_dump($e->getMessage(), $msg);
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    var_dump($msg);
+ }
+ ?>
+ --EXPECTF--
++Exception: Some error %0 message
+ string(20) "Some error %0 message"
+-string(20) "Some error %0 message"
