@@ -11,7 +11,7 @@ use function count;
 final readonly class LeadingSeparatorOutput
 {
     public function __construct(
-        private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
+        private RewriteSafety $safety = new RewriteSafety(),
         private OutputPartMatcher $parts = new OutputPartMatcher(),
     ) {}
 

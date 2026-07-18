@@ -98,7 +98,7 @@ final class FixtureWriterTest extends TestCase
     {
         $classification = new Classification(
             family: OutputFamily::MessageOnly,
-            safety: ClassificationSafety::Canonicalizable,
+            safety: ClassificationSafety::Fixable,
             fingerprint: new Fingerprint(OutputFamily::MessageOnly, 'test-payload'),
             reason: 'test',
             partsSummary: 'test',

@@ -12,7 +12,7 @@ use function implode;
 use function preg_match;
 use function str_replace;
 
-final readonly class CanonicalStatementBuilder
+final readonly class OutputStatementBuilder
 {
     public function build(string $variable, OutputParts $parts, string $prefix = ''): string
     {

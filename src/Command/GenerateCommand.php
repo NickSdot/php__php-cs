@@ -10,7 +10,7 @@ use InternalsCS\Fixture\FixtureGenerationOptions;
 use InternalsCS\PhpSrc\PhpBuild;
 use InternalsCS\PhpSrc\PhpBuildPaths;
 use InternalsCS\PhpSrc\PhpSrcRoot;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Command\ExceptionOutputGenerateTarget;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\FixtureGenerationTarget as ExceptionOutputFixtureTarget;
 use InternalsCS\Support\GitStatus;
 use InternalsCS\Support\Paths;
 
@@ -28,7 +28,7 @@ final readonly class GenerateCommand implements Command
     /** @param list<GenerateTarget> $targets */
     public function __construct(
         private array $targets = [
-            new ExceptionOutputGenerateTarget(),
+            new ExceptionOutputFixtureTarget(),
         ],
         private Paths $paths = new Paths(),
         private PhpBuild $phpBuild = new PhpBuild(),

@@ -213,6 +213,6 @@ final readonly class FixCommand implements Command
     private function usage(string $script, ConsoleIo $io): void
     {
         $io->out("Usage: php bin/$script --php-src-dir dir [--check|--print] [--fixer name] [--force-php-binary-rebuild] [path ...]\n");
-        $io->out("Known fixers: " . $this->fixers->knownFixers() . "\n");
+        $io->out("Known fixers: " . $this->fixers->knownFixersLine() . "\n");
     }
 }

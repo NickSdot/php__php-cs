@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ExceptionOutput;
 
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalUpdater;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\ExpectedOutputUpdater;
 use PHPUnit\Framework\TestCase;
 
-final class CanonicalUpdaterTest extends TestCase
+final class ExpectedOutputUpdaterTest extends TestCase
 {
     public function testUpdatesBracketedClassOutput(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "[TypeError] message\n",
             "TypeError: message\n",
@@ -22,7 +22,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesIndentedTrashExceptionPrefix(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "  Exception: Cannot re-assign \$this\n",
             "Error: Cannot re-assign \$this\n",
@@ -31,9 +31,9 @@ final class CanonicalUpdaterTest extends TestCase
         self::assertSame("Error: Cannot re-assign \$this\n", $update->output);
     }
 
-    public function testUpdatesLinePrefixToCanonicalLineSuffix(): void
+    public function testUpdatesLinePrefixToNormalisedLineSuffix(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "34: Objects returned must be traversable\n",
             "Exception: Objects returned must be traversable on line 34\n",
@@ -44,7 +44,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExpectfWithoutCollapsingUnchangedPatterns(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "object(stdClass)#%d (0) {\n}\nAttempt to modify property \"abc\" on array\n",
             "object(stdClass)#123 (0) {\n}\nError: Attempt to modify property \"abc\" on array\n",
@@ -58,7 +58,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExpectfWithoutCollapsingPathAndLinePlaceholders(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "foo(): Return value must be of type stdClass, array returned in %s on line %d\n",
             "TypeError: foo(): Return value must be of type stdClass, array returned in /tmp/example.phpt on line 6\n",
@@ -72,7 +72,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesVarDumpStringMessageOutput(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "string(4) \"test\"\n",
             "Exception: test\n",
@@ -83,7 +83,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testMatchesExpectfNullByteFollowedByZero(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "Position of '%00' is => int(58)\nmessage\n",
             "Position of '" . "\0" . "0' is => int(58)\nException: message\n",
@@ -94,7 +94,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesFirstVarDumpStringWhenRemainingDumpStays(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "string(20) \"Some error %0 message\"\nstring(20) \"Some error %0 message\"\n",
             "Exception: Some error \0 message\nstring(20) \"Some error \0 message\"\n",
@@ -108,7 +108,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExpectedExceptionLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "expected exception: Iterators are frozen\n",
             "RuntimeException: Iterators are frozen\n",
@@ -119,7 +119,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesUppercaseErrorLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "ERROR: Instantiation of class Closure is not allowed\n",
             "Error: Instantiation of class Closure is not allowed\n",
@@ -130,7 +130,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesContextLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Expected exception for class-based reflection: Property TestClass::\$dynamic does not exist\n",
             "class-based reflection: ReflectionException: Property TestClass::\$dynamic does not exist\n",
@@ -144,7 +144,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesUnexpectedExceptionContextLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Unexpected exception: fixture message\n",
             "unexpected: ReflectionException: fixture message\n",
@@ -155,7 +155,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExceptionThrownForContextLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Exception thrown for invalid flags: Invalid serialization data for SplPriorityQueue object\n",
             "invalid flags: Exception: Invalid serialization data for SplPriorityQueue object\n",
@@ -169,7 +169,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesLowercaseCaughtLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "caught 1\n",
             "Exception: 1\n",
@@ -180,7 +180,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesPlainTrashLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "PDOException message: SQLSTATE[HY000]: General error\n",
             "PDOException: SQLSTATE[HY000]: General error\n",
@@ -191,7 +191,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesParenthesizedClassLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Exception (DivisionByZeroError): Modulo by zero\n",
             "DivisionByZeroError: Modulo by zero\n",
@@ -202,7 +202,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesClassLabelWithSpacedColon(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Exception : Signal\n",
             "Exception: Signal\n",
@@ -213,7 +213,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesQuotedClassMessageWrapper(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "AssertionError: ''\n",
             "AssertionError: \n",
@@ -224,7 +224,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesRepeatedQuotedEmptyClassMessageWrapper(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "AssertionError: ''\nAssertionError: ''\nAssertionError: ''\n",
             "AssertionError: \nAssertionError: \nAssertionError:\n",
@@ -235,7 +235,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesPreservedPrefixClassLabelWithSpacedColon(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Wrong exception type thrown: TypeError : fixture message\n",
             "Wrong exception type thrown: TypeError: fixture message\n",
@@ -246,7 +246,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesCaughtParenthesizedClassMessage(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Caught Exception(Hello)\n",
             "Exception: Hello\n",
@@ -257,7 +257,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesPreservedDescriptivePrefix(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Valid flags rejected: invalid\n",
             "Valid flags rejected: Exception: invalid\n",
@@ -268,7 +268,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesDescriptivePrefixWithoutExceptionMarker(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Property dynamic from class: EXCEPTION - Property TestClass::\$dynamic does not exist\n",
             "Property dynamic from class: ReflectionException: Property TestClass::\$dynamic does not exist\n",
@@ -282,7 +282,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesComparePrefixWithoutExceptionMarker(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Compare Exception: Compare exception\n",
             "Compare: Exception: Compare exception\n",
@@ -293,7 +293,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesTestLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "TEST:Constructor failed\n",
             "Exception: Constructor failed\n",
@@ -304,7 +304,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesErrorFoundLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Error found: Argument number specifier must be greater than zero and less than 2147483647\n",
             "ValueError: Argument number specifier must be greater than zero and less than 2147483647\n",
@@ -318,7 +318,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesErrorFoundLabelAfterStableOutputPrefix(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "printf test 30:Error found: Argument number specifier must be greater than zero and less than 2147483647\n",
             "printf test 30:ValueError: Argument number specifier must be greater than zero and less than 2147483647\n",
@@ -332,7 +332,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExceptionTypeThrownLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "InvalidArgumentException thrown: Sub-Iterator is associated with NULL\n",
             "InvalidArgumentException: Sub-Iterator is associated with NULL\n",
@@ -346,7 +346,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesDynamicContextThrownMarker(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "Valid assignment foo =& bar threw fixture message\n",
             "Valid assignment foo =& bar TypeError: fixture message\n",
@@ -360,7 +360,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesBracketedNumericMarkerPrefix(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "[001] fixture message\n",
             "[001] RuntimeException: fixture message\n",
@@ -371,7 +371,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesVarDumpErrorMarkerPrefix(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "string(7) \"ERROR 1\"\nstring(%d) \"fixture message\"\n",
             "ERROR 1: RuntimeException: fixture message\n",
@@ -408,7 +408,7 @@ final class CanonicalUpdaterTest extends TestCase
             ERROR 3: Error: Attribute class "A2" not found
             OUTPUT;
 
-        $update = new CanonicalUpdater()->update('EXPECTF', $expected . "\n", $actual . "\n");
+        $update = new ExpectedOutputUpdater()->update('EXPECTF', $expected . "\n", $actual . "\n");
 
         self::assertSame(
             <<<'OUTPUT'
@@ -429,7 +429,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesLeadingBlankMessageOutput(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "\nmessage\n",
             "Exception: message\n",
@@ -440,7 +440,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesDroppedInternalBlankMessageOutput(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "First:\nmessage\n\nSecond:\nmessage\n",
             "First:\nException: message\nSecond:\nException: message\n",
@@ -451,7 +451,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesHtmlBreakSuffix(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "message<br>\n",
             "Exception: message\n",
@@ -462,7 +462,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesParenthesizedLineSuffix(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "message(6)\n",
             "TypeError: message on line 6\n",
@@ -473,7 +473,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesClassCodeMessageOrder(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "ValueError: 0, fixture message\n",
             "ValueError: 0: fixture message\n",
@@ -484,7 +484,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesVarDumpCodeMessageOutput(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "int(0)\nstring(%d) \"fixture message\"\n",
             "Error: 0: fixture message\n",
@@ -495,7 +495,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesCodeColonMessageOutput(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "0: fixture message\n",
             "DOMException: 0: fixture message\n",
@@ -506,7 +506,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExpectfAtFileLineLocation(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "Caught In sleep at %sphar_metadata_write4.php:12\n",
             "RuntimeException: In sleep in /tmp/phar_metadata_write4.php on line 12\n",
@@ -520,7 +520,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExpectfCodeMessageFileLinePlaceholder(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "0: f1(): Argument #1 (\$a) must be of type A, int given%s(%d)\n",
             "TypeError: 0: f1(): Argument #1 (\$a) must be of type A, int given in /tmp/type_hinting_004.php on line 17\n",
@@ -534,7 +534,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExpectfCodeMessageWithMessageSuffixAndFileLinePlaceholder(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "0: f1(): Argument #1 (\$a) must be of type A, int given%s(%d)\n",
             "TypeError: 0: f1(): Argument #1 (\$a) must be of type A, int given, called in /tmp/type_hinting_004.php on line 12 in /tmp/type_hinting_004.php on line 5\n",
@@ -549,7 +549,7 @@ final class CanonicalUpdaterTest extends TestCase
     public function testUpdatesExpectfWithBinaryUnchangedLines(): void
     {
         $binary = "\xbd";
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             $binary . "\nmessage\n",
             $binary . "\nException: message\n",
@@ -560,7 +560,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExpectfWithRawRegexUnchangedLines(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "    [2] => %r%%r05s\nmessage\n",
             "    [2] => %05s\nException: message\n",
@@ -571,7 +571,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesExpectfWithEscapedPercentUnchangedLines(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECTF',
             "*** Output for '%%%.2f' as the format parameter ***\nmessage\n",
             "*** Output for '%%.2f' as the format parameter ***\nException: message\n",
@@ -585,7 +585,7 @@ final class CanonicalUpdaterTest extends TestCase
 
     public function testUpdatesSoapFaultCatchTypeLabel(): void
     {
-        $update = new CanonicalUpdater()->update(
+        $update = new ExpectedOutputUpdater()->update(
             'EXPECT',
             "fixture message\n",
             "SoapFault: fixture message\n",

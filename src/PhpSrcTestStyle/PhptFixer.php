@@ -23,7 +23,7 @@ use function str_ends_with;
 use function str_replace;
 use function str_starts_with;
 
-abstract class VerifiedPhptFixer implements Fixer
+abstract class PhptFixer implements Fixer
 {
     protected ?PhptFile $file = null;
 

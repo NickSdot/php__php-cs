@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace InternalsCS\PhpSrcTestStyle;
+namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing;
 
 final readonly class ExpectedOutputUpdate
 {

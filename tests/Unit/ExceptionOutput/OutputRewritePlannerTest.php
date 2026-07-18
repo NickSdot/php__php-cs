@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ExceptionOutput;
 
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalPlanner;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputRewritePlanner;
 use InternalsCS\TextEdit;
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +12,7 @@ use function mb_substr;
 use function str_replace;
 use function usort;
 
-final class CanonicalPlannerTest extends TestCase
+final class OutputRewritePlannerTest extends TestCase
 {
     public function testPlansTrashLabelClassMessageRewrite(): void
     {
@@ -25,7 +25,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -42,7 +42,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -59,7 +59,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -76,13 +76,13 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), ' on line ', \$e->getLine(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
-    public function testPlansLinePrefixRewriteAsCanonicalLocationOutput(): void
+    public function testPlansLinePrefixRewriteAsNormalisedLocationOutput(): void
     {
         $code = <<<'PHP'
             <?php
@@ -93,13 +93,13 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), ' on line ', \$e->getLine(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
-    public function testPlansParenthesizedLineRewriteAsCanonicalLocationOutput(): void
+    public function testPlansParenthesizedLineRewriteAsNormalisedLocationOutput(): void
     {
         $code = <<<'PHP'
             <?php
@@ -110,13 +110,13 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), ' on line ', \$e->getLine(), \\PHP_EOL;", $plans[0]->replacement);
     }
 
-    public function testPlansAtFileLineRewriteAsCanonicalLocationOutput(): void
+    public function testPlansAtFileLineRewriteAsNormalisedLocationOutput(): void
     {
         $code = <<<'PHP'
             <?php
@@ -127,7 +127,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame(
@@ -136,7 +136,7 @@ final class CanonicalPlannerTest extends TestCase
         );
     }
 
-    public function testPlansCodeMessageHyphenFileLineRewriteAsCanonicalLocationOutput(): void
+    public function testPlansCodeMessageHyphenFileLineRewriteAsNormalisedLocationOutput(): void
     {
         $code = <<<'PHP'
             <?php
@@ -147,7 +147,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame(
@@ -167,7 +167,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getCode(), ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -184,7 +184,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getCode(), ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -202,7 +202,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(1, $plans);
@@ -220,7 +220,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -238,7 +238,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(1, $plans);
@@ -257,7 +257,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -274,7 +274,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'class-based reflection: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -291,7 +291,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'unexpected: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -308,7 +308,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'invalid flags: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -325,7 +325,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -342,7 +342,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -359,7 +359,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo '[001] ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -376,7 +376,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'ERROR 1: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -395,7 +395,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$type, '=>', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -412,7 +412,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'bool: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -429,7 +429,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'Wrong exception type thrown: ', \$t::class, ': ', \$t->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -448,7 +448,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$method, ': ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -465,7 +465,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \"(\$ns_readable, \\\"\$qname\\\"): \", \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -482,7 +482,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -499,7 +499,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -516,7 +516,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -533,7 +533,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -550,7 +550,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'ldap_modify: UNEXPECTED: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -567,7 +567,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'Valid flags rejected: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -584,7 +584,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'Instance-based creation failed as expected: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -601,7 +601,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo 'Compare: ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -618,7 +618,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -635,7 +635,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -654,7 +654,7 @@ final class CanonicalPlannerTest extends TestCase
             });
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$exception::class, ': ', \$exception->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -672,7 +672,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -689,7 +689,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \\PHP_EOL, \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -707,7 +707,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(2, $plans);
@@ -728,7 +728,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \\PHP_EOL, \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -746,7 +746,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(2, $plans);
@@ -767,7 +767,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage();", $plans[0]->replacement);
@@ -786,7 +786,7 @@ final class CanonicalPlannerTest extends TestCase
             echo "\n*** Next section ***\n";
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(2, $plans);
@@ -807,7 +807,7 @@ final class CanonicalPlannerTest extends TestCase
             echo "\n\n*** Next section ***\n";
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(2, $plans);
@@ -830,7 +830,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -849,7 +849,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP_WRAP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -868,7 +868,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP);
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(1, $plans);
@@ -890,7 +890,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame(
@@ -910,7 +910,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \"PQ Case \$i: \", \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -927,7 +927,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \"Property \$property from class: \", \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -944,7 +944,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \"Valid assignment \$prop2 =& \$prop1 \", \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);
@@ -961,7 +961,7 @@ final class CanonicalPlannerTest extends TestCase
             }
             PHP;
 
-        $plans = new CanonicalPlanner()->plans($code);
+        $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame("echo \$rf->getName(), ': ', \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $plans[0]->replacement);

@@ -28,7 +28,7 @@ final class ScannerTest extends TestCase
         self::assertCount(2, $candidates);
         self::assertSame($candidates[0]->key, $candidates[1]->key);
         self::assertSame(OutputFamily::MessageOnly, $candidates[0]->classification->family);
-        self::assertSame(ClassificationSafety::Canonicalizable, $candidates[0]->classification->safety);
+        self::assertSame(ClassificationSafety::Fixable, $candidates[0]->classification->safety);
     }
 
     public function testConcatAndCommaEchoAreDifferentFlavours(): void
@@ -99,11 +99,11 @@ final class ScannerTest extends TestCase
         $candidates = new Scanner()->scan([$caught, $assert], $root);
 
         self::assertCount(2, $candidates);
-        self::assertSame(ClassificationSafety::Canonicalizable, $candidates[0]->classification->safety);
-        self::assertSame(ClassificationSafety::Canonicalizable, $candidates[1]->classification->safety);
+        self::assertSame(ClassificationSafety::Fixable, $candidates[0]->classification->safety);
+        self::assertSame(ClassificationSafety::Fixable, $candidates[1]->classification->safety);
     }
 
-    public function testPlainTrashLabelsAreCanonicalizable(): void
+    public function testPlainTrashLabelsAreFixable(): void
     {
         $root = $this->makeTempDir();
         $safely = $this->writePhpt($root, 'safely.phpt', 'echo "Safely caught " . $e->getMessage() . "\n";');
@@ -116,7 +116,7 @@ final class ScannerTest extends TestCase
         self::assertCount(4, $candidates);
 
         foreach ($candidates as $candidate) {
-            self::assertSame(ClassificationSafety::Canonicalizable, $candidate->classification->safety);
+            self::assertSame(ClassificationSafety::Fixable, $candidate->classification->safety);
         }
     }
 
@@ -131,17 +131,17 @@ final class ScannerTest extends TestCase
         $candidates = new Scanner()->scan([$generic, $error, $ok, $test], $root);
 
         self::assertCount(4, $candidates);
-        self::assertSame(ClassificationSafety::Canonicalizable, $candidates[0]->classification->safety);
-        self::assertSame(ClassificationSafety::Canonicalizable, $candidates[1]->classification->safety);
-        self::assertSame(ClassificationSafety::Canonicalizable, $candidates[2]->classification->safety);
-        self::assertSame(ClassificationSafety::Canonicalizable, $candidates[3]->classification->safety);
+        self::assertSame(ClassificationSafety::Fixable, $candidates[0]->classification->safety);
+        self::assertSame(ClassificationSafety::Fixable, $candidates[1]->classification->safety);
+        self::assertSame(ClassificationSafety::Fixable, $candidates[2]->classification->safety);
+        self::assertSame(ClassificationSafety::Fixable, $candidates[3]->classification->safety);
 
         self::assertNotSame($candidates[0]->key, $candidates[1]->key);
         self::assertNotSame($candidates[0]->key, $candidates[2]->key);
         self::assertNotSame($candidates[0]->key, $candidates[3]->key);
     }
 
-    public function testMarkerPrefixesAreCanonicalizable(): void
+    public function testMarkerPrefixesAreFixable(): void
     {
         $root = $this->makeTempDir();
         $bracketed = $this->writePhpt($root, 'bracketed.phpt', 'echo "[001] " . $e->getMessage() . "\n";');
@@ -153,7 +153,7 @@ final class ScannerTest extends TestCase
         self::assertCount(3, $candidates);
 
         foreach ($candidates as $candidate) {
-            self::assertSame(ClassificationSafety::Canonicalizable, $candidate->classification->safety);
+            self::assertSame(ClassificationSafety::Fixable, $candidate->classification->safety);
         }
     }
 

@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace InternalsCS\PhpSrcTestStyle;
+namespace InternalsCS\Fixers;
 
 use InternalsCS\FinalNewline;
+use InternalsCS\PhpSrcTestStyle\PhptFixer;
 
 use function mb_substr_count;
 
-final class FinalNewlineFixer extends VerifiedPhptFixer
+final class FinalNewlineFixer extends PhptFixer
 {
     private ?string $contents = null;
 

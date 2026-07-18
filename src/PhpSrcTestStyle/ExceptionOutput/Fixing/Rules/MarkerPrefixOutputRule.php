@@ -7,8 +7,8 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\MarkerPrefixPolicy;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputPartMatcher;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputStatementBuilder;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\RewriteResult;
@@ -20,7 +20,7 @@ use function str_ends_with;
 final readonly class MarkerPrefixOutputRule implements RewriteRule
 {
     public function __construct(
-        private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private OutputStatementBuilder $builder = new OutputStatementBuilder(),
         private MarkerPrefixPolicy $markers = new MarkerPrefixPolicy(),
         private OutputPartMatcher $parts = new OutputPartMatcher(),
     ) {}

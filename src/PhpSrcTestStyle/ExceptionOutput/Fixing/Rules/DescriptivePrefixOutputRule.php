@@ -7,11 +7,11 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\ClassificationSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputFamily;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalRewriteSafety;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputPartMatcher;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputStatementBuilder;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteSafety;
 use InternalsCS\RewriteResult;
 use InternalsCS\TextEdit;
 
@@ -30,8 +30,8 @@ use function usort;
 final readonly class DescriptivePrefixOutputRule implements RewriteRule
 {
     public function __construct(
-        private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
-        private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private RewriteSafety $safety = new RewriteSafety(),
+        private OutputStatementBuilder $builder = new OutputStatementBuilder(),
         private CatchTypeLabels $catchTypeLabels = new CatchTypeLabels(),
         private OutputPartMatcher $partMatcher = new OutputPartMatcher(),
     ) {}

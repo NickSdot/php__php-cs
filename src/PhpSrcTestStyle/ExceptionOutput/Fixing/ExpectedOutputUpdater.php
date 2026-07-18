@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing;
 
-use InternalsCS\PhpSrcTestStyle\ExpectedOutputUpdate;
-
 use function array_any;
 use function array_pop;
 use function array_unique;
@@ -26,7 +24,7 @@ use function str_replace;
 use function str_starts_with;
 use function stripcslashes;
 
-final readonly class CanonicalUpdater
+final readonly class ExpectedOutputUpdater
 {
     public function update(string $section, string $expected, string $actual): ExpectedOutputUpdate
     {
@@ -55,7 +53,7 @@ final readonly class CanonicalUpdater
         }
 
         return ExpectedOutputUpdate::failed(
-            'expected output did not match a canonical exception-output rewrite'
+            'expected output did not match an exception-output rewrite'
                 . '; expected ' . count($expectedLines) . ' line(s), actual ' . count($actualLines) . ' line(s)',
         );
     }
@@ -74,7 +72,7 @@ final readonly class CanonicalUpdater
         }
 
         return ExpectedOutputUpdate::failed(
-            'EXPECTF output did not match a canonical exception-output rewrite'
+            'EXPECTF output did not match an exception-output rewrite'
                 . '; expected ' . count($expectedLines) . ' line(s), actual ' . count($actualLines) . ' line(s)',
         );
     }
@@ -101,7 +99,7 @@ final readonly class CanonicalUpdater
                 continue;
             }
 
-            if ($this->lineCanCanonicalizeToActual($expectedLine, $actualLine, exact: true)) {
+            if ($this->lineCanNormaliseToActual($expectedLine, $actualLine, exact: true)) {
                 $updated[] = $actualLine;
                 $expectedIndex++;
                 $actualIndex++;
@@ -302,9 +300,9 @@ final readonly class CanonicalUpdater
         return $merged;
     }
 
-    private function lineCanCanonicalizeToActual(string $expectedLine, string $actualLine, bool $exact): bool
+    private function lineCanNormaliseToActual(string $expectedLine, string $actualLine, bool $exact): bool
     {
-        foreach ($this->canonicalLines($actualLine) as $actual) {
+        foreach ($this->normalisedLines($actualLine) as $actual) {
             foreach ($this->oldLineCandidates($expectedLine) as $candidate) {
                 if ($this->candidateMatchesActual($candidate, $actual, $exact)) {
                     return true;
@@ -317,13 +315,13 @@ final readonly class CanonicalUpdater
 
     private function updatedExpectfLine(string $expectedLine, string $actualLine): ?string
     {
-        foreach ($this->canonicalLines($actualLine) as $actual) {
+        foreach ($this->normalisedLines($actualLine) as $actual) {
             foreach ($this->oldLineCandidates($expectedLine) as $candidate) {
                 if (!$this->candidateMatchesActual($candidate, $actual, exact: false)) {
                     continue;
                 }
 
-                return $this->canonicalExpectfLine($candidate, $actual);
+                return $this->normalisedExpectfLine($candidate, $actual);
             }
         }
 
@@ -331,7 +329,7 @@ final readonly class CanonicalUpdater
     }
 
     /** @return list<array{prefix: string, class: string, message: string, code: string|null, file: string|null, line: string|null}> */
-    private function canonicalLines(string $line): array
+    private function normalisedLines(string $line): array
     {
         if (false === preg_match_all(
             '/([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)(?:\(((?:[+-]?\d+|%d|%i))\))?:(?: |\z)/',
@@ -342,7 +340,7 @@ final readonly class CanonicalUpdater
             return [];
         }
 
-        $canonical = [];
+        $normalised = [];
 
         foreach ($matches as $match) {
             $fullMatch = $match[0][0] ?? null;
@@ -365,7 +363,7 @@ final readonly class CanonicalUpdater
             [$message, $code] = $this->extractCode($message, $code);
             [$message, $sourceFile, $sourceLine] = $this->extractLocation($message);
 
-            $canonical[] = [
+            $normalised[] = [
                 'prefix' => mb_substr($line, 0, $classOffset),
                 'class' => $class,
                 'message' => $message,
@@ -375,7 +373,7 @@ final readonly class CanonicalUpdater
             ];
         }
 
-        return $canonical;
+        return $normalised;
     }
 
     /** @return array{string, string|null} */
@@ -573,7 +571,7 @@ final readonly class CanonicalUpdater
     }
 
     /** @param array{prefix: string, class: string, message: string, code: string|null, file: string|null, line: string|null} $actual */
-    private function canonicalExpectfLine(string $candidate, array $actual): string
+    private function normalisedExpectfLine(string $candidate, array $actual): string
     {
         $prefix = $actual['prefix'];
         $class = $actual['class'];
@@ -581,7 +579,7 @@ final readonly class CanonicalUpdater
         $code = $actual['code'];
 
         if (null !== $actual['file'] && null !== $actual['line'] && null !== $code && 1 === preg_match('/^((?:[+-]?\d+|%d|%i)): (.*)%s\(%d\)$/', $candidateBody, $matches)) {
-            return $prefix . $class . ': ' . $matches[1] . ': ' . $this->canonicalFileLineMessage($matches[2], $actual['message']);
+            return $prefix . $class . ': ' . $matches[1] . ': ' . $this->normalisedFileLineMessage($matches[2], $actual['message']);
         }
 
         if (null !== $code && 1 === preg_match('/^' . preg_quote($class, '/') . ': ((?:[+-]?\d+|%d|%i)): (.+)$/', $candidateBody, $matches)) {
@@ -631,7 +629,7 @@ final readonly class CanonicalUpdater
         return $prefix . $class . ': ' . $candidateBody;
     }
 
-    private function canonicalFileLineMessage(string $message, string $actualMessage): string
+    private function normalisedFileLineMessage(string $message, string $actualMessage): string
     {
         if ($this->expectfLineMatches($message, $actualMessage)) {
             return $message . ' in %s on line %d';

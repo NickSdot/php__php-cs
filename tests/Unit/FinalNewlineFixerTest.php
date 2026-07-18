@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use InternalsCS\FixerRunner;
-use InternalsCS\PhpSrcTestStyle\FinalNewlineFixer;
+use InternalsCS\Fixers\FinalNewlineFixer;
 use PHPUnit\Framework\TestCase;
 
 use function bin2hex;

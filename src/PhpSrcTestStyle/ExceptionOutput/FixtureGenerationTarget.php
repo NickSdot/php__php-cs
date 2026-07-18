@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Command;
+namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput;
 
 use InternalsCS\Command\GenerateOptions;
 use InternalsCS\Command\GenerateTarget;
@@ -12,12 +12,12 @@ use InternalsCS\Fixture\FixtureGenerator;
 use InternalsCS\Fixture\FixtureRewriteRunner;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\FixtureReportWriter;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\Scanner;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Validation\PhptFixtureRewriteRunner;
+use InternalsCS\PhpSrcTestStyle\PhptFixtureRewriteRunner;
 
 use function count;
 use function function_exists;
 
-final readonly class ExceptionOutputGenerateTarget implements GenerateTarget
+final readonly class FixtureGenerationTarget implements GenerateTarget
 {
     public function __construct(
         private FixtureGenerator $generator = new FixtureGenerator(

@@ -44,7 +44,7 @@ use function str_replace;
 use function str_starts_with;
 use function usort;
 
-final readonly class CanonicalPlanner
+final readonly class OutputRewritePlanner
 {
     /** @var list<RewriteRule> */
     private array $rules;
@@ -53,7 +53,7 @@ final readonly class CanonicalPlanner
     public function __construct(
         private StatementFactory $statements = new StatementFactory(),
         private PhpAst $ast = new PhpAst(),
-        private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private OutputStatementBuilder $builder = new OutputStatementBuilder(),
         private LeadingSeparatorOutput $leadingSeparator = new LeadingSeparatorOutput(),
         ?array $rules = null,
     ) {
@@ -454,7 +454,7 @@ final readonly class CanonicalPlanner
                 startOffset: $output->startOffset,
                 endOffset: $output->endOffset,
                 line: $output->line,
-                replacement: new CanonicalStatementBuilder()->build($catchVariable, $output->parts),
+                replacement: new OutputStatementBuilder()->build($catchVariable, $output->parts),
             ),
             new TextEdit(
                 startOffset: $followingStart,
@@ -475,7 +475,7 @@ final readonly class CanonicalPlanner
             return false;
         }
 
-        return new CanonicalRewriteSafety()->canRewrite(
+        return new RewriteSafety()->canRewrite(
             $statement,
             $catchVariable,
             OutputFamily::MessageOnly,

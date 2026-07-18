@@ -11,13 +11,13 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputParts;
 
 use function in_array;
 
-final readonly class CanonicalRewriteSafety
+final readonly class RewriteSafety
 {
     public function canRewrite(Statement $statement, string $catchVariable, OutputFamily ...$families): bool
     {
         $classification = $statement->classification;
 
-        if (ClassificationSafety::Canonicalizable !== $classification->safety) {
+        if (ClassificationSafety::Fixable !== $classification->safety) {
             return false;
         }
 

@@ -64,14 +64,13 @@ final readonly class Classifier
             return ClassificationSafety::UnsupportedExpression;
         }
 
-        return ClassificationSafety::Canonicalizable;
+        return ClassificationSafety::Fixable;
     }
 
     private function reason(ClassificationSafety $safety): string
     {
         return match ($safety) {
-            ClassificationSafety::Canonicalizable => 'safe candidate for a canonical exception-output family',
-            ClassificationSafety::AlreadyCanonical => 'already canonical',
+            ClassificationSafety::Fixable => 'safe candidate for an exception-output rewrite',
             ClassificationSafety::DescriptiveContext => 'contains descriptive context that must not be dropped',
             ClassificationSafety::MixedSemantics => 'mixes exception output with other output semantics',
             ClassificationSafety::NoExceptionMessage => 'does not contain an exception message call',

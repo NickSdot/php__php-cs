@@ -2,28 +2,30 @@
 
 declare(strict_types=1);
 
-namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing;
+namespace InternalsCS\Fixers;
 
-use InternalsCS\PhpSrcTestStyle\VerifiedPhptFixer;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\ExpectedOutputUpdater;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputRewritePlanner;
+use InternalsCS\PhpSrcTestStyle\PhptFixer;
 
 use function mb_substr;
 use function str_contains;
 use function usort;
 
-final class CanonicalFixer extends VerifiedPhptFixer
+final class ExceptionOutputFixer extends PhptFixer
 {
     private ?string $codeSection = null;
 
     private ?string $newCode = null;
 
     public function __construct(
-        private readonly CanonicalPlanner $planner = new CanonicalPlanner(),
-        private readonly CanonicalUpdater $expectedOutput = new CanonicalUpdater(),
+        private readonly OutputRewritePlanner $planner = new OutputRewritePlanner(),
+        private readonly ExpectedOutputUpdater $expectedOutput = new ExpectedOutputUpdater(),
     ) {}
 
     public function name(): string
     {
-        return 'canonical-exception-output';
+        return 'exception-output';
     }
 
     protected function planPhptRewrite(): bool
@@ -86,7 +88,7 @@ final class CanonicalFixer extends VerifiedPhptFixer
     protected function apply(): void
     {
         if (null === $this->codeSection || null === $this->newCode) {
-            throw new \LogicException('Canonical fixer was applied before collection completed');
+            throw new \LogicException('Exception-output fixer was applied before collection completed');
         }
 
         $this->phptFile()->setSection($this->codeSection, $this->newCode);

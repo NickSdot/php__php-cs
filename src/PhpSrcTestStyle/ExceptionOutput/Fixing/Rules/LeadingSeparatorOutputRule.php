@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\LeadingSeparatorOutput;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputStatementBuilder;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\RewriteResult;
@@ -15,7 +15,7 @@ final readonly class LeadingSeparatorOutputRule implements RewriteRule
 {
     public function __construct(
         private LeadingSeparatorOutput $leadingSeparator = new LeadingSeparatorOutput(),
-        private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private OutputStatementBuilder $builder = new OutputStatementBuilder(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult

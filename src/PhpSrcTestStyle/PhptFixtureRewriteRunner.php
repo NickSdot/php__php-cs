@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Validation;
+namespace InternalsCS\PhpSrcTestStyle;
 
 use InternalsCS\FixerRegistry;
 use InternalsCS\FixerRunner;
 use InternalsCS\Fixture\FixtureOriginalRunner;
 use InternalsCS\Fixture\FixtureRewriteRunner;
-use InternalsCS\PhpSrcTestStyle\PhptFile;
 
 final readonly class PhptFixtureRewriteRunner implements FixtureRewriteRunner, FixtureOriginalRunner
 {

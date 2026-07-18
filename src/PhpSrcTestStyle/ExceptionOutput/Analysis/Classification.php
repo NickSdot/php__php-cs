@@ -13,10 +13,4 @@ final readonly class Classification
         public string $reason,
         public string $partsSummary,
     ) {}
-
-    public function canAttemptRewrite(): bool
-    {
-        return ClassificationSafety::Canonicalizable === $this->safety
-            || ClassificationSafety::AlreadyCanonical === $this->safety;
-    }
 }

@@ -4,27 +4,25 @@ declare(strict_types=1);
 
 namespace InternalsCS;
 
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalFixer;
-use InternalsCS\PhpSrcTestStyle\FinalNewlineFixer;
+use InternalsCS\Fixers\ExceptionOutputFixer;
+use InternalsCS\Fixers\FinalNewlineFixer;
 
 use function array_keys;
+use function array_values;
 use function implode;
 
 final readonly class FixerRegistry
 {
     /** @var array<string, class-string<Fixer>> */
     private const array FIXERS = [
-        'canonical-exception-output' => CanonicalFixer::class,
+        'exception-output' => ExceptionOutputFixer::class,
         'final-newline' => FinalNewlineFixer::class,
     ];
 
     /** @return list<class-string<Fixer>> */
     public function all(): array
     {
-        return [
-            CanonicalFixer::class,
-            FinalNewlineFixer::class,
-        ];
+        return array_values(self::FIXERS);
     }
 
     /**
@@ -41,14 +39,14 @@ final readonly class FixerRegistry
 
         foreach ($names as $name) {
             $classes[] = self::FIXERS[$name] ?? throw new \InvalidArgumentException(
-                'Unknown fixer: ' . $name . '. Known fixers: ' . $this->knownFixers(),
+                'Unknown fixer: ' . $name . '. Known fixers: ' . $this->knownFixersLine(),
             );
         }
 
         return $classes;
     }
 
-    public function knownFixers(): string
+    public function knownFixersLine(): string
     {
         return implode(', ', array_keys(self::FIXERS));
     }

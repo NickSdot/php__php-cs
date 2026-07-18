@@ -6,10 +6,10 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Rules;
 
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputFamily;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalRewriteSafety;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\CanonicalStatementBuilder;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputStatementBuilder;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteRule;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\RewriteSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\Statement;
 use InternalsCS\RewriteResult;
 use InternalsCS\TextEdit;
@@ -17,8 +17,8 @@ use InternalsCS\TextEdit;
 abstract readonly class SingleStatementOutputRule implements RewriteRule
 {
     public function __construct(
-        private CanonicalRewriteSafety $safety = new CanonicalRewriteSafety(),
-        private CanonicalStatementBuilder $builder = new CanonicalStatementBuilder(),
+        private RewriteSafety $safety = new RewriteSafety(),
+        private OutputStatementBuilder $builder = new OutputStatementBuilder(),
     ) {}
 
     final public function rewrite(RewriteContext $context): ?RewriteResult
