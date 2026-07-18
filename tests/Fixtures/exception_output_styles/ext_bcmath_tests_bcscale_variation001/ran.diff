@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -10,9 +10,9 @@
+ try {
+     bcscale(-4);
+ } catch (\ValueError $e) {
+-    echo \PHP_EOL . $e->getMessage() . \PHP_EOL;
++    echo \PHP_EOL, $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ ?>
+ --EXPECT--
+ 5
+-bcscale(): Argument #1 ($scale) must be between 0 and 2147483647
++ValueError: bcscale(): Argument #1 ($scale) must be between 0 and 2147483647
