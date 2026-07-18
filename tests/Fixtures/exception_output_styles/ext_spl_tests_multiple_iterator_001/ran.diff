@@ -30,6 +30,33 @@
  }
  
  echo "-- Flags = MultipleIterator::MIT_NEED_ANY | MultipleIterator::MIT_KEYS_NUMERIC --\n";
+@@ -71,7 +71,7 @@
+ try {
+     $m->current();
+ } catch(InvalidArgumentException $e) {
+-    echo "InvalidArgumentException thrown: " . $e->getMessage() . "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ echo "-- Flags |= MultipleIterator::MIT_KEYS_ASSOC --\n";
+@@ -89,7 +89,7 @@
+ try {
+     $m->attachIterator($iter3, new stdClass());
+ } catch(TypeError $e) {
+-    echo "TypeError thrown: " . $e->getMessage() . "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ echo "-- Associate with duplicate value --\n";
+@@ -97,7 +97,7 @@
+ try {
+     $m->attachIterator($iter3, "iter1");
+ } catch(InvalidArgumentException $e) {
+-    echo "InvalidArgumentException thrown: " . $e->getMessage() . "\n";
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ echo "-- Count, contains, detach, count, contains, iterate --\n";
 @@ -114,8 +114,8 @@
  ?>
  --EXPECTF--
@@ -52,3 +79,24 @@
  -- Flags = MultipleIterator::MIT_NEED_ANY | MultipleIterator::MIT_KEYS_NUMERIC --
  bool(true)
  array(3) {
+@@ -255,7 +255,7 @@
+   int(3)
+ }
+ -- Flags |= MultipleIterator::MIT_KEYS_ASSOC, with iterator associated with NULL --
+-InvalidArgumentException thrown: Sub-Iterator is associated with NULL
++InvalidArgumentException: Sub-Iterator is associated with NULL
+ -- Flags |= MultipleIterator::MIT_KEYS_ASSOC --
+ array(3) {
+   ["iter1"]=>
+@@ -307,9 +307,9 @@
+   int(3)
+ }
+ -- Associate with invalid value --
+-TypeError thrown: MultipleIterator::attachIterator(): Argument #2 ($info) must be of type string|int|null, stdClass given
++TypeError: MultipleIterator::attachIterator(): Argument #2 ($info) must be of type string|int|null, stdClass given
+ -- Associate with duplicate value --
+-InvalidArgumentException thrown: Key duplication error
++InvalidArgumentException: Key duplication error
+ -- Count, contains, detach, count, contains, iterate --
+ int(3)
+ bool(true)
