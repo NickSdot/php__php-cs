@@ -41,11 +41,6 @@ final readonly class OutputPartMatcher
         return OutputPartKind::ExceptionMessage === $part->kind && $part->variable === $variable;
     }
 
-    public function isExceptionCode(OutputPart $part, string $variable): bool
-    {
-        return OutputPartKind::ExceptionCode === $part->kind && $part->variable === $variable;
-    }
-
     public function isExceptionTrace(OutputPart $part, string $variable): bool
     {
         return OutputPartKind::ExceptionTrace === $part->kind && $part->variable === $variable;

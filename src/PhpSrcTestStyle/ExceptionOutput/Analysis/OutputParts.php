@@ -54,17 +54,6 @@ final readonly class OutputParts
         return implode('|', $payload);
     }
 
-    public function summary(TrashLiteralPolicy $trash): string
-    {
-        $parts = [];
-
-        foreach ($this->parts as $part) {
-            $parts[] = $this->fingerprintPart($part, $trash);
-        }
-
-        return implode(' ', $parts);
-    }
-
     private function fingerprintPart(OutputPart $part, TrashLiteralPolicy $trash): string
     {
         return match ($part->kind) {

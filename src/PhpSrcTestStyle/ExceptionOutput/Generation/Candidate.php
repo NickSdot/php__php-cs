@@ -16,8 +16,6 @@ final readonly class Candidate implements FixtureCandidate
         public string $statement,
         public string $key,
         public Classification $classification,
-        public string $expectedSection,
-        public string $context,
     ) {}
 
     public function sourcePath(): string

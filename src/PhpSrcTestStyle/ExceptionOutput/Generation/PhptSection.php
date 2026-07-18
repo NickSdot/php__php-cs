@@ -7,7 +7,6 @@ namespace InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation;
 final readonly class PhptSection
 {
     public function __construct(
-        public string $name,
         public string $contents,
         public int $startLine,
     ) {}

@@ -97,7 +97,6 @@ final readonly class GenerateCommand implements Command
             ],
             extensions: $target->sourceExtensions(),
             runner: $target->rewriteRunner($options),
-            allowDirty: $options->allowDirty,
             sourceDirty: $sourceDirty,
             write: $options->write,
             refreshOnly: $options->refreshOnly,

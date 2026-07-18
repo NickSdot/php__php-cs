@@ -19,7 +19,6 @@ final readonly class FixtureGenerationOptions
         public array $excludedRoots,
         public array $extensions,
         public FixtureRewriteRunner $runner,
-        public bool $allowDirty,
         public bool $sourceDirty,
         public bool $write,
         public bool $refreshOnly,

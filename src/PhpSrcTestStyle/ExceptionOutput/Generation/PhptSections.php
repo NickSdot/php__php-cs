@@ -18,11 +18,6 @@ final readonly class PhptSections
         return $this->first($contents, ['FILE', 'FILEEOF']);
     }
 
-    public function expected(string $contents): ?PhptSection
-    {
-        return $this->first($contents, ['EXPECT', 'EXPECTF', 'EXPECTREGEX']);
-    }
-
     /** @param list<string> $names */
     private function first(string $contents, array $names): ?PhptSection
     {
@@ -45,7 +40,6 @@ final readonly class PhptSections
             $contentEnd = $i + 1 < $count ? $matches[0][$i + 1][1] : mb_strlen($contents, '8bit');
 
             return new PhptSection(
-                name: $name,
                 contents: mb_substr($contents, $contentStart, $contentEnd - $contentStart, '8bit'),
                 startLine: mb_substr_count(mb_substr($contents, 0, $contentStart, '8bit'), "\n", '8bit') + 1,
             );

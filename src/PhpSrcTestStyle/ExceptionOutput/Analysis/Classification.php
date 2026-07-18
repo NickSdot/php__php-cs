@@ -10,7 +10,5 @@ final readonly class Classification
         public OutputFamily $family,
         public ClassificationSafety $safety,
         public Fingerprint $fingerprint,
-        public string $reason,
-        public string $partsSummary,
     ) {}
 }

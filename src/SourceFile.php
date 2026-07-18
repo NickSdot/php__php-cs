@@ -36,17 +36,6 @@ final readonly class SourceFile
         return $this->path;
     }
 
-    public function contents(): string
-    {
-        $contents = file_get_contents($this->path);
-
-        if (false === $contents) {
-            throw new \RuntimeException('Cannot read ' . $this->path);
-        }
-
-        return $contents;
-    }
-
     public function restoreOriginal(): void
     {
         if (false === file_put_contents($this->path, $this->originalContents)) {

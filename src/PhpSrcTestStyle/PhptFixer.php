@@ -14,7 +14,6 @@ use function count;
 use function implode;
 use function mb_strlen;
 use function mb_substr;
-use function mb_substr_count;
 use function mb_trim;
 use function preg_match;
 use function preg_split;
@@ -157,11 +156,6 @@ abstract class PhptFixer implements Fixer
         $this->lines = [];
         $this->failureReason = null;
         $this->expectedUpdateFailure = null;
-    }
-
-    protected function markLineForOffset(string $code, int $offset): void
-    {
-        $this->markLine(mb_substr_count(mb_substr($code, 0, $offset, '8bit'), "\n", '8bit') + 1);
     }
 
     protected function markLine(int $line): void

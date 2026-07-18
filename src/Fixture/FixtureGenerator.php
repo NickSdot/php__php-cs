@@ -164,7 +164,6 @@ final readonly class FixtureGenerator
 
         $result->verifiedPairs = $validation->handled;
         $result->updatedPairs = $validation->updated;
-        $result->deletedPairs = $validation->deletedPairs;
         $result->stalePairs = $validation->stalePairs;
         $result->oldOnly = $validation->oldOnly;
         $result->updatedPairCases = $validation->updatedCases;

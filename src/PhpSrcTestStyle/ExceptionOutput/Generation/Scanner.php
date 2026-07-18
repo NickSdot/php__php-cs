@@ -10,13 +10,7 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\StatementWindowFinder;
 use InternalsCS\Support\Paths;
 
 use function array_push;
-use function count;
 use function file_get_contents;
-use function implode;
-use function max;
-use function min;
-use function preg_split;
-use function sprintf;
 use function str_contains;
 
 final readonly class Scanner implements FixtureScanner
@@ -58,7 +52,6 @@ final readonly class Scanner implements FixtureScanner
             return [];
         }
 
-        $expected = $this->sections->expected($contents);
         $relativePath = $this->paths->relative($file, $rootDir);
         $candidates = [];
 
@@ -73,35 +66,9 @@ final readonly class Scanner implements FixtureScanner
                 statement: $window->statement,
                 key: $classification->fingerprint->id,
                 classification: $classification,
-                expectedSection: null === $expected ? 'UNKNOWN' : $expected->name,
-                context: $this->context($code->contents, $window->startLine, $window->endLine, $code->startLine),
             );
         }
 
         return $candidates;
-    }
-
-    private function context(string $code, int $startLine, int $endLine, int $sectionStartLine): string
-    {
-        $lines = preg_split('/\R/', $code);
-
-        if (false === $lines) {
-            $lines = [];
-        }
-
-        $first = max(1, $startLine - 3);
-        $last = min(count($lines), $endLine + 3);
-        $context = [];
-
-        for ($line = $first; $line <= $last; $line++) {
-            $marker = $line >= $startLine && $line <= $endLine ? '>' : ' ';
-            $number = $sectionStartLine + $line - 1;
-            $sourceLine = $lines[$line - 1] ?? '';
-            $context[] = '' === $sourceLine
-                ? sprintf('%s%5d', $marker, $number)
-                : sprintf('%s%5d %s', $marker, $number, $sourceLine);
-        }
-
-        return implode("\n", $context);
     }
 }

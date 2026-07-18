@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixture;
 
-use function array_any;
 use function array_keys;
 
 final readonly class FixtureSource
@@ -40,8 +39,4 @@ final readonly class FixtureSource
         return array_keys($keys);
     }
 
-    public function covers(string $flavourKey): bool
-    {
-        return array_any($this->candidates, fn(FixtureCandidate $candidate): bool => $candidate->fixtureKey() === $flavourKey);
-    }
 }

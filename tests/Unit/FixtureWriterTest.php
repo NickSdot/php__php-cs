@@ -100,8 +100,6 @@ final class FixtureWriterTest extends TestCase
             family: OutputFamily::MessageOnly,
             safety: ClassificationSafety::Fixable,
             fingerprint: new Fingerprint(OutputFamily::MessageOnly, 'test-payload'),
-            reason: 'test',
-            partsSummary: 'test',
         );
 
         return new Candidate(
@@ -111,8 +109,6 @@ final class FixtureWriterTest extends TestCase
             statement: 'echo $e->getMessage();',
             key: $classification->fingerprint->id,
             classification: $classification,
-            expectedSection: 'EXPECT',
-            context: '',
         );
     }
 

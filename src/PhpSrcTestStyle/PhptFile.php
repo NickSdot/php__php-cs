@@ -17,6 +17,7 @@ use function file_put_contents;
 use function getenv;
 use function is_executable;
 use function is_file;
+use function is_int;
 use function is_resource;
 use function is_string;
 use function mb_strlen;
@@ -37,7 +38,6 @@ use function unlink;
 // todo: too many hard-coded inline arrays and strings that should be class constants
 final class PhptFile
 {
-    private readonly string $originalContents;
     private string $prefix = '';
     /** @var array<int, array{name: string, header: string, content: string}> */
     private array $sections = [];
@@ -48,13 +48,7 @@ final class PhptFile
         if (false === $contents) {
             throw new \RuntimeException("Cannot read {$this->path}");
         }
-        $this->originalContents = $contents;
         $this->parse($contents);
-    }
-
-    public function path(): string
-    {
-        return $this->path;
     }
 
     public function relativePath(): string
@@ -176,14 +170,6 @@ final class PhptFile
         }
     }
 
-    public function restoreOriginal(): void
-    {
-        if (false === file_put_contents($this->path, $this->originalContents)) {
-            throw new \RuntimeException("Cannot restore {$this->path}");
-        }
-        $this->parse($this->originalContents);
-    }
-
     public function contents(): string
     {
         return $this->render();
@@ -278,7 +264,7 @@ final class PhptFile
 
     public function readActualOutput(): ?string
     {
-        $path = $this->artifactPath('out');
+        $path = $this->artifactBase() . 'out';
         if (!is_file($path)) {
             return null;
         }
@@ -309,17 +295,40 @@ final class PhptFile
 
         $this->prefix = mb_substr($contents, 0, $matches[0][0][1], '8bit');
         $count = count($matches[0]);
+
         for ($i = 0; $i < $count; $i++) {
-            $header = $matches[0][$i][0];
-            $name = $matches[1][$i][0];
-            $contentStart = $matches[0][$i][1] + mb_strlen($header, '8bit');
-            $contentEnd = $i + 1 < $count ? $matches[0][$i + 1][1] : mb_strlen($contents, '8bit');
+            $header = $this->matchText($matches[0][$i]);
+            $name = $this->matchText($matches[1][$i]);
+            $start = $this->matchOffset($matches[0][$i]);
+            $nextStart = $i + 1 < $count ? $this->matchOffset($matches[0][$i + 1]) : null;
+            $contentStart = $start + mb_strlen($header, '8bit');
+            $contentEnd = $nextStart ?? mb_strlen($contents, '8bit');
             $this->sections[] = [
                 'name' => $name,
                 'header' => $header,
                 'content' => mb_substr($contents, $contentStart, $contentEnd - $contentStart, '8bit'),
             ];
         }
+    }
+
+    /** @param array{0: mixed, 1: mixed} $match */
+    private function matchText(array $match): string
+    {
+        if (is_string($match[0])) {
+            return $match[0];
+        }
+
+        throw new \RuntimeException("Invalid PHPT section match in {$this->path}");
+    }
+
+    /** @param array{0: mixed, 1: mixed} $match */
+    private function matchOffset(array $match): int
+    {
+        if (is_int($match[1])) {
+            return $match[1];
+        }
+
+        throw new \RuntimeException("Invalid PHPT section offset in {$this->path}");
     }
 
     private function render(): string
@@ -335,11 +344,6 @@ final class PhptFile
     {
         $pathInfo = pathinfo($this->path);
         return $pathInfo['dirname'] . DIRECTORY_SEPARATOR . $pathInfo['filename'];
-    }
-
-    private function artifactPath(string $extension): string
-    {
-        return $this->artifactBase() . ".$extension";
     }
 
     private function testPhpBinary(): string

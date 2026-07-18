@@ -13,15 +13,4 @@ final readonly class FixtureWriteResult
         public bool $oldOnly,
         public ?string $failure,
     ) {}
-
-    public static function failure(string $message): self
-    {
-        return new self(
-            createdOld: false,
-            updatedNew: false,
-            verifiedPair: false,
-            oldOnly: false,
-            failure: $message,
-        );
-    }
 }

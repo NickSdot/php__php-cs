@@ -26,7 +26,7 @@ final readonly class PhpBuildCheckout
         $this->cloneIfMissing($sourceRoot, $sourceDir, $io);
         $this->run($sourceDir, ['git', 'remote', 'set-url', 'origin', $sourceRoot->path]);
 
-        $reference = $this->masterReference($sourceRoot, $sourceDir, $io);
+        $reference = $this->masterReference($sourceDir, $io);
 
         $this->run($sourceDir, ['git', 'checkout', '--detach', $reference]);
         $this->clean(PhpSrcRoot::fromPath($sourceDir));
@@ -56,7 +56,7 @@ final readonly class PhpBuildCheckout
         $this->run($parent, ['git', 'clone', '--no-checkout', $sourceRoot->path, $sourceDir]);
     }
 
-    private function masterReference(PhpSrcRoot $sourceRoot, string $sourceDir, ConsoleIo $io): string
+    private function masterReference(string $sourceDir, ConsoleIo $io): string
     {
         if (!$this->optional($sourceDir, ['git', 'fetch', 'origin', 'master'])->ok()) {
             throw new \RuntimeException(
@@ -68,6 +68,7 @@ final readonly class PhpBuildCheckout
 
         return 'refs/remotes/origin/master';
     }
+
     /** @param list<string> $command */
     private function optional(string $cwd, array $command): PhpBuildProcessResult
     {
@@ -103,14 +104,13 @@ final readonly class PhpBuildCheckout
         }
 
         fclose($pipes[0]);
-        $stdout = stream_get_contents($pipes[1]);
+        stream_get_contents($pipes[1]);
         $stderr = stream_get_contents($pipes[2]);
         fclose($pipes[1]);
         fclose($pipes[2]);
 
         return new PhpBuildProcessResult(
             exitCode: proc_close($process),
-            stdout: (string) $stdout,
             stderr: (string) $stderr,
         );
     }

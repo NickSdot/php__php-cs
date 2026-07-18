@@ -9,6 +9,5 @@ enum OutputFamily: string
     case MessageOnly = 'message_only';
     case ClassMessage = 'class_message';
     case ClassMessageLocation = 'class_message_location';
-    case PreviousException = 'previous_exception';
     case Unknown = 'unknown';
 }

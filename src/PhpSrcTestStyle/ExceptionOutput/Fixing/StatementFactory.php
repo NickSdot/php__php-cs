@@ -41,9 +41,7 @@ final readonly class StatementFactory
 
         $classification = $this->classifier->classify(new Window(
             startOffset: $start,
-            endOffset: $end,
             startLine: $statement->getStartLine(),
-            endLine: $statement->getEndLine(),
             statement: mb_trim(mb_substr($code, $start, $end - $start + 1, '8bit')),
             parts: $parts,
         ));

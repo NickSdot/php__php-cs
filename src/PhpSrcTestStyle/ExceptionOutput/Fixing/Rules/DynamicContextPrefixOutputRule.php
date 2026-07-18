@@ -129,16 +129,16 @@ final readonly class DynamicContextPrefixOutputRule implements RewriteRule
 
     private function stripTrailingExceptionMarker(string $literal): string
     {
-        $withoutThrownMarker = preg_replace('/\s+threw\s*$/i', ' ', $literal, count: $count);
+        $withoutThrownMarker = (string) preg_replace('/\s+threw\s*$/i', ' ', $literal);
 
-        if (1 === $count) {
-            return (string) $withoutThrownMarker;
+        if ($withoutThrownMarker !== $literal) {
+            return $withoutThrownMarker;
         }
 
-        $withoutColonMarker = preg_replace('/:\s*(?:exception|error)\s*[-:]\s*$/i', ': ', $literal, count: $count);
+        $withoutColonMarker = (string) preg_replace('/:\s*(?:exception|error)\s*[-:]\s*$/i', ': ', $literal);
 
-        if (1 === $count) {
-            return (string) $withoutColonMarker;
+        if ($withoutColonMarker !== $literal) {
+            return $withoutColonMarker;
         }
 
         return (string) preg_replace('/\s+(?:exception|error)\s*[-:]\s*$/i', ': ', $literal);

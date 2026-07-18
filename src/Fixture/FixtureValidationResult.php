@@ -30,11 +30,6 @@ final class FixtureValidationResult
     /** @var list<string> */
     public array $oldOnlyCases = [];
 
-    public function failed(): bool
-    {
-        return [] !== $this->failures;
-    }
-
     public function fail(string $message): void
     {
         $this->failures[] = $message;

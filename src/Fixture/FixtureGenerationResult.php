@@ -36,8 +36,6 @@ final class FixtureGenerationResult
 
     public int $updatedPairs = 0;
 
-    public int $deletedPairs = 0;
-
     public int $stalePairs = 0;
 
     public int $oldOnly = 0;

@@ -67,7 +67,7 @@ final class ExceptionOutputFixer extends PhptFixer
                 . $plan->replacement
                 . mb_substr($code, $plan->endOffset, null, '8bit');
 
-            $this->markLineForOffset($code, $plan->startOffset);
+            $this->markLine($plan->line);
             $changed = true;
         }
 
