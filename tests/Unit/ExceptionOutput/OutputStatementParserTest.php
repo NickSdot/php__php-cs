@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ExceptionOutput;
 
+use InternalsCS\Fixers\ExceptionOutput\Analysis\ExpressionSource;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputPartKind;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputStatementParser;
 use InternalsCS\PhpAst;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\ExpressionSource;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPartKind;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputStatementParser;
 use PHPUnit\Framework\TestCase;
 
 final class OutputStatementParserTest extends TestCase

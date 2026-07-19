@@ -39,16 +39,30 @@ final class CommandContractTest extends TestCase
     {
         $fixIo = new BufferConsoleIo();
         $generateIo = new BufferConsoleIo();
-        $generateTargetIo = new BufferConsoleIo();
 
         self::assertSame(0, new Application($fixIo)->run(['php-src-cs.php', 'fix', '--help']));
         self::assertSame(0, new Application($generateIo)->run(['php-src-cs.php', 'generate', '--help']));
-        self::assertSame(0, new Application($generateTargetIo)->run(['php-src-cs.php', 'generate', 'exception-output', '--help']));
 
         self::assertStringContainsString('Usage: php bin/php-src-cs.php fix', $fixIo->stdout);
         self::assertStringNotContainsString('--force-php-binary-rebuild', $fixIo->stdout);
         self::assertStringContainsString('Usage: php bin/php-src-cs.php generate', $generateIo->stdout);
-        self::assertStringContainsString('--force-php-binary-rebuild', $generateTargetIo->stdout);
+        self::assertStringNotContainsString('Targets:', $generateIo->stdout);
+        self::assertStringContainsString('--force-php-binary-rebuild', $generateIo->stdout);
+    }
+
+    public function testGenerateDoesNotAcceptFixerNames(): void
+    {
+        $io = new BufferConsoleIo();
+
+        self::assertSame(2, new Application($io)->run([
+            'php-src-cs.php',
+            'generate',
+            'exception-output',
+            '--php-src-dir',
+            $this->rootWithRunTests('<?php'),
+        ]));
+
+        self::assertSame("generate scans all fixers; pass php-src paths, not fixer names: exception-output\n", $io->stderr);
     }
 
     public function testFixWriteRunWithSkippedCandidateReturnsSuccess(): void

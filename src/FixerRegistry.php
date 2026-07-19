@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace InternalsCS;
 
-use InternalsCS\Fixers\ExceptionOutputFixer;
-use InternalsCS\Fixers\FinalNewlineFixer;
+use InternalsCS\Fixers\ExceptionOutput\ExceptionOutputFixer;
+use InternalsCS\Fixers\FinalNewline\FinalNewlineFixer;
 
 use function array_keys;
 use function array_values;

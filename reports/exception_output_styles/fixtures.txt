@@ -64,13 +64,17 @@ Zend/tests/assert/disable_assert_function.phpt
   flavours covered: 1
     - line 11: class_message class_message:2b5ab22f50fe027176283f01fe88840eaa3c6e1d
 
-Zend/tests/bug80972.phpt
+Zend/tests/assert/expect_015.phpt
   state: handled
-  fixture: Zend_tests_bug80972
+  fixture: Zend_tests_assert_expect_015
   first line: 23
-  flavours covered: 2
+  flavours covered: 1
     - line 23: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
-    - line 32: message_only message_only:27e195afad2704ad67dcfda98d01c5caaebff15e
+    - line 72: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
+    - line 108: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
+    - line 124: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
+    - line 141: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
+    - line 169: message_only message_only:edd474419f43ae45183bea4e8f2f09d8463a6081
 
 Zend/tests/ast/gh21072.phpt
   state: handled
@@ -373,6 +377,13 @@ manual_001/old.phpt
   flavours covered: 1
     - line 10: class_message class_message:0c65a3c6ae95d881da1786ab56e48194f83a0fcb
 
+ext/spl/tests/SplObjectStorage/SplObjectStorage_unserialize_invalid_parameter3.phpt
+  state: handled
+  fixture: ext_spl_tests_SplObjectStorage_SplObjectStorage_unserialize_invalid_parameter3
+  first line: 13
+  flavours covered: 1
+    - line 13: message_only message_only:815c351c0d23adb97c78f1d77844c28a462c3b11|expected:expect:following-inline-output
+
 ext/fileinfo/tests/finfo_open_003.phpt
   state: handled
   fixture: ext_fileinfo_tests_finfo_open_003
@@ -513,6 +524,13 @@ manual_016/old.phpt
   first line: 8
   flavours covered: 1
     - line 8: message_only message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b
+
+ext/phar/tests/bug71498.phpt
+  state: handled
+  fixture: ext_phar_tests_bug71498
+  first line: 10
+  flavours covered: 1
+    - line 10: message_only message_only:815c351c0d23adb97c78f1d77844c28a462c3b11|expected:expectf:following-inline-output
 
 ext/phar/tests/phar_buildfromdirectory1.phpt
   state: handled
@@ -773,6 +791,13 @@ tests/classes/destructor_and_exceptions.phpt
     - line 25: message_only message_only:a1b9184d8031ef9fa546b49392e689c4df72240c
     - line 45: message_only message_only:cf7e9653a60e115d7e6ecb3ba100961e5c51a647
     - line 49: message_only message_only:717f056961a2cf9ce94c906d5dcd6e00288a0606
+
+tests/classes/tostring_003.phpt
+  state: handled
+  fixture: tests_classes_tostring_003
+  first line: 27
+  flavours covered: 1
+    - line 27: message_only message_only:a2350f6a03bf223388395898998b6581f0ef7a72|expected:expect:following-inline-output
 
 tests/classes/type_hinting_004.phpt
   state: handled

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ExceptionOutput;
 
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\ExpectedOutputUpdater;
+use InternalsCS\Fixers\ExceptionOutput\Fixing\ExpectedOutputUpdater;
 use PHPUnit\Framework\TestCase;
 
 final class ExpectedOutputUpdaterTest extends TestCase
@@ -95,6 +95,20 @@ final class ExpectedOutputUpdaterTest extends TestCase
         );
     }
 
+    public function testUpdatesExpectfLineSplitBeforeBlankAndLiteralOutput(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECTF',
+            "phar error: end of central directory not found in zip-based phar \"%s%ebug71498.zip\"\nDONE\n",
+            "UnexpectedValueException: phar error: end of central directory not found in zip-based phar \"/tmp/bug71498.zip\"\n\nDONE\n",
+        );
+
+        self::assertSame(
+            "UnexpectedValueException: phar error: end of central directory not found in zip-based phar \"%s%ebug71498.zip\"\n\nDONE\n",
+            $update->output,
+        );
+    }
+
     public function testUpdatesVarDumpClassThenMessageOutput(): void
     {
         $update = new ExpectedOutputUpdater()->update(
@@ -176,6 +190,17 @@ final class ExpectedOutputUpdaterTest extends TestCase
         );
 
         self::assertSame("Error: Instantiation of class Closure is not allowed\n", $update->output);
+    }
+
+    public function testUpdatesUppercaseCaughtLabel(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECT',
+            "CAUGHT: Cannot create any files in magic \".phar\" directory\n",
+            "Exception: Cannot create any files in magic \".phar\" directory\n",
+        );
+
+        self::assertSame("Exception: Cannot create any files in magic \".phar\" directory\n", $update->output);
     }
 
     public function testUpdatesContextLabel(): void
@@ -642,5 +667,19 @@ final class ExpectedOutputUpdaterTest extends TestCase
         );
 
         self::assertSame("SoapFault: fixture message\n", $update->output);
+    }
+
+    public function testUpdatesWholeLineExpectfRegexAfterClassPrefix(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECTF',
+            "%r(internal corruption of phar \"%s\" \\(truncated entry\\)|unable to open phar for reading \".\")%r\n",
+            "PharException: unable to open phar for reading \".\"\n",
+        );
+
+        self::assertSame(
+            "PharException: %r(internal corruption of phar \"%s\" \\(truncated entry\\)|unable to open phar for reading \".\")%r\n",
+            $update->output,
+        );
     }
 }

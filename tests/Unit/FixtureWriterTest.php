@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use InternalsCS\Fixers\ExceptionOutput\Analysis\Classification;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\ClassificationSafety;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\Fingerprint;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputFamily;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputPart;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputParts;
+use InternalsCS\Fixers\ExceptionOutput\Generation\Candidate;
 use InternalsCS\Fixture\FixtureCaseName;
 use InternalsCS\Fixture\FixtureSource;
 use InternalsCS\Fixture\FixtureWriter;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\Classification;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\ClassificationSafety;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\Fingerprint;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputFamily;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputParts;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\Candidate;
 use PHPUnit\Framework\TestCase;
 
 use function bin2hex;
@@ -110,7 +110,7 @@ final class FixtureWriterTest extends TestCase
             line: 1,
             statement: 'echo $e->getMessage();',
             parts: new OutputParts([OutputPart::exceptionMessage('e')], 'echo:method_call'),
-            key: $classification->fingerprint->id,
+            fixtureKey: $classification->fingerprint->id,
             classification: $classification,
         );
     }

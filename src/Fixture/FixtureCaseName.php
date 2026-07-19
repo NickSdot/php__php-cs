@@ -14,7 +14,7 @@ final readonly class FixtureCaseName
 {
     public function fromCandidate(FixtureCandidate $candidate): string
     {
-        return $this->fromSourcePath($candidate->relativePath());
+        return $this->fromSourcePath($candidate->relativePath);
     }
 
     public function fromFixtureSource(FixtureSource $source): string

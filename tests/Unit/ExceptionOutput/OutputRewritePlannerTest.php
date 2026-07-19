@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\ExceptionOutput;
 
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Fixing\OutputRewritePlanner;
+use InternalsCS\Fixers\ExceptionOutput\Fixing\OutputRewritePlanner;
 use InternalsCS\TextEdit;
 use PHPUnit\Framework\TestCase;
 
@@ -813,6 +813,33 @@ final class OutputRewritePlannerTest extends TestCase
         self::assertCount(2, $plans);
         self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \\PHP_EOL;", $fixed);
         self::assertStringContainsString("echo \"\\n*** Next section ***\\n\";", $fixed);
+    }
+
+    public function testPlansTrailingCatchMessageBeforeStandalonePhpEolSeparator(): void
+    {
+        $code = <<<'PHP_WRAP'
+            <?php
+            try {
+                throw new ValueError('x');
+            } catch (ValueError $exception) {
+                echo $exception->getMessage();
+            }
+
+            echo PHP_EOL;
+
+            try {
+                throw new ValueError('y');
+            } catch (ValueError $exception) {
+                echo $exception->getMessage();
+            }
+            PHP_WRAP;
+
+        $plans = new OutputRewritePlanner()->plans($code);
+        $fixed = self::applyPlans($code, $plans);
+
+        self::assertCount(3, $plans);
+        self::assertStringContainsString("echo \$exception::class, ': ', \$exception->getMessage(), \\PHP_EOL;", $fixed);
+        self::assertStringNotContainsString('echo PHP_EOL;', $fixed);
     }
 
     public function testPlansCatchInsideClassMethod(): void

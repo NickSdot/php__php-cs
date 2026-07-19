@@ -6,5 +6,8 @@ namespace InternalsCS\Fixture;
 
 interface FixtureSourceVerifier
 {
-    public function canSelect(FixtureSource $source, FixtureGenerationOptions $options): bool;
+    public function canSelect(
+        FixtureSource $source,
+        FixtureSourceVerification $verification,
+    ): bool;
 }

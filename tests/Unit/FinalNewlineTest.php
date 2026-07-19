@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use InternalsCS\FinalNewline;
+use InternalsCS\Fixers\FinalNewline\FinalNewline;
 use PHPUnit\Framework\TestCase;
 
 final class FinalNewlineTest extends TestCase

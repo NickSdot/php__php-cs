@@ -33,6 +33,7 @@ final readonly class SourceFinder
     public function find(string $rootDir, array $scanPaths, array $excludedRoots, array $extensions = []): array
     {
         $scanPaths = [] === $scanPaths ? [$rootDir] : $scanPaths;
+        $extensions = $this->normaliseExtensions($extensions);
         $files = [];
 
         foreach ($scanPaths as $path) {
@@ -62,6 +63,23 @@ final readonly class SourceFinder
         sort($files);
 
         return array_values(array_unique($files));
+    }
+
+    /**
+     * @param list<string> $extensions
+     * @return list<string>
+     */
+    public function normaliseExtensions(array $extensions): array
+    {
+        $normalised = [];
+
+        foreach ($extensions as $extension) {
+            $normalised[$this->extensionKey($extension)] = $this->extensionKey($extension);
+        }
+
+        sort($normalised);
+
+        return $normalised;
     }
 
     /**
@@ -126,7 +144,14 @@ final readonly class SourceFinder
             return true;
         }
 
-        $extension = mb_strtolower(pathinfo($path, PATHINFO_EXTENSION));
-        return array_any($extensions, fn($allowed) => $extension === mb_strtolower(mb_ltrim($allowed, '.')));
+        return array_any(
+            $extensions,
+            fn(string $allowed): bool => $this->extensionKey(pathinfo($path, PATHINFO_EXTENSION)) === $allowed,
+        );
+    }
+
+    private function extensionKey(string $extension): string
+    {
+        return mb_strtolower(mb_ltrim($extension, '.'));
     }
 }

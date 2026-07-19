@@ -12,8 +12,8 @@ final readonly class GenerateOptions
     public function __construct(
         public PhpSrcRoot $phpSrcRoot,
         public PhpSrcRoot $phpTestRuntimeRoot,
-        public string $fixturesDir,
-        public string $reportsDir,
+        public string $fixturesRoot,
+        public string $reportsRoot,
         public array $paths,
         public bool $allowDirty,
         public bool $write,
@@ -26,8 +26,8 @@ final readonly class GenerateOptions
         return new self(
             phpSrcRoot: $this->phpSrcRoot,
             phpTestRuntimeRoot: $phpTestRuntimeRoot,
-            fixturesDir: $this->fixturesDir,
-            reportsDir: $this->reportsDir,
+            fixturesRoot: $this->fixturesRoot,
+            reportsRoot: $this->reportsRoot,
             paths: $this->paths,
             allowDirty: $this->allowDirty,
             write: $this->write,

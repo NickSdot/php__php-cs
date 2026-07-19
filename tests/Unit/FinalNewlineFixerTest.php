@@ -7,7 +7,7 @@ namespace Tests\Unit;
 use InternalsCS\FixRunEntry;
 use InternalsCS\FixRunResult;
 use InternalsCS\FixerRunner;
-use InternalsCS\Fixers\FinalNewlineFixer;
+use InternalsCS\Fixers\FinalNewline\FinalNewlineFixer;
 use PHPUnit\Framework\TestCase;
 
 use function bin2hex;

@@ -6,9 +6,9 @@ namespace InternalsCS\Fixture;
 
 interface FixtureCandidate
 {
-    public function sourcePath(): string;
+    public string $sourcePath { get; }
 
-    public function relativePath(): string;
+    public string $relativePath { get; }
 
-    public function fixtureKey(): string;
+    public string $fixtureKey { get; }
 }

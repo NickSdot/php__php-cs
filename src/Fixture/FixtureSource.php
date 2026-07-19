@@ -18,8 +18,8 @@ final readonly class FixtureSource
     ) {
         $first = $candidates[0];
 
-        $this->sourcePath = $first->sourcePath();
-        $this->relativePath = $first->relativePath();
+        $this->sourcePath = $first->sourcePath;
+        $this->relativePath = $first->relativePath;
     }
 
     public function firstCandidate(): FixtureCandidate
@@ -33,7 +33,7 @@ final readonly class FixtureSource
         $keys = [];
 
         foreach ($this->candidates as $candidate) {
-            $keys[$candidate->fixtureKey()] = true;
+            $keys[$candidate->fixtureKey] = true;
         }
 
         return array_keys($keys);

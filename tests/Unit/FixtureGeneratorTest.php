@@ -4,18 +4,27 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use InternalsCS\Console\ConsoleIo;
+use InternalsCS\Fixers\ExceptionOutput\Generation\CandidateCollector;
+use InternalsCS\Fixers\ExceptionOutput\Generation\FixtureReportWriter;
+use InternalsCS\Fixers\ExceptionOutput\Generation\SourceVerifier;
+use InternalsCS\Fixture\FixtureDiscovery;
 use InternalsCS\Fixture\FixtureGenerationOptions;
+use InternalsCS\Fixture\FixtureGenerationResult;
 use InternalsCS\Fixture\FixtureGenerator;
 use InternalsCS\Fixture\FixtureOriginalRunner;
+use InternalsCS\Fixture\FixtureReporter;
 use InternalsCS\Fixture\FixtureRewriteRunner;
+use InternalsCS\Fixture\FixtureSourceRunVerifier;
+use InternalsCS\Fixture\FixtureSourceVerifier;
 use InternalsCS\PhpSrc\PhpSrcRoot;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\FixtureReportWriter;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\Scanner;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\SourceVerifier;
+use InternalsCS\SourceFile;
 use PHPUnit\Framework\TestCase;
 
 use function basename;
 use function bin2hex;
+use function escapeshellarg;
+use function exec;
 use function file_get_contents;
 use function file_put_contents;
 use function glob;
@@ -40,20 +49,14 @@ final class FixtureGeneratorTest extends TestCase
         $this->writeSourcePhpt($phpSrc, 'a.phpt', 'echo "Caught " . $e->getMessage() . "\n";');
         $this->writeSourcePhpt($phpSrc, 'b.phpt', 'echo "*** Caught " . $e->getMessage() . "\n";');
 
-        $result = $this->generator()->generate(new FixtureGenerationOptions(
-            sourceRoot: PhpSrcRoot::fromPath($phpSrc)->path,
-            fixturesDir: $fixtures,
-            reportsDir: $fixtures,
-            paths: [],
-            excludedRoots: [
-                $fixtures,
-            ],
-            extensions: ['phpt'],
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $fixtures,
             runner: new NoopFixtureRewriteRunner(),
-            sourceDirty: false,
             write: false,
             refreshOnly: false,
-        ));
+        );
 
         self::assertSame(2, $result->candidateFiles);
         self::assertSame(2, $result->candidateWindows);
@@ -77,20 +80,14 @@ final class FixtureGeneratorTest extends TestCase
             'echo $e::class, \': \', $e->getMessage(), PHP_EOL;',
         ]);
 
-        $result = $this->generator()->generate(new FixtureGenerationOptions(
-            sourceRoot: PhpSrcRoot::fromPath($phpSrc)->path,
-            fixturesDir: $fixtures,
-            reportsDir: $fixtures,
-            paths: [],
-            excludedRoots: [
-                $fixtures,
-            ],
-            extensions: ['phpt'],
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $fixtures,
             runner: new NoopFixtureRewriteRunner(),
-            sourceDirty: false,
             write: false,
             refreshOnly: false,
-        ));
+        );
 
         self::assertSame(1, $result->candidateFiles);
         self::assertSame(2, $result->candidateWindows);
@@ -110,21 +107,17 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($fixtures . '/case');
         file_put_contents($fixtures . '/case/old.phpt', "old\n");
         file_put_contents($reports . '/stats.md', "existing stats\n");
+        $this->markGitDirty($phpSrc);
 
-        $result = $this->generator()->generate(new FixtureGenerationOptions(
-            sourceRoot: $phpSrc,
-            fixturesDir: $fixtures,
-            reportsDir: $reports,
-            paths: [],
-            excludedRoots: [
-                $fixtures,
-            ],
-            extensions: ['phpt'],
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
             runner: new ChangedFixtureRewriteRunner("new\n"),
-            sourceDirty: true,
             write: true,
             refreshOnly: false,
-        ));
+            allowDirty: false,
+        );
 
         self::assertTrue($result->refreshOnly);
         self::assertSame([
@@ -155,20 +148,14 @@ final class FixtureGeneratorTest extends TestCase
         $this->writeSourcePhpt($phpSrc, 'source.phpt', 'echo "Caught " . $e->getMessage() . "\n";');
         file_put_contents($fixtures . '/case/old.phpt', "old\n");
 
-        $result = $this->generator()->generate(new FixtureGenerationOptions(
-            sourceRoot: $phpSrc,
-            fixturesDir: $fixtures,
-            reportsDir: $reports,
-            paths: [],
-            excludedRoots: [
-                $fixtures,
-            ],
-            extensions: ['phpt'],
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
             runner: new ChangedFixtureRewriteRunner("new\n"),
-            sourceDirty: false,
             write: true,
             refreshOnly: true,
-        ));
+        );
 
         self::assertTrue($result->refreshOnly);
         self::assertSame(1, $result->scannedFiles);
@@ -205,20 +192,14 @@ final class FixtureGeneratorTest extends TestCase
         $sourcePath = $this->writeSourcePhpt($phpSrc, 'source.phpt', 'echo $e->getMessage(), "\n";');
         file_put_contents($fixtures . '/source/old.phpt', (string) file_get_contents($sourcePath));
 
-        $this->generator()->generate(new FixtureGenerationOptions(
-            sourceRoot: $phpSrc,
-            fixturesDir: $fixtures,
-            reportsDir: $reports,
-            paths: [],
-            excludedRoots: [
-                $fixtures,
-            ],
-            extensions: ['phpt'],
+        $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
             runner: new ChangedFixtureRewriteRunner("new\n"),
-            sourceDirty: false,
             write: true,
             refreshOnly: false,
-        ));
+        );
 
         self::assertMatchesRegularExpression(
             '/\| done\s+\|\s+1\s+\|/',
@@ -247,20 +228,14 @@ final class FixtureGeneratorTest extends TestCase
         file_put_contents($fixtures . '/source/new.phpt', "new\n");
         file_put_contents($fixtures . '/source/ran.diff', "diff\n");
 
-        $this->generator()->generate(new FixtureGenerationOptions(
-            sourceRoot: PhpSrcRoot::fromPath($phpSrc)->path,
-            fixturesDir: $fixtures,
-            reportsDir: $reports,
-            paths: [],
-            excludedRoots: [
-                $fixtures,
-            ],
-            extensions: ['phpt'],
+        $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
             runner: new NoopFixtureRewriteRunner(),
-            sourceDirty: false,
             write: true,
             refreshOnly: false,
-        ));
+        );
 
         self::assertMatchesRegularExpression(
             '/\| open\s+\|\s+1\s+\|/',
@@ -284,21 +259,15 @@ final class FixtureGeneratorTest extends TestCase
         $this->writeSourcePhpt($phpSrc, 'a.phpt', 'echo $e->getMessage(), "\n";');
         $this->writeSourcePhpt($phpSrc, 'b.phpt', 'echo $e->getMessage(), "\n";');
 
-        $this->generator()->generate(new FixtureGenerationOptions(
-            sourceRoot: $phpSrc,
-            fixturesDir: $fixtures,
-            reportsDir: $reports,
-            paths: [],
-            excludedRoots: [
-                $fixtures,
-            ],
-            extensions: ['phpt'],
+        $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
             runner: new SelectiveOriginalRunner(unrunnableBasenames: ['a.phpt']),
-            sourceDirty: false,
             write: true,
             refreshOnly: false,
-            rewriteRoot: $runtime,
-        ));
+            runtime: $runtime,
+        );
 
         $oldFixtures = glob($fixtures . '/*/old.phpt');
 
@@ -325,21 +294,15 @@ final class FixtureGeneratorTest extends TestCase
         $this->writeSourcePhpt($phpSrc, 'a.phpt', $statement);
         $this->writeManualPhpt($fixtures, 'manual_001', $statement);
 
-        $this->generator()->generate(new FixtureGenerationOptions(
-            sourceRoot: $phpSrc,
-            fixturesDir: $fixtures,
-            reportsDir: $reports,
-            paths: [],
-            excludedRoots: [
-                $fixtures,
-            ],
-            extensions: ['phpt'],
+        $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
             runner: new SelectiveOriginalRunner(unrunnableBasenames: ['a.phpt']),
-            sourceDirty: false,
             write: true,
             refreshOnly: false,
-            rewriteRoot: $runtime,
-        ));
+            runtime: $runtime,
+        );
 
         self::assertFileExists($fixtures . '/manual_001/old.phpt');
         self::assertStringContainsString('manual_001/old.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
@@ -363,21 +326,16 @@ final class FixtureGeneratorTest extends TestCase
         $this->writeSourcePhptWithExpected($phpSrc, 'dead.phpt', [$statement], "redirect followed\n");
         $this->writeSourcePhptWithExpected($phpSrc, 'live.phpt', [$statement], "SoapFault: broken\n");
 
-        $this->exceptionOutputGenerator()->generate(new FixtureGenerationOptions(
-            sourceRoot: $phpSrc,
-            fixturesDir: $fixtures,
-            reportsDir: $reports,
-            paths: [],
-            excludedRoots: [
-                $fixtures,
-            ],
-            extensions: ['phpt'],
+        $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
             runner: new SelectiveOriginalRunner(unrunnableBasenames: []),
-            sourceDirty: false,
             write: true,
             refreshOnly: false,
-            rewriteRoot: $runtime,
-        ));
+            runtime: $runtime,
+            sourceVerifier: new SourceVerifier(),
+        );
 
         $oldFixtures = glob($fixtures . '/*/old.phpt');
 
@@ -460,21 +418,120 @@ final class FixtureGeneratorTest extends TestCase
         return $root;
     }
 
-    private function generator(): FixtureGenerator
-    {
-        return new FixtureGenerator(
-            scanner: new Scanner(),
-            reports: new FixtureReportWriter(),
-        );
+    private function generateOne(
+        string $phpSrc,
+        string $fixtures,
+        string $reports,
+        FixtureRewriteRunner $runner,
+        bool $write,
+        bool $refreshOnly,
+        ?string $runtime = null,
+        bool $allowDirty = true,
+        ?FixtureReporter $reporter = null,
+        ?FixtureSourceVerifier $sourceVerifier = null,
+    ): FixtureGenerationResult {
+        $runtime ??= $phpSrc;
+        $this->ensurePhpSrcRoot($phpSrc);
+        $this->ensurePhpSrcRoot($runtime);
+
+        $result = $this->generator()->generate(new FixtureGenerationOptions(
+            phpSrcRoot: PhpSrcRoot::fromPath($phpSrc),
+            phpTestRuntimeRoot: PhpSrcRoot::fromPath($runtime),
+            fixturesRoot: $fixtures,
+            reportsRoot: $reports,
+            paths: [],
+            allowDirty: $allowDirty,
+            write: $write,
+            refreshOnly: $refreshOnly,
+        ), [
+            new TestFixtureDiscovery(
+                runner: $runner,
+                reporter: $reporter ?? new FixtureReportWriter(),
+                sourceVerifier: $sourceVerifier ?? new FixtureSourceRunVerifier(),
+            ),
+        ]);
+
+        self::assertCount(1, $result->runs);
+
+        return $result->runs[0]->result;
     }
 
-    private function exceptionOutputGenerator(): FixtureGenerator
+    private function ensurePhpSrcRoot(string $root): void
     {
-        return new FixtureGenerator(
-            scanner: new Scanner(),
-            reports: new FixtureReportWriter(),
-            sourceVerifier: new SourceVerifier(),
-        );
+        if (!is_file($root . '/run-tests.php')) {
+            file_put_contents($root . '/run-tests.php', '<?php');
+        }
+    }
+
+    private function markGitDirty(string $root): void
+    {
+        $this->ensurePhpSrcRoot($root);
+        exec('git -C ' . escapeshellarg($root) . ' init --quiet');
+    }
+
+    private function generator(): FixtureGenerator
+    {
+        return new FixtureGenerator();
+    }
+}
+
+final readonly class TestFixtureDiscovery implements FixtureDiscovery
+{
+    public function __construct(
+        private FixtureRewriteRunner $runner,
+        private FixtureReporter $reporter,
+        private FixtureSourceVerifier $sourceVerifier,
+        private CandidateCollector $candidates = new CandidateCollector(),
+    ) {}
+
+    public function fixerName(): string
+    {
+        return 'exception-output';
+    }
+
+    public function sourceExtensions(): array
+    {
+        return ['phpt'];
+    }
+
+    public function fixturesDir(string $fixturesRoot): string
+    {
+        return $fixturesRoot;
+    }
+
+    public function reportsDir(string $reportsRoot): string
+    {
+        return $reportsRoot;
+    }
+
+    public function candidates(SourceFile $source): array
+    {
+        return $this->candidates->collect($source);
+    }
+
+    public function reporter(): FixtureReporter
+    {
+        return $this->reporter;
+    }
+
+    public function sourceVerifier(): FixtureSourceVerifier
+    {
+        return $this->sourceVerifier;
+    }
+
+    public function checkRuntime(ConsoleIo $io): bool
+    {
+        return true;
+    }
+
+    public function requiresPhpTestRuntime(): bool
+    {
+        return true;
+    }
+
+    public function rewriteRunner(PhpSrcRoot $phpTestRuntimeRoot): FixtureRewriteRunner
+    {
+        return $this->runner;
     }
 }
 

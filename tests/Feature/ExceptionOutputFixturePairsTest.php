@@ -6,7 +6,7 @@ namespace Tests\Feature;
 
 use InternalsCS\Console\Application;
 use InternalsCS\Console\ConsoleIo;
-use InternalsCS\FinalNewline;
+use InternalsCS\Fixers\FinalNewline\FinalNewline;
 use InternalsCS\Support\UnifiedDiff;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

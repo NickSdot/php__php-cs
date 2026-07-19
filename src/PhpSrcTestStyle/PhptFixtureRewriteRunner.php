@@ -13,10 +13,12 @@ final readonly class PhptFixtureRewriteRunner implements FixtureRewriteRunner, F
 {
     private FixerRunner $runner;
 
+    /** @param list<class-string<\InternalsCS\Fixer>>|null $fixerClasses */
     public function __construct(
         private string $phpSrcDir,
+        ?array $fixerClasses = null,
     ) {
-        $this->runner = new FixerRunner($phpSrcDir, new FixerRegistry()->all());
+        $this->runner = new FixerRunner($phpSrcDir, $fixerClasses ?? new FixerRegistry()->all());
     }
 
     public function printFile(string $path): array

@@ -12,7 +12,7 @@ use function str_starts_with;
 
 final readonly class SourceFile
 {
-    private string $originalContents;
+    public string $contents;
 
     public function __construct(
         public string $path,
@@ -24,7 +24,7 @@ final readonly class SourceFile
             throw new \RuntimeException('Cannot read ' . $path);
         }
 
-        $this->originalContents = $contents;
+        $this->contents = $contents;
     }
 
     public function relativePath(): string
@@ -38,7 +38,7 @@ final readonly class SourceFile
 
     public function restoreOriginal(): void
     {
-        if (false === file_put_contents($this->path, $this->originalContents)) {
+        if (false === file_put_contents($this->path, $this->contents)) {
             throw new \RuntimeException('Cannot restore ' . $this->path);
         }
     }

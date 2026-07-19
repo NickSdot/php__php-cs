@@ -10,21 +10,23 @@ final readonly class FixtureSourceRunVerifier implements FixtureSourceVerifier
         private FixtureSourceContext $sourceContext = new FixtureSourceContext(),
     ) {}
 
-    public function canSelect(FixtureSource $source, FixtureGenerationOptions $options): bool
-    {
-        if (null === $options->rewriteRoot) {
+    public function canSelect(
+        FixtureSource $source,
+        FixtureSourceVerification $verification,
+    ): bool {
+        if (null === $verification->rewriteRoot) {
             return true;
         }
 
-        if (!$options->runner instanceof FixtureOriginalRunner) {
+        if (!$verification->runner instanceof FixtureOriginalRunner) {
             return true;
         }
 
-        $rewritePath = $options->rewriteRoot . DIRECTORY_SEPARATOR . $source->relativePath;
+        $rewritePath = $verification->rewriteRoot . DIRECTORY_SEPARATOR . $source->relativePath;
         $result = $this->sourceContext->run(
             sourcePath: $source->sourcePath,
             rewritePath: $rewritePath,
-            run: fn(string $path): array => $options->runner->runOriginalFile($path),
+            run: fn(string $path): array => $verification->runner->runOriginalFile($path),
         );
 
         return $result['passed'];

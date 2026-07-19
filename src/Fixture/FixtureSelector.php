@@ -76,7 +76,7 @@ final readonly class FixtureSelector
         array &$rejectedSources,
     ): ?FixtureSource {
         foreach ($candidates as $candidate) {
-            $relativePath = $candidate->relativePath();
+            $relativePath = $candidate->relativePath;
 
             if (isset($rejectedSources[$relativePath])) {
                 continue;
@@ -112,7 +112,7 @@ final readonly class FixtureSelector
         $groups = [];
 
         foreach ($candidates as $candidate) {
-            $groups[$candidate->relativePath()][] = $candidate;
+            $groups[$candidate->relativePath][] = $candidate;
         }
 
         return $groups;
@@ -128,7 +128,7 @@ final readonly class FixtureSelector
         $groups = [];
 
         foreach ($candidates as $candidate) {
-            $groups[$candidate->fixtureKey()][] = $candidate;
+            $groups[$candidate->fixtureKey][] = $candidate;
         }
 
         return $groups;

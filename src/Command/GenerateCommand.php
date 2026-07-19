@@ -6,16 +6,18 @@ namespace InternalsCS\Command;
 
 use InternalsCS\Console\Command;
 use InternalsCS\Console\ConsoleIo;
+use InternalsCS\Fixers\ExceptionOutput\ExceptionOutputFixtureDiscovery;
+use InternalsCS\Fixers\FinalNewline\FinalNewlineFixtureDiscovery;
+use InternalsCS\Fixture\FixtureDiscovery;
 use InternalsCS\Fixture\FixtureGenerationOptions;
+use InternalsCS\Fixture\FixtureGenerator;
 use InternalsCS\PhpSrc\PhpBuild;
 use InternalsCS\PhpSrc\PhpBuildPaths;
 use InternalsCS\PhpSrc\PhpSrcRoot;
-use InternalsCS\PhpSrcTestStyle\ExceptionOutput\FixtureGenerationTarget as ExceptionOutputFixtureTarget;
-use InternalsCS\Support\GitStatus;
 use InternalsCS\Support\Paths;
 
-use function array_find;
-use function array_slice;
+use function array_all;
+use function array_any;
 use function count;
 use function dirname;
 use function getcwd;
@@ -25,14 +27,16 @@ use function str_starts_with;
 
 final readonly class GenerateCommand implements Command
 {
-    /** @param list<GenerateTarget> $targets */
+    /** @param list<FixtureDiscovery> $discoveries */
     public function __construct(
-        private array $targets = [
-            new ExceptionOutputFixtureTarget(),
+        private array $discoveries = [
+            new ExceptionOutputFixtureDiscovery(),
+            new FinalNewlineFixtureDiscovery(),
         ],
         private Paths $paths = new Paths(),
+        private FixtureGenerator $generator = new FixtureGenerator(),
+        private GenerateRunPrinter $printer = new GenerateRunPrinter(),
         private PhpBuild $phpBuild = new PhpBuild(),
-        private GitStatus $git = new GitStatus(),
     ) {}
 
     public function run(string $script, array $args, ConsoleIo $io): int
@@ -42,34 +46,23 @@ final readonly class GenerateCommand implements Command
             return 0;
         }
 
-        $targetName = $this->targetName($args);
-        $target = null === $targetName
-            ? $this->defaultTarget()
-            : $this->target($targetName);
-
-        if (null === $target) {
-            $io->err('Unknown generate target: ' . $targetName . "\n");
-            $this->usage($script, $io);
-            return 2;
-        }
-
-        if (!$target->checkRuntime($io)) {
-            return 2;
-        }
-
         try {
-            $options = $this->options($this->targetArgs($args), $target);
+            $options = $this->options($args);
         } catch (CommandExit $exit) {
-            $this->targetUsage($script, $target, $targetName, $io);
+            $this->usage($script, $io);
             return $exit->exitCode;
         } catch (\Throwable $e) {
             $io->err($e->getMessage() . "\n");
             return 2;
         }
 
+        if (!$this->checkRuntime($io)) {
+            return 2;
+        }
+
         $phpTestRuntimeRoot = $options->phpSrcRoot;
 
-        if ($options->write && $target->requiresPhpTestRuntime()) {
+        if ($options->write && $this->requiresPhpTestRuntime()) {
             try {
                 $phpTestRuntimeRoot = $this->phpBuild->ensure(
                     root: $options->phpSrcRoot,
@@ -85,29 +78,34 @@ final readonly class GenerateCommand implements Command
 
         $options = $options->withPhpTestRuntimeRoot($phpTestRuntimeRoot);
 
-        $sourceDirty = !$options->allowDirty && $this->git->isDirty($options->phpSrcRoot->path);
-
-        $result = $target->generator()->generate(new FixtureGenerationOptions(
-            sourceRoot: $options->phpSrcRoot->path,
-            fixturesDir: $options->fixturesDir,
-            reportsDir: $options->reportsDir,
+        $result = $this->generator->generate(new FixtureGenerationOptions(
+            phpSrcRoot: $options->phpSrcRoot,
+            phpTestRuntimeRoot: $options->phpTestRuntimeRoot,
+            fixturesRoot: $options->fixturesRoot,
+            reportsRoot: $options->reportsRoot,
             paths: $options->paths,
-            excludedRoots: [
-                $options->fixturesDir,
-            ],
-            extensions: $target->sourceExtensions(),
-            runner: $target->rewriteRunner($options),
-            sourceDirty: $sourceDirty,
+            allowDirty: $options->allowDirty,
             write: $options->write,
             refreshOnly: $options->refreshOnly,
-            rewriteRoot: $options->phpTestRuntimeRoot->path,
-        ));
+        ), $this->discoveries);
 
-        return $target->printResult($result, $io);
+        if ($result->sourceFiles > 0) {
+            $io->out('Scanned ' . $result->sourceFiles . " source files once\n\n");
+        }
+
+        foreach ($result->runs as $run) {
+            $this->printer->print($run, $io);
+        }
+
+        if (null !== $result->reportPath) {
+            $io->out('Report: ' . $this->paths->relative($result->reportPath, $this->toolRoot()) . "\n");
+        }
+
+        return $result->failed() ? 1 : 0;
     }
 
     /** @param list<string> $args */
-    private function options(array $args, GenerateTarget $target): GenerateOptions
+    private function options(array $args): GenerateOptions
     {
         $workingDir = getcwd();
 
@@ -116,8 +114,8 @@ final readonly class GenerateCommand implements Command
         }
 
         $phpSrcDir = null;
-        $fixturesDir = $target->defaultFixturesDir($this->toolRoot());
-        $reportsDir = $target->defaultReportsDir($this->toolRoot());
+        $fixturesRoot = $this->toolRoot() . '/tests/Fixtures';
+        $reportsRoot = $this->toolRoot() . '/reports';
         $allowDirty = false;
         $write = false;
         $forcePhpBinaryRebuild = false;
@@ -162,32 +160,36 @@ final readonly class GenerateCommand implements Command
             }
 
             if ('--fixtures-dir' === $arg) {
-                $fixturesDir = $this->value($args, ++$i, '--fixtures-dir');
+                $fixturesRoot = $this->value($args, ++$i, '--fixtures-dir');
                 continue;
             }
 
             if (str_starts_with($arg, '--fixtures-dir=')) {
-                $fixturesDir = mb_substr($arg, mb_strlen('--fixtures-dir='));
+                $fixturesRoot = mb_substr($arg, mb_strlen('--fixtures-dir='));
                 continue;
             }
 
             if ('--output-dir' === $arg || '--reports-dir' === $arg) {
-                $reportsDir = $this->value($args, ++$i, $arg);
+                $reportsRoot = $this->value($args, ++$i, $arg);
                 continue;
             }
 
             if (str_starts_with($arg, '--output-dir=')) {
-                $reportsDir = mb_substr($arg, mb_strlen('--output-dir='));
+                $reportsRoot = mb_substr($arg, mb_strlen('--output-dir='));
                 continue;
             }
 
             if (str_starts_with($arg, '--reports-dir=')) {
-                $reportsDir = mb_substr($arg, mb_strlen('--reports-dir='));
+                $reportsRoot = mb_substr($arg, mb_strlen('--reports-dir='));
                 continue;
             }
 
             if (str_starts_with($arg, '-')) {
                 throw new CommandFailure('Unknown option: ' . $arg);
+            }
+
+            if ($this->isFixerName($arg)) {
+                throw new CommandFailure('generate scans all fixers; pass php-src paths, not fixer names: ' . $arg);
             }
 
             $paths[] = $arg;
@@ -200,8 +202,8 @@ final readonly class GenerateCommand implements Command
         return new GenerateOptions(
             phpSrcRoot: PhpSrcRoot::fromPath($phpSrcDir),
             phpTestRuntimeRoot: PhpSrcRoot::fromPath($phpSrcDir),
-            fixturesDir: $this->paths->absolute($fixturesDir, $workingDir),
-            reportsDir: $this->paths->absolute($reportsDir, $workingDir),
+            fixturesRoot: $this->paths->absolute($fixturesRoot, $workingDir),
+            reportsRoot: $this->paths->absolute($reportsRoot, $workingDir),
             paths: $paths,
             allowDirty: $allowDirty,
             write: $write,
@@ -217,37 +219,6 @@ final readonly class GenerateCommand implements Command
     }
 
     /** @param list<string> $args */
-    private function targetName(array $args): ?string
-    {
-        $first = $args[0] ?? null;
-
-        if (null === $first || str_starts_with($first, '-')) {
-            return null;
-        }
-
-        return $first;
-    }
-
-    /**
-     * @param list<string> $args
-     * @return list<string>
-     */
-    private function targetArgs(array $args): array
-    {
-        return null === $this->targetName($args) ? $args : array_slice($args, 1);
-    }
-
-    private function defaultTarget(): GenerateTarget
-    {
-        return $this->targets[0];
-    }
-
-    private function target(string $name): ?GenerateTarget
-    {
-        return array_find($this->targets, fn($target) => $target->name() === $name);
-    }
-
-    /** @param list<string> $args */
     private function value(array $args, int $index, string $option): string
     {
         return $args[$index] ?? throw new CommandFailure($option . ' requires a value');
@@ -255,25 +226,23 @@ final readonly class GenerateCommand implements Command
 
     private function usage(string $script, ConsoleIo $io): void
     {
-        $io->out("Usage: php bin/$script [target] [options]\n");
-        $io->out("\n");
-        $io->out("Targets:\n");
-
-        foreach ($this->targets as $target) {
-            $io->out('  ' . $target->name() . '  ' . $target->description() . "\n");
-        }
-
-        $io->out("\n");
-        $io->out("Omitting target uses " . $this->defaultTarget()->name() . ".\n");
-        $io->out("Run php bin/$script <target> --help for generator options.\n");
+        $io->out("Usage: php bin/$script --php-src-dir dir [--write] [--refresh-only] [--fixtures-dir dir] [--reports-dir dir] [--allow-dirty] [--force-php-binary-rebuild] [path ...]\n");
+        $io->out("Generates fixture coverage for every fixer. Writes only with --write.\n");
     }
 
-    private function targetUsage(string $script, GenerateTarget $target, ?string $targetName, ConsoleIo $io): void
+    private function checkRuntime(ConsoleIo $io): bool
     {
-        $targetScript = null === $targetName ? $script : $script . ' ' . $target->name();
+        return array_all($this->discoveries, fn(FixtureDiscovery $discovery): bool => $discovery->checkRuntime($io));
+    }
 
-        $io->out("Usage: php bin/$targetScript --php-src-dir dir [--write] [--refresh-only] [--fixtures-dir dir] [--reports-dir dir] [--allow-dirty] [--force-php-binary-rebuild] [path ...]\n");
-        $io->out($target->description() . ". Writes only with --write.\n");
+    private function requiresPhpTestRuntime(): bool
+    {
+        return array_any($this->discoveries, fn(FixtureDiscovery $discovery): bool => $discovery->requiresPhpTestRuntime());
+    }
+
+    private function isFixerName(string $arg): bool
+    {
+        return array_any($this->discoveries, fn(FixtureDiscovery $discovery): bool => $discovery->fixerName() === $arg);
     }
 
     private function toolRoot(): string

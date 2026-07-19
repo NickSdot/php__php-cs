@@ -4,24 +4,19 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixture;
 
+use InternalsCS\PhpSrc\PhpSrcRoot;
+
 final readonly class FixtureGenerationOptions
 {
-    /**
-     * @param list<string> $paths
-     * @param list<string> $excludedRoots
-     * @param list<string> $extensions
-     */
+    /** @param list<string> $paths */
     public function __construct(
-        public string $sourceRoot,
-        public string $fixturesDir,
-        public string $reportsDir,
+        public PhpSrcRoot $phpSrcRoot,
+        public PhpSrcRoot $phpTestRuntimeRoot,
+        public string $fixturesRoot,
+        public string $reportsRoot,
         public array $paths,
-        public array $excludedRoots,
-        public array $extensions,
-        public FixtureRewriteRunner $runner,
-        public bool $sourceDirty,
+        public bool $allowDirty,
         public bool $write,
         public bool $refreshOnly,
-        public ?string $rewriteRoot = null,
     ) {}
 }

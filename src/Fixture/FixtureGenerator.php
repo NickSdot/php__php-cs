@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixture;
 
+use InternalsCS\SourceFile;
 use InternalsCS\SourceFinder;
+use InternalsCS\Support\GitStatus;
 
-use function array_push;
+use function array_fill_keys;
+use function array_keys;
 use function count;
 use function glob;
 use function is_dir;
@@ -14,148 +17,291 @@ use function is_dir;
 final readonly class FixtureGenerator
 {
     public function __construct(
-        private FixtureScanner $scanner,
-        private FixtureReporter $reports,
-        private SourceFinder $finder = new SourceFinder(),
+        private SourceFinder $sourceFinder = new SourceFinder(),
         private FixtureSelector $selector = new FixtureSelector(),
         private FixtureWriter $writer = new FixtureWriter(),
         private FixtureValidator $validator = new FixtureValidator(),
         private FixtureCaseName $caseName = new FixtureCaseName(),
-        private FixtureSourceVerifier $sourceVerifier = new FixtureSourceRunVerifier(),
+        private FixtureGenerationRunReporter $reports = new FixtureGenerationRunReporter(),
+        private GitStatus $git = new GitStatus(),
     ) {}
 
-    public function generate(FixtureGenerationOptions $options): FixtureGenerationResult
+    /** @param list<FixtureDiscovery> $discoveries */
+    public function generate(FixtureGenerationOptions $options, array $discoveries): FixtureGenerationSummary
+    {
+        $sourceDirty = !$options->allowDirty && $this->git->isDirty($options->phpSrcRoot->path);
+        $sourceFiles = $sourceDirty ? [] : $this->sourceFiles($options, $discoveries);
+        $candidatesByFixer = $sourceDirty
+            ? $this->emptyCandidateMap($discoveries)
+            : $this->candidatesByFixer($discoveries, $sourceFiles, $options->fixturesRoot);
+        $sourceFileCount = count($sourceFiles);
+        $runs = [];
+
+        foreach ($discoveries as $discovery) {
+            $job = new FixtureGenerationJob(
+                discovery: $discovery,
+                sourceDirty: $sourceDirty,
+                options: $options,
+                sourceFileCount: $sourceFileCount,
+                candidates: $candidatesByFixer[$discovery->fixerName()],
+            );
+
+            $runs[] = new FixtureGenerationRun(
+                fixer: $job->fixer,
+                fixturesDir: $job->fixturesDir,
+                reportsDir: $job->reportsDir,
+                result: $this->generateFixtures($job),
+            );
+        }
+
+        $reportPath = null;
+
+        if ($options->write) {
+            $reportPath = $options->reportsRoot . '/fixture_generation.md';
+            $this->reports->write($options->reportsRoot, $runs, $sourceFileCount);
+        }
+
+        return new FixtureGenerationSummary(
+            sourceFiles: $sourceFileCount,
+            runs: $runs,
+            reportPath: $reportPath,
+        );
+    }
+
+    /**
+     * @param list<FixtureDiscovery> $discoveries
+     * @return list<SourceFile>
+     */
+    private function sourceFiles(FixtureGenerationOptions $options, array $discoveries): array
+    {
+        $paths = $this->sourceFinder->find(
+            rootDir: $options->phpSrcRoot->path,
+            scanPaths: $options->paths,
+            excludedRoots: [
+                $options->fixturesRoot,
+            ],
+            extensions: $this->sourceExtensions($discoveries),
+        );
+
+        $files = [];
+
+        foreach ($paths as $path) {
+            $files[] = new SourceFile($path, $options->phpSrcRoot->path);
+        }
+
+        return $files;
+    }
+
+    /**
+     * @param list<FixtureDiscovery> $discoveries
+     * @param list<SourceFile> $sourceFiles
+     * @return array<string, list<FixtureCandidate>>
+     */
+    private function candidatesByFixer(array $discoveries, array $sourceFiles, string $fixturesRoot): array
+    {
+        $candidates = $this->emptyCandidateMap($discoveries);
+
+        foreach ($sourceFiles as $sourceFile) {
+            foreach ($discoveries as $discovery) {
+                foreach ($discovery->candidates($sourceFile) as $candidate) {
+                    $candidates[$discovery->fixerName()][] = $candidate;
+                }
+            }
+        }
+
+        foreach ($discoveries as $discovery) {
+            foreach ($this->manualSources($discovery, $fixturesRoot) as $manualSource) {
+                foreach ($discovery->candidates($manualSource) as $candidate) {
+                    $candidates[$discovery->fixerName()][] = $candidate;
+                }
+            }
+        }
+
+        return $candidates;
+    }
+
+    /**
+     * @param list<FixtureDiscovery> $discoveries
+     * @return array<string, list<FixtureCandidate>>
+     */
+    private function emptyCandidateMap(array $discoveries): array
+    {
+        return array_fill_keys($this->fixerNames($discoveries), []);
+    }
+
+    /**
+     * @param list<FixtureDiscovery> $discoveries
+     * @return list<string>
+     */
+    private function fixerNames(array $discoveries): array
+    {
+        $names = [];
+
+        foreach ($discoveries as $discovery) {
+            $names[$discovery->fixerName()] = true;
+        }
+
+        return array_keys($names);
+    }
+
+    /** @return list<SourceFile> */
+    private function manualSources(FixtureDiscovery $discovery, string $fixturesRoot): array
+    {
+        $fixturesDir = $discovery->fixturesDir($fixturesRoot);
+
+        if (!is_dir($fixturesDir)) {
+            return [];
+        }
+
+        $files = glob($fixturesDir . '/manual_*/old.phpt');
+
+        if (false === $files) {
+            return [];
+        }
+
+        $sources = [];
+
+        foreach ($files as $file) {
+            $sources[] = new SourceFile($file, $fixturesDir);
+        }
+
+        return $sources;
+    }
+
+    /**
+     * @param list<FixtureDiscovery> $discoveries
+     * @return list<string>
+     */
+    private function sourceExtensions(array $discoveries): array
+    {
+        $extensions = [];
+
+        foreach ($discoveries as $discovery) {
+            $discoveryExtensions = $discovery->sourceExtensions();
+
+            if ([] === $discoveryExtensions) {
+                return [];
+            }
+
+            foreach ($discoveryExtensions as $extension) {
+                $extensions[] = $extension;
+            }
+        }
+
+        return $this->sourceFinder->normaliseExtensions($extensions);
+    }
+
+    private function generateFixtures(FixtureGenerationJob $job): FixtureGenerationResult
     {
         $result = new FixtureGenerationResult();
-        $result->dryRun = !$options->write;
+        $result->dryRun = !$job->write;
 
-        if ($options->refreshOnly) {
-            return $this->refreshOnly($result, $options);
+        if ($job->refreshOnly) {
+            return $this->refreshOnly($result, $job);
         }
 
-        if ($options->sourceDirty) {
-            return $this->dirtySource($result, $options);
+        if ($job->sourceDirty) {
+            return $this->dirtySource($result, $job);
         }
 
-        $selection = $this->scan($result, $options);
+        $selection = $this->select($result, $job);
 
-        if (!$options->write) {
+        if (!$job->write) {
             return $result;
         }
 
         $writeResults = [];
 
         foreach ($selection->fixtures as $fixture) {
-            $write = $this->writer->write($fixture, $options->fixturesDir);
-            $writeResults[$fixture->relativePath] = $write;
+            $writeResult = $this->writer->write($fixture, $job->fixturesDir);
+            $writeResults[$fixture->relativePath] = $writeResult;
 
-            if (null !== $write->failure && !$write->oldOnly) {
-                $result->fail($fixture->relativePath . ': ' . $write->failure);
+            if (null !== $writeResult->failure && !$writeResult->oldOnly) {
+                $result->fail($fixture->relativePath . ': ' . $writeResult->failure);
                 continue;
             }
 
-            $result->createdOld += $write->createdOld ? 1 : 0;
-            $result->updatedPairs += $write->updatedNew ? 1 : 0;
-            $result->verifiedPairs += $write->verifiedPair ? 1 : 0;
-            $result->oldOnly += $write->oldOnly ? 1 : 0;
+            $result->createdOld += $writeResult->createdOld ? 1 : 0;
+            $result->updatedPairs += $writeResult->updatedNew ? 1 : 0;
+            $result->verifiedPairs += $writeResult->verifiedPair ? 1 : 0;
+            $result->oldOnly += $writeResult->oldOnly ? 1 : 0;
         }
 
-        $this->refreshFixtures($result, $options, $selection);
-
-        $this->writeDiscoveryReports($result, $options, $selection, $writeResults);
+        $this->refreshFixtures($result, $job, $selection);
+        $this->writeDiscoveryReports($result, $job, $selection, $writeResults);
 
         return $result;
     }
 
-    private function refreshOnly(FixtureGenerationResult $result, FixtureGenerationOptions $options): FixtureGenerationResult
+    private function refreshOnly(FixtureGenerationResult $result, FixtureGenerationJob $job): FixtureGenerationResult
     {
         $result->refreshOnly = true;
 
-        if (!$options->write) {
+        if (!$job->write) {
             return $result;
         }
 
-        if ($options->sourceDirty) {
-            $this->refreshFixtures($result, $options);
+        if ($job->sourceDirty) {
+            $this->refreshFixtures($result, $job);
             $result->warn('source checkout is dirty; skipped source report recomputation during refresh-only run');
-            $this->reports->writeRefresh($options->reportsDir, $options->fixturesDir, $result);
+            $this->writeRefreshReport($result, $job);
             return $result;
         }
 
-        $selection = $this->scan($result, $options);
-        $this->refreshFixtures($result, $options, $selection);
-        $this->writeDiscoveryReports($result, $options, $selection, []);
+        $selection = $this->select($result, $job);
+
+        $this->refreshFixtures($result, $job, $selection);
+        $this->writeDiscoveryReports($result, $job, $selection, []);
 
         return $result;
     }
 
-    private function dirtySource(FixtureGenerationResult $result, FixtureGenerationOptions $options): FixtureGenerationResult
+    private function dirtySource(FixtureGenerationResult $result, FixtureGenerationJob $job): FixtureGenerationResult
     {
         $result->refreshOnly = true;
         $result->warn('source checkout is dirty; skipped source discovery and old.phpt import; pass --allow-dirty to generate from dirty source');
 
-        if (!$options->write) {
+        if (!$job->write) {
             return $result;
         }
 
-        $this->refreshFixtures($result, $options);
-        $this->reports->writeRefresh($options->reportsDir, $options->fixturesDir, $result);
+        $this->refreshFixtures($result, $job, null, withSourceContext: false);
+        $this->writeRefreshReport($result, $job);
 
         return $result;
     }
 
-    private function scan(FixtureGenerationResult $result, FixtureGenerationOptions $options): FixtureSelection
+    private function select(FixtureGenerationResult $result, FixtureGenerationJob $job): FixtureSelection
     {
-        $files = $this->finder->find(
-            rootDir: $options->sourceRoot,
-            scanPaths: $options->paths,
-            excludedRoots: $options->excludedRoots,
-            extensions: $options->extensions,
+        $selection = $this->selector->select(
+            candidates: $job->candidates,
+            canSelect: $this->sourceFilter($job),
         );
-        $candidates = $this->scanner->scan($files, $options->sourceRoot);
-        array_push($candidates, ...$this->manualCandidates($options));
 
-        $selection = $this->selector->select($candidates, $this->sourceFilter($options));
-
-        $result->scannedFiles = count($files);
-        $result->candidateFiles = $this->candidateFileCount($candidates);
-        $result->candidateWindows = count($candidates);
+        $result->scannedFiles = $job->sourceFileCount;
+        $result->candidateFiles = $this->candidateFileCount($job->candidates);
+        $result->candidateWindows = count($job->candidates);
         $result->candidateFlavours = $selection->flavourCount();
-        $result->duplicateCandidates = $selection->duplicateCandidateWindows(count($candidates));
+        $result->duplicateCandidates = $selection->duplicateCandidateWindows(count($job->candidates));
         $result->selectedFixtures = $selection->fixtureCount();
 
         return $selection;
     }
 
-    /** @return list<FixtureCandidate> */
-    private function manualCandidates(FixtureGenerationOptions $options): array
-    {
-        if (!is_dir($options->fixturesDir)) {
-            return [];
-        }
-
-        $files = glob($options->fixturesDir . '/manual_*/old.phpt');
-
-        if (false === $files) {
-            return [];
-        }
-
-        return $this->scanner->scan($files, $options->fixturesDir);
-    }
-
     private function refreshFixtures(
         FixtureGenerationResult $result,
-        FixtureGenerationOptions $options,
+        FixtureGenerationJob $job,
         ?FixtureSelection $selection = null,
+        bool $withSourceContext = true,
     ): void {
         $validation = $this->validator->validate(new FixtureValidationOptions(
-            fixturesDir: $options->fixturesDir,
+            fixturesDir: $job->fixturesDir,
             cases: [],
-            runner: $options->runner,
+            runner: $job->runner,
             update: true,
             failFast: false,
             refreshPairs: true,
-            rewritePathsByCase: $this->rewritePathsByCase($selection, $options),
+            rewritePathsByCase: $withSourceContext ? $this->rewritePathsByCase($selection, $job->rewriteRoot) : [],
         ));
 
         foreach ($validation->failures as $failure) {
@@ -172,16 +318,16 @@ final readonly class FixtureGenerator
     }
 
     /** @return array<string, string> */
-    private function rewritePathsByCase(?FixtureSelection $selection, FixtureGenerationOptions $options): array
+    private function rewritePathsByCase(?FixtureSelection $selection, ?string $rewriteRoot): array
     {
-        if (null === $selection || null === $options->rewriteRoot) {
+        if (null === $selection || null === $rewriteRoot) {
             return [];
         }
 
         $paths = [];
 
         foreach ($selection->fixtures as $fixture) {
-            $paths[$this->caseName->fromFixtureSource($fixture)] = $options->rewriteRoot
+            $paths[$this->caseName->fromFixtureSource($fixture)] = $rewriteRoot
                 . DIRECTORY_SEPARATOR
                 . $fixture->relativePath;
         }
@@ -192,12 +338,25 @@ final readonly class FixtureGenerator
     /** @param array<string, FixtureWriteResult> $writeResults */
     private function writeDiscoveryReports(
         FixtureGenerationResult $result,
-        FixtureGenerationOptions $options,
+        FixtureGenerationJob $job,
         FixtureSelection $selection,
         array $writeResults,
     ): void {
-        $this->reports->write($options->reportsDir, $options->fixturesDir, $result, $selection, $writeResults);
+        if (null === $job->reporter || null === $job->reportsDir) {
+            return;
+        }
+
+        $job->reporter->write($job->reportsDir, $job->fixturesDir, $result, $selection, $writeResults);
         $result->discoveryReportsWritten = true;
+    }
+
+    private function writeRefreshReport(FixtureGenerationResult $result, FixtureGenerationJob $job): void
+    {
+        if (null === $job->reporter || null === $job->reportsDir) {
+            return;
+        }
+
+        $job->reporter->writeRefresh($job->reportsDir, $job->fixturesDir, $result);
     }
 
     /** @param list<FixtureCandidate> $candidates */
@@ -206,23 +365,32 @@ final readonly class FixtureGenerator
         $files = [];
 
         foreach ($candidates as $candidate) {
-            $files[$candidate->relativePath()] = true;
+            $files[$candidate->relativePath] = true;
         }
 
         return count($files);
     }
 
     /** @return (callable(FixtureSource): bool)|null */
-    private function sourceFilter(FixtureGenerationOptions $options): ?callable
+    private function sourceFilter(FixtureGenerationJob $job): ?callable
     {
-        if (!$options->write) {
+        if (!$job->write) {
             return null;
         }
 
         $results = [];
+        $verifier = $job->discovery->sourceVerifier();
+        $verification = new FixtureSourceVerification(
+            fixturesDir: $job->fixturesDir,
+            runner: $job->runner,
+            rewriteRoot: $job->rewriteRoot,
+        );
 
-        return function (FixtureSource $source) use (&$results, $options): bool {
-            $results[$source->relativePath] ??= $this->sourceVerifier->canSelect($source, $options);
+        return function (FixtureSource $source) use (&$results, $verifier, $verification): bool {
+            $results[$source->relativePath] ??= $verifier->canSelect(
+                source: $source,
+                verification: $verification,
+            );
 
             return $results[$source->relativePath];
         };
