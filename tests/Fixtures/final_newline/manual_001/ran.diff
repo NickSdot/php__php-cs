@@ -1,0 +1,9 @@
+--- old.phpt
++++ new.phpt
+@@ -2,4 +2,4 @@
+ manual missing final newline
+ --FILE--
+ <?php
+---EXPECT--
+\ No newline at end of file
++--EXPECT--
