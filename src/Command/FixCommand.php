@@ -65,7 +65,7 @@ final readonly class FixCommand implements Command
             return 1;
         }
 
-        return $result->skipped() > 0 ? 1 : 0;
+        return 0;
     }
 
     /** @param list<string> $args */
