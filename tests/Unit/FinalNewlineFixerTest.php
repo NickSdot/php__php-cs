@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use InternalsCS\FixRunEntry;
+use InternalsCS\FixRunResult;
 use InternalsCS\FixerRunner;
 use InternalsCS\Fixers\FinalNewlineFixer;
 use PHPUnit\Framework\TestCase;
@@ -31,7 +33,9 @@ final class FinalNewlineFixerTest extends TestCase
 
         $result = $this->runFinalNewlineFixer($root, $path);
 
-        self::assertSame(['changed' => 1, 'failed' => 0], $result);
+        self::assertSame(1, $result->changed());
+        self::assertSame(0, $result->skipped());
+        self::assertSame(1, $result->fixed());
         self::assertSame("--TEST--\nmissing final newline\n--FILE--\n<?php\n--EXPECT--\nold\n", file_get_contents($path));
     }
 
@@ -55,8 +59,31 @@ final class FinalNewlineFixerTest extends TestCase
 
         $result = $this->runFinalNewlineFixer($root, $path);
 
-        self::assertSame(['changed' => 1, 'failed' => 1], $result);
+        self::assertSame(1, $result->changed());
+        self::assertSame(1, $result->skipped());
         self::assertSame("--TEST--\nunsafe final newline\n--FILE--\n<?php\n--EXPECT--", file_get_contents($path));
+    }
+
+    public function testReportsProgressThroughCallback(): void
+    {
+        $root = $this->rootWithRunTests(<<<'PHP'
+            <?php
+            echo "PASS ", $argv[\array_key_last($argv)], "\n";
+            PHP);
+        $path = $root . '/missing.phpt';
+        $progress = [];
+
+        file_put_contents($path, "--TEST--\nmissing final newline\n--FILE--\n<?php\n--EXPECT--\nold");
+
+        new FixerRunner($root, [FinalNewlineFixer::class])->run(
+            files: [$path],
+            check: false,
+            onEntry: static function (FixRunEntry $entry) use (&$progress): void {
+                $progress[] = $entry->consoleLine();
+            },
+        );
+
+        self::assertSame(['missing.phpt: final-newline (FILE line 6) fixed'], $progress);
     }
 
     private function rootWithRunTests(string $runTests): string
@@ -68,8 +95,7 @@ final class FinalNewlineFixerTest extends TestCase
         return $root;
     }
 
-    /** @return array{changed: int, failed: int} */
-    private function runFinalNewlineFixer(string $root, string $path): array
+    private function runFinalNewlineFixer(string $root, string $path): FixRunResult
     {
         ob_start();
 

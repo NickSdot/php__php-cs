@@ -7,6 +7,9 @@ namespace InternalsCS\Command;
 use InternalsCS\Console\Command;
 use InternalsCS\Console\ConsoleIo;
 use InternalsCS\Console\StderrConsoleIo;
+use InternalsCS\FixRunEntry;
+use InternalsCS\FixRunReportWriter;
+use InternalsCS\FixRunResult;
 use InternalsCS\FixerRegistry;
 use InternalsCS\FixerRunner;
 use InternalsCS\PhpSrc\PhpBuild;
@@ -28,6 +31,7 @@ final readonly class FixCommand implements Command
         private Paths $paths = new Paths(),
         private PhpBuild $phpBuild = new PhpBuild(),
         private FixerRegistry $fixers = new FixerRegistry(),
+        private FixRunReportWriter $reports = new FixRunReportWriter(),
     ) {}
 
     public function run(string $script, array $args, ConsoleIo $io): int
@@ -53,12 +57,15 @@ final readonly class FixCommand implements Command
         }
 
         $result = $this->runFixer($options, $io);
+        $reportPath = $this->writeRunReport($options, $result);
 
-        if ($options->check && $result['changed'] > 0) {
+        $io->out('Report: ' . $this->paths->relative($reportPath, $this->toolRoot()) . "\n");
+
+        if ($options->check && $result->changed() > 0) {
             return 1;
         }
 
-        return $result['failed'] > 0 ? 1 : 0;
+        return $result->skipped() > 0 ? 1 : 0;
     }
 
     /** @param list<string> $args */
@@ -145,13 +152,12 @@ final readonly class FixCommand implements Command
         );
     }
 
-    /** @return array{changed: int, failed: int} */
-    private function runFixer(FixOptions $options, ConsoleIo $io): array
+    private function runFixer(FixOptions $options, ConsoleIo $io): FixRunResult
     {
         if (!$options->check) {
             $this->phpBuild->ensure(
                 root: $options->phpSrcRoot,
-                paths: PhpBuildPaths::default(dirname(__DIR__, 2)),
+                paths: PhpBuildPaths::default($this->toolRoot()),
                 force: $options->forcePhpBinaryRebuild,
                 io: $io,
             );
@@ -160,7 +166,25 @@ final readonly class FixCommand implements Command
         $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses);
         $files = $runner->collectFiles($options->targets);
 
-        return $runner->run($files, $options->check);
+        return $runner->run(
+            files: $files,
+            check: $options->check,
+            onEntry: static function (FixRunEntry $entry) use ($io): void {
+                $io->out($entry->consoleLine() . "\n");
+            },
+        );
+    }
+
+    private function writeRunReport(FixOptions $options, FixRunResult $result): string
+    {
+        return $this->reports->write(
+            reportDir: $this->toolRoot() . '/var/fix-runs',
+            timestamp: new \DateTimeImmutable(),
+            phpSrcDir: $options->phpSrcRoot->path,
+            targets: $options->targets,
+            fixers: $this->fixerNames($options->fixerClasses),
+            result: $result,
+        );
     }
 
     /** @return array{changed: bool, failed: bool, output: string, failure: string|null} */
@@ -168,7 +192,7 @@ final readonly class FixCommand implements Command
     {
         $this->phpBuild->ensure(
             root: $options->phpSrcRoot,
-            paths: PhpBuildPaths::default(dirname(__DIR__, 2)),
+            paths: PhpBuildPaths::default($this->toolRoot()),
             force: $options->forcePhpBinaryRebuild,
             io: new StderrConsoleIo($io),
         );
@@ -176,6 +200,22 @@ final readonly class FixCommand implements Command
         $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses);
 
         return $runner->print($runner->collectFiles($options->targets));
+    }
+
+    /**
+     * @param list<class-string<\InternalsCS\Fixer>> $fixerClasses
+     * @return list<string>
+     */
+    private function fixerNames(array $fixerClasses): array
+    {
+        $names = [];
+
+        foreach ($fixerClasses as $fixerClass) {
+            $fixer = new $fixerClass();
+            $names[] = $fixer->name();
+        }
+
+        return $names;
     }
 
     /**
@@ -214,5 +254,10 @@ final readonly class FixCommand implements Command
     {
         $io->out("Usage: php bin/$script --php-src-dir dir [--check|--print] [--fixer name] [--force-php-binary-rebuild] [path ...]\n");
         $io->out("Known fixers: " . $this->fixers->knownFixersLine() . "\n");
+    }
+
+    private function toolRoot(): string
+    {
+        return dirname(__DIR__, 2);
     }
 }

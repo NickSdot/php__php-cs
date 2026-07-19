@@ -69,13 +69,11 @@ final readonly class FixerRunner
 
     /**
      * @param list<string> $files
-     *
-     * @return array{changed: int, failed: int}
+     * @param null|\Closure(FixRunEntry): void $onEntry
      */
-    public function run(array $files, bool $check): array
+    public function run(array $files, bool $check, ?\Closure $onEntry = null): FixRunResult
     {
-        $changed = 0;
-        $failed = 0;
+        $result = new FixRunResult(count($files), $check);
 
         foreach ($files as $path) {
             $source = new SourceFile($path, $this->rootDir);
@@ -91,23 +89,35 @@ final readonly class FixerRunner
                     continue;
                 }
 
-                $changed++;
-                echo $source->relativePath() . ': ' . $fixer->name() . $this->fixerLocation($fixer);
                 if ($check) {
-                    echo " needs changes\n";
+                    $entry = new FixRunEntry(
+                        status: FixRunStatus::NeedsChanges,
+                        file: $source->relativePath(),
+                        fixer: $fixer->name(),
+                        location: $fixer->location(),
+                    );
+                    $this->record($result, $entry, $onEntry);
                     continue;
                 }
 
                 if ($fixer->persist()) {
-                    echo " fixed\n";
+                    $entry = new FixRunEntry(
+                        status: FixRunStatus::Fixed,
+                        file: $source->relativePath(),
+                        fixer: $fixer->name(),
+                        location: $fixer->location(),
+                    );
+                    $this->record($result, $entry, $onEntry);
                 } else {
-                    $failed++;
-                    echo " skipped";
                     $reason = $this->fixerFailureReason($fixer);
-                    if (null !== $reason) {
-                        echo ": $reason";
-                    }
-                    echo "\n";
+                    $entry = new FixRunEntry(
+                        status: FixRunStatus::Skipped,
+                        file: $source->relativePath(),
+                        fixer: $fixer->name(),
+                        location: $fixer->location(),
+                        reason: $reason,
+                    );
+                    $this->record($result, $entry, $onEntry);
                     $source->restoreOriginal();
                     $fixer->cleanup();
                     continue;
@@ -117,7 +127,14 @@ final readonly class FixerRunner
             }
         }
 
-        return [ 'changed' => $changed, 'failed' => $failed ];
+        return $result;
+    }
+
+    /** @param null|\Closure(FixRunEntry): void $onEntry */
+    private function record(FixRunResult $result, FixRunEntry $entry, ?\Closure $onEntry): void
+    {
+        $result->add($entry);
+        $onEntry?->__invoke($entry);
     }
 
     /**
@@ -197,12 +214,6 @@ final readonly class FixerRunner
     {
         return str_starts_with($path, DIRECTORY_SEPARATOR)
             || 1 === preg_match('/^[A-Za-z]:[\/\\\\]/', $path);
-    }
-
-    private function fixerLocation(Fixer $fixer): string
-    {
-        $location = $fixer->location();
-        return '' === $location ? '' : " ($location)";
     }
 
     private function fixerFailureReason(Fixer $fixer): ?string
