@@ -10,13 +10,10 @@ use function array_any;
 use function array_find;
 use function array_last;
 use function count;
-use function dirname;
 use function fclose;
 use function file_get_contents;
 use function file_put_contents;
-use function getenv;
 use function is_array;
-use function is_executable;
 use function is_file;
 use function is_int;
 use function is_resource;
@@ -40,11 +37,17 @@ use function unlink;
 final class PhptFile
 {
     private string $prefix = '';
+
+    private ?PhptTestRuntime $runtime = null;
+
     /** @var array<int, array{name: string, header: string, content: string}> */
     private array $sections = [];
 
-    public function __construct(private readonly string $path, private readonly string $rootDir)
-    {
+    public function __construct(
+        private readonly string $path,
+        private readonly string $rootDir,
+        private readonly PhptTestRuntimeResolver $runtimeResolver = new PhptTestRuntimeResolver(),
+    ) {
         $contents = file_get_contents($this->path);
         if (false === $contents) {
             throw new \RuntimeException("Cannot read {$this->path}");
@@ -213,7 +216,8 @@ final class PhptFile
     {
         $this->cleanupArtifacts();
 
-        $phpBinary = $this->testPhpBinary();
+        $runtime = $this->runtime();
+        $phpBinary = $runtime->phpBinary;
         $cmd = [
             $phpBinary,
             'run-tests.php',
@@ -232,7 +236,7 @@ final class PhptFile
         $env['REPORT_EXIT_STATUS'] = '1';
         $env['TEST_PHP_EXECUTABLE'] = $phpBinary;
 
-        $cgiBinary = $this->testPhpCgiBinary();
+        $cgiBinary = $runtime->phpCgiBinary;
 
         if (null !== $cgiBinary) {
             $env['TEST_PHP_CGI_EXECUTABLE'] = $cgiBinary;
@@ -357,53 +361,8 @@ final class PhptFile
         return $pathInfo['dirname'] . DIRECTORY_SEPARATOR . $pathInfo['filename'];
     }
 
-    private function testPhpBinary(): string
+    private function runtime(): PhptTestRuntime
     {
-        $configured = getenv('INTERNALS_CS_TEST_PHP_EXECUTABLE');
-
-        if (is_string($configured) && is_file($configured) && is_executable($configured)) {
-            return $configured;
-        }
-
-        $local = $this->toolRoot() . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'php-test-runtime' . DIRECTORY_SEPARATOR . 'php';
-
-        if (is_file($local) && is_executable($local)) {
-            return $local;
-        }
-
-        $binary = $this->rootDir . DIRECTORY_SEPARATOR . 'sapi' . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'php';
-        if (is_file($binary) && is_executable($binary)) {
-            return $binary;
-        }
-
-        return PHP_BINARY;
-    }
-
-    private function testPhpCgiBinary(): ?string
-    {
-        $configured = getenv('INTERNALS_CS_TEST_PHP_CGI_EXECUTABLE');
-
-        if (is_string($configured) && is_file($configured) && is_executable($configured)) {
-            return $configured;
-        }
-
-        $local = $this->toolRoot() . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'php-test-runtime' . DIRECTORY_SEPARATOR . 'php-cgi';
-
-        if (is_file($local) && is_executable($local)) {
-            return $local;
-        }
-
-        $binary = $this->rootDir . DIRECTORY_SEPARATOR . 'sapi' . DIRECTORY_SEPARATOR . 'cgi' . DIRECTORY_SEPARATOR . 'php-cgi';
-
-        if (is_file($binary) && is_executable($binary)) {
-            return $binary;
-        }
-
-        return null;
-    }
-
-    private function toolRoot(): string
-    {
-        return dirname(__DIR__, 2);
+        return $this->runtime ??= $this->runtimeResolver->resolve($this->rootDir);
     }
 }

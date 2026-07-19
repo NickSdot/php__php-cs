@@ -19,6 +19,5 @@ final readonly class FixOptions
         public array $fixerClasses,
         public bool $check,
         public bool $print,
-        public bool $forcePhpBinaryRebuild,
     ) {}
 }

@@ -12,9 +12,8 @@ use InternalsCS\FixRunReportWriter;
 use InternalsCS\FixRunResult;
 use InternalsCS\FixerRegistry;
 use InternalsCS\FixerRunner;
-use InternalsCS\PhpSrc\PhpBuild;
-use InternalsCS\PhpSrc\PhpBuildPaths;
 use InternalsCS\PhpSrc\PhpSrcRoot;
+use InternalsCS\PhpSrcTestStyle\PhptTestRuntimeResolver;
 use InternalsCS\Support\Paths;
 
 use function count;
@@ -29,9 +28,9 @@ final readonly class FixCommand implements Command
 {
     public function __construct(
         private Paths $paths = new Paths(),
-        private PhpBuild $phpBuild = new PhpBuild(),
         private FixerRegistry $fixers = new FixerRegistry(),
         private FixRunReportWriter $reports = new FixRunReportWriter(),
+        private PhptTestRuntimeResolver $runtime = new PhptTestRuntimeResolver(),
     ) {}
 
     public function run(string $script, array $args, ConsoleIo $io): int
@@ -50,14 +49,19 @@ final readonly class FixCommand implements Command
             return 2;
         }
 
-        if ($options->print) {
-            $result = $this->runPrintFixer($options, $io);
+        try {
+            if ($options->print) {
+                $result = $this->runPrintFixer($options, $io);
 
-            return $this->printResult($result, $io);
+                return $this->printResult($result, $io);
+            }
+
+            $result = $this->runFixer($options, $io);
+            $reportPath = $this->writeRunReport($options, $result);
+        } catch (CommandFailure $e) {
+            $io->err($e->getMessage() . "\n");
+            return 2;
         }
-
-        $result = $this->runFixer($options, $io);
-        $reportPath = $this->writeRunReport($options, $result);
 
         $io->out('Report: ' . $this->paths->relative($reportPath, $this->toolRoot()) . "\n");
 
@@ -80,7 +84,6 @@ final readonly class FixCommand implements Command
         $phpSrcDir = null;
         $check = false;
         $print = false;
-        $forcePhpBinaryRebuild = false;
         $fixers = [];
         $targets = [];
 
@@ -99,11 +102,6 @@ final readonly class FixCommand implements Command
 
             if ('--print' === $arg) {
                 $print = true;
-                continue;
-            }
-
-            if ('--force-php-binary-rebuild' === $arg) {
-                $forcePhpBinaryRebuild = true;
                 continue;
             }
 
@@ -148,19 +146,13 @@ final readonly class FixCommand implements Command
             fixerClasses: $this->fixerClasses($fixers),
             check: $check,
             print: $print,
-            forcePhpBinaryRebuild: $forcePhpBinaryRebuild,
         );
     }
 
     private function runFixer(FixOptions $options, ConsoleIo $io): FixRunResult
     {
         if (!$options->check) {
-            $this->phpBuild->ensure(
-                root: $options->phpSrcRoot,
-                paths: PhpBuildPaths::default($this->toolRoot()),
-                force: $options->forcePhpBinaryRebuild,
-                io: $io,
-            );
+            $this->announceRuntime($options->phpSrcRoot, $io);
         }
 
         $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses);
@@ -190,16 +182,22 @@ final readonly class FixCommand implements Command
     /** @return array{changed: bool, failed: bool, output: string, failure: string|null} */
     private function runPrintFixer(FixOptions $options, ConsoleIo $io): array
     {
-        $this->phpBuild->ensure(
-            root: $options->phpSrcRoot,
-            paths: PhpBuildPaths::default($this->toolRoot()),
-            force: $options->forcePhpBinaryRebuild,
-            io: new StderrConsoleIo($io),
-        );
+        $this->announceRuntime($options->phpSrcRoot, new StderrConsoleIo($io));
 
         $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses);
 
         return $runner->print($runner->collectFiles($options->targets));
+    }
+
+    private function announceRuntime(PhpSrcRoot $root, ConsoleIo $io): void
+    {
+        try {
+            $runtime = $this->runtime->resolve($root->path);
+        } catch (\RuntimeException $e) {
+            throw new CommandFailure($e->getMessage());
+        }
+
+        $io->out('Using PHP test binary: ' . $runtime->phpBinary . "\n");
     }
 
     /**
@@ -252,7 +250,7 @@ final readonly class FixCommand implements Command
 
     private function usage(string $script, ConsoleIo $io): void
     {
-        $io->out("Usage: php bin/$script --php-src-dir dir [--check|--print] [--fixer name] [--force-php-binary-rebuild] [path ...]\n");
+        $io->out("Usage: php bin/$script --php-src-dir dir [--check|--print] [--fixer name] [path ...]\n");
         $io->out("Known fixers: " . $this->fixers->knownFixersLine() . "\n");
     }
 

@@ -11,6 +11,8 @@ use InternalsCS\Fixers\FinalNewlineFixer;
 use PHPUnit\Framework\TestCase;
 
 use function bin2hex;
+use function chmod;
+use function escapeshellarg;
 use function file_get_contents;
 use function file_put_contents;
 use function mkdir;
@@ -90,7 +92,10 @@ final class FinalNewlineFixerTest extends TestCase
     {
         $root = sys_get_temp_dir() . '/final-newline-fixer-' . bin2hex(random_bytes(6));
         mkdir($root);
+        mkdir($root . '/sapi/cli', recursive: true);
         file_put_contents($root . '/run-tests.php', $runTests);
+        file_put_contents($root . '/sapi/cli/php', "#!/bin/sh\nexec " . escapeshellarg(PHP_BINARY) . " \"$@\"\n");
+        chmod($root . '/sapi/cli/php', 0o755);
 
         return $root;
     }
