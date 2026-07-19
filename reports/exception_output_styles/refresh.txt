@@ -1,6 +1,6 @@
 # Fixture refresh
 
-Refresh-only run: yes
+Refresh-only run: no
 Updated new/diff pairs: 0
 Stale existing new/diff pairs kept: 0
 Old-only fixture files: 0

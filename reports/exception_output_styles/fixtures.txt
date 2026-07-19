@@ -206,6 +206,14 @@ Zend/tests/exit_finally_2.phpt
   flavours covered: 1
     - line 18: message_only message_only:9bc8a6b37b5e50d6864de5f9d4886dbfaeea5aea
 
+Zend/tests/function_arguments/argument_count_incorrect_internal_strict.phpt
+  state: handled
+  fixture: Zend_tests_function_arguments_argument_count_incorrect_internal_strict
+  first line: 9
+  flavours covered: 2
+    - line 9: class_message class_message:2e277bfd1ae6bc9416c92a0255b7337b17055da1
+    - line 16: class_message class_message:06c832f9453a62d6cff9e7503c1e222580dcadf2
+
 Zend/tests/generators/generator_throwing_during_function_call.phpt
   state: handled
   fixture: Zend_tests_generators_generator_throwing_during_function_call
@@ -398,14 +406,14 @@ ext/intl/tests/calendar_get_Least_Greatest_Minimum_Maximum_error.phpt
   fixture: ext_intl_tests_calendar_get_Least_Greatest_Minimum_Maximum_error
   first line: 13
   flavours covered: 1
-    - line 13: class_message class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
-    - line 18: class_message class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
-    - line 23: class_message class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
-    - line 28: class_message class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
-    - line 34: class_message class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
-    - line 39: class_message class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
-    - line 44: class_message class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
-    - line 49: class_message class_message:f34aad15907e8249dd2ecf482b2cd4766ce47db5
+    - line 13: class_message class_message:eea43e96a76b38eb7910f791749c10e1bf9b2bd6
+    - line 18: class_message class_message:eea43e96a76b38eb7910f791749c10e1bf9b2bd6
+    - line 23: class_message class_message:eea43e96a76b38eb7910f791749c10e1bf9b2bd6
+    - line 28: class_message class_message:eea43e96a76b38eb7910f791749c10e1bf9b2bd6
+    - line 34: class_message class_message:eea43e96a76b38eb7910f791749c10e1bf9b2bd6
+    - line 39: class_message class_message:eea43e96a76b38eb7910f791749c10e1bf9b2bd6
+    - line 44: class_message class_message:eea43e96a76b38eb7910f791749c10e1bf9b2bd6
+    - line 49: class_message class_message:eea43e96a76b38eb7910f791749c10e1bf9b2bd6
 
 ext/intl/tests/calendar_toDateTime_error.phpt
   state: handled
@@ -426,8 +434,8 @@ ext/intl/tests/calendar_uninitialized_argument_position.phpt
   fixture: ext_intl_tests_calendar_uninitialized_argument_position
   first line: 15
   flavours covered: 1
-    - line 15: message_only message_only:5fc248c6aba8175313c66dc74cb234d456d2947d
-    - line 23: message_only message_only:5fc248c6aba8175313c66dc74cb234d456d2947d
+    - line 15: class_message class_message:59d1e566276bb0ee4dbff1b24eb076ab68b4fede
+    - line 23: class_message class_message:59d1e566276bb0ee4dbff1b24eb076ab68b4fede
 
 ext/ldap/tests/gh21262.phpt
   state: handled
@@ -506,19 +514,19 @@ manual_016/old.phpt
   flavours covered: 1
     - line 8: message_only message_only:87dfe2439e6b30fdfa0b28a01d70816525178d4b
 
-ext/phar/tests/bug65028.phpt
+ext/phar/tests/phar_buildfromdirectory1.phpt
   state: handled
-  fixture: ext_phar_tests_bug65028
-  first line: 146
+  fixture: ext_phar_tests_phar_buildfromdirectory1
+  first line: 15
   flavours covered: 1
-    - line 146: message_only message_only:c7eadb7fcb7c1b84340d49987b5f51e48dfacc0d
+    - line 15: class_message class_message:9a27708c85adc2ccf20bc09ab780bccdad03811a
 
 ext/phar/tests/phar_metadata_write4.phpt
   state: handled
   fixture: ext_phar_tests_phar_metadata_write4
   first line: 58
   flavours covered: 1
-    - line 58: message_only message_only:0f3444b319aa6b82bb6a6e57e3e5380d1ebf1b99
+    - line 58: class_message_location class_message_location:a023ec2af335a32467cf88daf7a98212c2507418
 
 ext/reflection/tests/ReflectionExtension_constructor_error.phpt
   state: handled
