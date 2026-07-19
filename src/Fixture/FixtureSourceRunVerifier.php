@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixture;
 
-final readonly class FixtureSourceRunVerifier
+final readonly class FixtureSourceRunVerifier implements FixtureSourceVerifier
 {
     public function __construct(
         private FixtureSourceContext $sourceContext = new FixtureSourceContext(),

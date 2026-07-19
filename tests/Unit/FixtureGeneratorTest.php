@@ -11,6 +11,7 @@ use InternalsCS\Fixture\FixtureRewriteRunner;
 use InternalsCS\PhpSrc\PhpSrcRoot;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\FixtureReportWriter;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\Scanner;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\SourceVerifier;
 use PHPUnit\Framework\TestCase;
 
 use function basename;
@@ -346,6 +347,46 @@ final class FixtureGeneratorTest extends TestCase
         self::assertStringNotContainsString('no_selected_runnable_dir', (string) file_get_contents($reports . '/stats.md'));
     }
 
+    public function testWriteRunSkipsSourceWhenExpectedOutputDoesNotExerciseCandidate(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        $runtime = $root . '/runtime';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+        mkdir($runtime);
+
+        $statement = 'echo "SoapFault: " . $e->getMessage() . "\n";';
+        $this->writeSourcePhptWithExpected($phpSrc, 'dead.phpt', [$statement], "redirect followed\n");
+        $this->writeSourcePhptWithExpected($phpSrc, 'live.phpt', [$statement], "SoapFault: broken\n");
+
+        $this->exceptionOutputGenerator()->generate(new FixtureGenerationOptions(
+            sourceRoot: $phpSrc,
+            fixturesDir: $fixtures,
+            reportsDir: $reports,
+            paths: [],
+            excludedRoots: [
+                $fixtures,
+            ],
+            extensions: ['phpt'],
+            runner: new SelectiveOriginalRunner(unrunnableBasenames: []),
+            sourceDirty: false,
+            write: true,
+            refreshOnly: false,
+            rewriteRoot: $runtime,
+        ));
+
+        $oldFixtures = glob($fixtures . '/*/old.phpt');
+
+        self::assertIsArray($oldFixtures);
+        self::assertCount(1, $oldFixtures);
+        self::assertStringContainsString('live.phpt', (string) file_get_contents($oldFixtures[0]));
+        self::assertStringNotContainsString('dead.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
+    }
+
     private function writeSourcePhpt(string $root, string $name, string $statement): string
     {
         return $this->writeSourcePhptWithStatements($root, $name, [$statement]);
@@ -353,6 +394,12 @@ final class FixtureGeneratorTest extends TestCase
 
     /** @param list<string> $statements */
     private function writeSourcePhptWithStatements(string $root, string $name, array $statements): string
+    {
+        return $this->writeSourcePhptWithExpected($root, $name, $statements, '');
+    }
+
+    /** @param list<string> $statements */
+    private function writeSourcePhptWithExpected(string $root, string $name, array $statements, string $expected): string
     {
         $body = $this->indentedStatements($statements);
 
@@ -367,6 +414,7 @@ final class FixtureGeneratorTest extends TestCase
                 $body
             }
             --EXPECT--
+            $expected
 
             PHPT;
 
@@ -417,6 +465,15 @@ final class FixtureGeneratorTest extends TestCase
         return new FixtureGenerator(
             scanner: new Scanner(),
             reports: new FixtureReportWriter(),
+        );
+    }
+
+    private function exceptionOutputGenerator(): FixtureGenerator
+    {
+        return new FixtureGenerator(
+            scanner: new Scanner(),
+            reports: new FixtureReportWriter(),
+            sourceVerifier: new SourceVerifier(),
         );
     }
 }

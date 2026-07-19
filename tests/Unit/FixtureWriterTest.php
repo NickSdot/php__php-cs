@@ -11,6 +11,8 @@ use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\Classification;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\ClassificationSafety;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\Fingerprint;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputFamily;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputPart;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Analysis\OutputParts;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\Candidate;
 use PHPUnit\Framework\TestCase;
 
@@ -107,6 +109,7 @@ final class FixtureWriterTest extends TestCase
             relativePath: $relativePath,
             line: 1,
             statement: 'echo $e->getMessage();',
+            parts: new OutputParts([OutputPart::exceptionMessage('e')], 'echo:method_call'),
             key: $classification->fingerprint->id,
             classification: $classification,
         );

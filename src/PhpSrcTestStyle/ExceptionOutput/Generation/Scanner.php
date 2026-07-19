@@ -64,6 +64,7 @@ final readonly class Scanner implements FixtureScanner
                 relativePath: $relativePath,
                 line: $line,
                 statement: $window->statement,
+                parts: $window->parts,
                 key: $classification->fingerprint->id,
                 classification: $classification,
             );

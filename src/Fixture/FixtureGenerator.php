@@ -21,7 +21,7 @@ final readonly class FixtureGenerator
         private FixtureWriter $writer = new FixtureWriter(),
         private FixtureValidator $validator = new FixtureValidator(),
         private FixtureCaseName $caseName = new FixtureCaseName(),
-        private FixtureSourceRunVerifier $sourceVerifier = new FixtureSourceRunVerifier(),
+        private FixtureSourceVerifier $sourceVerifier = new FixtureSourceRunVerifier(),
     ) {}
 
     public function generate(FixtureGenerationOptions $options): FixtureGenerationResult

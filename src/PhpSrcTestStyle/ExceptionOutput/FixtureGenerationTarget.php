@@ -12,6 +12,7 @@ use InternalsCS\Fixture\FixtureGenerator;
 use InternalsCS\Fixture\FixtureRewriteRunner;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\FixtureReportWriter;
 use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\Scanner;
+use InternalsCS\PhpSrcTestStyle\ExceptionOutput\Generation\SourceVerifier;
 use InternalsCS\PhpSrcTestStyle\PhptFixtureRewriteRunner;
 
 use function count;
@@ -23,6 +24,7 @@ final readonly class FixtureGenerationTarget implements GenerateTarget
         private FixtureGenerator $generator = new FixtureGenerator(
             scanner: new Scanner(),
             reports: new FixtureReportWriter(),
+            sourceVerifier: new SourceVerifier(),
         ),
     ) {}
 
