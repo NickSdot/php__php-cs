@@ -1,0 +1,16 @@
+--- old.phpt
++++ new.phpt
+@@ -24,11 +24,11 @@
+ }
+ catch(Exception $e)
+ {
+-    var_dump($e->getMessage());
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ 
+ ?>
+ ====DONE====
+ --EXPECT--
+-string(5) "Damn!"
++Exception: Damn!
+ ====DONE====
