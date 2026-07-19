@@ -13,22 +13,18 @@ use InternalsCS\Fixture\FixtureSelection;
 use InternalsCS\Fixture\FixtureSource;
 use InternalsCS\Fixture\FixtureWriteResult;
 use InternalsCS\Support\FileSystem;
+use InternalsCS\Support\MarkdownTable;
 
 use function array_fill_keys;
 use function array_filter;
 use function array_map;
 use function array_slice;
-use function array_values;
 use function count;
 use function implode;
 use function ksort;
-use function max;
 use function mb_rtrim;
-use function mb_str_pad;
-use function mb_strlen;
 use function preg_replace;
 use function str_ends_with;
-use function str_repeat;
 use function str_replace;
 use function str_starts_with;
 use function strcmp;
@@ -39,6 +35,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
     public function __construct(
         private FixtureCaseName $caseName = new FixtureCaseName(),
         private FileSystem $files = new FileSystem(),
+        private MarkdownTable $table = new MarkdownTable(),
     ) {}
 
     /** @param array<string, FixtureWriteResult> $writeResults */
@@ -243,7 +240,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
             '# Exception output fixture coverage',
             '',
             '## Run',
-            ...$this->table(
+            ...$this->table->render(
                 ['Metric', 'Count'],
                 [
                     ['Scanned source files', $result->scannedFiles],
@@ -261,7 +258,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
                 ],
             ),
             '## Summary',
-            ...$this->table(
+            ...$this->table->render(
                 ['Status', 'Flavours'],
                 [
                     ['done', $coverageCounts['done']],
@@ -271,7 +268,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
                 ],
             ),
             '## Flavours',
-            ...$this->table(
+            ...$this->table->render(
                 ['Status', 'Flavour', 'Fixture', 'Detail', 'Fingerprint'],
                 $coverageRows,
             ),
@@ -402,83 +399,6 @@ final readonly class FixtureReportWriter implements FixtureReporter
     }
 
     /**
-     * @param list<string> $headers
-     * @param list<list<int|string>> $rows
-     * @return list<string>
-     */
-    private function table(array $headers, array $rows): array
-    {
-        $widths = $this->columnWidths($headers, $rows);
-        $lines = [
-            '',
-            $this->tableRow($headers, $widths),
-            $this->separatorRow($widths),
-        ];
-
-        foreach ($rows as $row) {
-            $lines[] = $this->tableRow($row, $widths);
-        }
-
-        $lines[] = '';
-
-        return $lines;
-    }
-
-    /**
-     * @param list<string> $headers
-     * @param list<list<int|string>> $rows
-     * @return list<int>
-     */
-    private function columnWidths(array $headers, array $rows): array
-    {
-        $widths = [];
-
-        foreach ($headers as $header) {
-            $widths[] = mb_strlen($this->markdownCell($header));
-        }
-
-        foreach ($rows as $row) {
-            foreach ($row as $index => $cell) {
-                $widths[$index] = max($widths[$index], mb_strlen($this->markdownCell((string) $cell)));
-            }
-        }
-
-        return array_values($widths);
-    }
-
-    /**
-     * @param list<int|string> $row
-     * @param list<int> $widths
-     */
-    private function tableRow(array $row, array $widths): string
-    {
-        $cells = [];
-
-        foreach ($row as $index => $cell) {
-            $cells[] = mb_str_pad($this->markdownCell((string) $cell), $widths[$index]);
-        }
-
-        return '| ' . implode(' | ', $cells) . ' |';
-    }
-
-    /** @param list<int> $widths */
-    private function separatorRow(array $widths): string
-    {
-        $cells = [];
-
-        foreach ($widths as $width) {
-            $cells[] = str_repeat('-', $width + 2);
-        }
-
-        return '|' . implode('|', $cells) . '|';
-    }
-
-    private function markdownCell(string $value): string
-    {
-        return str_replace('|', '\|', $value);
-    }
-
-    /**
      * @param array<string, list<Candidate>> $duplicates
      * @param array<string, string> $selectedFixtures
      */
@@ -486,7 +406,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
     {
         return implode("\n", [
             '# Duplicate candidate windows by flavour',
-            ...$this->table(
+            ...$this->table->render(
                 ['Count', 'Fixture', 'First', 'Duplicates', 'Detail', 'Fingerprint'],
                 $this->duplicateRows($duplicates, $selectedFixtures),
             ),
