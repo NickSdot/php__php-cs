@@ -313,9 +313,10 @@ final readonly class ExpectedOutputUpdater
         for ($i = 0; $i < count($lines); $i++) {
             $line = $lines[$i];
             $nextLine = $lines[$i + 1] ?? null;
+            $class = $this->classOnlyLineValue($line);
 
-            if (null !== $nextLine && $this->isClassOnlyLine($line)) {
-                $merged[] = $line . ': ' . $nextLine;
+            if (null !== $nextLine && null !== $class) {
+                $merged[] = $class . ': ' . $nextLine;
                 $i++;
                 continue;
             }
@@ -357,7 +358,7 @@ final readonly class ExpectedOutputUpdater
 
     private function varDumpStringValue(string $line): string
     {
-        if (1 === preg_match('/^string\((?:\d+|%d)\) "(.*)"$/', $line, $matches)) {
+        if (1 === preg_match('/^(?:string|%s|%S)\((?:\d+|%d)\) "(.*)"$/', $line, $matches)) {
             return stripcslashes($matches[1]);
         }
 
@@ -872,6 +873,26 @@ final readonly class ExpectedOutputUpdater
     {
         return 1 === preg_match('/^[A-Za-z_\\\\][A-Za-z0-9_\\\\]*$/', $line)
             && $this->isLikelyExceptionClass($line);
+    }
+
+    private function classOnlyLineValue(string $line): ?string
+    {
+        if ($this->isClassOnlyLine($line)) {
+            return $line;
+        }
+
+        if (!$this->isVarDumpStringLine($line)) {
+            return null;
+        }
+
+        $value = $this->varDumpStringValue($line);
+
+        return $this->isLikelyExceptionClass($value) ? $value : null;
+    }
+
+    private function isVarDumpStringLine(string $line): bool
+    {
+        return 1 === preg_match('/^(?:string|%s|%S)\((?:\d+|%d)\) "(.*)"$/', $line);
     }
 
     private function isLikelyExceptionClass(string $class): bool

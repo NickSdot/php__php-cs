@@ -95,6 +95,31 @@ final class ExpectedOutputUpdaterTest extends TestCase
         );
     }
 
+    public function testUpdatesVarDumpClassThenMessageOutput(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECT',
+            "string(24) \"UnexpectedValueException\"\nfixture message\n",
+            "UnexpectedValueException: fixture message\n",
+        );
+
+        self::assertSame("UnexpectedValueException: fixture message\n", $update->output);
+    }
+
+    public function testUpdatesExpectfVarDumpClassThenMessageOutput(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECTF',
+            "%s(24) \"UnexpectedValueException\"\nCannot write out phar archive, phar is read-only\n",
+            "UnexpectedValueException: Cannot write out phar archive, phar is read-only\n",
+        );
+
+        self::assertSame(
+            "UnexpectedValueException: Cannot write out phar archive, phar is read-only\n",
+            $update->output,
+        );
+    }
+
     public function testUpdatesVarDumpStringMessageOutput(): void
     {
         $update = new ExpectedOutputUpdater()->update(
