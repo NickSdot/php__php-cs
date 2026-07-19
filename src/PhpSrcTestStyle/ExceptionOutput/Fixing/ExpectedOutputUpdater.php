@@ -109,6 +109,18 @@ final readonly class ExpectedOutputUpdater
                 continue;
             }
 
+            $splitLines = $this->splitExpectLine($expectedLine, $actualLine, $actualLines[$actualIndex + 1] ?? null);
+
+            if (null !== $splitLines) {
+                foreach ($splitLines as $line) {
+                    $updated[] = $line;
+                }
+
+                $expectedIndex++;
+                $actualIndex += 2;
+                continue;
+            }
+
             if ('' === $expectedLine) {
                 $expectedIndex++;
                 continue;
@@ -160,6 +172,18 @@ final readonly class ExpectedOutputUpdater
                 continue;
             }
 
+            $splitLines = $this->splitExpectfLine($expectedLine, $actualLine, $actualLines[$actualIndex + 1] ?? null);
+
+            if (null !== $splitLines) {
+                foreach ($splitLines as $line) {
+                    $updated[] = $line;
+                }
+
+                $expectedIndex++;
+                $actualIndex += 2;
+                continue;
+            }
+
             if ('' === $expectedLine) {
                 $expectedIndex++;
                 continue;
@@ -171,6 +195,67 @@ final readonly class ExpectedOutputUpdater
         return $this->remainingLinesAreBlank($expectedLines, $expectedIndex) && $actualIndex === count($actualLines)
             ? $updated
             : null;
+    }
+
+    /** @return list<string>|null */
+    private function splitExpectLine(string $expectedLine, string $actualLine, ?string $nextActualLine): ?array
+    {
+        if (null === $nextActualLine) {
+            return null;
+        }
+
+        foreach ($this->lineSplits($expectedLine) as [$exceptionLine, $suffixLine]) {
+            if (!$this->lineCanNormaliseToActual($exceptionLine, $actualLine, exact: true)) {
+                continue;
+            }
+
+            if ($suffixLine !== $nextActualLine) {
+                continue;
+            }
+
+            return [$actualLine, $nextActualLine];
+        }
+
+        return null;
+    }
+
+    /** @return list<string>|null */
+    private function splitExpectfLine(string $expectedLine, string $actualLine, ?string $nextActualLine): ?array
+    {
+        if (null === $nextActualLine) {
+            return null;
+        }
+
+        foreach ($this->lineSplits($expectedLine) as [$exceptionLine, $suffixLine]) {
+            $updatedLine = $this->updatedExpectfLine($exceptionLine, $actualLine);
+
+            if (null === $updatedLine) {
+                continue;
+            }
+
+            if (!$this->expectfLineMatches($suffixLine, $nextActualLine)) {
+                continue;
+            }
+
+            return [$updatedLine, $suffixLine];
+        }
+
+        return null;
+    }
+
+    /** @return list<array{string, string}> */
+    private function lineSplits(string $line): array
+    {
+        $splits = [];
+
+        for ($offset = mb_strlen($line, '8bit') - 1; $offset > 0; $offset--) {
+            $splits[] = [
+                mb_substr($line, 0, $offset, '8bit'),
+                mb_substr($line, $offset, null, '8bit'),
+            ];
+        }
+
+        return $splits;
     }
 
     /** @param list<string> $lines */

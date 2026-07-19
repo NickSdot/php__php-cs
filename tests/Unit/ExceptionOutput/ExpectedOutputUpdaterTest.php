@@ -70,6 +70,31 @@ final class ExpectedOutputUpdaterTest extends TestCase
         );
     }
 
+    public function testUpdatesExpectedLineSplitByNewCanonicalExceptionNewline(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECT',
+            "fixture message===DONE===\n",
+            "Exception: fixture message\n===DONE===\n",
+        );
+
+        self::assertSame("Exception: fixture message\n===DONE===\n", $update->output);
+    }
+
+    public function testUpdatesExpectfLineSplitByNewCanonicalExceptionNewline(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECTF',
+            "phar \"%s032.phar.php\" does not have a signature===DONE===\n",
+            "Exception: phar \"/tmp/032.phar.php\" does not have a signature\n===DONE===\n",
+        );
+
+        self::assertSame(
+            "Exception: phar \"%s032.phar.php\" does not have a signature\n===DONE===\n",
+            $update->output,
+        );
+    }
+
     public function testUpdatesVarDumpStringMessageOutput(): void
     {
         $update = new ExpectedOutputUpdater()->update(
