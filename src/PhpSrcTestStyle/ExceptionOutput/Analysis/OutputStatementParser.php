@@ -18,11 +18,6 @@ final readonly class OutputStatementParser
         private PhpAst $ast = new PhpAst(),
     ) {}
 
-    public function isOutputStatement(Stmt $statement): bool
-    {
-        return null !== $this->parts($statement);
-    }
-
     public function parts(Stmt $statement, ?ExpressionSource $source = null): ?OutputParts
     {
         if ($statement instanceof Stmt\Echo_) {

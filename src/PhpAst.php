@@ -85,6 +85,48 @@ final readonly class PhpAst
         return $children;
     }
 
+    /** @return list<list<Stmt>> */
+    public function childStatementLists(Stmt $statement): array
+    {
+        if ($statement instanceof Stmt\Namespace_) {
+            return [array_values($statement->stmts)];
+        }
+
+        if ($statement instanceof Stmt\ClassMethod || $statement instanceof Stmt\Function_) {
+            return [array_values($statement->stmts ?? [])];
+        }
+
+        if ($statement instanceof Stmt\If_) {
+            $lists = [array_values($statement->stmts)];
+
+            foreach ($statement->elseifs as $elseif) {
+                $lists[] = array_values($elseif->stmts);
+            }
+
+            if (null !== $statement->else) {
+                $lists[] = array_values($statement->else->stmts);
+            }
+
+            return $lists;
+        }
+
+        if ($statement instanceof Stmt\Foreach_ || $statement instanceof Stmt\For_ || $statement instanceof Stmt\While_ || $statement instanceof Stmt\Do_) {
+            return [array_values($statement->stmts)];
+        }
+
+        if ($statement instanceof Stmt\Switch_) {
+            $lists = [];
+
+            foreach ($statement->cases as $case) {
+                $lists[] = array_values($case->stmts);
+            }
+
+            return $lists;
+        }
+
+        return [];
+    }
+
     public function filePosition(Node $node, string $attribute, int $offsetDelta): ?int
     {
         $position = $node->getAttribute($attribute);

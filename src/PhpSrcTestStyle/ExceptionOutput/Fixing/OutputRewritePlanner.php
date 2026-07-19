@@ -242,7 +242,7 @@ final readonly class OutputRewritePlanner
                 return true;
             }
 
-            foreach ($this->childStatementLists($statement) as $children) {
+            foreach ($this->ast->childStatementLists($statement) as $children) {
                 if ($this->containsOutputStatement($children, $code, $offsetDelta)) {
                     return true;
                 }
@@ -257,7 +257,7 @@ final readonly class OutputRewritePlanner
     {
         $plans = [];
 
-        foreach ($this->childStatementLists($statement) as $statements) {
+        foreach ($this->ast->childStatementLists($statement) as $statements) {
             array_push($plans, ...$this->previousSeparatorPlans($statements, $code, $offsetDelta));
         }
 
@@ -370,53 +370,11 @@ final readonly class OutputRewritePlanner
     {
         $plans = [];
 
-        foreach ($this->childStatementLists($statement) as $statements) {
+        foreach ($this->ast->childStatementLists($statement) as $statements) {
             array_push($plans, ...$this->followingNewlinePlans($statements, $code, $offsetDelta));
         }
 
         return $plans;
-    }
-
-    /** @return list<list<Stmt>> */
-    private function childStatementLists(Stmt $statement): array
-    {
-        if ($statement instanceof Stmt\Namespace_) {
-            return [array_values($statement->stmts)];
-        }
-
-        if ($statement instanceof Stmt\ClassMethod || $statement instanceof Stmt\Function_) {
-            return [array_values($statement->stmts ?? [])];
-        }
-
-        if ($statement instanceof Stmt\If_) {
-            $lists = [array_values($statement->stmts)];
-
-            foreach ($statement->elseifs as $elseif) {
-                $lists[] = array_values($elseif->stmts);
-            }
-
-            if (null !== $statement->else) {
-                $lists[] = array_values($statement->else->stmts);
-            }
-
-            return $lists;
-        }
-
-        if ($statement instanceof Stmt\Foreach_ || $statement instanceof Stmt\For_ || $statement instanceof Stmt\While_ || $statement instanceof Stmt\Do_) {
-            return [array_values($statement->stmts)];
-        }
-
-        if ($statement instanceof Stmt\Switch_) {
-            $lists = [];
-
-            foreach ($statement->cases as $case) {
-                $lists[] = array_values($case->stmts);
-            }
-
-            return $lists;
-        }
-
-        return [];
     }
 
     /** @return list<TextEdit> */

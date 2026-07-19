@@ -194,6 +194,31 @@ final class ScannerTest extends TestCase
         self::assertSame('echo $e->getMessage() . "\n";', $candidates[0]->statement);
     }
 
+    public function testAdjacentClassThenMessageStatementsAreOneFlavour(): void
+    {
+        $root = $this->makeTempDir();
+        $adjacent = $this->writeRawPhpt($root, 'adjacent.phpt', <<<'PHP'
+            <?php
+            try {
+                throw new UnexpectedValueException('broken');
+            } catch (Throwable $e) {
+                var_dump(get_class($e));
+                echo $e->getMessage() . "\n";
+            }
+            PHP);
+        $single = $this->writePhpt($root, 'single.phpt', 'echo $e->getMessage() . "\n";');
+
+        $candidates = new Scanner()->scan([$adjacent, $single], $root);
+
+        self::assertCount(2, $candidates);
+        self::assertSame(
+            "var_dump(get_class(\$e));\n    echo \$e->getMessage() . \"\\n\";",
+            $candidates[0]->statement,
+        );
+        self::assertNotSame($candidates[0]->key, $candidates[1]->key);
+        self::assertSame(OutputFamily::ClassMessage, $candidates[0]->classification->family);
+    }
+
     public function testReportsFullStatementAfterUtf8BytesBeforeCatchOutput(): void
     {
         $root = $this->makeTempDir();
