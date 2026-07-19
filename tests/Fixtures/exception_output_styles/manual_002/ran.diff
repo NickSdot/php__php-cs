@@ -1,0 +1,15 @@
+--- old.phpt
++++ new.phpt
+@@ -7,9 +7,10 @@
+ try {
+     throw new PharException('phar "/tmp/032.phar.php" does not have a signature');
+ } catch (Exception $e) {
+-    echo $e->getMessage();
++    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+ }
+ ?>
+ ===DONE===
+ --EXPECTF--
+-phar "%s032.phar.php" does not have a signature===DONE===
++PharException: phar "%s032.phar.php" does not have a signature
++===DONE===
