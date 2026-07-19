@@ -23,7 +23,7 @@ use function sys_get_temp_dir;
 
 final class PhpBuildCheckoutTest extends TestCase
 {
-    public function testPreparesRuntimeCheckoutFromLocalMasterWithoutTouchingDirtyCurrentBranch(): void
+    public function testPreparesRuntimeCheckoutFromCurrentHeadWithoutTouchingDirtySource(): void
     {
         $root = $this->makeTempDir();
         $source = $root . '/source';
@@ -37,6 +37,8 @@ final class PhpBuildCheckoutTest extends TestCase
         $this->git($source, 'add', 'run-tests.php');
         $this->git($source, 'commit', '-m', 'Initial master');
         $this->git($source, 'checkout', '-b', 'PHP-8.5');
+        file_put_contents($source . '/run-tests.php', "<?php\n// PHP-8.5\n");
+        $this->git($source, 'commit', '-am', 'Changed branch runtime');
         file_put_contents($source . '/run-tests.php', "<?php\n// dirty branch\n");
 
         $checkout = new PhpBuildCheckout()->prepare(
@@ -45,7 +47,7 @@ final class PhpBuildCheckoutTest extends TestCase
             io: new NullConsoleIo(),
         );
 
-        self::assertSame("<?php\n// master\n", file_get_contents($checkout->path . '/run-tests.php'));
+        self::assertSame("<?php\n// PHP-8.5\n", file_get_contents($checkout->path . '/run-tests.php'));
         self::assertSame("<?php\n// dirty branch\n", file_get_contents($source . '/run-tests.php'));
     }
 
