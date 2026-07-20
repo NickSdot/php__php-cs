@@ -5,7 +5,7 @@
          catch(Exception $e)
          {
 -            echo 'Caught: '.$e->getMessage()."\n";
-+            echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
          }
      }
  
@@ -14,7 +14,7 @@
          catch(Exception $e)
          {
 -            echo 'Caught: '.$e->getMessage()."\n";
-+            echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
          }
      }
  
@@ -23,7 +23,7 @@
          catch(Exception $e)
          {
 -            echo 'Caught: '.$e->getMessage()."\n";
-+            echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
          }
      }
  }

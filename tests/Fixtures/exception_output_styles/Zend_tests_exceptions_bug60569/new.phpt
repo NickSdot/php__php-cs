@@ -6,7 +6,7 @@ try {
     $msg = "Some error \x00 message";
     throw new Exception($msg);
 } catch(Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     var_dump($msg);
 }
 ?>

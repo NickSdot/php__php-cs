@@ -31,7 +31,7 @@ echo "\n*** Output for zero argument ***\n";
 try {
     printf();
 } catch (TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 /* Number of arguments not matching as specified in format field */
@@ -42,7 +42,7 @@ $name = "voudras";
 try {
     printf("%d $string %s", $nbr, $name);
 } catch (\ArgumentCountError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 
@@ -205,7 +205,7 @@ echo"\n\n*** Output for invalid width(-15) specifier ***\n";
 try {
     printf("%030.-15s", $tempstring);
 } catch (ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "\n*** Output for '%F' as the format parameter ***\n";

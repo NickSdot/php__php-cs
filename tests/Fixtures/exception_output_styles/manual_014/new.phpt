@@ -5,7 +5,7 @@ Manual exception-output fixture for ext/pdo_firebird/tests/bug_77863.phpt line 1
 try {
     throw new RuntimeException('fixture message');
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

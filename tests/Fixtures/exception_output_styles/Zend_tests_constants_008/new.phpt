@@ -6,7 +6,7 @@ define() tests
 try {
     var_dump(define(array(1,2,3,4,5), 1));
 } catch (TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 var_dump(define("TRUE", 1));

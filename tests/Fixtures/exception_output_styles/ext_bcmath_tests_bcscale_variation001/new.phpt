@@ -6,11 +6,11 @@ bcmath
 bcmath.scale=0
 --FILE--
 <?php
-echo bcdiv("20.56", "4"), \PHP_EOL;
+echo bcdiv("20.56", "4"), PHP_EOL;
 try {
     bcscale(-4);
 } catch (\ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

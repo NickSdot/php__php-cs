@@ -5,7 +5,7 @@
          }
          catch (\Error $e) {
 -            echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";
-+            echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
          }
      }
  }

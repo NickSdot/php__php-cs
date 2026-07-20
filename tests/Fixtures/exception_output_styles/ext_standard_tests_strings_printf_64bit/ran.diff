@@ -5,7 +5,7 @@
      printf();
  } catch (TypeError $e) {
 -    echo $e->getMessage(), "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  /* Number of arguments not matching as specified in format field */
@@ -14,7 +14,7 @@
      printf("%d $string %s", $nbr, $name);
  } catch (\ArgumentCountError $e) {
 -    print('Error found: '.$e->getMessage());
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  
@@ -29,7 +29,7 @@
      printf("%030.-15s", $tempstring);
  } catch (ValueError $e) {
 -    echo $e->getMessage();
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
 -echo"\n\n*** Output for '%F' as the format parameter ***\n";

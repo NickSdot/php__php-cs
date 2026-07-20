@@ -18,7 +18,7 @@ try {
         print get_class($iter) . "\n";
         print "after\n";
 } catch (Exception $e) {
-        echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 ==DONE==

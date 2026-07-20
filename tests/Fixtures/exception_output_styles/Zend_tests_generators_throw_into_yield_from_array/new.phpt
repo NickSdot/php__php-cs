@@ -20,7 +20,7 @@ function test($g) {
     try {
         $g->throw(new Exception("Exception!"));
     } catch (Exception $e) {
-        echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
     var_dump($g->current());
 }

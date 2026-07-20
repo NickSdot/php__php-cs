@@ -5,7 +5,7 @@
      test();
  } catch (Exception $e) {
 -    echo "caught {$e->getMessage()}\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  --EXPECT--

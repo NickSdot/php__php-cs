@@ -5,7 +5,7 @@
      require("constant_expressions_exceptions.inc");
  } catch (Error $e) {
 -    echo "\nException: " . $e->getMessage() . " in " , $e->getFile() . " on line " . $e->getLine() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), PHP_EOL;
  }
  ?>
  DONE

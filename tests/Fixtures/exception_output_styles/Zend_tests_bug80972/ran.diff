@@ -5,7 +5,7 @@
      var_dump($string);
  } catch (\TypeError $e) {
 -    echo $e->getMessage(), \PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  /* This same bug also permits to modify the first byte of a string even if
@@ -14,7 +14,7 @@
      $string["wrong"] = "f";
  } catch (\Throwable $e) {
 -    echo $e->getMessage() . \PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  var_dump($string);
  

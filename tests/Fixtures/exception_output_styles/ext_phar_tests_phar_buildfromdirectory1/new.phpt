@@ -12,7 +12,7 @@ try {
     ini_set('phar.readonly', 1);
     $phar->buildFromDirectory(1);
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

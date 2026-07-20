@@ -7,7 +7,7 @@ $type = 'manual_type';
 try {
     throw new RuntimeException('fixture message');
 } catch (Throwable $e) {
-    echo $type, '=>', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $type, '=>', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

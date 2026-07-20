@@ -20,7 +20,7 @@ try {
     $string[(string) 10e120] = 'E';
     var_dump($string);
 } catch (\TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 /* This same bug also permits to modify the first byte of a string even if
@@ -29,7 +29,7 @@ try {
     /* This must not affect the string value */
     $string["wrong"] = "f";
 } catch (\Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 var_dump($string);
 

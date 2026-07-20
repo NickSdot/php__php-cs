@@ -44,7 +44,7 @@ final readonly class SameStatementTraceOutputRule implements RewriteRule
             startOffset: $statement->startOffset,
             endOffset: $statement->endOffset,
             line: $statement->line,
-            replacement: $this->replacement($context->catchVariable, $prefix),
+            replacement: $this->builder->buildSameStatementTrace($context->catchVariable, $prefix),
         ));
     }
 
@@ -68,18 +68,5 @@ final readonly class SameStatementTraceOutputRule implements RewriteRule
         }
 
         return $this->parts->isExceptionTrace($parts[3], $catchVariable) ? $parts[0]->value : null;
-    }
-
-    private function replacement(string $catchVariable, string $prefix): string
-    {
-        return 'echo '
-            . $this->builder->literalSegment($prefix)
-            . ', $'
-            . $catchVariable
-            . '::class . \': \' . $'
-            . $catchVariable
-            . '->getMessage(), \PHP_EOL, $'
-            . $catchVariable
-            . '->getTraceAsString();';
     }
 }

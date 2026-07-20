@@ -14,32 +14,32 @@ Ensure type hints are enforced for functions invoked as callbacks.
   try {
     call_user_func('f1', 1);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func('f1', new A);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func('f2', 1);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func('f2');
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func('f2', new A);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func('f2', null);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
 
   echo "\n\n---> Type hints with callback static method:\n";
@@ -63,32 +63,32 @@ Ensure type hints are enforced for functions invoked as callbacks.
   try {
     call_user_func(array('C', 'f1'), 1);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array('C', 'f1'), new A);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array('C', 'f2'), 1);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array('C', 'f2'));
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array('C', 'f2'), new A);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array('C', 'f2'), null);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
 
   echo "\n\n---> Type hints with callback instance method:\n";
@@ -113,32 +113,32 @@ Ensure type hints are enforced for functions invoked as callbacks.
   try {
     call_user_func(array($d, 'f1'), 1);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array($d, 'f1'), new A);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array($d, 'f2'), 1);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array($d, 'f2'));
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array($d, 'f2'), new A);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
   try {
     call_user_func(array($d, 'f2'), null);
   } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), PHP_EOL;
   }
 
 ?>

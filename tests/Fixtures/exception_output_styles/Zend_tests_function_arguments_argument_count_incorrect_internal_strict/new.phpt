@@ -6,13 +6,13 @@ declare(strict_types=1);
 try {
     substr("foo");
 } catch (ArgumentCountError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     array_diff();
 } catch (ArgumentCountError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

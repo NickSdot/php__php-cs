@@ -5,7 +5,7 @@
  catch(Exception $e)
  {
 -    echo "Caught: " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  class FatalException extends Exception
@@ -14,12 +14,12 @@
  catch(Exception $e)
  {
 -    echo "Caught Exception: " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  catch(FatalException $e)
  {
 -    echo "Caught FatalException: " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  ?>

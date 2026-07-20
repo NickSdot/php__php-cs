@@ -5,7 +5,7 @@
  } catch (PDOException $e) {
      echo 'PDOException code: ' . $e->getCode() . "\n";
 -    echo 'PDOException message: ' . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  --EXPECT--

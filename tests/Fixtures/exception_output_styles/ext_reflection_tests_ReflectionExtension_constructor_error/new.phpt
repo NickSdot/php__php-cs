@@ -8,19 +8,19 @@ Leon Luijkx <leon@phpgg.nl>
 try {
     $obj = new ReflectionExtension();
 } catch (TypeError $re) {
-    echo $re::class, ': ', $re->getMessage(), \PHP_EOL;
+    echo $re::class, ': ', $re->getMessage(), PHP_EOL;
 }
 
 try {
     $obj = new ReflectionExtension('foo', 'bar');
 } catch (TypeError $re) {
-    echo $re::class, ': ', $re->getMessage(), \PHP_EOL;
+    echo $re::class, ': ', $re->getMessage(), PHP_EOL;
 }
 
 try {
     $obj = new ReflectionExtension([]);
 } catch (TypeError $re) {
-    echo $re::class, ': ', $re->getMessage(), \PHP_EOL;
+    echo $re::class, ': ', $re->getMessage(), PHP_EOL;
 }
 
 

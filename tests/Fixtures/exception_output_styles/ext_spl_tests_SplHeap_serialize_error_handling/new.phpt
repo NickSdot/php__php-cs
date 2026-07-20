@@ -37,7 +37,7 @@ foreach ($invalid_cases as $i => $case) {
         $heap->__unserialize($case);
         echo "Case $i: UNEXPECTED SUCCESS\n";
     } catch (Exception $e) {
-        echo "Case $i: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo "Case $i: ", $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 
@@ -60,7 +60,7 @@ foreach ($pq_invalid_cases as $i => $case) {
         $pq->__unserialize($case);
         echo "PQ Case $i: UNEXPECTED SUCCESS\n";
     } catch (Exception $e) {
-        echo "PQ Case $i: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo "PQ Case $i: ", $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 

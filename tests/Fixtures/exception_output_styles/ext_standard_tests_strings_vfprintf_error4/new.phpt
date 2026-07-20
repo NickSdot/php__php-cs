@@ -14,12 +14,12 @@ echo "\n-- Testing vfprintf() function with other strangeties  --\n";
 try {
     var_dump( vfprintf( 'foo', 'bar', array( 'baz' ) ) );
 } catch (TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump( vfprintf( $fp, 'Foo %$c-0202Sd', array( 2 ) ) );
 } catch(\ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 // Close handle
 fclose( $fp );

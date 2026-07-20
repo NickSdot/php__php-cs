@@ -6,7 +6,7 @@ Hash: Attempt to instantiate a HashContext directly
 try {
   new HashContext;
 } catch (Error $e) {
-  echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+  echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

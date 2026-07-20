@@ -10,25 +10,25 @@ enum Foo: int {
 try {
     var_dump(Foo::Bar);
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump(Foo::Bar);
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump(Foo::from(42));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump(Foo::from('bar'));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

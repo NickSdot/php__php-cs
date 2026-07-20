@@ -8,13 +8,13 @@ zend.assertions=1
 try {
     assert((fn() => false)());
 } catch (AssertionError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     assert((fn&(int... $args): ?bool => $args[0])(false));
 } catch (AssertionError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

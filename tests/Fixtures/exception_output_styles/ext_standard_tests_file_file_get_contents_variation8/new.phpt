@@ -35,7 +35,7 @@ for( $i=0; $i<count($names_arr); $i++ ) {
     try {
         var_dump(file_get_contents($names_arr[$i]));
     } catch (\TypeError|\ValueError $e) {
-        echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 

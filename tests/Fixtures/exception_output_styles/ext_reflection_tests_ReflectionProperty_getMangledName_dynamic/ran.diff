@@ -5,7 +5,7 @@
          echo "\n";
      } catch (ReflectionException $e) {
 -        echo "$description: EXCEPTION - " . $e->getMessage() . "\n\n";
-+        echo "$description: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo "$description: ", $e::class, ': ', $e->getMessage(), PHP_EOL;
      }
  }
  
@@ -14,7 +14,7 @@
      echo "This should not be reached\n";
  } catch (ReflectionException $e) {
 -    echo "Expected exception for class-based reflection: " . $e->getMessage() . "\n";
-+    echo 'class-based reflection: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo 'class-based reflection: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try {
@@ -22,7 +22,7 @@
      echo "Instance-based reflection works: " . $reflection->getMangledName() . "\n";
  } catch (ReflectionException $e) {
 -    echo "Unexpected exception: " . $e->getMessage() . "\n";
-+    echo 'unexpected: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo 'unexpected: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  ?>

@@ -12,7 +12,7 @@ foreach (['equals', 'before', 'after', 'isEquivalentTo'] as $method) {
     try {
         $calendar->$method($uninitialized);
     } catch (Error $e) {
-        echo $method, ': ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo $method, ': ', $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 
@@ -20,7 +20,7 @@ foreach (['intlcal_equals', 'intlcal_before', 'intlcal_after', 'intlcal_is_equiv
     try {
         $function($calendar, $uninitialized);
     } catch (Error $e) {
-        echo $function, ': ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo $function, ': ', $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 

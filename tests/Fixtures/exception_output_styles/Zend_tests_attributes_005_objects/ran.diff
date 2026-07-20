@@ -5,7 +5,7 @@
      $ref->getAttributes()[0]->newInstance();
  } catch (\ArgumentCountError $e) {
 -    var_dump('ERROR 1', $e->getMessage());
-+    echo 'ERROR 1: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo 'ERROR 1: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  echo "\n";
@@ -14,7 +14,7 @@
      $ref->getAttributes()[0]->newInstance();
  } catch (\TypeError $e) {
 -    var_dump('ERROR 2', $e->getMessage());
-+    echo 'ERROR 2: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo 'ERROR 2: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  echo "\n";
@@ -23,7 +23,7 @@
      $ref->getAttributes()[0]->newInstance();
  } catch (\Error $e) {
 -    var_dump('ERROR 3', $e->getMessage());
-+    echo 'ERROR 3: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo 'ERROR 3: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  echo "\n";
@@ -32,7 +32,7 @@
      $ref->getAttributes()[0]->newInstance();
  } catch (\Error $e) {
 -    var_dump('ERROR 4', $e->getMessage());
-+    echo 'ERROR 4: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo 'ERROR 4: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  echo "\n";
@@ -41,7 +41,7 @@
      $ref->getAttributes()[0]->newInstance();
  } catch (\Error $e) {
 -    var_dump('ERROR 6', $e->getMessage());
-+    echo 'ERROR 6: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo 'ERROR 6: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  ?>

@@ -9,11 +9,17 @@ use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputParts;
 
 use function implode;
+use function mb_rtrim;
+use function mb_strlen;
+use function mb_substr;
 use function preg_match;
+use function str_ends_with;
 use function str_replace;
 
 final readonly class OutputStatementBuilder
 {
+    public const string NEWLINE_SEGMENT = 'PHP_EOL';
+
     public function build(string $variable, OutputParts $parts, string $prefix = ''): string
     {
         $segments = [];
@@ -52,9 +58,37 @@ final readonly class OutputStatementBuilder
             $segments[] = '$' . $variable . '->getLine()';
         }
 
-        $segments[] = '\\PHP_EOL';
+        $segments[] = self::NEWLINE_SEGMENT;
 
         return 'echo ' . implode(', ', $segments) . ';';
+    }
+
+    public function appendNewlineSegmentToEcho(string $source): ?string
+    {
+        $trimmed = mb_rtrim($source);
+
+        if (!str_ends_with($trimmed, ';')) {
+            return null;
+        }
+
+        $tail = mb_substr($source, mb_strlen($trimmed, '8bit'), null, '8bit');
+
+        return mb_substr($trimmed, 0, -1, '8bit') . ', ' . self::NEWLINE_SEGMENT . ';' . $tail;
+    }
+
+    public function buildSameStatementTrace(string $variable, string $prefix): string
+    {
+        return 'echo '
+            . $this->literalSegment($prefix)
+            . ', $'
+            . $variable
+            . '::class . \': \' . $'
+            . $variable
+            . '->getMessage(), '
+            . self::NEWLINE_SEGMENT
+            . ', $'
+            . $variable
+            . '->getTraceAsString();';
     }
 
     public function literalSegment(string $value): string

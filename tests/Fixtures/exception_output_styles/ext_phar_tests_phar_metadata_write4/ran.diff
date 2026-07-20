@@ -5,7 +5,7 @@
      var_dump($phar['a']->setMetadata(new ThrowsOnSerialize()));
  } catch (RuntimeException $e) {
 -    echo "Caught {$e->getMessage()} at {$e->getFile()}:{$e->getLine()}\n";
-+    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), PHP_EOL;
      unset($e);
  }
  var_dump($phar['a']->getMetadata([]));

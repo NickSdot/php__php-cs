@@ -5,7 +5,7 @@
      var_dump($array);
  } catch (Error $e) {
 -    echo $e->getMessage(), "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  function test($x = [PHP_INT_MAX => 42, "foo"]) {}
@@ -13,7 +13,7 @@
      test();
  } catch (Error $e) {
 -    echo $e->getMessage(), "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  ?>

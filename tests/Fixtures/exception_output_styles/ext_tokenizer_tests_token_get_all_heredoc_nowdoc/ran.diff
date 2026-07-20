@@ -5,7 +5,7 @@
          }
      } catch (ParseError $e) {
 -        echo "Parse error: {$e->getMessage()} on line {$e->getLine()}\n";
-+        echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), \PHP_EOL;
++        echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), PHP_EOL;
      }
  }
  

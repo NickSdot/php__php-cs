@@ -5,7 +5,7 @@
      $gen->next();
  } catch (Exception $e) {
 -    echo 'Caught exception with message "', $e->getMessage(), '"', "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  var_dump($gen->current());

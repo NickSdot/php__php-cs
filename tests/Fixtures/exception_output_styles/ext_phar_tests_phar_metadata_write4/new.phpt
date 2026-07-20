@@ -55,7 +55,7 @@ var_dump($phar['a']->getMetadata(['allowed_classes' => true]));
 try {
     var_dump($phar['a']->setMetadata(new ThrowsOnSerialize()));
 } catch (RuntimeException $e) {
-    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), PHP_EOL;
     unset($e);
 }
 var_dump($phar['a']->getMetadata([]));

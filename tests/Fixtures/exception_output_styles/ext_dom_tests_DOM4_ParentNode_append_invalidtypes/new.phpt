@@ -12,7 +12,7 @@ $dom->loadXML('<test />');
 try {
     $dom->documentElement->append(array());
 } catch(TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

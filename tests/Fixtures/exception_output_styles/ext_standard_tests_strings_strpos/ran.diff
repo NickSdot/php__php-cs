@@ -5,7 +5,7 @@
      var_dump( strpos($string, "Hello", $offset_values[$i]) );
    } catch (TypeError $e) {
 -    echo "\n", $e->getMessage(), "\n";
-+    echo \PHP_EOL, $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo PHP_EOL, $e::class, ': ', $e->getMessage(), PHP_EOL;
    }
  }
  
@@ -14,14 +14,14 @@
      strpos($string, "test", strlen($string)+1);  // offset > strlen()
  } catch (ValueError $exception) {
 -    echo $exception->getMessage() . "\n";
-+    echo $exception::class, ': ', $exception->getMessage(), \PHP_EOL;
++    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
  }
  
  try {
      strpos($string, "test", -strlen($string)-1);  // offset before start
  } catch (ValueError $exception) {
 -    echo $exception->getMessage() . "\n";
-+    echo $exception::class, ': ', $exception->getMessage(), \PHP_EOL;
++    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
  }
  
  ?>

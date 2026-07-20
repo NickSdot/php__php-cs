@@ -5,7 +5,7 @@
      $x = new ReflectionMethod('A', 'b');
  } catch (\Throwable $e) {
 -    echo get_class($e), ': ', $e->getMessage(), PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  function load_file() {

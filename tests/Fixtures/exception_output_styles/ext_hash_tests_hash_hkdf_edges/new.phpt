@@ -16,7 +16,7 @@ try {
     var_dump(hash_hkdf('jOaAt', $ikm));
 }
 catch (\Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

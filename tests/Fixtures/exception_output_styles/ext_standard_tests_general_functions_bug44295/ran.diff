@@ -5,7 +5,7 @@
          print "after\n";
  } catch (Exception $e) {
 -        print "in catch: ".$e->getMessage()."\n";
-+        echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  ==DONE==

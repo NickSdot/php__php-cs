@@ -21,7 +21,7 @@ $a1 = array_merge_recursive( $a1, $a2 );
 try {
     $a1 = array_merge_recursive( $a1, $a2 );
 } catch (\Error $e) {
-    echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), PHP_EOL;
 }
 unset( $a1, $a2 );
 

@@ -17,14 +17,14 @@ $entry_with_empty_array = [
 try {
 	ldap_add($ldap, $valid_dn, $entry_with_empty_array);
 } catch (ValueError $e) {
-	echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 // ldap_mod_add() should still reject empty arrays
 try {
 	ldap_mod_add($ldap, $valid_dn, $entry_with_empty_array);
 } catch (ValueError $e) {
-	echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 // ldap_modify() should accept empty arrays (delete attribute)
@@ -32,7 +32,7 @@ try {
 	@ldap_modify($ldap, $valid_dn, $entry_with_empty_array);
 	echo "ldap_modify: no ValueError thrown", PHP_EOL;
 } catch (ValueError $e) {
-	echo 'ldap_modify: UNEXPECTED: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+	echo 'ldap_modify: UNEXPECTED: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 // ldap_mod_del() should accept empty arrays (delete attribute)
@@ -40,7 +40,7 @@ try {
 	@ldap_mod_del($ldap, $valid_dn, $entry_with_empty_array);
 	echo "ldap_mod_del: no ValueError thrown", PHP_EOL;
 } catch (ValueError $e) {
-	echo 'ldap_mod_del: UNEXPECTED: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+	echo 'ldap_mod_del: UNEXPECTED: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

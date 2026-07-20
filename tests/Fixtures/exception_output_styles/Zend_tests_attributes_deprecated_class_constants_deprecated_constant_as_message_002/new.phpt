@@ -21,13 +21,13 @@ class Clazz {
 try {
 	Clazz::TEST;
 } catch (ErrorException $e) {
-	echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
 	Clazz::TEST3;
 } catch (ErrorException $e) {
-	echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

@@ -20,13 +20,13 @@ $nan = fdiv(0, 0);
 try {
     take_bool($nan);
 } catch (Exception $e) {
-    echo 'bool: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'bool: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     take_string($nan);
 } catch (Exception $e) {
-    echo 'string: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'string: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

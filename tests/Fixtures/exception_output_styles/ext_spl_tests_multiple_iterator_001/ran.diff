@@ -5,13 +5,13 @@
      var_dump($m->current());
  } catch (RuntimeException $e) {
 -    echo $e->getMessage(), "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  try {
      var_dump($m->key());
  } catch (RuntimeException $e) {
 -    echo $e->getMessage(), "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  $m->attachIterator($iter1);
@@ -20,13 +20,13 @@
      $m->current();
  } catch(RuntimeException $e) {
 -    echo "RuntimeException thrown: " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  try {
      $m->key();
  } catch(RuntimeException $e) {
 -    echo "RuntimeException thrown: " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  echo "-- Flags = MultipleIterator::MIT_NEED_ANY | MultipleIterator::MIT_KEYS_NUMERIC --\n";
@@ -35,7 +35,7 @@
      $m->current();
  } catch(InvalidArgumentException $e) {
 -    echo "InvalidArgumentException thrown: " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  echo "-- Flags |= MultipleIterator::MIT_KEYS_ASSOC --\n";
@@ -44,7 +44,7 @@
      $m->attachIterator($iter3, new stdClass());
  } catch(TypeError $e) {
 -    echo "TypeError thrown: " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  echo "-- Associate with duplicate value --\n";
@@ -53,7 +53,7 @@
      $m->attachIterator($iter3, "iter1");
  } catch(InvalidArgumentException $e) {
 -    echo "InvalidArgumentException thrown: " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  echo "-- Count, contains, detach, count, contains, iterate --\n";

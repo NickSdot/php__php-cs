@@ -5,7 +5,7 @@
          $calendar->$method($uninitialized);
      } catch (Error $e) {
 -        echo $method, ': ', $e->getMessage(), PHP_EOL;
-+        echo $method, ': ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo $method, ': ', $e::class, ': ', $e->getMessage(), PHP_EOL;
      }
  }
  
@@ -14,7 +14,7 @@
          $function($calendar, $uninitialized);
      } catch (Error $e) {
 -        echo $function, ': ', $e->getMessage(), PHP_EOL;
-+        echo $function, ': ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo $function, ': ', $e::class, ': ', $e->getMessage(), PHP_EOL;
      }
  }
  

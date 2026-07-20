@@ -36,10 +36,7 @@ use function array_push;
 use function array_values;
 use function count;
 use function is_string;
-use function mb_rtrim;
-use function mb_strlen;
 use function mb_substr;
-use function str_ends_with;
 use function str_replace;
 use function str_starts_with;
 use function usort;
@@ -311,14 +308,11 @@ final readonly class OutputRewritePlanner
         }
 
         $source = mb_substr($code, $output->startOffset, $output->endOffset - $output->startOffset, '8bit');
-        $trimmed = mb_rtrim($source);
+        $replacement = $this->builder->appendNewlineSegmentToEcho($source);
 
-        if (!str_ends_with($trimmed, ';')) {
+        if (null === $replacement) {
             return null;
         }
-
-        $tail = mb_substr($source, mb_strlen($trimmed, '8bit'), null, '8bit');
-        $replacement = mb_substr($trimmed, 0, -1, '8bit') . ', \PHP_EOL;' . $tail;
 
         return new TextEdit(
             startOffset: $output->startOffset,

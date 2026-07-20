@@ -5,7 +5,7 @@
          echo "\n";
      } catch (ReflectionException $e) {
 -        echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
-+        echo "Property $property from class: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo "Property $property from class: ", $e::class, ': ', $e->getMessage(), PHP_EOL;
      }
  }
  
@@ -14,7 +14,7 @@
          echo "\n";
      } catch (ReflectionException $e) {
 -        echo "Property $property from instance: EXCEPTION - " . $e->getMessage() . "\n\n";
-+        echo "Property $property from instance: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo "Property $property from instance: ", $e::class, ': ', $e->getMessage(), PHP_EOL;
      }
  }
  

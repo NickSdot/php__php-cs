@@ -16,12 +16,12 @@ foreach($m as $value) {
 try {
     var_dump($m->current());
 } catch (RuntimeException $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($m->key());
 } catch (RuntimeException $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $m->attachIterator($iter1);
@@ -38,12 +38,12 @@ foreach($m as $key => $value) {
 try {
     $m->current();
 } catch(RuntimeException $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $m->key();
 } catch(RuntimeException $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "-- Flags = MultipleIterator::MIT_NEED_ANY | MultipleIterator::MIT_KEYS_NUMERIC --\n";
@@ -71,7 +71,7 @@ $m->rewind();
 try {
     $m->current();
 } catch(InvalidArgumentException $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "-- Flags |= MultipleIterator::MIT_KEYS_ASSOC --\n";
@@ -89,7 +89,7 @@ echo "-- Associate with invalid value --\n";
 try {
     $m->attachIterator($iter3, new stdClass());
 } catch(TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "-- Associate with duplicate value --\n";
@@ -97,7 +97,7 @@ echo "-- Associate with duplicate value --\n";
 try {
     $m->attachIterator($iter3, "iter1");
 } catch(InvalidArgumentException $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "-- Count, contains, detach, count, contains, iterate --\n";

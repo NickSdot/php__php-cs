@@ -5,7 +5,7 @@
      var_dump($x->method());
  } catch (Error $e) {
 -  var_dump($e->getCode(), $e->getMessage());
-+  echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
++  echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
  }
  echo "Alive\n";
  ?>

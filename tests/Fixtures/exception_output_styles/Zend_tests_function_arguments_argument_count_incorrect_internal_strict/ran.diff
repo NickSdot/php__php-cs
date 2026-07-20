@@ -6,7 +6,7 @@
  } catch (ArgumentCountError $e) {
 -    echo get_class($e) . PHP_EOL;
 -    echo $e->getMessage() . PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try {
@@ -14,7 +14,7 @@
  } catch (ArgumentCountError $e) {
 -    echo get_class($e) . PHP_EOL;
 -    echo $e->getMessage(), "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  --EXPECT--

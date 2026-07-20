@@ -10,10 +10,10 @@ try {
     $x = new Closure();
 } catch (Exception $e) {
     // Instantiating a closure is an error, not an exception, so we shouldn't see this
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 } catch (Throwable $e) {
     // This is the message that we should see for a caught error
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

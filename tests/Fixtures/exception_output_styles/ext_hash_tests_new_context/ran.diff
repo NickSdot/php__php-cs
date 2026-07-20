@@ -5,7 +5,7 @@
    new HashContext;
  } catch (Error $e) {
 -  echo "Exception: {$e->getMessage()}\n";
-+  echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++  echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  --EXPECT--

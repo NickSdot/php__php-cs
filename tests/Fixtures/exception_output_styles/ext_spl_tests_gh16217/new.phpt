@@ -9,13 +9,13 @@ function uninitialized(): SplFileObject {
 try {
     (new ReflectionMethod(SplFileObject::class, "fputcsv"))->invoke(uninitialized(), []);
 } catch (Error $e) {
-    echo 'fputcsv: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'fputcsv: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     (new ReflectionMethod(SplFileObject::class, "next"))->invoke(uninitialized());
 } catch (Error $e) {
-    echo 'next: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'next: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $obj = uninitialized();
@@ -23,7 +23,7 @@ $obj = uninitialized();
 try {
     (new ReflectionMethod(SplFileObject::class, "next"))->invoke($obj);
 } catch (Error $e) {
-    echo 'next (READ_AHEAD): ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'next (READ_AHEAD): ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "Done\n";

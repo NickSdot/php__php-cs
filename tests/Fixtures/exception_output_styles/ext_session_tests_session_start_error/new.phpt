@@ -12,7 +12,7 @@ ob_start();
 try {
     session_start(['option' => new stdClass()]);
 } catch (TypeError $exception) {
-    echo $exception::class, ': ', $exception->getMessage(), \PHP_EOL;
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 $read_and_close = "false";
@@ -20,7 +20,7 @@ $read_and_close = "false";
 try {
     session_start([$read_and_close]);
 } catch (ValueError $exception) {
-    echo $exception::class, ': ', $exception->getMessage(), \PHP_EOL;
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 var_dump(session_start(['option' => false]));

@@ -15,7 +15,7 @@ function test(string $code, int $flags)
             }
         }
     } catch (ParseError $e) {
-        echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), \PHP_EOL;
+        echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), PHP_EOL;
     }
 }
 

@@ -5,7 +5,7 @@
      throw new Exception($msg);
  } catch(Exception $e) {
 -    var_dump($e->getMessage(), $msg);
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 +    var_dump($msg);
  }
  ?>

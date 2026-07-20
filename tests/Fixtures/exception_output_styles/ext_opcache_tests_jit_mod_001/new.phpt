@@ -21,12 +21,12 @@ var_dump(mod(-125, -33));
 try {
     var_dump(mod(125, -1));
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump(mod(125, 0));
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

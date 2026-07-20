@@ -23,7 +23,7 @@ function testFromClass($property) {
         echo "  getMangledName(): " . $reflection->getMangledName() . "\n";
         echo "\n";
     } catch (ReflectionException $e) {
-        echo "Property $property from class: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo "Property $property from class: ", $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 
@@ -45,7 +45,7 @@ function testFromInstance($obj, $property) {
         echo "  Found in array cast: " . (array_key_exists($reflection->getMangledName(), $array) ? "yes" : "no") . "\n";
         echo "\n";
     } catch (ReflectionException $e) {
-        echo "Property $property from instance: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
+        echo "Property $property from instance: ", $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 

@@ -9,7 +9,7 @@ function checkDefaults(ReflectionFunctionAbstract $rf) {
             try {
                 $param->getDefaultValue();
             } catch (Error $e) {
-                echo $rf->getName(), ': ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+                echo $rf->getName(), ': ', $e::class, ': ', $e->getMessage(), PHP_EOL;
             }
         }
     }

@@ -46,7 +46,7 @@ echo "--- Get a namespace node ---\n";
 try {
     var_dump($xpath->evaluate("//*/namespace::*"));
 } catch (DOMException $e) {
-    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

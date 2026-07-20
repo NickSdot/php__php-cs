@@ -11,7 +11,7 @@ try {
     } && new class(42) extends stdclass {
     });
 } catch (AssertionError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

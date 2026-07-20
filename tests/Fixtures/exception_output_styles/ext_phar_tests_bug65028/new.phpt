@@ -143,7 +143,7 @@ try
 }
 catch(UnexpectedValueException $ex)
 {
-    echo $ex::class, ': ', $ex->getMessage(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getMessage(), PHP_EOL;
 }
 ?>
 --CLEAN--

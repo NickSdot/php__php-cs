@@ -5,7 +5,7 @@ Manual exception-output fixture for ext/mysqli/tests/mysqli_execute_query_leak.p
 try {
     throw new RuntimeException('fixture message');
 } catch (Throwable $e) {
-    echo '[001] ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo '[001] ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

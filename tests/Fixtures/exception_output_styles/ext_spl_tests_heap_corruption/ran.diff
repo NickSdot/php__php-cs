@@ -5,7 +5,7 @@
  }
  catch (Exception $e) {
 -    echo "Compare Exception: " . $e->getMessage() . PHP_EOL;
-+    echo 'Compare: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo 'Compare: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try {
@@ -13,7 +13,7 @@
  }
  catch (Exception $e) {
 -    echo "Corruption Exception: " . $e->getMessage() . PHP_EOL;
-+    echo 'Corruption: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo 'Corruption: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  var_dump($heap->isCorrupted());

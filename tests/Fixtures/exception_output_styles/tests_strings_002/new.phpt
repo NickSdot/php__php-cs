@@ -42,7 +42,7 @@ printf("printf test 29:%2\$-2d %1\$2d\n", 1, 2);
 try {
     print("printf test 30:"); printf("%0\$s", 1); print("x\n");
 } catch(\ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 printf("printf test 31:%.17g\n", INF);
 printf("printf test 32:%.17g\n", -INF);

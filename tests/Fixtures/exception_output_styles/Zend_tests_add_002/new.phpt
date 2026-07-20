@@ -11,7 +11,7 @@ $o->prop = "value";
 try {
     var_dump($a + $o);
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $c = $a + $o;

@@ -48,14 +48,14 @@ try {
     $heap->extract();
 }
 catch (Exception $e) {
-    echo 'Compare: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'Compare: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $heap->top();
 }
 catch (Exception $e) {
-    echo 'Corruption: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'Corruption: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 var_dump($heap->isCorrupted());

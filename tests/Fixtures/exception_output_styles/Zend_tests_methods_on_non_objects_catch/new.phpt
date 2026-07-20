@@ -10,7 +10,7 @@ $x= null;
 try {
     var_dump($x->method());
 } catch (Error $e) {
-  echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+  echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 echo "Alive\n";
 ?>

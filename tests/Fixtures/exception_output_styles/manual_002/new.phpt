@@ -7,7 +7,7 @@ phar
 try {
     throw new PharException('phar "/tmp/032.phar.php" does not have a signature');
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 ===DONE===

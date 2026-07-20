@@ -28,7 +28,7 @@ var_dump($dom->documentElement->className);
 try {
     $dom->documentElement->className = new MyStringable();
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 var_dump($dom->documentElement->className);
 echo $dom->saveXML();

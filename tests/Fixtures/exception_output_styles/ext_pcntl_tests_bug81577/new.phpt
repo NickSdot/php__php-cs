@@ -19,7 +19,7 @@ for ($i = 0; $i < 5; $i++) {
 		C::$a + C::$a;
 		posix_kill(posix_getpid(), SIGTERM) + C::$cond;
 	} catch (Throwable $ex) {
-		echo $ex::class, ': ', $ex->getMessage(), \PHP_EOL;
+		echo $ex::class, ': ', $ex->getMessage(), PHP_EOL;
 	}
 }
 ?>

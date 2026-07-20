@@ -6,7 +6,7 @@ try {
     throw new PDOException('fixture message', 335544721);
 } catch (PDOException $e) {
     echo 'PDOException code: ' . $e->getCode() . "\n";
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

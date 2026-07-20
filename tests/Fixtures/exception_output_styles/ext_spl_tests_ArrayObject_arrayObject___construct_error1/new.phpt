@@ -8,14 +8,14 @@ $a->p = 1;
 try {
   var_dump(new ArrayObject($a, 0, "Exception"));
 } catch (TypeError $e) {
-  echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), \PHP_EOL;
+  echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), PHP_EOL;
 }
 
 echo "Non-existent class:\n";
 try {
   var_dump(new ArrayObject(new stdClass, 0, "nonExistentClassName"));
 } catch (TypeError $e) {
-  echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), \PHP_EOL;
+  echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), PHP_EOL;
 }
 ?>
 --EXPECT--

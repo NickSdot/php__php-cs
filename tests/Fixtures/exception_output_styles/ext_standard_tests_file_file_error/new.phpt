@@ -10,12 +10,12 @@ $filename = $file_path."/file.tmp";
 try {
     var_dump( file($filename, 10, NULL) );  //  Incorrect flag
 } catch(ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump( file($filename, FILE_APPEND) );  //  Incorrect flag
 } catch(ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 var_dump( file("temp.tmp") );  // non existing filename
 fclose($file_handle);

@@ -12,7 +12,7 @@ function foo(): stdClass {
 try {
     foo();
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), PHP_EOL;
 }
 
 ?>

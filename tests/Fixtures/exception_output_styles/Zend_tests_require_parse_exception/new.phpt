@@ -9,7 +9,7 @@ function test_parse_error($code) {
     try {
         require 'data://text/plain;base64,' . base64_encode($code);
     } catch (ParseError $e) {
-        echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), \PHP_EOL;
+        echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), PHP_EOL;
     }
 }
 

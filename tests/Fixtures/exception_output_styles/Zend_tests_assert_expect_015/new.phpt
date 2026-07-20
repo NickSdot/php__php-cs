@@ -20,7 +20,7 @@ assert(0 && ($a = function () {
     yield from $x;
 }));
 } catch (AssertionError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -69,7 +69,7 @@ assert(0 && ($a = function &(array &$a, ?X $b = null) use ($c,&$d) : ?X {
     }
 }));
 } catch (AssertionError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -105,7 +105,7 @@ L0:
     }
 }));
 } catch (AssertionError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -121,7 +121,7 @@ assert(0 && ($a = function &(?array &$a, X $b = null) use ($c,&$d) : X {
     }
 }));
 } catch (AssertionError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -138,7 +138,7 @@ assert(0 && ($a = function &(array &...$a) {
     }
 }));
 } catch (AssertionError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -166,7 +166,7 @@ assert(0 && ($a = function (): ?static {
     if ($a); else;
 }));
 } catch (AssertionError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

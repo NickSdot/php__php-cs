@@ -11,7 +11,7 @@ var_dump(finfo_open(FILEINFO_MIME, $buggyPath));
 try {
     $object = new finfo(FILEINFO_MIME, $buggyPath);
 } catch (\Exception $ex) {
-    echo $ex::class, ': ', $ex->getMessage(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

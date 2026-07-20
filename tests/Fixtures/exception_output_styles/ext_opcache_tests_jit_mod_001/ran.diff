@@ -5,13 +5,13 @@
      var_dump(mod(125, -1));
  } catch (Throwable $e) {
 -    echo "Exception " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  try {
      var_dump(mod(125, 0));
  } catch (Throwable $e) {
 -    echo "Exception (" . get_class($e) . "): " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  --EXPECT--

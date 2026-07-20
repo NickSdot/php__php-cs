@@ -5,7 +5,7 @@
  catch(Exception $e)
  {
 -    echo "Caught in " . $e->getMessage() . "()\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try
@@ -14,7 +14,7 @@
  catch(Exception $e)
  {
 -    echo "Caught in " . $e->getMessage() . "()\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try
@@ -23,7 +23,7 @@
  catch(Exception $e)
  {
 -    echo "Caught in " . $e->getMessage() . "()\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try
@@ -32,7 +32,7 @@
  catch(Exception $e)
  {
 -    echo "Caught in " . $e->getMessage() . "()\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  --EXPECT--

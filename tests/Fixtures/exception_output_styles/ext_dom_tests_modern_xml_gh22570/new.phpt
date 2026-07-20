@@ -28,13 +28,13 @@ $doc->appendChild($node);
 try {
     $doc->saveXml();
 } catch (\Error $e) {
-    echo 'saveXml: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'saveXml: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $doc->documentElement->innerHTML;
 } catch (\Error $e) {
-    echo 'innerHTML: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'innerHTML: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

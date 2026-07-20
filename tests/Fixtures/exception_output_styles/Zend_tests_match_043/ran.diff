@@ -5,7 +5,7 @@
          match($var) {};
      } catch (UnhandledMatchError $e) {
 -        print $e->getMessage() . PHP_EOL;
-+        echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
      }
  }
  

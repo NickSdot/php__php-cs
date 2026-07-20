@@ -38,7 +38,7 @@ function f($className) {
             echo "$k => $v\n";
         }
     } catch (Exception $e) {
-            echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), \PHP_EOL;
+            echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), PHP_EOL;
     }
 }
 

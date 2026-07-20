@@ -20,7 +20,7 @@ var_dump($gen->current());
 try {
     $gen->next();
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 var_dump($gen->current());

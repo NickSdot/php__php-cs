@@ -66,7 +66,7 @@ foreach ($cases as $r) {
 	try {
 		$attributes[1]->newInstance();
 	} catch (Error $e) {
-		echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 }
 

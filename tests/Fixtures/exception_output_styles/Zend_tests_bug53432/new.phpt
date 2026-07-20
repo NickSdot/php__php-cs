@@ -19,7 +19,7 @@ $str = '';
 try {
     var_dump($str['foo'] = 'a');
 } catch (\TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 var_dump($str);
 
@@ -27,7 +27,7 @@ $str = '';
 try {
     var_dump($str[] = 'a');
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 var_dump($str);
 
@@ -35,7 +35,7 @@ $str = '';
 try {
     var_dump($str[0] += 1);
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 var_dump($str);
 
@@ -43,7 +43,7 @@ $str = '';
 try {
     var_dump($str[0][0] = 'a');
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 var_dump($str);
 

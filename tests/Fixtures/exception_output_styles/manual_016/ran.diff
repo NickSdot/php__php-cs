@@ -5,7 +5,7 @@
      throw new RuntimeException('fixture message');
  } catch (Throwable $e) {
 -    echo "ERR {$e->getMessage()}\n";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  --EXPECT--

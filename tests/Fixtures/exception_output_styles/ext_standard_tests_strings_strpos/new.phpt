@@ -84,7 +84,7 @@ for( $i = 0; $i < count( $offset_values ); $i++ ) {
   try {
     var_dump( strpos($string, "Hello", $offset_values[$i]) );
   } catch (TypeError $e) {
-    echo \PHP_EOL, $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo PHP_EOL, $e::class, ': ', $e->getMessage(), PHP_EOL;
   }
 }
 
@@ -162,13 +162,13 @@ var_dump( strpos($string, "") );
 try {
     strpos($string, "test", strlen($string)+1);  // offset > strlen()
 } catch (ValueError $exception) {
-    echo $exception::class, ': ', $exception->getMessage(), \PHP_EOL;
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 try {
     strpos($string, "test", -strlen($string)-1);  // offset before start
 } catch (ValueError $exception) {
-    echo $exception::class, ': ', $exception->getMessage(), \PHP_EOL;
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 ?>

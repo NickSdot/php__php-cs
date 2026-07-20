@@ -10,7 +10,7 @@ set_error_handler(function($errno, $errstr) {
 try {
     var_dump(...new ArrayIterator([1, 2, "foo" => 3, 4]));
 } catch (Error $ex) {
-    echo $ex::class, ': ', $ex->getMessage(), \PHP_EOL;
+    echo $ex::class, ': ', $ex->getMessage(), PHP_EOL;
 }
 
 ?>

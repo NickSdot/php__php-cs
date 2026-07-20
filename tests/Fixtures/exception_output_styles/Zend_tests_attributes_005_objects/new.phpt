@@ -31,7 +31,7 @@ $ref = new \ReflectionFunction(#[A1] function () { });
 try {
     $ref->getAttributes()[0]->newInstance();
 } catch (\ArgumentCountError $e) {
-    echo 'ERROR 1: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'ERROR 1: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "\n";
@@ -41,7 +41,7 @@ $ref = new \ReflectionFunction(#[A1([])] function () { });
 try {
     $ref->getAttributes()[0]->newInstance();
 } catch (\TypeError $e) {
-    echo 'ERROR 2: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'ERROR 2: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "\n";
@@ -51,7 +51,7 @@ $ref = new \ReflectionFunction(#[A2] function () { });
 try {
     $ref->getAttributes()[0]->newInstance();
 } catch (\Error $e) {
-    echo 'ERROR 3: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'ERROR 3: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "\n";
@@ -67,7 +67,7 @@ $ref = new \ReflectionFunction(#[A3] function () { });
 try {
     $ref->getAttributes()[0]->newInstance();
 } catch (\Error $e) {
-    echo 'ERROR 4: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'ERROR 4: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "\n";
@@ -79,7 +79,7 @@ $ref = new \ReflectionFunction(#[A5] function () { });
 try {
     $ref->getAttributes()[0]->newInstance();
 } catch (\Error $e) {
-    echo 'ERROR 6: ', $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo 'ERROR 6: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

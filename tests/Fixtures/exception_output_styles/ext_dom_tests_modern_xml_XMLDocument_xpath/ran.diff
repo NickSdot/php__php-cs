@@ -5,7 +5,7 @@
      var_dump($xpath->evaluate("//*/namespace::*"));
  } catch (DOMException $e) {
 -    echo $e->getCode(), ": ", $e->getMessage(), "\n";
-+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
  }
  
  ?>

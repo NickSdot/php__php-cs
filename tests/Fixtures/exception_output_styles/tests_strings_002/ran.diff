@@ -5,7 +5,7 @@
      print("printf test 30:"); printf("%0\$s", 1); print("x\n");
  } catch(\ValueError $e) {
 -    print('Error found: '.$e->getMessage()."\n");
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  printf("printf test 31:%.17g\n", INF);
  printf("printf test 32:%.17g\n", -INF);

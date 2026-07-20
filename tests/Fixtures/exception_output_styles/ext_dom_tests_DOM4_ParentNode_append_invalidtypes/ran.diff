@@ -5,7 +5,7 @@
      $dom->documentElement->append(array());
  } catch(TypeError $e) {
 -    echo "OK! {$e->getMessage()}";
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  --EXPECT--

@@ -5,7 +5,7 @@
          echo "Case $i: UNEXPECTED SUCCESS\n";
      } catch (Exception $e) {
 -        echo "Case $i: " . $e->getMessage() . "\n";
-+        echo "Case $i: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo "Case $i: ", $e::class, ': ', $e->getMessage(), PHP_EOL;
      }
  }
  
@@ -14,7 +14,7 @@
          echo "PQ Case $i: UNEXPECTED SUCCESS\n";
      } catch (Exception $e) {
 -        echo "PQ Case $i: " . $e->getMessage() . "\n";
-+        echo "PQ Case $i: ", $e::class, ': ', $e->getMessage(), \PHP_EOL;
++        echo "PQ Case $i: ", $e::class, ': ', $e->getMessage(), PHP_EOL;
      }
  }
  

@@ -8,28 +8,28 @@ echo "LF only:\n";
 try {
     mail('to@example.com', 'Test Subject', 'A Message', ['Reply-To' => "foo@example.com \nCc: hacker@example.com"]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "CR only:\n";
 try {
     mail('to@example.com', 'Test Subject', 'A Message', ['Reply-To' => "foo@example.com \rCc: hacker@example.com"]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "CRLF:\n";
 try {
     mail('to@example.com', 'Test Subject', 'A Message', ['Reply-To' => "foo@example.com \r\nCc: hacker@example.com"]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "NULL:\n";
 try {
     mail('to@example.com', 'Test Subject', 'A Message', ['Reply-To' => "foo@example.com \0Cc: hacker@example.com"]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --CLEAN--

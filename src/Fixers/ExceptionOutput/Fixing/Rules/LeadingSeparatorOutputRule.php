@@ -30,7 +30,11 @@ final readonly class LeadingSeparatorOutputRule implements RewriteRule
             startOffset: $statement->startOffset,
             endOffset: $statement->endOffset,
             line: $statement->line,
-            replacement: $this->builder->buildWithPrefixSegments($context->catchVariable, $statement->parts, ['\\PHP_EOL']),
+            replacement: $this->builder->buildWithPrefixSegments(
+                $context->catchVariable,
+                $statement->parts,
+                [OutputStatementBuilder::NEWLINE_SEGMENT],
+            ),
         ));
     }
 }

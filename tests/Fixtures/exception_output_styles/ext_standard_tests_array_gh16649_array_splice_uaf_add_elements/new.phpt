@@ -15,7 +15,7 @@ try {
     array_splice($arr, 1, 2);
     echo "ERROR: Should have thrown exception\n";
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

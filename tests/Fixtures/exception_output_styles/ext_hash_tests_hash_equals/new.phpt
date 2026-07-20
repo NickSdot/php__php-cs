@@ -9,7 +9,7 @@ function trycatch_dump(...$tests) {
             var_dump($test());
         }
         catch (\Error $e) {
-            echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
     }
 }

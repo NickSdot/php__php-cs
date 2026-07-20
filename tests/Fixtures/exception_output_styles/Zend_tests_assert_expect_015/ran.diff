@@ -5,7 +5,7 @@
  }));
  } catch (AssertionError $e) {
 -    echo $e->getMessage(), PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try {
@@ -14,7 +14,7 @@
  }));
  } catch (AssertionError $e) {
 -    echo $e->getMessage(), PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try {
@@ -23,7 +23,7 @@
  }));
  } catch (AssertionError $e) {
 -    echo $e->getMessage(), PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try {
@@ -32,7 +32,7 @@
  }));
  } catch (AssertionError $e) {
 -    echo $e->getMessage(), PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try {
@@ -41,7 +41,7 @@
  }));
  } catch (AssertionError $e) {
 -    echo $e->getMessage(), PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  try {
@@ -50,7 +50,7 @@
  }));
  } catch (AssertionError $e) {
 -    echo $e->getMessage(), PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), \PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  
  ?>

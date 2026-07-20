@@ -10,43 +10,43 @@ $c = new IntlGregorianCalendar(NULL, 'pt_PT');
 try {
     var_dump($c->getLeastMaximum(-1));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($c->getMaximum(-1));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($c->getGreatestMinimum(-1));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($c->getMinimum(-1));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump(intlcal_get_least_maximum($c, -1));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump(intlcal_get_maximum($c, -1));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump(intlcal_get_greatest_minimum($c, -1));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump(intlcal_get_minimum($c, -1));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), \PHP_EOL;
+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

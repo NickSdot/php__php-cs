@@ -14,7 +14,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 
@@ -27,7 +27,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Cannot access privateInstance method'."\n";
@@ -39,7 +39,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'SubClass cannot access private instance method'."\n";
@@ -51,7 +51,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Cannot access private static function of instance'."\n";
@@ -63,7 +63,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Cannot access private static method statically'."\n";
@@ -75,7 +75,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Cannot access private static method statically with colon scheme'."\n";
@@ -87,7 +87,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Non-existent method should fail'."\n";
@@ -99,7 +99,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Non-existent class should fail'."\n";
@@ -111,7 +111,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Non-existent function should fail'."\n";
@@ -123,7 +123,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 
@@ -137,7 +137,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Subclass cannot closure over parent private static method'."\n";
@@ -150,7 +150,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Function scope cannot closure over protected instance method'."\n";
@@ -162,7 +162,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Function scope cannot closure over private instance method'."\n";
@@ -174,7 +174,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo 'Access private instance method of parent object through "self::" to parent method'."\n";
@@ -187,7 +187,7 @@ catch (\TypeError $te) {
     //This is the expected outcome.
 }
 catch (\Throwable $t) {
-    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), \PHP_EOL;
+    echo 'Wrong exception type thrown: ', $t::class, ': ', $t->getMessage(), PHP_EOL;
 }
 
 echo "OK\n";
