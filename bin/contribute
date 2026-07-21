@@ -1,0 +1,586 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+COMMIT_SUFFIX="applied fixers to improve test robustness"
+DEFAULT_PR_NUMBER="22799"
+DEFAULT_PR_REPO="php/php-src"
+DEFAULT_REMOTE="origin"
+DEFAULT_PHP_SRC_DIR="../php__php-src"
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+TOOL_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+
+PHP_SRC_DIR="${PHP_SRC_DIR:-}"
+PR_NUMBER="$DEFAULT_PR_NUMBER"
+PR_REPO="$DEFAULT_PR_REPO"
+REMOTE="$DEFAULT_REMOTE"
+BASE_REF=""
+LFG=0
+RESET=0
+DRY=0
+NO_RUN=0
+FIXER_ARGS=()
+TARGET_ARGS=()
+
+die() {
+    printf 'error: %s\n' "$*" >&2
+    exit 1
+}
+
+usage() {
+    cat <<'USAGE'
+Usage:
+  bin/contribute [options] [target ...]
+
+Runs php-src-cs target-by-target against a php-src checkout. Each changed
+target gets one commit:
+
+  ext/intl: applied fixers to improve test robustness
+
+With no target arguments, targets are discovered from php-src:
+  ext/*, Zend, tests, sapi/*
+
+Options:
+  --php-src-dir DIR   php-src checkout. Default: $PHP_SRC_DIR or ../php__php-src
+  --fixer NAME        Pass one fixer to php-src-cs. May be repeated.
+  --base REF          For PR table commit detection. Default: upstream/master
+  --pr NUMBER         GitHub PR number. Default: 22799
+  --repo OWNER/REPO   GitHub repo for PR editing. Default: php/php-src
+  --remote NAME       Remote to push to with --lfg. Default: origin
+  --nah               Reset contiguous generated commits at HEAD.
+  --no-run            Do not run fixers; use existing generated commits at HEAD.
+  --lfg               Push branch and update the PR description.
+  --dry               Preview mode for --lfg: print merged PR body, skip push/edit.
+  -h, --help          Show this help.
+
+Every run asks you to confirm the current php-src branch name.
+Without --lfg, local commits or local resets still happen, but push and PR editing are
+not performed; a generated PR body block preview path is printed instead.
+With --lfg --dry, the final merged PR body Markdown is printed without pushing
+or editing the PR.
+With --no-run, no targets are executed; this is useful after commits already
+exist locally and you only want to preview or publish the PR description.
+PR updates replace only the table between:
+  <!-- pr:targets:start -->
+  <!-- pr:targets:end -->
+USAGE
+}
+
+main() {
+    parse_args "$@"
+    resolve_php_src_dir
+    require_php_src_checkout
+    confirm_current_branch
+
+    if (( RESET )); then
+        (( ! NO_RUN )) || die '--nah cannot be combined with --no-run'
+        reset_generated_commits
+        after_local_changes reset
+        return
+    fi
+
+    if (( NO_RUN )); then
+        (( ${#TARGET_ARGS[@]} == 0 )) || die '--no-run cannot be combined with target arguments'
+        (( ${#FIXER_ARGS[@]} == 0 )) || die '--no-run cannot be combined with --fixer'
+        ensure_tracked_clean
+        after_local_changes run
+        return
+    fi
+
+    local targets=()
+    local target
+
+    while IFS= read -r target; do
+        [[ -n "$target" ]] && targets+=("$target")
+    done < <(target_list)
+
+    ensure_tracked_clean
+
+    for target in "${targets[@]}"; do
+        run_target "$target"
+    done
+
+    after_local_changes run
+}
+
+parse_args() {
+    while (($#)); do
+        case "$1" in
+            --php-src-dir)
+                shift
+                (($#)) || die '--php-src-dir requires a value'
+                PHP_SRC_DIR="$1"
+                ;;
+            --php-src-dir=*)
+                PHP_SRC_DIR="${1#--php-src-dir=}"
+                ;;
+            --fixer)
+                shift
+                (($#)) || die '--fixer requires a value'
+                FIXER_ARGS+=(--fixer "$1")
+                ;;
+            --fixer=*)
+                FIXER_ARGS+=(--fixer "${1#--fixer=}")
+                ;;
+            --base)
+                shift
+                (($#)) || die '--base requires a value'
+                BASE_REF="$1"
+                ;;
+            --base=*)
+                BASE_REF="${1#--base=}"
+                ;;
+            --pr)
+                shift
+                (($#)) || die '--pr requires a value'
+                PR_NUMBER="$1"
+                ;;
+            --pr=*)
+                PR_NUMBER="${1#--pr=}"
+                ;;
+            --repo)
+                shift
+                (($#)) || die '--repo requires a value'
+                PR_REPO="$1"
+                ;;
+            --repo=*)
+                PR_REPO="${1#--repo=}"
+                ;;
+            --remote)
+                shift
+                (($#)) || die '--remote requires a value'
+                REMOTE="$1"
+                ;;
+            --remote=*)
+                REMOTE="${1#--remote=}"
+                ;;
+            --nah)
+                RESET=1
+                ;;
+            --no-run)
+                NO_RUN=1
+                ;;
+            --lfg)
+                LFG=1
+                ;;
+            --dry)
+                DRY=1
+                ;;
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            --)
+                shift
+                while (($#)); do
+                    TARGET_ARGS+=("$1")
+                    shift
+                done
+                ;;
+            -*)
+                die "unknown option: $1"
+                ;;
+            *)
+                TARGET_ARGS+=("$1")
+                ;;
+        esac
+        shift || true
+    done
+}
+
+resolve_php_src_dir() {
+    if [[ -z "$PHP_SRC_DIR" ]]; then
+        PHP_SRC_DIR="$TOOL_ROOT/$DEFAULT_PHP_SRC_DIR"
+    fi
+
+    PHP_SRC_DIR="$(cd -- "$PHP_SRC_DIR" && pwd)" || die "cannot resolve php-src dir: $PHP_SRC_DIR"
+}
+
+require_php_src_checkout() {
+    git -C "$PHP_SRC_DIR" rev-parse --show-toplevel >/dev/null 2>&1 \
+        || die "not a Git checkout: $PHP_SRC_DIR"
+
+    [[ -f "$PHP_SRC_DIR/run-tests.php" ]] \
+        || die "does not look like php-src; missing run-tests.php: $PHP_SRC_DIR"
+
+    [[ -f "$TOOL_ROOT/bin/php-src-cs.php" ]] \
+        || die "missing php-src-cs command: $TOOL_ROOT/bin/php-src-cs.php"
+}
+
+confirm_current_branch() {
+    local branch
+    branch="$(git -C "$PHP_SRC_DIR" branch --show-current)"
+    [[ -n "$branch" ]] || die 'php-src checkout is detached; refusing to continue'
+
+    printf 'php-src checkout: %s\n' "$PHP_SRC_DIR"
+    printf 'current branch:   %s\n' "$branch"
+    printf 'Type the current branch name to continue: '
+
+    local answer
+    IFS= read -r answer
+    [[ "$answer" == "$branch" ]] || die 'branch confirmation did not match'
+}
+
+ensure_tracked_clean() {
+    local dirty
+    dirty="$(git -C "$PHP_SRC_DIR" status --porcelain --untracked-files=no)"
+    [[ -z "$dirty" ]] || {
+        printf '%s\n' "$dirty" >&2
+        die 'php-src has tracked changes; commit/stash/reset them first'
+    }
+}
+
+target_list() {
+    if ((${#TARGET_ARGS[@]})); then
+        local target
+        for target in "${TARGET_ARGS[@]}"; do
+            normalise_target "$target"
+        done
+        return
+    fi
+
+    discover_default_targets
+}
+
+discover_default_targets() {
+    local dir
+
+    if [[ -d "$PHP_SRC_DIR/ext" ]]; then
+        while IFS= read -r dir; do
+            printf 'ext/%s\n' "$(basename -- "$dir")"
+        done < <(find "$PHP_SRC_DIR/ext" -mindepth 1 -maxdepth 1 -type d | sort)
+    fi
+
+    [[ -d "$PHP_SRC_DIR/Zend" ]] && printf 'Zend\n'
+    [[ -d "$PHP_SRC_DIR/tests" ]] && printf 'tests\n'
+
+    if [[ -d "$PHP_SRC_DIR/sapi" ]]; then
+        while IFS= read -r dir; do
+            printf 'sapi/%s\n' "$(basename -- "$dir")"
+        done < <(find "$PHP_SRC_DIR/sapi" -mindepth 1 -maxdepth 1 -type d | sort)
+    fi
+}
+
+normalise_target() {
+    local target="$1"
+
+    if [[ "$target" == "$PHP_SRC_DIR/"* ]]; then
+        target="${target#"$PHP_SRC_DIR/"}"
+    fi
+
+    target="${target#./}"
+    target="${target%/}"
+
+    [[ -e "$PHP_SRC_DIR/$target" ]] || die "target does not exist in php-src: $target"
+    printf '%s\n' "$target"
+}
+
+run_target() {
+    local target="$1"
+    local subject="$target: $COMMIT_SUFFIX"
+
+    printf '\n==> %s\n' "$target"
+    php "$TOOL_ROOT/bin/php-src-cs.php" fix \
+        --php-src-dir "$PHP_SRC_DIR" \
+        "${FIXER_ARGS[@]}" \
+        "$target"
+
+    if ! has_tracked_changes; then
+        printf 'No tracked changes for %s; no commit created.\n' "$target"
+        return
+    fi
+
+    ensure_changes_are_within_target "$target"
+
+    git -C "$PHP_SRC_DIR" add -- "$target"
+
+    if git -C "$PHP_SRC_DIR" diff --cached --quiet; then
+        printf 'No staged changes for %s; no commit created.\n' "$target"
+        return
+    fi
+
+    git -C "$PHP_SRC_DIR" commit -m "$subject"
+}
+
+has_tracked_changes() {
+    ! git -C "$PHP_SRC_DIR" diff --quiet || ! git -C "$PHP_SRC_DIR" diff --cached --quiet
+}
+
+ensure_changes_are_within_target() {
+    local target="$1"
+    local path
+
+    while IFS= read -r path; do
+        [[ -z "$path" ]] && continue
+
+        if [[ "$path" != "$target" && "$path" != "$target/"* ]]; then
+            git -C "$PHP_SRC_DIR" status --short --untracked-files=no >&2
+            die "fixer changed a path outside current target $target: $path"
+        fi
+    done < <(git -C "$PHP_SRC_DIR" diff --name-only && git -C "$PHP_SRC_DIR" diff --cached --name-only)
+}
+
+reset_generated_commits() {
+    ensure_tracked_clean
+
+    local count=0
+    local ref='HEAD'
+    local subject
+    local commits=()
+
+    while subject="$(git -C "$PHP_SRC_DIR" log -1 --format=%s "$ref" 2>/dev/null)"; do
+        [[ "$subject" == *": $COMMIT_SUFFIX" ]] || break
+        commits+=("$(git -C "$PHP_SRC_DIR" log -1 --format='%h %s' "$ref")")
+        count=$((count + 1))
+        ref="HEAD~$count"
+    done
+
+    if (( count == 0 )); then
+        printf 'No generated commits at HEAD to reset.\n'
+        return
+    fi
+
+    printf 'Generated commits to reset:\n'
+    printf '  %s\n' "${commits[@]}"
+    printf 'Type "nah %d" to run git reset --hard HEAD~%d: ' "$count" "$count"
+
+    local answer
+    IFS= read -r answer
+    [[ "$answer" == "nah $count" ]] || die 'reset confirmation did not match'
+
+    git -C "$PHP_SRC_DIR" reset --hard "HEAD~$count"
+}
+
+after_local_changes() {
+    local mode="$1"
+    local body_file
+    body_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-body.XXXXXX")"
+
+    generate_pr_body "$body_file"
+
+    if (( DRY )); then
+        preview_pr_description "$body_file"
+        return
+    fi
+
+    if (( LFG )); then
+        push_branch "$mode"
+        update_pr_description "$body_file"
+    else
+        printf '\n--lfg not passed; skipped push and PR edit.\n'
+        printf 'PR body preview: %s\n' "$body_file"
+    fi
+}
+
+preview_pr_description() {
+    local body_file="$1"
+
+    if (( ! LFG )); then
+        printf '\n--dry passed without --lfg; showing generated PR body block only.\n'
+        printf 'Generated PR body block: %s\n\n' "$body_file"
+        cat "$body_file"
+        return
+    fi
+
+    command -v gh >/dev/null 2>&1 || die 'gh is required for --lfg --dry PR body preview'
+
+    local current_file
+    local merged_file
+    current_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-current.XXXXXX")"
+    merged_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-dry.XXXXXX")"
+
+    gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json body --jq .body > "$current_file"
+    merge_pr_body "$current_file" "$body_file" "$merged_file"
+
+    printf '\n--dry passed; skipped push and PR edit.\n'
+    printf 'Unrendered merged PR body preview: %s\n\n' "$merged_file"
+    cat "$merged_file"
+}
+
+push_branch() {
+    local mode="$1"
+    local branch
+    branch="$(git -C "$PHP_SRC_DIR" branch --show-current)"
+
+    if [[ "$mode" == reset ]]; then
+        git -C "$PHP_SRC_DIR" push --force-with-lease "$REMOTE" "$branch"
+        return
+    fi
+
+    local remote_ref="$REMOTE/$branch"
+    if git -C "$PHP_SRC_DIR" rev-parse --verify --quiet "$remote_ref^{commit}" >/dev/null; then
+        local local_only
+        local remote_only
+        read -r local_only remote_only < <(
+            git -C "$PHP_SRC_DIR" rev-list --left-right --count "HEAD...$remote_ref"
+        )
+
+        if (( remote_only > 0 && local_only == 0 )); then
+            die "local branch is behind $remote_ref; refusing to push"
+        fi
+
+        if (( local_only > 0 && remote_only > 0 )); then
+            printf 'Branch diverged from %s; pushing with --force-with-lease.\n' "$remote_ref"
+            git -C "$PHP_SRC_DIR" push --force-with-lease "$REMOTE" "$branch"
+            return
+        fi
+    fi
+
+    git -C "$PHP_SRC_DIR" push "$REMOTE" "$branch"
+}
+
+update_pr_description() {
+    local body_file="$1"
+    command -v gh >/dev/null 2>&1 || die 'gh is required for --lfg PR editing'
+
+    local current_file
+    local merged_file
+    current_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-current.XXXXXX")"
+    merged_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-merged.XXXXXX")"
+
+    gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json body --jq .body > "$current_file"
+    merge_pr_body "$current_file" "$body_file" "$merged_file"
+    gh pr edit "$PR_NUMBER" --repo "$PR_REPO" --body-file "$merged_file"
+}
+
+merge_pr_body() {
+    local current_file="$1"
+    local generated_file="$2"
+    local output_file="$3"
+    local start='<!-- pr:targets:start -->'
+    local end='<!-- pr:targets:end -->'
+
+    grep -Fq "$start" "$current_file" \
+        || die "PR body does not contain target table start marker: $start"
+
+    grep -Fq "$end" "$current_file" \
+        || die "PR body does not contain target table end marker: $end"
+
+    awk -v start="$start" -v end="$end" -v generated="$generated_file" '
+        {
+            comparable = $0
+            sub(/\r$/, "", comparable)
+        }
+        comparable == start {
+            print
+            while ((getline line < generated) > 0) print line
+            in_block = 1
+            next
+        }
+        comparable == end {
+            print
+            in_block = 0
+            next
+        }
+        !in_block { print }
+    ' "$current_file" > "$output_file"
+}
+
+generate_pr_body() {
+    local output_file="$1"
+    local base
+    base="$(resolve_base_ref)"
+
+    local commits_file
+    commits_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-commits.XXXXXX")"
+    git -C "$PHP_SRC_DIR" log --reverse --format='%H%x09%s' "$base..HEAD" > "$commits_file"
+
+    local targets=()
+    local target
+
+    while IFS= read -r target; do
+        [[ -n "$target" ]] || continue
+        targets+=("$target")
+    done < <(committed_targets "$commits_file")
+
+    ((${#targets[@]})) || die "no generated target commits found between $base and HEAD"
+
+    {
+        printf '| Target | Commit | Files |\n'
+        printf '|---|---|---:|\n'
+
+        for target in "${targets[@]}"; do
+            printf '| %s | %s | %s |\n' \
+                "$target" \
+                "$(commit_cell_for_target "$target" "$commits_file")" \
+                "$(affected_files_cell_for_target "$target" "$commits_file")"
+        done
+    } > "$output_file"
+}
+
+resolve_base_ref() {
+    if [[ -n "$BASE_REF" ]]; then
+        git -C "$PHP_SRC_DIR" rev-parse --verify --quiet "$BASE_REF^{commit}" >/dev/null \
+            || die "base ref does not exist: $BASE_REF"
+        printf '%s\n' "$BASE_REF"
+        return
+    fi
+
+    local candidate
+    for candidate in upstream/master upstream/main origin/master master main; do
+        if git -C "$PHP_SRC_DIR" rev-parse --verify --quiet "$candidate^{commit}" >/dev/null; then
+            printf '%s\n' "$candidate"
+            return
+        fi
+    done
+
+    die 'cannot determine base ref; pass --base'
+}
+
+committed_targets() {
+    local commits_file="$1"
+    local hash subject target
+    local suffix=": $COMMIT_SUFFIX"
+
+    while IFS=$'\t' read -r hash subject; do
+        target="${subject%"$suffix"}"
+        [[ "$target" == "$subject" ]] && continue
+        printf '%s\n' "$target"
+    done < "$commits_file"
+}
+
+commit_cell_for_target() {
+    local target="$1"
+    local commits_file="$2"
+
+    local hash
+    if ! hash="$(commit_hash_for_target "$target" "$commits_file")"; then
+        printf ''
+        return
+    fi
+
+    printf '%s' "${hash:0:12}"
+}
+
+affected_files_cell_for_target() {
+    local target="$1"
+    local commits_file="$2"
+
+    local hash
+    if ! hash="$(commit_hash_for_target "$target" "$commits_file")"; then
+        printf ''
+        return
+    fi
+
+    git -C "$PHP_SRC_DIR" diff-tree --no-commit-id --name-only -r "$hash" -- \
+        | wc -l \
+        | tr -d '[:space:]'
+}
+
+commit_hash_for_target() {
+    local target="$1"
+    local commits_file="$2"
+    local hash subject
+
+    while IFS=$'\t' read -r hash subject; do
+        if [[ "$subject" == "$target: $COMMIT_SUFFIX" ]]; then
+            printf '%s\n' "$hash"
+            return
+        fi
+    done < "$commits_file"
+
+    return 1
+}
+
+main "$@"
