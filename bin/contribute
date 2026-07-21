@@ -44,7 +44,8 @@ With no target arguments, targets are discovered from php-src:
 Options:
   --php-src-dir DIR   php-src checkout. Default: $PHP_SRC_DIR or ../php__php-src
   --fixer NAME        Pass one fixer to php-src-cs. May be repeated.
-  --base REF          For PR table commit detection. Default: upstream/master
+  --base REF          For PR table commit detection. Default: associated PR base,
+                      or an interactive selection if no PR base is found.
   --pr NUMBER         GitHub PR number. Default: 22799
   --repo OWNER/REPO   GitHub repo for PR editing. Default: php/php-src
   --remote NAME       Remote to push to with --lfg. Default: origin
@@ -54,7 +55,7 @@ Options:
   --dry               Preview mode for --lfg: print merged PR body, skip push/edit.
   -h, --help          Show this help.
 
-Every run asks you to confirm the current php-src branch name.
+Every run asks you to confirm the current php-src branch.
 Without --lfg, local commits or local resets still happen, but push and PR editing are
 not performed; a generated PR body block preview path is printed instead.
 With --lfg --dry, the final merged PR body Markdown is printed without pushing
@@ -215,11 +216,18 @@ confirm_current_branch() {
 
     printf 'php-src checkout: %s\n' "$PHP_SRC_DIR"
     printf 'current branch:   %s\n' "$branch"
-    printf 'Type the current branch name to continue: '
+    printf 'Run on this branch? [y/N]: '
 
     local answer
-    IFS= read -r answer
-    [[ "$answer" == "$branch" ]] || die 'branch confirmation did not match'
+    IFS= read -r answer || die 'branch confirmation cancelled'
+
+    case "$answer" in
+        y|Y|yes|YES)
+            ;;
+        *)
+            die 'branch not confirmed'
+            ;;
+    esac
 }
 
 ensure_tracked_clean() {
@@ -511,21 +519,185 @@ generate_pr_body() {
 
 resolve_base_ref() {
     if [[ -n "$BASE_REF" ]]; then
-        git -C "$PHP_SRC_DIR" rev-parse --verify --quiet "$BASE_REF^{commit}" >/dev/null \
+        ref_exists "$BASE_REF" \
             || die "base ref does not exist: $BASE_REF"
         printf '%s\n' "$BASE_REF"
         return
     fi
 
+    local pr_base_name
+    if pr_base_name="$(current_branch_pr_base_name 2>/dev/null)" && [[ -n "$pr_base_name" ]]; then
+        local pr_base_ref
+        if pr_base_ref="$(base_name_to_local_ref "$pr_base_name")"; then
+            printf 'detected PR base: %s\n' "$pr_base_ref" >&2
+            printf '%s\n' "$pr_base_ref"
+            return
+        fi
+
+        die "associated PR base branch is not available locally: $pr_base_name"
+    fi
+
+    prompt_for_base_ref
+}
+
+ref_exists() {
+    git -C "$PHP_SRC_DIR" rev-parse --verify --quiet "$1^{commit}" >/dev/null
+}
+
+current_branch_pr_base_name() {
+    command -v gh >/dev/null 2>&1 || return 1
+
+    local branch
+    branch="$(git -C "$PHP_SRC_DIR" branch --show-current)" || return 1
+    [[ -n "$branch" ]] || return 1
+
+    local base_name
+    if base_name="$(
+        cd -- "$PHP_SRC_DIR" || exit 1
+        gh pr view --json baseRefName --jq .baseRefName
+    )" && [[ -n "$base_name" && "$base_name" != null ]]; then
+        printf '%s\n' "$base_name"
+        return
+    fi
+
+    if base_name="$(gh pr view "$branch" --repo "$PR_REPO" --json baseRefName --jq .baseRefName)" \
+        && [[ -n "$base_name" && "$base_name" != null ]]; then
+        printf '%s\n' "$base_name"
+        return
+    fi
+
+    local head_owner
+    head_owner="$(remote_owner "$REMOTE")" || return 1
+
+    base_name="$(
+        gh pr list \
+            --repo "$PR_REPO" \
+            --head "$head_owner:$branch" \
+            --state open \
+            --json baseRefName \
+            --jq '.[0].baseRefName'
+    )" || return 1
+
+    [[ -n "$base_name" && "$base_name" != null ]] || return 1
+    printf '%s\n' "$base_name"
+}
+
+remote_owner() {
+    local remote="$1"
+    local url
+    url="$(git -C "$PHP_SRC_DIR" remote get-url "$remote" 2>/dev/null)" || return 1
+
+    case "$url" in
+        git@github.com:*)
+            url="${url#git@github.com:}"
+            ;;
+        https://github.com/*)
+            url="${url#https://github.com/}"
+            ;;
+        http://github.com/*)
+            url="${url#http://github.com/}"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+
+    url="${url%%/*}"
+    [[ -n "$url" ]] || return 1
+    printf '%s\n' "$url"
+}
+
+base_name_to_local_ref() {
+    local base_name="$1"
     local candidate
-    for candidate in upstream/master upstream/main origin/master master main; do
-        if git -C "$PHP_SRC_DIR" rev-parse --verify --quiet "$candidate^{commit}" >/dev/null; then
+
+    for candidate in "upstream/$base_name" "origin/$base_name" "$base_name"; do
+        if ref_exists "$candidate"; then
             printf '%s\n' "$candidate"
             return
         fi
     done
 
-    die 'cannot determine base ref; pass --base'
+    return 1
+}
+
+prompt_for_base_ref() {
+    local candidates=()
+    local candidate
+
+    while IFS= read -r candidate; do
+        [[ -n "$candidate" ]] || continue
+        ref_exists "$candidate" || continue
+
+        local existing
+        local duplicate=0
+        for existing in "${candidates[@]}"; do
+            if [[ "$existing" == "$candidate" ]]; then
+                duplicate=1
+                break
+            fi
+        done
+
+        (( duplicate )) || candidates+=("$candidate")
+    done < <(base_ref_candidates)
+
+    ((${#candidates[@]})) || die 'cannot determine base ref; pass --base'
+
+    printf 'No associated PR base found. Select base ref:\n' >&2
+
+    local index
+    for index in "${!candidates[@]}"; do
+        printf '  %d) %s\n' "$((index + 1))" "${candidates[$index]}" >&2
+    done
+
+    printf 'Base [1-%d]: ' "${#candidates[@]}" >&2
+
+    local answer
+    IFS= read -r answer || die 'base selection cancelled'
+
+    [[ "$answer" =~ ^[0-9]+$ ]] || die 'base selection must be a number'
+    (( answer >= 1 && answer <= ${#candidates[@]} )) || die 'base selection out of range'
+
+    printf '%s\n' "${candidates[$((answer - 1))]}"
+}
+
+base_ref_candidates() {
+    printf '%s\n' \
+        upstream/PHP-8.5 \
+        upstream/PHP-8.4 \
+        upstream/PHP-8.3 \
+        upstream/master \
+        upstream/main \
+        origin/PHP-8.5 \
+        origin/PHP-8.4 \
+        origin/PHP-8.3 \
+        origin/master \
+        origin/main \
+        PHP-8.5 \
+        PHP-8.4 \
+        PHP-8.3 \
+        master \
+        main
+
+    git -C "$PHP_SRC_DIR" for-each-ref \
+        --format='%(refname:short)' \
+        refs/remotes/upstream \
+        refs/remotes/origin \
+        refs/heads \
+        2>/dev/null \
+        | while IFS= read -r candidate; do
+            is_base_candidate "$candidate" && printf '%s\n' "$candidate"
+        done
+}
+
+is_base_candidate() {
+    case "$1" in
+        upstream/master|upstream/main|origin/master|origin/main|master|main)
+            return 0
+            ;;
+    esac
+
+    [[ "$1" =~ ^(upstream/|origin/)?(PHP-8\.([3-9]|[1-9][0-9]+)|PHP-([9]|[1-9][0-9]+)\.[0-9]+)$ ]]
 }
 
 committed_targets() {
