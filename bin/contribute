@@ -33,35 +33,29 @@ usage() {
 Usage:
   bin/contribute [options] [target ...]
 
-Runs php-src-cs target-by-target against a php-src checkout. Each changed
-target gets one commit:
+Runs php-src-cs target-by-target for php-src PRs. Each changed target gets one
+commit:
 
   ext/intl: applied fixers to improve test robustness
 
-With no target arguments, targets are discovered from php-src:
-  ext/*, Zend, tests, sapi/*
-
 Options:
-  --php-src-dir DIR   php-src checkout. Default: $PHP_SRC_DIR or ../php__php-src
-  --fixer NAME        Pass one fixer to php-src-cs. May be repeated.
-  --base REF          For PR table commit detection. Default: associated PR base,
-                      or an interactive selection if no PR base is found.
-  --pr NUMBER         GitHub PR number. Default: 22799
-  --repo OWNER/REPO   GitHub repo for PR editing. Default: php/php-src
-  --remote NAME       Remote to push to with --lfg. Default: origin
-  --nah               Reset contiguous generated commits at HEAD.
-  --no-run            Do not run fixers; use existing generated commits at HEAD.
-  --lfg               Push branch and update the PR description.
-  --dry               Preview mode for --lfg: print merged PR body, skip push/edit.
-  -h, --help          Show this help.
+  --php-src-dir DIR  php-src checkout. Default: $PHP_SRC_DIR or ../php__php-src.
+  --base REF         Base ref for generated-commit detection.
+  --pr NUMBER        GitHub PR number. Default: 22799.
+  --repo OWNER/REPO  GitHub repository. Default: php/php-src.
+  --remote NAME      Push remote for --lfg. Default: origin.
+  --no-run           Use existing generated commits at HEAD.
+  --lfg              Push and update the PR body.
+  --nah              Reset contiguous generated commits at HEAD.
+  --dry              Preview only.
+  -h, --help         Show this help.
 
-Every run asks you to confirm the current php-src branch.
-Without --lfg, local commits or local resets still happen, but push and PR editing are
-not performed; a generated PR body block preview path is printed instead.
-With --lfg --dry, the final merged PR body Markdown is printed without pushing
-or editing the PR.
-With --no-run, no targets are executed; this is useful after commits already
-exist locally and you only want to preview or publish the PR description.
+Targets are php-src paths such as ext/intl, Zend, tests, or sapi/cli.
+No target means ext/*, Zend, tests, and sapi/*.
+
+Every run confirms the php-src branch first. Normal runs require a clean tracked
+php-src working tree.
+
 PR updates replace only the table between:
   <!-- pr:targets:start -->
   <!-- pr:targets:end -->
@@ -116,11 +110,14 @@ parse_args() {
             --php-src-dir=*)
                 PHP_SRC_DIR="${1#--php-src-dir=}"
                 ;;
+            # Forward fixer selection to php-src-cs instead of using its default
+            # set of all fixers.
             --fixer)
                 shift
                 (($#)) || die '--fixer requires a value'
                 FIXER_ARGS+=(--fixer "$1")
                 ;;
+            # Same as --fixer NAME, but in --fixer=NAME form.
             --fixer=*)
                 FIXER_ARGS+=(--fixer "${1#--fixer=}")
                 ;;
@@ -292,7 +289,7 @@ run_target() {
     php "$TOOL_ROOT/bin/php-src-cs.php" fix \
         --php-src-dir "$PHP_SRC_DIR" \
         "${FIXER_ARGS[@]}" \
-        "$target"
+        "$PHP_SRC_DIR/$target"
 
     if ! has_tracked_changes; then
         printf 'No tracked changes for %s; no commit created.\n' "$target"

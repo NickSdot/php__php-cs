@@ -58,12 +58,16 @@ final readonly class Application
 
     private function usage(string $script): void
     {
-        $this->io->out("Usage: php bin/$script <command> [options]\n");
-        $this->io->out("\n");
-        $this->io->out("Commands:\n");
-        $this->io->out("  fix       Apply or check php-src PHPT style fixes\n");
-        $this->io->out("  generate  Run fixture/data generators\n");
-        $this->io->out("\n");
-        $this->io->out("Run php bin/$script <command> --help for command options.\n");
+        $this->io->out(<<<USAGE
+            Usage:
+              php bin/$script <command> [options]
+
+            Commands:
+              fix       Apply or check PHPT fixes in a php-src checkout.
+              generate  Generate or refresh fixer fixtures.
+
+            Run `php bin/$script <command> --help` for command options.
+
+            USAGE);
     }
 }

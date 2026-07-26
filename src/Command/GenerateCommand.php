@@ -159,26 +159,32 @@ final readonly class GenerateCommand implements Command
                 continue;
             }
 
+            // Override the fixture root for tests and local fixture experiments
+            // that should not write into the default tests/Fixtures tree.
             if ('--fixtures-dir' === $arg) {
                 $fixturesRoot = $this->value($args, ++$i, '--fixtures-dir');
                 continue;
             }
 
+            // Same as --fixtures-dir DIR, but in --fixtures-dir=DIR form.
             if (str_starts_with($arg, '--fixtures-dir=')) {
                 $fixturesRoot = mb_substr($arg, mb_strlen('--fixtures-dir='));
                 continue;
             }
 
+            // Override where fixture generation reports are written.
             if ('--output-dir' === $arg || '--reports-dir' === $arg) {
                 $reportsRoot = $this->value($args, ++$i, $arg);
                 continue;
             }
 
+            // Same as --output-dir DIR, but in --output-dir=DIR form.
             if (str_starts_with($arg, '--output-dir=')) {
                 $reportsRoot = mb_substr($arg, mb_strlen('--output-dir='));
                 continue;
             }
 
+            // Same as --reports-dir DIR, but in --reports-dir=DIR form.
             if (str_starts_with($arg, '--reports-dir=')) {
                 $reportsRoot = mb_substr($arg, mb_strlen('--reports-dir='));
                 continue;
@@ -226,8 +232,21 @@ final readonly class GenerateCommand implements Command
 
     private function usage(string $script, ConsoleIo $io): void
     {
-        $io->out("Usage: php bin/$script --php-src-dir dir [--write] [--refresh-only] [--fixtures-dir dir] [--reports-dir dir] [--allow-dirty] [--force-php-binary-rebuild] [path ...]\n");
-        $io->out("Generates fixture coverage for every fixer. Writes only with --write.\n");
+        $io->out(<<<USAGE
+            Usage:
+              php bin/$script --php-src-dir DIR [options] [path ...]
+
+            Scans php-src once and generates fixture coverage for every fixer.
+
+            Options:
+              --php-src-dir DIR              Required php-src checkout.
+              --write                        Write fixtures and reports. Without it is a dry run.
+              --refresh-only                 Refresh existing fixtures; import no new old.phpt files.
+              --allow-dirty                  Allow discovery from a dirty php-src checkout.
+              --force-php-binary-rebuild     Rebuild the managed PHP test runtime.
+              -h, --help                     Show this help.
+
+            USAGE);
     }
 
     private function checkRuntime(ConsoleIo $io): bool

@@ -43,10 +43,14 @@ final class CommandContractTest extends TestCase
         self::assertSame(0, new Application($fixIo)->run(['php-src-cs.php', 'fix', '--help']));
         self::assertSame(0, new Application($generateIo)->run(['php-src-cs.php', 'generate', '--help']));
 
-        self::assertStringContainsString('Usage: php bin/php-src-cs.php fix', $fixIo->stdout);
+        self::assertStringContainsString('php bin/php-src-cs.php fix --php-src-dir DIR', $fixIo->stdout);
+        self::assertStringNotContainsString('--fixer', $fixIo->stdout);
         self::assertStringNotContainsString('--force-php-binary-rebuild', $fixIo->stdout);
-        self::assertStringContainsString('Usage: php bin/php-src-cs.php generate', $generateIo->stdout);
+        self::assertStringContainsString('php bin/php-src-cs.php generate --php-src-dir DIR', $generateIo->stdout);
         self::assertStringNotContainsString('Targets:', $generateIo->stdout);
+        self::assertStringNotContainsString('--fixtures-dir', $generateIo->stdout);
+        self::assertStringNotContainsString('--reports-dir', $generateIo->stdout);
+        self::assertStringNotContainsString('--output-dir', $generateIo->stdout);
         self::assertStringContainsString('--force-php-binary-rebuild', $generateIo->stdout);
     }
 

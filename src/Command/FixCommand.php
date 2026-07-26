@@ -105,11 +105,14 @@ final readonly class FixCommand implements Command
                 continue;
             }
 
+            // Restrict this run to selected fixer names instead of using the
+            // registry default of all fixers.
             if ('--fixer' === $arg) {
                 $fixers[] = $this->value($args, ++$i, '--fixer');
                 continue;
             }
 
+            // Same as --fixer NAME, but in --fixer=NAME form.
             if (str_starts_with($arg, '--fixer=')) {
                 $fixers[] = mb_substr($arg, mb_strlen('--fixer='));
                 continue;
@@ -250,8 +253,22 @@ final readonly class FixCommand implements Command
 
     private function usage(string $script, ConsoleIo $io): void
     {
-        $io->out("Usage: php bin/$script --php-src-dir dir [--check|--print] [--fixer name] [path ...]\n");
-        $io->out("Known fixers: " . $this->fixers->knownFixersLine() . "\n");
+        $io->out(<<<USAGE
+            Usage:
+              php bin/$script --php-src-dir DIR [options] [path ...]
+
+            Applies PHPT fixers to a php-src checkout.
+
+            Options:
+              --php-src-dir DIR  Required php-src checkout.
+              --check            Report changes without writing.
+              --print            Print rewritten content for exactly one PHPT file.
+              -h, --help         Show this help.
+
+            Paths are relative to php-src, or absolute paths inside it.
+            No path means the whole checkout.
+
+            USAGE);
     }
 
     private function toolRoot(): string
