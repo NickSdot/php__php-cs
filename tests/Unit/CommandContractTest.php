@@ -48,9 +48,7 @@ final class CommandContractTest extends TestCase
         self::assertStringNotContainsString('--force-php-binary-rebuild', $fixIo->stdout);
         self::assertStringContainsString('php bin/php-src-cs.php generate --php-src-dir DIR', $generateIo->stdout);
         self::assertStringNotContainsString('Targets:', $generateIo->stdout);
-        self::assertStringNotContainsString('--fixtures-dir', $generateIo->stdout);
-        self::assertStringNotContainsString('--reports-dir', $generateIo->stdout);
-        self::assertStringNotContainsString('--output-dir', $generateIo->stdout);
+        self::assertStringNotContainsString('--target-dir', $generateIo->stdout);
         self::assertStringContainsString('--force-php-binary-rebuild', $generateIo->stdout);
     }
 
@@ -67,6 +65,28 @@ final class CommandContractTest extends TestCase
         ]));
 
         self::assertSame("generate scans all fixers; pass php-src paths, not fixer names: exception-output\n", $io->stderr);
+    }
+
+    public function testGenerateTargetDirUsesProjectLayout(): void
+    {
+        $io = new BufferConsoleIo();
+        $phpSrc = $this->rootWithRunTests('<?php');
+        $targetDir = sys_get_temp_dir() . '/command-target-' . bin2hex(random_bytes(6));
+
+        $this->withConfiguredPhpBinary(function () use ($io, $phpSrc, $targetDir): void {
+            self::assertSame(0, new Application($io)->run([
+                'php-src-cs.php',
+                'generate',
+                '--php-src-dir',
+                $phpSrc,
+                '--target-dir',
+                $targetDir,
+                '--write',
+            ]));
+        });
+
+        self::assertFileExists($targetDir . '/reports/fixture_generation.md');
+        self::assertFileDoesNotExist($targetDir . '/fixture_generation.md');
     }
 
     public function testFixWriteRunWithSkippedCandidateReturnsSuccess(): void

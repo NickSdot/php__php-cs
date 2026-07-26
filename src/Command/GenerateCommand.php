@@ -114,8 +114,7 @@ final readonly class GenerateCommand implements Command
         }
 
         $phpSrcDir = null;
-        $fixturesRoot = $this->toolRoot() . '/tests/Fixtures';
-        $reportsRoot = $this->toolRoot() . '/reports';
+        $targetDir = $this->toolRoot();
         $allowDirty = false;
         $write = false;
         $forcePhpBinaryRebuild = false;
@@ -159,34 +158,16 @@ final readonly class GenerateCommand implements Command
                 continue;
             }
 
-            // Override the fixture root for tests and local fixture experiments
-            // that should not write into the default tests/Fixtures tree.
-            if ('--fixtures-dir' === $arg) {
-                $fixturesRoot = $this->value($args, ++$i, '--fixtures-dir');
+            // Redirect generated artefacts under a project-shaped target root:
+            // <target>/tests/Fixtures and <target>/reports.
+            if ('--target-dir' === $arg) {
+                $targetDir = $this->value($args, ++$i, '--target-dir');
                 continue;
             }
 
-            // Same as --fixtures-dir DIR, but in --fixtures-dir=DIR form.
-            if (str_starts_with($arg, '--fixtures-dir=')) {
-                $fixturesRoot = mb_substr($arg, mb_strlen('--fixtures-dir='));
-                continue;
-            }
-
-            // Override where fixture generation reports are written.
-            if ('--output-dir' === $arg || '--reports-dir' === $arg) {
-                $reportsRoot = $this->value($args, ++$i, $arg);
-                continue;
-            }
-
-            // Same as --output-dir DIR, but in --output-dir=DIR form.
-            if (str_starts_with($arg, '--output-dir=')) {
-                $reportsRoot = mb_substr($arg, mb_strlen('--output-dir='));
-                continue;
-            }
-
-            // Same as --reports-dir DIR, but in --reports-dir=DIR form.
-            if (str_starts_with($arg, '--reports-dir=')) {
-                $reportsRoot = mb_substr($arg, mb_strlen('--reports-dir='));
+            // Same as --target-dir DIR, but in --target-dir=DIR form.
+            if (str_starts_with($arg, '--target-dir=')) {
+                $targetDir = mb_substr($arg, mb_strlen('--target-dir='));
                 continue;
             }
 
@@ -205,11 +186,13 @@ final readonly class GenerateCommand implements Command
             throw new CommandFailure('--php-src-dir /path/to/php-src is required');
         }
 
+        $targetDir = $this->paths->absolute($targetDir, $workingDir);
+
         return new GenerateOptions(
             phpSrcRoot: PhpSrcRoot::fromPath($phpSrcDir),
             phpTestRuntimeRoot: PhpSrcRoot::fromPath($phpSrcDir),
-            fixturesRoot: $this->paths->absolute($fixturesRoot, $workingDir),
-            reportsRoot: $this->paths->absolute($reportsRoot, $workingDir),
+            fixturesRoot: $targetDir . '/tests/Fixtures',
+            reportsRoot: $targetDir . '/reports',
             paths: $paths,
             allowDirty: $allowDirty,
             write: $write,
@@ -240,7 +223,7 @@ final readonly class GenerateCommand implements Command
 
             Options:
               --php-src-dir DIR              Required php-src checkout.
-              --write                        Write fixtures and reports. Without it is a dry run.
+              --write                        Write fixtures and reports  Without it is a dry run.
               --refresh-only                 Refresh existing fixtures; import no new old.phpt files.
               --allow-dirty                  Allow discovery from a dirty php-src checkout.
               --force-php-binary-rebuild     Rebuild the managed PHP test runtime.
