@@ -13,6 +13,7 @@ TOOL_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 PHP_SRC_DIR="${PHP_SRC_DIR:-}"
 PR_NUMBER=""
 PR_REPO=""
+EXISTING_PR_BASE_NAME=""
 RESOLVED_BASE_REF=""
 RESOLVED_BASE_NAME=""
 PUSH_REMOTE=""
@@ -251,7 +252,7 @@ run_target() {
 
     ensure_changes_are_within_target "$target"
 
-    git -C "$PHP_SRC_DIR" add -- "$target"
+    git -C "$PHP_SRC_DIR" add -u -- "$target"
 
     if git -C "$PHP_SRC_DIR" diff --cached --quiet; then
         printf 'No staged changes for %s; no commit created.\n' "$target"
@@ -361,6 +362,7 @@ preview_pr_description() {
     merge_pr_body "$current_file" "$body_file" "$merged_file"
 
     printf '\n--dry passed; skipped push and PR edit.\n'
+    print_pr_base_change_preview
     printf 'Unrendered merged PR body preview: %s\n\n' "$merged_file"
     cat "$merged_file"
 }
@@ -414,6 +416,7 @@ update_pr_description() {
 
     gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json body --jq .body > "$current_file"
     merge_pr_body "$current_file" "$body_file" "$merged_file"
+    sync_pr_base_if_needed
     gh pr edit "$PR_NUMBER" --repo "$PR_REPO" --body-file "$merged_file"
 }
 
@@ -528,12 +531,19 @@ resolve_base_context() {
         return
     fi
 
+    local base_ref
+    if base_ref="$(infer_local_base_ref)"; then
+        printf 'detected base: %s\n' "$base_ref" >&2
+        RESOLVED_BASE_REF="$base_ref"
+        RESOLVED_BASE_NAME="$(base_name_from_ref "$base_ref")"
+        return
+    fi
+
     if [[ -z "$RESOLVED_BASE_NAME" ]]; then
         resolve_existing_pr_context || true
     fi
 
     if [[ -n "$RESOLVED_BASE_NAME" ]]; then
-        local base_ref
         if base_ref="$(base_name_to_local_ref "$RESOLVED_BASE_NAME")"; then
             printf 'detected base: %s\n' "$base_ref" >&2
             RESOLVED_BASE_REF="$base_ref"
@@ -545,6 +555,24 @@ resolve_base_context() {
 
     RESOLVED_BASE_REF="$(prompt_for_base_ref)"
     RESOLVED_BASE_NAME="$(base_name_from_ref "$RESOLVED_BASE_REF")"
+}
+
+infer_local_base_ref() {
+    local candidate
+    local head
+
+    head="$(git -C "$PHP_SRC_DIR" rev-parse HEAD)" || return 1
+
+    while IFS= read -r candidate; do
+        [[ -n "$candidate" ]] || continue
+        ref_exists "$candidate" || continue
+        git -C "$PHP_SRC_DIR" merge-base --is-ancestor "$candidate" "$head" || continue
+
+        printf '%s\n' "$candidate"
+        return
+    done < <(base_ref_candidates)
+
+    return 1
 }
 
 ref_exists() {
@@ -609,10 +637,38 @@ populate_pr_context() {
     PR_REPO="$(github_repo_from_pr_url "$url")" || return 1
 
     if [[ -n "$base_name" && "$base_name" != null ]]; then
+        EXISTING_PR_BASE_NAME="$base_name"
+    fi
+
+    if [[ -z "$RESOLVED_BASE_NAME" && -n "$base_name" && "$base_name" != null ]]; then
         RESOLVED_BASE_NAME="$base_name"
     fi
 
     return 0
+}
+
+print_pr_base_change_preview() {
+    if [[ -z "$EXISTING_PR_BASE_NAME" || -z "$RESOLVED_BASE_NAME" ]]; then
+        return
+    fi
+
+    if [[ "$EXISTING_PR_BASE_NAME" == "$RESOLVED_BASE_NAME" ]]; then
+        return
+    fi
+
+    printf 'PR base would change: %s -> %s\n' "$EXISTING_PR_BASE_NAME" "$RESOLVED_BASE_NAME"
+}
+
+sync_pr_base_if_needed() {
+    if [[ -z "$EXISTING_PR_BASE_NAME" || -z "$RESOLVED_BASE_NAME" ]]; then
+        return
+    fi
+
+    if [[ "$EXISTING_PR_BASE_NAME" == "$RESOLVED_BASE_NAME" ]]; then
+        return
+    fi
+
+    gh pr edit "$PR_NUMBER" --repo "$PR_REPO" --base "$RESOLVED_BASE_NAME"
 }
 
 infer_pr_repo() {
@@ -831,21 +887,21 @@ prompt_for_base_ref() {
 
 base_ref_candidates() {
     printf '%s\n' \
+        upstream/master \
+        upstream/main \
         upstream/PHP-8.5 \
         upstream/PHP-8.4 \
         upstream/PHP-8.3 \
-        upstream/master \
-        upstream/main \
+        origin/master \
+        origin/main \
         origin/PHP-8.5 \
         origin/PHP-8.4 \
         origin/PHP-8.3 \
-        origin/master \
-        origin/main \
+        master \
+        main \
         PHP-8.5 \
         PHP-8.4 \
-        PHP-8.3 \
-        master \
-        main
+        PHP-8.3
 
     git -C "$PHP_SRC_DIR" for-each-ref \
         --format='%(refname:short)' \
