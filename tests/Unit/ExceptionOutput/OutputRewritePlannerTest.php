@@ -28,7 +28,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansCaughtExceptionLabelRewrite(): void
@@ -45,7 +45,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansAssertLabelRewrite(): void
@@ -79,7 +79,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), ' on line ', \$e->getLine(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), ' on line ', \$e->getLine(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansLinePrefixRewriteAsNormalisedLocationOutput(): void
@@ -96,7 +96,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), ' on line ', \$e->getLine(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), ' on line ', \$e->getLine(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansParenthesizedLineRewriteAsNormalisedLocationOutput(): void
@@ -113,7 +113,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), ' on line ', \$e->getLine(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), ' on line ', \$e->getLine(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansAtFileLineRewriteAsNormalisedLocationOutput(): void
@@ -131,7 +131,7 @@ final class OutputRewritePlannerTest extends TestCase
 
         self::assertCount(1, $plans);
         self::assertSame(
-            "echo \$e::class, ': ', \$e->getMessage(), ' in ', \$e->getFile(), ' on line ', \$e->getLine(), PHP_EOL;",
+            "echo \$e::class, ': ', \$e->getMessage(), ' in ', \$e->getFile(), ' on line ', \$e->getLine(), \"\\n\";",
             $plans[0]->replacement,
         );
     }
@@ -151,7 +151,7 @@ final class OutputRewritePlannerTest extends TestCase
 
         self::assertCount(1, $plans);
         self::assertSame(
-            "echo \$ex::class, ': ', \$ex->getCode(), ': ', \$ex->getMessage(), ' in ', \$ex->getFile(), ' on line ', \$ex->getLine(), PHP_EOL;",
+            "echo \$ex::class, ': ', \$ex->getCode(), ': ', \$ex->getMessage(), ' in ', \$ex->getFile(), ' on line ', \$ex->getLine(), \"\\n\";",
             $plans[0]->replacement,
         );
     }
@@ -187,7 +187,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getCode(), ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getCode(), ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansMixedVarDumpMessageAndVariableRewrite(): void
@@ -206,7 +206,7 @@ final class OutputRewritePlannerTest extends TestCase
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(1, $plans);
-        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;\n    var_dump(\$msg);", $fixed);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";\n    var_dump(\$msg);", $fixed);
     }
 
     public function testPlansHtmlBreakSuffixRewrite(): void
@@ -242,7 +242,7 @@ final class OutputRewritePlannerTest extends TestCase
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(1, $plans);
-        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $fixed);
         self::assertStringNotContainsString("echo \"\\n\";", $fixed);
     }
 
@@ -260,7 +260,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansContextLabelRewrite(): void
@@ -277,7 +277,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'class-based reflection: ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'class-based reflection: ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansUnexpectedExceptionLabelRewrite(): void
@@ -294,7 +294,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'unexpected: ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'unexpected: ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansExceptionThrownForContextLabelRewrite(): void
@@ -311,7 +311,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'invalid flags: ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'invalid flags: ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansPlainTrashLabelRewrite(): void
@@ -328,7 +328,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansExceptionTypeThrownLabelRewrite(): void
@@ -345,7 +345,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansBracketedNumericMarkerPrefixRewrite(): void
@@ -362,7 +362,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo '[001] ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo '[001] ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansErrorNumberVarDumpMarkerPrefixRewrite(): void
@@ -379,7 +379,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'ERROR 1: ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'ERROR 1: ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansVariableClassMessageMarkerPrefixRewrite(): void
@@ -398,7 +398,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$type, '=>', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$type, '=>', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansPreservedLiteralMessagePrefixRewrite(): void
@@ -415,7 +415,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'bool: ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'bool: ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansPreservedLiteralClassMessagePrefixRewrite(): void
@@ -432,7 +432,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'Wrong exception type thrown: ', \$t::class, ': ', \$t->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'Wrong exception type thrown: ', \$t::class, ': ', \$t->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansPreservedVariableMessagePrefixRewrite(): void
@@ -468,7 +468,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \"(\$ns_readable, \\\"\$qname\\\"): \", \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \"(\$ns_readable, \\\"\$qname\\\"): \", \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansBracketedClassRewrite(): void
@@ -485,7 +485,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansSpacedClassMessageSeparatorRewrite(): void
@@ -502,7 +502,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansQuotedClassMessageWrapperRewrite(): void
@@ -519,7 +519,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansCatchTypeLabelRewrite(): void
@@ -536,7 +536,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansUnexpectedCatchDiagnosticRewriteWithoutDuplicatingCatchType(): void
@@ -570,7 +570,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'Valid flags rejected: ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'Valid flags rejected: ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansFailedAsExpectedDiagnosticPrefixRewrite(): void
@@ -587,7 +587,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'Instance-based creation failed as expected: ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'Instance-based creation failed as expected: ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansCompareExceptionDiagnosticPrefixRewrite(): void
@@ -621,7 +621,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansCaughtParenthesizedClassMessageRewrite(): void
@@ -638,7 +638,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansCatchInsideClosureArgument(): void
@@ -657,7 +657,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$exception::class, ': ', \$exception->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$exception::class, ': ', \$exception->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansClassThenMessageRewriteAsOneStatement(): void
@@ -711,8 +711,8 @@ final class OutputRewritePlannerTest extends TestCase
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(2, $plans);
-        self::assertStringContainsString("echo \"Position is => \", PHP_EOL;", $fixed);
-        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo \"Position is => \", \"\\n\";", $fixed);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $fixed);
         self::assertStringNotContainsString("echo PHP_EOL, \$e::class", $fixed);
     }
 
@@ -731,7 +731,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo PHP_EOL, \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \"\\n\", \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansMovesLeadingSeparatorToPreviousFunctionEcho(): void
@@ -790,7 +790,7 @@ final class OutputRewritePlannerTest extends TestCase
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(2, $plans);
-        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $fixed);
         self::assertStringContainsString("echo \"*** Next section ***\\n\";", $fixed);
     }
 
@@ -811,7 +811,7 @@ final class OutputRewritePlannerTest extends TestCase
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(2, $plans);
-        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $fixed);
         self::assertStringContainsString("echo \"\\n*** Next section ***\\n\";", $fixed);
     }
 
@@ -860,7 +860,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testDoesNotPlanPreviousExceptionRewrite(): void
@@ -900,7 +900,7 @@ final class OutputRewritePlannerTest extends TestCase
 
         self::assertCount(1, $plans);
         self::assertStringContainsString(
-            "echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;",
+            "echo \$e::class, ': ', \$e->getMessage(), \"\\n\";",
             $fixed,
         );
         self::assertStringNotContainsString('ho $e->getMessage()', $fixed);
@@ -921,7 +921,7 @@ final class OutputRewritePlannerTest extends TestCase
 
         self::assertCount(1, $plans);
         self::assertSame(
-            "echo '  ', \$e::class . ': ' . \$e->getMessage(), PHP_EOL, \$e->getTraceAsString();",
+            "echo '  ', \$e::class . ': ' . \$e->getMessage(), \"\\n\", \$e->getTraceAsString();",
             $plans[0]->replacement,
         );
     }
@@ -940,7 +940,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \"PQ Case \$i: \", \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \"PQ Case \$i: \", \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansDynamicContextRewriteWithoutExceptionMarker(): void
@@ -957,7 +957,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \"Property \$property from class: \", \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \"Property \$property from class: \", \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansDynamicContextRewriteWithoutThrownMarker(): void
@@ -974,7 +974,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \"Valid assignment \$prop2 =& \$prop1 \", \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \"Valid assignment \$prop2 =& \$prop1 \", \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansExpressionContextPrefixRewrite(): void
@@ -991,7 +991,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$rf->getName(), ': ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$rf->getName(), ': ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     /** @param list<TextEdit> $plans */

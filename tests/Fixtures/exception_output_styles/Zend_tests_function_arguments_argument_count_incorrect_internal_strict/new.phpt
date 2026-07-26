@@ -12,7 +12,7 @@ try {
 try {
     array_diff();
 } catch (ArgumentCountError $e) {
-    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECT--
