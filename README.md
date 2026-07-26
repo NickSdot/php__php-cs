@@ -52,11 +52,13 @@ Important behaviour:
 
 - confirms the current `php-src` branch;
 - requires a clean tracked `php-src` working tree;
-- runs targets separately;
+- runs all fixers target-by-target;
 - creates one commit per changed target;
+- infers the PR, base branch, repository, and push remote from the current branch;
 - with no targets, uses `ext/*`, `Zend`, `tests`, and `sapi/*`;
-- with `--lfg --dry`, prints the PR body that would be submitted;
-- with `--lfg`, pushes and updates the PR body;
+- if there is no open PR, asks for the base branch when needed;
+- with `--lfg --dry`, prints the PR body that would be submitted or used for a new draft PR;
+- with `--lfg`, pushes and updates the PR body, or creates a draft PR;
 - with `--nah`, resets contiguous generated commits at `HEAD`.
 
 PR body updates replace only the table between:

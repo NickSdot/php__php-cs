@@ -3,24 +3,23 @@
 set -Eeuo pipefail
 
 COMMIT_SUFFIX="applied fixers to improve test robustness"
-DEFAULT_PR_NUMBER="22799"
+DEFAULT_PR_TITLE="Apply fixers to improve test robustness"
 DEFAULT_PR_REPO="php/php-src"
-DEFAULT_REMOTE="origin"
 DEFAULT_PHP_SRC_DIR="../php__php-src"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 TOOL_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 
 PHP_SRC_DIR="${PHP_SRC_DIR:-}"
-PR_NUMBER="$DEFAULT_PR_NUMBER"
-PR_REPO="$DEFAULT_PR_REPO"
-REMOTE="$DEFAULT_REMOTE"
-BASE_REF=""
+PR_NUMBER=""
+PR_REPO=""
+RESOLVED_BASE_REF=""
+RESOLVED_BASE_NAME=""
+PUSH_REMOTE=""
 LFG=0
 RESET=0
 DRY=0
 NO_RUN=0
-FIXER_ARGS=()
 TARGET_ARGS=()
 
 die() {
@@ -33,19 +32,15 @@ usage() {
 Usage:
   bin/contribute [options] [target ...]
 
-Runs php-src-cs target-by-target for php-src PRs. Each changed target gets one
-commit:
+Runs all php-src-cs fixers target-by-target for php-src PRs. Each changed target
+gets one commit:
 
   ext/intl: applied fixers to improve test robustness
 
 Options:
   --php-src-dir DIR  php-src checkout. Default: $PHP_SRC_DIR or ../php__php-src.
-  --base REF         Base ref for generated-commit detection.
-  --pr NUMBER        GitHub PR number. Default: 22799.
-  --repo OWNER/REPO  GitHub repository. Default: php/php-src.
-  --remote NAME      Push remote for --lfg. Default: origin.
   --no-run           Use existing generated commits at HEAD.
-  --lfg              Push and update the PR body.
+  --lfg              Push and update the PR body, or create a draft PR.
   --nah              Reset contiguous generated commits at HEAD.
   --dry              Preview only.
   -h, --help         Show this help.
@@ -55,6 +50,9 @@ No target means ext/*, Zend, tests, and sapi/*.
 
 Every run confirms the php-src branch first. Normal runs require a clean tracked
 php-src working tree.
+
+If the current branch has no open PR, --lfg creates a draft PR. In that case the
+base branch is selected interactively when it cannot be inferred.
 
 PR updates replace only the table between:
   <!-- pr:targets:start -->
@@ -77,7 +75,6 @@ main() {
 
     if (( NO_RUN )); then
         (( ${#TARGET_ARGS[@]} == 0 )) || die '--no-run cannot be combined with target arguments'
-        (( ${#FIXER_ARGS[@]} == 0 )) || die '--no-run cannot be combined with --fixer'
         ensure_tracked_clean
         after_local_changes run
         return
@@ -92,7 +89,7 @@ main() {
 
     ensure_tracked_clean
 
-    for target in "${targets[@]}"; do
+    for target in ${targets[@]+"${targets[@]}"}; do
         run_target "$target"
     done
 
@@ -109,49 +106,6 @@ parse_args() {
                 ;;
             --php-src-dir=*)
                 PHP_SRC_DIR="${1#--php-src-dir=}"
-                ;;
-            # Forward fixer selection to php-src-cs instead of using its default
-            # set of all fixers.
-            --fixer)
-                shift
-                (($#)) || die '--fixer requires a value'
-                FIXER_ARGS+=(--fixer "$1")
-                ;;
-            # Same as --fixer NAME, but in --fixer=NAME form.
-            --fixer=*)
-                FIXER_ARGS+=(--fixer "${1#--fixer=}")
-                ;;
-            --base)
-                shift
-                (($#)) || die '--base requires a value'
-                BASE_REF="$1"
-                ;;
-            --base=*)
-                BASE_REF="${1#--base=}"
-                ;;
-            --pr)
-                shift
-                (($#)) || die '--pr requires a value'
-                PR_NUMBER="$1"
-                ;;
-            --pr=*)
-                PR_NUMBER="${1#--pr=}"
-                ;;
-            --repo)
-                shift
-                (($#)) || die '--repo requires a value'
-                PR_REPO="$1"
-                ;;
-            --repo=*)
-                PR_REPO="${1#--repo=}"
-                ;;
-            --remote)
-                shift
-                (($#)) || die '--remote requires a value'
-                REMOTE="$1"
-                ;;
-            --remote=*)
-                REMOTE="${1#--remote=}"
                 ;;
             --nah)
                 RESET=1
@@ -288,7 +242,6 @@ run_target() {
     printf '\n==> %s\n' "$target"
     php "$TOOL_ROOT/bin/php-src-cs.php" fix \
         --php-src-dir "$PHP_SRC_DIR" \
-        "${FIXER_ARGS[@]}" \
         "$PHP_SRC_DIR/$target"
 
     if ! has_tracked_changes; then
@@ -395,6 +348,15 @@ preview_pr_description() {
     current_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-current.XXXXXX")"
     merged_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-dry.XXXXXX")"
 
+    if ! resolve_existing_pr_context; then
+        write_new_pr_body "$body_file" "$merged_file"
+        printf '\n--dry passed; skipped push and PR creation.\n'
+        printf 'No open PR found for the current branch.\n'
+        printf 'Draft PR body preview: %s\n\n' "$merged_file"
+        cat "$merged_file"
+        return
+    fi
+
     gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json body --jq .body > "$current_file"
     merge_pr_body "$current_file" "$body_file" "$merged_file"
 
@@ -407,13 +369,14 @@ push_branch() {
     local mode="$1"
     local branch
     branch="$(git -C "$PHP_SRC_DIR" branch --show-current)"
+    PUSH_REMOTE="$(resolve_push_remote)"
 
     if [[ "$mode" == reset ]]; then
-        git -C "$PHP_SRC_DIR" push --force-with-lease "$REMOTE" "$branch"
+        git -C "$PHP_SRC_DIR" push --force-with-lease "$PUSH_REMOTE" "$branch"
         return
     fi
 
-    local remote_ref="$REMOTE/$branch"
+    local remote_ref="$PUSH_REMOTE/$branch"
     if git -C "$PHP_SRC_DIR" rev-parse --verify --quiet "$remote_ref^{commit}" >/dev/null; then
         local local_only
         local remote_only
@@ -427,12 +390,12 @@ push_branch() {
 
         if (( local_only > 0 && remote_only > 0 )); then
             printf 'Branch diverged from %s; pushing with --force-with-lease.\n' "$remote_ref"
-            git -C "$PHP_SRC_DIR" push --force-with-lease "$REMOTE" "$branch"
+            git -C "$PHP_SRC_DIR" push --force-with-lease "$PUSH_REMOTE" "$branch"
             return
         fi
     fi
 
-    git -C "$PHP_SRC_DIR" push "$REMOTE" "$branch"
+    git -C "$PHP_SRC_DIR" push "$PUSH_REMOTE" "$branch"
 }
 
 update_pr_description() {
@@ -444,9 +407,56 @@ update_pr_description() {
     current_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-current.XXXXXX")"
     merged_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-merged.XXXXXX")"
 
+    if ! resolve_existing_pr_context; then
+        create_draft_pr "$body_file"
+        return
+    fi
+
     gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json body --jq .body > "$current_file"
     merge_pr_body "$current_file" "$body_file" "$merged_file"
     gh pr edit "$PR_NUMBER" --repo "$PR_REPO" --body-file "$merged_file"
+}
+
+write_new_pr_body() {
+    local generated_file="$1"
+    local output_file="$2"
+
+    {
+        printf '<!-- pr:targets:start -->\n'
+        cat "$generated_file"
+        printf '<!-- pr:targets:end -->\n'
+    } > "$output_file"
+}
+
+create_draft_pr() {
+    local body_file="$1"
+    local branch
+    local body_with_markers
+    local head_owner
+    local pr_url
+
+    branch="$(current_branch)"
+    body_with_markers="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-pr-create.XXXXXX")"
+    write_new_pr_body "$body_file" "$body_with_markers"
+
+    resolve_base_context
+    PR_REPO="$(infer_pr_repo)"
+    [[ -n "$PUSH_REMOTE" ]] || PUSH_REMOTE="$(resolve_push_remote)"
+    head_owner="$(remote_owner "$PUSH_REMOTE")" \
+        || die "cannot infer GitHub owner from push remote: $PUSH_REMOTE"
+
+    pr_url="$(
+        cd -- "$PHP_SRC_DIR" || exit 1
+        gh pr create \
+            --repo "$PR_REPO" \
+            --head "$head_owner:$branch" \
+            --base "$RESOLVED_BASE_NAME" \
+            --title "$DEFAULT_PR_TITLE" \
+            --body-file "$body_with_markers" \
+            --draft
+    )"
+
+    printf 'Created draft PR: %s\n' "$pr_url"
 }
 
 merge_pr_body() {
@@ -484,12 +494,11 @@ merge_pr_body() {
 
 generate_pr_body() {
     local output_file="$1"
-    local base
-    base="$(resolve_base_ref)"
+    resolve_base_context
 
     local commits_file
     commits_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-commits.XXXXXX")"
-    git -C "$PHP_SRC_DIR" log --reverse --format='%H%x09%s' "$base..HEAD" > "$commits_file"
+    git -C "$PHP_SRC_DIR" log --reverse --format='%H%x09%s' "$RESOLVED_BASE_REF..HEAD" > "$commits_file"
 
     local targets=()
     local target
@@ -499,7 +508,7 @@ generate_pr_body() {
         targets+=("$target")
     done < <(committed_targets "$commits_file")
 
-    ((${#targets[@]})) || die "no generated target commits found between $base and HEAD"
+    ((${#targets[@]})) || die "no generated target commits found between $RESOLVED_BASE_REF and HEAD"
 
     {
         printf '| Target | Commit | Files |\n'
@@ -514,94 +523,236 @@ generate_pr_body() {
     } > "$output_file"
 }
 
-resolve_base_ref() {
-    if [[ -n "$BASE_REF" ]]; then
-        ref_exists "$BASE_REF" \
-            || die "base ref does not exist: $BASE_REF"
-        printf '%s\n' "$BASE_REF"
+resolve_base_context() {
+    if [[ -n "$RESOLVED_BASE_REF" ]]; then
         return
     fi
 
-    local pr_base_name
-    if pr_base_name="$(current_branch_pr_base_name 2>/dev/null)" && [[ -n "$pr_base_name" ]]; then
-        local pr_base_ref
-        if pr_base_ref="$(base_name_to_local_ref "$pr_base_name")"; then
-            printf 'detected PR base: %s\n' "$pr_base_ref" >&2
-            printf '%s\n' "$pr_base_ref"
+    if [[ -z "$RESOLVED_BASE_NAME" ]]; then
+        resolve_existing_pr_context || true
+    fi
+
+    if [[ -n "$RESOLVED_BASE_NAME" ]]; then
+        local base_ref
+        if base_ref="$(base_name_to_local_ref "$RESOLVED_BASE_NAME")"; then
+            printf 'detected base: %s\n' "$base_ref" >&2
+            RESOLVED_BASE_REF="$base_ref"
             return
         fi
 
-        die "associated PR base branch is not available locally: $pr_base_name"
+        die "base branch is not available locally: $RESOLVED_BASE_NAME"
     fi
 
-    prompt_for_base_ref
+    RESOLVED_BASE_REF="$(prompt_for_base_ref)"
+    RESOLVED_BASE_NAME="$(base_name_from_ref "$RESOLVED_BASE_REF")"
 }
 
 ref_exists() {
     git -C "$PHP_SRC_DIR" rev-parse --verify --quiet "$1^{commit}" >/dev/null
 }
 
-current_branch_pr_base_name() {
+resolve_existing_pr_context() {
+    if [[ -n "$PR_NUMBER" && -n "$PR_REPO" ]]; then
+        return
+    fi
+
     command -v gh >/dev/null 2>&1 || return 1
 
-    local branch
-    branch="$(git -C "$PHP_SRC_DIR" branch --show-current)" || return 1
-    [[ -n "$branch" ]] || return 1
-
-    local base_name
-    if base_name="$(
+    local line
+    if line="$(
         cd -- "$PHP_SRC_DIR" || exit 1
-        gh pr view --json baseRefName --jq .baseRefName
-    )" && [[ -n "$base_name" && "$base_name" != null ]]; then
-        printf '%s\n' "$base_name"
+        gh pr view --json number,url,baseRefName \
+            --jq '[.url, (.number|tostring), .baseRefName] | @tsv' \
+            2>/dev/null
+    )" && populate_pr_context "$line"; then
         return
     fi
 
-    if base_name="$(gh pr view "$branch" --repo "$PR_REPO" --json baseRefName --jq .baseRefName)" \
-        && [[ -n "$base_name" && "$base_name" != null ]]; then
-        printf '%s\n' "$base_name"
-        return
-    fi
+    local branch
+    branch="$(current_branch)" || return 1
+
+    PR_REPO="${PR_REPO:-$(infer_pr_repo)}"
 
     local head_owner
-    head_owner="$(remote_owner "$REMOTE")" || return 1
+    while IFS= read -r head_owner; do
+        [[ -n "$head_owner" ]] || continue
 
-    base_name="$(
-        gh pr list \
-            --repo "$PR_REPO" \
-            --head "$head_owner:$branch" \
-            --state open \
-            --json baseRefName \
-            --jq '.[0].baseRefName'
-    )" || return 1
+        line="$(
+            gh pr list \
+                --repo "$PR_REPO" \
+                --head "$head_owner:$branch" \
+                --state open \
+                --json number,url,baseRefName \
+                --jq '.[0] | select(. != null) | [.url, (.number|tostring), .baseRefName] | @tsv' \
+                2>/dev/null
+        )" || continue
 
-    [[ -n "$base_name" && "$base_name" != null ]] || return 1
-    printf '%s\n' "$base_name"
+        if populate_pr_context "$line"; then
+            return
+        fi
+    done < <(head_owners)
+
+    return 1
+}
+
+populate_pr_context() {
+    local line="$1"
+    local url
+    local number
+    local base_name
+
+    IFS=$'\t' read -r url number base_name <<< "$line"
+
+    [[ -n "$url" && -n "$number" && "$number" != null ]] || return 1
+
+    PR_NUMBER="$number"
+    PR_REPO="$(github_repo_from_pr_url "$url")" || return 1
+
+    if [[ -n "$base_name" && "$base_name" != null ]]; then
+        RESOLVED_BASE_NAME="$base_name"
+    fi
+
+    return 0
+}
+
+infer_pr_repo() {
+    if [[ -n "$PR_REPO" ]]; then
+        printf '%s\n' "$PR_REPO"
+        return
+    fi
+
+    local repo
+    if repo="$(remote_repo upstream 2>/dev/null)"; then
+        printf '%s\n' "$repo"
+        return
+    fi
+
+    printf '%s\n' "$DEFAULT_PR_REPO"
+}
+
+resolve_push_remote() {
+    local candidate
+    while IFS= read -r candidate; do
+        [[ -n "$candidate" ]] || continue
+        if remote_exists "$candidate"; then
+            printf '%s\n' "$candidate"
+            return
+        fi
+    done < <(
+        branch_push_remote || true
+        git -C "$PHP_SRC_DIR" config remote.pushDefault 2>/dev/null || true
+        printf 'origin\n'
+        branch_upstream_remote || true
+    )
+
+    local remotes=()
+    while IFS= read -r candidate; do
+        [[ -n "$candidate" ]] && remotes+=("$candidate")
+    done < <(git -C "$PHP_SRC_DIR" remote)
+
+    if ((${#remotes[@]} == 1)); then
+        printf '%s\n' "${remotes[0]}"
+        return
+    fi
+
+    die 'cannot determine push remote; configure a branch push remote'
+}
+
+head_owners() {
+    local remote
+    local owner
+    local seen=' '
+
+    while IFS= read -r remote; do
+        [[ -n "$remote" ]] || continue
+
+        if owner="$(remote_owner "$remote" 2>/dev/null)" && [[ "$seen" != *" $owner "* ]]; then
+            printf '%s\n' "$owner"
+            seen+="$owner "
+        fi
+    done < <(
+        branch_push_remote || true
+        branch_upstream_remote || true
+        printf 'origin\n'
+        git -C "$PHP_SRC_DIR" remote
+    )
+}
+
+branch_push_remote() {
+    local branch
+    branch="$(current_branch)" || return 1
+    git -C "$PHP_SRC_DIR" config "branch.$branch.pushRemote"
+}
+
+branch_upstream_remote() {
+    local upstream
+    upstream="$(git -C "$PHP_SRC_DIR" rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null)" || return 1
+    [[ "$upstream" == */* ]] || return 1
+    printf '%s\n' "${upstream%%/*}"
+}
+
+current_branch() {
+    git -C "$PHP_SRC_DIR" branch --show-current
+}
+
+remote_exists() {
+    git -C "$PHP_SRC_DIR" remote get-url "$1" >/dev/null 2>&1
 }
 
 remote_owner() {
+    local repo
+    repo="$(remote_repo "$1")" || return 1
+    printf '%s\n' "${repo%%/*}"
+}
+
+remote_repo() {
     local remote="$1"
     local url
     url="$(git -C "$PHP_SRC_DIR" remote get-url "$remote" 2>/dev/null)" || return 1
+    github_repo_from_remote_url "$url"
+}
+
+github_repo_from_pr_url() {
+    local rest="${1#https://github.com/}"
+    [[ "$rest" != "$1" && "$rest" == */*/pull/* ]] || return 1
+
+    local owner="${rest%%/*}"
+    rest="${rest#*/}"
+    local repo="${rest%%/*}"
+
+    [[ -n "$owner" && -n "$repo" ]] || return 1
+    printf '%s/%s\n' "$owner" "$repo"
+}
+
+github_repo_from_remote_url() {
+    local url="$1"
+    local path
 
     case "$url" in
         git@github.com:*)
-            url="${url#git@github.com:}"
+            path="${url#git@github.com:}"
+            ;;
+        ssh://git@github.com/*)
+            path="${url#ssh://git@github.com/}"
             ;;
         https://github.com/*)
-            url="${url#https://github.com/}"
+            path="${url#https://github.com/}"
             ;;
         http://github.com/*)
-            url="${url#http://github.com/}"
+            path="${url#http://github.com/}"
             ;;
         *)
             return 1
             ;;
     esac
 
-    url="${url%%/*}"
-    [[ -n "$url" ]] || return 1
-    printf '%s\n' "$url"
+    local owner="${path%%/*}"
+    path="${path#*/}"
+    local repo="${path%%/*}"
+    repo="${repo%.git}"
+
+    [[ -n "$owner" && -n "$repo" ]] || return 1
+    printf '%s/%s\n' "$owner" "$repo"
 }
 
 base_name_to_local_ref() {
@@ -618,6 +769,26 @@ base_name_to_local_ref() {
     return 1
 }
 
+base_name_from_ref() {
+    local ref="$1"
+
+    case "$ref" in
+        refs/remotes/*/*)
+            ref="${ref#refs/remotes/}"
+            printf '%s\n' "${ref#*/}"
+            ;;
+        refs/heads/*)
+            printf '%s\n' "${ref#refs/heads/}"
+            ;;
+        */*)
+            printf '%s\n' "${ref#*/}"
+            ;;
+        *)
+            printf '%s\n' "$ref"
+            ;;
+    esac
+}
+
 prompt_for_base_ref() {
     local candidates=()
     local candidate
@@ -628,7 +799,7 @@ prompt_for_base_ref() {
 
         local existing
         local duplicate=0
-        for existing in "${candidates[@]}"; do
+        for existing in ${candidates[@]+"${candidates[@]}"}; do
             if [[ "$existing" == "$candidate" ]]; then
                 duplicate=1
                 break
@@ -638,7 +809,7 @@ prompt_for_base_ref() {
         (( duplicate )) || candidates+=("$candidate")
     done < <(base_ref_candidates)
 
-    ((${#candidates[@]})) || die 'cannot determine base ref; pass --base'
+    ((${#candidates[@]})) || die 'cannot determine base ref'
 
     printf 'No associated PR base found. Select base ref:\n' >&2
 
