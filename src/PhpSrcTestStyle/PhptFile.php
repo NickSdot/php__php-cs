@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace InternalsCS\PhpSrcTestStyle;
 
 use InternalsCS\Support\ProcessEnvironment;
+use InternalsCS\Support\Whitespace;
 
 use function array_any;
 use function array_find;
@@ -22,13 +23,11 @@ use function mb_strlen;
 use function mb_substr;
 use function pathinfo;
 use function preg_match;
-use function preg_match_all;
 use function preg_replace;
 use function proc_close;
 use function proc_open;
 use function str_contains;
 use function str_ends_with;
-use function str_replace;
 use function str_starts_with;
 use function stream_get_contents;
 use function unlink;
@@ -47,6 +46,7 @@ final class PhptFile
         private readonly string $path,
         private readonly string $rootDir,
         private readonly PhptTestRuntimeResolver $runtimeResolver = new PhptTestRuntimeResolver(),
+        private readonly PhptSections $sectionParser = new PhptSections(),
     ) {
         $contents = file_get_contents($this->path);
         if (false === $contents) {
@@ -132,7 +132,7 @@ final class PhptFile
             $this->renameSection($section, 'EXPECT');
         }
 
-        $output = str_replace(["\r\n", "\r"], "\n", $output);
+        $output = Whitespace::normalizeLineEndingsToLf($output);
 
         $this->setSection('EXPECT', $this->expectedSectionContent(
             output: $output,
@@ -148,7 +148,7 @@ final class PhptFile
         }
 
         $this->setSection($section, $this->expectedSectionContent(
-            output: str_replace(["\r\n", "\r"], "\n", $output),
+            output: Whitespace::normalizeLineEndingsToLf($output),
             sectionIsLast: $this->isLastSection($section),
             finalLineEndingSuffix: $this->finalLineEndingSuffix($this->contents()),
         ));
@@ -202,13 +202,18 @@ final class PhptFile
 
     private function withFinalLineEndingSuffix(string $contents, string $suffix): string
     {
-        $rewritten = preg_replace('/(?:\r\n|\n|\r)+\z/', '', $contents);
+        $rewritten = $this->withoutTrailingLineEndings($contents);
 
         if (null === $rewritten) {
             throw new \RuntimeException("Cannot write final line ending suffix in {$this->path}");
         }
 
         return $rewritten . $suffix;
+    }
+
+    private function withoutTrailingLineEndings(string $contents): ?string
+    {
+        return preg_replace('/(?:\r\n|\n|\r)+\z/', '', $contents);
     }
 
     /** @return array{status: string, output: string, exitCode: int} */
@@ -291,7 +296,9 @@ final class PhptFile
     private function parse(string $contents): void
     {
         $this->sections = [];
-        $matched = preg_match_all('/^--([_A-Z]+)--[ \t]*(?:\r\n|\n|\r|$)/m', $contents, $matches, PREG_OFFSET_CAPTURE);
+
+        $matches = [];
+        $matched = $this->sectionParser->matchSectionHeaders($contents, $matches);
 
         if (false === $matched || 0 === $matched) {
             $this->prefix = $contents;

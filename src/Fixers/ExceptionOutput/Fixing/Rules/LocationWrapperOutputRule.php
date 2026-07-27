@@ -15,12 +15,12 @@ use InternalsCS\Fixers\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\RewriteSafety;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\Statement;
 use InternalsCS\RewriteResult;
+use InternalsCS\Support\Whitespace;
 use InternalsCS\TextEdit;
 
 use function in_array;
 use function mb_strtolower;
 use function mb_trim;
-use function str_replace;
 
 final readonly class LocationWrapperOutputRule implements RewriteRule
 {
@@ -101,7 +101,7 @@ final readonly class LocationWrapperOutputRule implements RewriteRule
 
     private function normalized(string $literal): string
     {
-        $label = str_replace(["\r", "\n", "\t"], ' ', $literal);
+        $label = Whitespace::lineBreaksAndTabsToSpaces($literal);
         $label = mb_trim($label);
 
         return mb_strtolower($label);

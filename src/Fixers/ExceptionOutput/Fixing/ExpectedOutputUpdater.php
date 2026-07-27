@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace InternalsCS\Fixers\ExceptionOutput\Fixing;
 
 use InternalsCS\Fixers\ExceptionOutput\Analysis\TrashLiteralPolicy;
+use InternalsCS\Support\Whitespace;
 
 use function array_any;
 use function array_pop;
@@ -968,7 +969,7 @@ final readonly class ExpectedOutputUpdater
     /** @return list<string> */
     private function lines(string $output): array
     {
-        $lines = explode("\n", mb_rtrim(str_replace(["\r\n", "\r"], "\n", $output), "\n", '8bit'));
+        $lines = explode("\n", mb_rtrim(Whitespace::normalizeLineEndingsToLf($output), "\n", '8bit'));
 
         return $lines === [''] ? [] : $lines;
     }

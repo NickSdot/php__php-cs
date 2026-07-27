@@ -11,11 +11,11 @@ use InternalsCS\Fixers\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\RewriteSafety;
 use InternalsCS\RewriteResult;
+use InternalsCS\Support\Whitespace;
 use InternalsCS\TextEdit;
 
 use function count;
 use function mb_trim;
-use function str_replace;
 
 final readonly class ParenthesizedClassLabelOutputRule implements RewriteRule
 {
@@ -123,6 +123,6 @@ final readonly class ParenthesizedClassLabelOutputRule implements RewriteRule
             return false;
         }
 
-        return ')' === mb_trim(str_replace(["\r", "\n", "\t"], ' ', $part->value));
+        return ')' === mb_trim(Whitespace::lineBreaksAndTabsToSpaces($part->value));
     }
 }

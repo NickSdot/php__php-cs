@@ -6,6 +6,7 @@ namespace InternalsCS\PhpSrcTestStyle;
 
 use InternalsCS\Fixer;
 use InternalsCS\SourceFile;
+use InternalsCS\Support\Whitespace;
 
 use function array_slice;
 use function array_unique;
@@ -19,7 +20,6 @@ use function preg_match;
 use function preg_split;
 use function sort;
 use function str_ends_with;
-use function str_replace;
 use function str_starts_with;
 
 abstract class PhptFixer implements Fixer
@@ -205,8 +205,7 @@ abstract class PhptFixer implements Fixer
 
     protected function shorten(string $text): string
     {
-        $text = str_replace(["\r", "\n", "\t"], [' ', ' ', ' '], $text);
-        if (mb_strlen($text) <= 180) {
+        if (mb_strlen($text = Whitespace::lineBreaksAndTabsToSpaces($text)) <= 180) {
             return $text;
         }
 

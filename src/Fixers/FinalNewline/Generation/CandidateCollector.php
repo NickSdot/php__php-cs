@@ -33,10 +33,15 @@ final readonly class CandidateCollector
 
     private function key(string $contents): string
     {
-        if (1 === preg_match('/(?:\r\n|\n|\r)\z/', $contents)) {
+        if ($this->hasTrailingLineEnding($contents)) {
             return 'extra-final-newlines';
         }
 
         return 'missing-final-newline';
+    }
+
+    private function hasTrailingLineEnding(string $contents): bool
+    {
+        return 1 === preg_match('/(?:\r\n|\n|\r)\z/', $contents);
     }
 }

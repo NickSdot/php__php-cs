@@ -12,7 +12,7 @@ final readonly class FinalNewline
 {
     public function normalize(string $contents): string
     {
-        $withoutTrailingLineEndings = preg_replace('/(?:\r\n|\n|\r)+\z/', '', $contents);
+        $withoutTrailingLineEndings = $this->withoutTrailingLineEndings($contents);
 
         if (null === $withoutTrailingLineEndings) {
             throw new \RuntimeException('Cannot normalise final newline');
@@ -33,5 +33,10 @@ final readonly class FinalNewline
         }
 
         return "\n";
+    }
+
+    private function withoutTrailingLineEndings(string $contents): ?string
+    {
+        return preg_replace('/(?:\r\n|\n|\r)+\z/', '', $contents);
     }
 }

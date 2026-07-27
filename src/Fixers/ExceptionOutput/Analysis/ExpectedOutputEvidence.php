@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixers\ExceptionOutput\Analysis;
 
+use InternalsCS\Support\Whitespace;
+
 use function mb_strlen;
 use function mb_trim;
 use function preg_match;
 use function str_contains;
-use function str_replace;
 
 final readonly class ExpectedOutputEvidence
 {
     public function contains(string $expectedOutput, OutputParts $parts): bool
     {
-        $expectedOutput = str_replace(["\r\n", "\r"], "\n", $expectedOutput);
+        $expectedOutput = Whitespace::normalizeLineEndingsToLf($expectedOutput);
 
         foreach ($parts->parts as $part) {
             if (OutputPartKind::Literal !== $part->kind) {

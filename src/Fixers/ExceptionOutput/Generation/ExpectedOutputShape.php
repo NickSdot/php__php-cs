@@ -7,6 +7,7 @@ namespace InternalsCS\Fixers\ExceptionOutput\Generation;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\Window;
 use InternalsCS\PhpAst;
+use InternalsCS\PhpSrcTestStyle\PhptSection;
 use PhpParser\Node\Stmt;
 
 use function mb_strtolower;

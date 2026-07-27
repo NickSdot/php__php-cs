@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace InternalsCS\Fixers\ExceptionOutput\Generation;
+namespace InternalsCS\PhpSrcTestStyle;
 
 use function count;
 use function in_array;
@@ -26,10 +26,17 @@ final readonly class PhptSections
         return $this->first($contents, ['EXPECT', 'EXPECTF', 'EXPECTREGEX']);
     }
 
+    /** @param array<int, array<int, array{0: string, 1: int}>> $matches */
+    public function matchSectionHeaders(string $contents, array &$matches): int|false
+    {
+        return preg_match_all('/^--([_A-Z]+)--[ \t]*(?:\r\n|\n|\r|$)/m', $contents, $matches, PREG_OFFSET_CAPTURE);
+    }
+
     /** @param list<string> $names */
     private function first(string $contents, array $names): ?PhptSection
     {
-        $matched = preg_match_all('/^--([_A-Z]+)--[ \t]*(?:\r\n|\n|\r|$)/m', $contents, $matches, PREG_OFFSET_CAPTURE);
+        $matches = [];
+        $matched = $this->matchSectionHeaders($contents, $matches);
 
         if (false === $matched || 0 === $matched) {
             return null;

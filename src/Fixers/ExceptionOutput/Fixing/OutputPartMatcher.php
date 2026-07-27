@@ -19,7 +19,7 @@ final readonly class OutputPartMatcher
         }
 
         return OutputPartKind::Literal === $part->kind
-            && 1 === preg_match('/^(?:\r\n|\n|\r)+$/', $part->value);
+            && $this->containsOnlyLineEndings($part->value);
     }
 
     public function isLiteral(OutputPart $part, ?string $value = null): bool
@@ -68,5 +68,10 @@ final readonly class OutputPartMatcher
         }
 
         return true;
+    }
+
+    private function containsOnlyLineEndings(string $value): bool
+    {
+        return 1 === preg_match('/^(?:\r\n|\n|\r)+$/', $value);
     }
 }

@@ -64,6 +64,11 @@ final readonly class StatementFactory
         $indentStart = false === $lineStart ? 0 : $lineStart + 1;
         $indent = mb_substr($code, $indentStart, $start - $indentStart, '8bit');
 
-        return 1 === preg_match('/^[ \t]*$/', $indent) ? $indent : '';
+        return $this->isIndented($indent) ? $indent : '';
+    }
+
+    private function isIndented(string $value): bool
+    {
+        return 1 === preg_match('/^[ \t]*$/', $value);
     }
 }

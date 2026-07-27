@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixers\ExceptionOutput\Analysis;
 
+use InternalsCS\Support\Whitespace;
+
 use function array_unique;
 use function array_values;
 use function in_array;
@@ -14,7 +16,6 @@ use function mb_trim;
 use function preg_match;
 use function preg_replace;
 use function str_ends_with;
-use function str_replace;
 
 final readonly class TrashLiteralPolicy
 {
@@ -119,7 +120,7 @@ final readonly class TrashLiteralPolicy
 
     private function normalize(string $literal): string
     {
-        $label = str_replace(["\r", "\n", "\t"], ' ', $literal);
+        $label = Whitespace::lineBreaksAndTabsToSpaces($literal);
         $label = mb_trim($label);
         $label = mb_trim($label, " *:-[]().\"'!");
         $label = preg_replace('/\s+/', ' ', $label);

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixers\ExceptionOutput\Analysis;
 
+use InternalsCS\Support\Whitespace;
+
 use function in_array;
 use function mb_trim;
-use function str_replace;
 
 final readonly class DescriptiveContextPolicy
 {
@@ -38,7 +39,7 @@ final readonly class DescriptiveContextPolicy
             return true;
         }
 
-        $normalized = mb_trim(str_replace(["\r", "\n", "\t"], ' ', $literal));
+        $normalized = mb_trim(Whitespace::lineBreaksAndTabsToSpaces($literal));
 
         return in_array($normalized, ['.', 'failed', '()', '()"', '"', '[', ']', '<br>', '<br />'], true);
     }

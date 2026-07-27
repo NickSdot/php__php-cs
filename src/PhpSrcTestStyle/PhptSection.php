@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace InternalsCS\Fixers\ExceptionOutput\Generation;
+namespace InternalsCS\PhpSrcTestStyle;
 
 final readonly class PhptSection
 {

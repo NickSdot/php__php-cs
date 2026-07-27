@@ -6,6 +6,7 @@ namespace InternalsCS\Fixers\ExceptionOutput\Generation;
 
 use InternalsCS\Fixers\ExceptionOutput\Analysis\Classifier;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\StatementWindowFinder;
+use InternalsCS\PhpSrcTestStyle\PhptSections;
 use InternalsCS\SourceFile;
 
 use function str_contains;
