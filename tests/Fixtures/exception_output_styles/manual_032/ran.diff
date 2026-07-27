@@ -1,0 +1,21 @@
+--- old.phpt
++++ new.phpt
+@@ -5,15 +5,15 @@
+ try {
+     throw new RuntimeException('first fixture message');
+ } catch (Throwable $exception) {
+-    echo $exception->getMessage() . "\n";
++    echo $exception::class, ': ', $exception->getMessage(), "\n";
+ }
+ 
+ try {
+     throw new RuntimeException('second fixture message');
+ } catch (Throwable $exception) {
+-    echo $exception::class, ': ', $exception->getMessage() . "\n";
++    echo $exception::class, ': ', $exception->getMessage(), "\n";
+ }
+ ?>
+ --EXPECT--
+-first fixture message
++RuntimeException: first fixture message
+ RuntimeException: second fixture message

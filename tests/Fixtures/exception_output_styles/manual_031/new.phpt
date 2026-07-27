@@ -1,5 +1,5 @@
 --TEST--
-Exception output: redundant exception-type label
+Exception output: class and concatenated separator
 --FILE--
 <?php
 try {

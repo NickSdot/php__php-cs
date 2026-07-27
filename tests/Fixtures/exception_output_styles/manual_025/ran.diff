@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -8,8 +8,8 @@
+ try {
+     throw new RuntimeException('fixture message');
+ } catch (Throwable $e) {
+-    echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
++    echo "($ns_readable, \"$qname\"): ", $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECT--
+-("fixture", "name"): fixture message
++("fixture", "name"): RuntimeException: fixture message

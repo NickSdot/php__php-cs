@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new UnexpectedValueException('fixture message');
+ } catch (Exception $e) {
+-    print "in catch: ".$e->getMessage()."\n";
++    echo $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECT--
+-in catch: fixture message
++UnexpectedValueException: fixture message

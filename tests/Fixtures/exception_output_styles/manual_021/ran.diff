@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -5,9 +5,8 @@
+ try {
+     throw new RuntimeException('fixture message');
+ } catch (Throwable $e) {
+-    echo "\nException: " . $e->getMessage() . " in " , $e->getFile() . " on line " . $e->getLine() . "\n";
++    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-
+-Exception: fixture message in %s on line %d
++RuntimeException: fixture message in %s on line %d

@@ -4,10 +4,10 @@
  try {
      throw new RuntimeException('fixture message');
  } catch (Throwable $e) {
--    echo "SoapFault: " . $e->getMessage() . "\n";
-+    echo $e::class, ': ', $e->getMessage(), "\n";
+-    echo "OK! {$e->getMessage()}";
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
  }
  ?>
  --EXPECT--
--SoapFault: fixture message
+-OK! fixture message
 +RuntimeException: fixture message
