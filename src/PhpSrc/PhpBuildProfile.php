@@ -43,7 +43,7 @@ final readonly class PhpBuildProfile
             '--enable-mysqlnd',
             $this->optionWithOptionalPrefix('--with-unixODBC', 'unixodbc', ['include/sql.h']),
             '--enable-pcntl',
-            $this->optionWithOptionalPrefix('--with-pdo-dblib', 'freetds', ['include/sybdb.h']),
+            $this->pdoDblibOption(),
             '--with-pdo-mysql=mysqlnd',
             $this->pdoOdbcOption(),
             $this->optionWithOptionalPrefix('--with-pdo-pgsql', 'libpq', ['include/libpq-fe.h', 'include/postgresql/libpq-fe.h']),
@@ -120,6 +120,15 @@ final readonly class PhpBuildProfile
         $prefix = $this->dependencyPrefix('unixodbc', ['include/sql.h']);
 
         return '--with-pdo-odbc=unixODBC,' . ($prefix ?? '/usr');
+    }
+
+    private function pdoDblibOption(): string
+    {
+        $prefix = $this->dependencyPrefix('freetds', ['include/sybdb.h']);
+
+        return null === $prefix || '/usr' === $prefix
+            ? '--with-pdo-dblib'
+            : '--with-pdo-dblib=' . $prefix;
     }
 
     /** @param list<string> $markers */
