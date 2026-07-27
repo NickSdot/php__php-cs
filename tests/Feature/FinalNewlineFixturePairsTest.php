@@ -17,6 +17,7 @@ use function dirname;
 use function file_get_contents;
 use function file_put_contents;
 use function glob;
+use function is_executable;
 use function mkdir;
 use function random_bytes;
 use function sort;
@@ -47,31 +48,28 @@ final class FinalNewlineFixturePairsTest extends TestCase
         $old = $fixtureDir . '/old.phpt';
         $new = $fixtureDir . '/new.phpt';
         $diff = $fixtureDir . '/ran.diff';
-        $root = $this->makeTempDir();
-        $target = $root . '/old.phpt';
-        $printed = $root . '/new.phpt';
+        $tempDir = $this->makeTempDir();
+        $target = $tempDir . '/old.phpt';
+        $printed = $tempDir . '/new.phpt';
 
         self::assertFileExists($old, $case);
         self::assertFileExists($new, $case);
         self::assertFileExists($diff, $case);
         self::assertTrue(copy($old, $target), $case);
-        self::assertTrue(copy(self::fixtureRunTestsPath(), $root . '/run-tests.php'), $case);
 
         $io = new FinalNewlineCapturingConsoleIo();
-        $this->withFixtureEnvironment($old, $new, function () use ($io, $root, $target): void {
-            $exitCode = new Application($io)->run([
-                'php-src-cs.php',
-                'fix',
-                '--php-src-dir',
-                $root,
-                '--fixer',
-                'final-newline',
-                '--print',
-                $target,
-            ]);
+        $exitCode = new Application($io)->run([
+            'php-src-cs.php',
+            'fix',
+            '--php-src-dir',
+            self::phpSrcDir(),
+            '--fixer',
+            'final-newline',
+            '--print',
+            $target,
+        ]);
 
-            self::assertSame(0, $exitCode, $io->err);
-        });
+        self::assertSame(0, $exitCode, $io->err);
 
         file_put_contents($printed, $io->out);
 
@@ -88,9 +86,14 @@ final class FinalNewlineFixturePairsTest extends TestCase
         return dirname(__DIR__) . '/Fixtures/final_newline';
     }
 
-    private static function fixtureRunTestsPath(): string
+    private static function phpSrcDir(): string
     {
-        return dirname(__DIR__) . '/Fixtures/run-tests-fake.php';
+        $root = dirname(__DIR__, 2) . '/var/php-test-runtime/source';
+
+        self::assertFileExists($root . '/run-tests.php', 'Managed PHP test runtime is not built');
+        self::assertTrue(is_executable(dirname($root) . '/php'), 'Managed PHP test CLI is not built');
+
+        return $root;
     }
 
     private function makeTempDir(): string
@@ -99,39 +102,6 @@ final class FinalNewlineFixturePairsTest extends TestCase
         mkdir($root);
 
         return $root;
-    }
-
-    private function withFixtureEnvironment(string $old, string $new, callable $callback): void
-    {
-        $previousOld = $_ENV['FIXTURE_OLD_PHPT'] ?? null;
-        $previousNew = $_ENV['FIXTURE_NEW_PHPT'] ?? null;
-        $previousPhp = $_ENV['INTERNALS_CS_TEST_PHP_EXECUTABLE'] ?? null;
-
-        $_ENV['FIXTURE_OLD_PHPT'] = $old;
-        $_ENV['FIXTURE_NEW_PHPT'] = $new;
-        $_ENV['INTERNALS_CS_TEST_PHP_EXECUTABLE'] = PHP_BINARY;
-
-        try {
-            $callback();
-        } finally {
-            if (null === $previousOld) {
-                unset($_ENV['FIXTURE_OLD_PHPT']);
-            } else {
-                $_ENV['FIXTURE_OLD_PHPT'] = $previousOld;
-            }
-
-            if (null === $previousNew) {
-                unset($_ENV['FIXTURE_NEW_PHPT']);
-            } else {
-                $_ENV['FIXTURE_NEW_PHPT'] = $previousNew;
-            }
-
-            if (null === $previousPhp) {
-                unset($_ENV['INTERNALS_CS_TEST_PHP_EXECUTABLE']);
-            } else {
-                $_ENV['INTERNALS_CS_TEST_PHP_EXECUTABLE'] = $previousPhp;
-            }
-        }
     }
 }
 
