@@ -4,32 +4,25 @@ declare(strict_types=1);
 
 namespace InternalsCS\PhpSrcTestStyle;
 
-use InternalsCS\Support\ProcessEnvironment;
 use InternalsCS\Support\Whitespace;
 
 use function array_any;
 use function array_find;
 use function array_last;
 use function count;
-use function fclose;
 use function file_get_contents;
 use function file_put_contents;
 use function is_array;
 use function is_file;
 use function is_int;
-use function is_resource;
 use function is_string;
 use function mb_strlen;
 use function mb_substr;
 use function pathinfo;
 use function preg_match;
 use function preg_replace;
-use function proc_close;
-use function proc_open;
 use function str_contains;
 use function str_ends_with;
-use function str_starts_with;
-use function stream_get_contents;
 use function unlink;
 
 // todo: too many hard-coded inline arrays and strings that should be class constants
@@ -43,8 +36,8 @@ final class PhptFile
     private array $sections = [];
 
     public function __construct(
-        private readonly string $path,
-        private readonly string $rootDir,
+        public private(set) readonly string $path,
+        public private(set) readonly string $rootDir,
         private readonly PhptTestRuntimeResolver $runtimeResolver = new PhptTestRuntimeResolver(),
         private readonly PhptSections $sectionParser = new PhptSections(),
     ) {
@@ -55,12 +48,9 @@ final class PhptFile
         $this->parse($contents);
     }
 
-    public function relativePath(): string
+    public function testRuntime(): PhptTestRuntime
     {
-        if (str_starts_with($this->path, $this->rootDir . DIRECTORY_SEPARATOR)) {
-            return mb_substr($this->path, mb_strlen($this->rootDir, '8bit') + 1, null, '8bit');
-        }
-        return $this->path;
+        return $this->runtime ??= $this->runtimeResolver->resolve($this->rootDir);
     }
 
     public function hasSection(string $name): bool
@@ -219,57 +209,7 @@ final class PhptFile
     /** @return array{status: string, output: string, exitCode: int} */
     public function run(): array
     {
-        $this->cleanupArtifacts();
-
-        $runtime = $this->runtime();
-        $phpBinary = $runtime->phpBinary;
-        $cmd = [
-            $phpBinary,
-            'run-tests.php',
-            '-q',
-            '--no-progress',
-            '--no-color',
-            $this->relativePath(),
-        ];
-        $descriptorSpec = [
-            0 => ['pipe', 'r'],
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w'],
-        ];
-        $env = new ProcessEnvironment()->variables();
-        $env['NO_INTERACTION'] = '1';
-        $env['REPORT_EXIT_STATUS'] = '1';
-        $env['TEST_PHP_EXECUTABLE'] = $phpBinary;
-
-        $cgiBinary = $runtime->phpCgiBinary;
-
-        if (null !== $cgiBinary) {
-            $env['TEST_PHP_CGI_EXECUTABLE'] = $cgiBinary;
-        }
-
-        $process = proc_open($cmd, $descriptorSpec, $pipes, $this->rootDir, $env);
-        if (!is_resource($process)) {
-            throw new \RuntimeException("Cannot run {$this->relativePath()}");
-        }
-
-        fclose($pipes[0]);
-        $stdout = stream_get_contents($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-        $exitCode = proc_close($process);
-
-        $output = $stdout . $stderr;
-        $status = 'unknown';
-        if (1 === preg_match('/^(PASS|SKIP|FAIL|BORK|WARN|XFAIL|XLEAK|LEAK) /m', $output, $matches)) {
-            $status = $matches[1];
-        }
-
-        return [
-            'status' => $status,
-            'output' => $output,
-            'exitCode' => $exitCode,
-        ];
+        return new PhptBatchRunner()->run([$this])[0];
     }
 
     public function readActualOutput(): ?string
@@ -368,8 +308,4 @@ final class PhptFile
         return $pathInfo['dirname'] . DIRECTORY_SEPARATOR . $pathInfo['filename'];
     }
 
-    private function runtime(): PhptTestRuntime
-    {
-        return $this->runtime ??= $this->runtimeResolver->resolve($this->rootDir);
-    }
 }

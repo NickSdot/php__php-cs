@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace InternalsCS;
 
+use InternalsCS\PhpSrcTestStyle\PhptFixer;
+
+use function array_column;
 use function array_unique;
 use function array_values;
 use function count;
 use function file_get_contents;
 use function file_put_contents;
+use function is_a;
 use function is_dir;
 use function is_file;
 use function preg_match;
@@ -73,6 +77,10 @@ final readonly class FixerRunner
      */
     public function run(array $files, bool $check, ?\Closure $onEntry = null): FixRunResult
     {
+        if (!$check && $this->onlyPhptFixers()) {
+            return $this->runPhptBatched($files, $onEntry);
+        }
+
         $result = new FixRunResult(count($files), $check);
 
         foreach ($files as $path) {
@@ -128,6 +136,71 @@ final readonly class FixerRunner
         }
 
         return $result;
+    }
+
+    /**
+     * @param list<string> $files
+     * @param null|\Closure(FixRunEntry): void $onEntry
+     */
+    private function runPhptBatched(array $files, ?\Closure $onEntry): FixRunResult
+    {
+        $result = new FixRunResult(count($files), false);
+
+        foreach ($this->fixerClasses as $fixerClass) {
+            $collected = [];
+
+            foreach ($files as $path) {
+                $source = new SourceFile($path, $this->rootDir);
+                $fixer = new $fixerClass();
+
+                if (!$fixer->supports($source) || !$fixer->collect($source)) {
+                    continue;
+                }
+
+                $collected[] = [
+                    'source' => $source,
+                    'fixer' => $fixer,
+                ];
+            }
+
+            /** @var list<PhptFixer> $fixers */
+            $fixers = array_column($collected, 'fixer');
+            $persisted = PhptFixer::persistBatch($fixers);
+
+            foreach ($collected as $index => $item) {
+                $source = $item['source'];
+                $fixer = $item['fixer'];
+
+                if ($persisted[$index]) {
+                    $entry = new FixRunEntry(
+                        status: FixRunStatus::Fixed,
+                        file: $source->relativePath(),
+                        fixer: $fixer->name(),
+                        location: $fixer->location(),
+                    );
+                    $this->record($result, $entry, $onEntry);
+                    continue;
+                }
+
+                $entry = new FixRunEntry(
+                    status: FixRunStatus::Skipped,
+                    file: $source->relativePath(),
+                    fixer: $fixer->name(),
+                    location: $fixer->location(),
+                    reason: $this->fixerFailureReason($fixer),
+                );
+                $this->record($result, $entry, $onEntry);
+                $source->restoreOriginal();
+                $fixer->cleanup();
+            }
+        }
+
+        return $result;
+    }
+
+    private function onlyPhptFixers(): bool
+    {
+        return array_all($this->fixerClasses, fn($fixerClass) => is_a($fixerClass, PhptFixer::class, true));
     }
 
     /** @param null|\Closure(FixRunEntry): void $onEntry */

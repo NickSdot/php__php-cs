@@ -8,6 +8,9 @@ use InternalsCS\Fixer;
 use InternalsCS\SourceFile;
 use InternalsCS\Support\Whitespace;
 
+use function array_fill;
+use function array_keys;
+use function array_map;
 use function array_slice;
 use function array_unique;
 use function array_values;
@@ -47,65 +50,123 @@ abstract class PhptFixer implements Fixer
 
     final public function persist(): bool
     {
-        $file = $this->phptFile();
+        return self::persistBatch([$this])[0];
+    }
 
-        if (!$this->hasPlannedRewrite()) {
-            return $this->fail('internal error: collect() did not prepare a rewrite');
+    /**
+     * @param list<self> $fixers
+     *
+     * @return list<bool>
+     */
+    final public static function persistBatch(array $fixers): array
+    {
+        $results = array_fill(0, count($fixers), false);
+        $pending = [];
+
+        foreach ($fixers as $index => $fixer) {
+            if (!$fixer->hasPlannedRewrite()) {
+                $fixer->fail('internal error: collect() did not prepare a rewrite');
+                continue;
+            }
+
+            $pending[$index] = $fixer;
         }
 
-        $initial = $file->run();
-        if ('PASS' !== $initial['status']) {
-            return $this->fail('original test did not pass (' . $this->runSummary($initial) . ')');
+        $runner = new PhptBatchRunner();
+        $initialRuns = $runner->run(array_map(
+            static fn(self $fixer): PhptFile => $fixer->phptFile(),
+            array_values($pending),
+        ));
+
+        foreach (array_keys($pending) as $offset => $index) {
+            $fixer = $pending[$index];
+            $initial = $initialRuns[$offset];
+
+            if ('PASS' !== $initial['status']) {
+                $fixer->fail('original test did not pass (' . $fixer->runSummary($initial) . ')');
+                unset($pending[$index]);
+                continue;
+            }
+
+            $fixer->apply();
+            $fixer->phptFile()->save();
         }
 
-        $this->apply();
-        $file->save();
+        $rewrittenRuns = $runner->run(array_map(
+            static fn(self $fixer): PhptFile => $fixer->phptFile(),
+            array_values($pending),
+        ));
+        $verify = [];
 
-        $run = $file->run();
-        if ('PASS' === $run['status']) {
-            $file->cleanupArtifacts();
-            return true;
+        foreach (array_keys($pending) as $offset => $index) {
+            $fixer = $pending[$index];
+            $file = $fixer->phptFile();
+            $run = $rewrittenRuns[$offset];
+
+            if ('PASS' === $run['status']) {
+                $file->cleanupArtifacts();
+                $results[$index] = true;
+                continue;
+            }
+
+            if (!$fixer->changesOutput()) {
+                $fixer->fail('rewritten test did not pass after a style-only rewrite (' . $fixer->runSummary($run) . ')');
+                continue;
+            }
+
+            $actual = $file->readActualOutput();
+            if (null === $actual) {
+                $fixer->fail('rewritten test did not pass and no .out file was produced (' . $fixer->runSummary($run) . ')');
+                continue;
+            }
+
+            $expectedSection = $file->expectedSectionName();
+            if (null === $expectedSection) {
+                $fixer->fail('no expected output section is available for update');
+                continue;
+            }
+
+            $expected = $file->getSection($expectedSection);
+            if (null === $expected) {
+                $fixer->fail("$expectedSection section disappeared while updating expected output");
+                continue;
+            }
+
+            $fixer->expectedUpdateFailure = null;
+            $updated = $fixer->updateExpectedOutput($expectedSection, $expected, $actual);
+            if (null === $updated) {
+                $fixer->fail(
+                    "$expectedSection update was not provable after rewritten test failed ("
+                        . $fixer->runSummary($run) . '): '
+                        . ($fixer->expectedUpdateFailure ?? 'actual output was not a safe expected-output rewrite')
+                );
+                continue;
+            }
+
+            $file->setExpectedSection($expectedSection, $updated);
+            $file->save();
+            $verify[$index] = $fixer;
         }
 
-        if (!$this->changesOutput()) {
-            return $this->fail('rewritten test did not pass after a style-only rewrite (' . $this->runSummary($run) . ')');
+        $verifiedRuns = $runner->run(array_map(
+            static fn(self $fixer): PhptFile => $fixer->phptFile(),
+            array_values($verify),
+        ));
+
+        foreach (array_keys($verify) as $offset => $index) {
+            $fixer = $verify[$index];
+            $verified = $verifiedRuns[$offset];
+
+            if ('PASS' !== $verified['status']) {
+                $fixer->fail('updated expected output did not pass verification (' . $fixer->runSummary($verified) . ')');
+                continue;
+            }
+
+            $fixer->phptFile()->cleanupArtifacts();
+            $results[$index] = true;
         }
 
-        $actual = $file->readActualOutput();
-        if (null === $actual) {
-            return $this->fail('rewritten test did not pass and no .out file was produced (' . $this->runSummary($run) . ')');
-        }
-
-        $expectedSection = $file->expectedSectionName();
-        if (null === $expectedSection) {
-            return $this->fail('no expected output section is available for update');
-        }
-
-        $expected = $file->getSection($expectedSection);
-        if (null === $expected) {
-            return $this->fail("$expectedSection section disappeared while updating expected output");
-        }
-
-        $this->expectedUpdateFailure = null;
-        $updated = $this->updateExpectedOutput($expectedSection, $expected, $actual);
-        if (null === $updated) {
-            return $this->fail(
-                "$expectedSection update was not provable after rewritten test failed ("
-                    . $this->runSummary($run) . '): '
-                    . ($this->expectedUpdateFailure ?? 'actual output was not a safe expected-output rewrite')
-            );
-        }
-
-        $file->setExpectedSection($expectedSection, $updated);
-        $file->save();
-
-        $verified = $file->run();
-        if ('PASS' !== $verified['status']) {
-            return $this->fail('updated expected output did not pass verification (' . $this->runSummary($verified) . ')');
-        }
-
-        $file->cleanupArtifacts();
-        return true;
+        return array_values($results);
     }
 
     public function cleanup(): void
