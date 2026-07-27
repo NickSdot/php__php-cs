@@ -1,0 +1,226 @@
+name: Reproduce php-src PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      php_src_repo:
+        description: php-src repository containing the PR
+        required: true
+        default: php/php-src
+        type: string
+      pr:
+        description: php-src PR number to reproduce
+        required: true
+        default: "22799"
+        type: string
+      push_generated_branch:
+        description: Push generated branch for manual GitHub compare
+        required: true
+        default: false
+        type: boolean
+      generated_remote:
+        description: Repository that receives the generated branch when pushing
+        required: true
+        default: NickSdot/php__php-src
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reproduce-php-src-pr-${{ inputs.php_src_repo }}-${{ inputs.pr }}
+  cancel-in-progress: false
+
+jobs:
+  reproduce:
+    name: Reproduce php-src PR
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+
+    env:
+      PHP_SRC_REPO: ${{ inputs.php_src_repo }}
+      PHP_SRC_PR: ${{ inputs.pr }}
+      PHP_SRC_DIR: /tmp/php-src
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Check out php-src-cs
+        uses: actions/checkout@v4
+
+      - name: Set up PHP for php-src-cs
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          coverage: none
+          tools: composer
+
+      - name: Install php-src-cs dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Install php-src build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            autoconf \
+            bison \
+            build-essential \
+            libicu-dev \
+            libldap2-dev \
+            libsqlite3-dev \
+            libxml2-dev \
+            pkg-config \
+            re2c
+
+      - name: Resolve php-src PR
+        id: pr
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          base_ref="$(gh pr view "$PHP_SRC_PR" --repo "$PHP_SRC_REPO" --json baseRefName --jq .baseRefName)"
+          head_sha="$(gh pr view "$PHP_SRC_PR" --repo "$PHP_SRC_REPO" --json headRefOid --jq .headRefOid)"
+
+          {
+            printf 'base_ref=%s\n' "$base_ref"
+            printf 'head_sha=%s\n' "$head_sha"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check out php-src base and PR head
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$PHP_SRC_DIR"
+          git -C "$PHP_SRC_DIR" init
+          git -C "$PHP_SRC_DIR" remote add origin "https://github.com/$PHP_SRC_REPO.git"
+          git -C "$PHP_SRC_DIR" remote add upstream "https://github.com/$PHP_SRC_REPO.git"
+
+          git -C "$PHP_SRC_DIR" fetch --no-tags --depth=1 origin \
+            "${{ steps.pr.outputs.base_ref }}:refs/remotes/origin/${{ steps.pr.outputs.base_ref }}"
+          git -C "$PHP_SRC_DIR" fetch --no-tags --depth=1 upstream \
+            "${{ steps.pr.outputs.base_ref }}:refs/remotes/upstream/${{ steps.pr.outputs.base_ref }}"
+          git -C "$PHP_SRC_DIR" fetch --no-tags --depth=1 origin \
+            "pull/$PHP_SRC_PR/head:refs/remotes/origin/pr-$PHP_SRC_PR"
+
+          git -C "$PHP_SRC_DIR" checkout -B reproduce "refs/remotes/upstream/${{ steps.pr.outputs.base_ref }}"
+          git -C "$PHP_SRC_DIR" config user.name "php-src-cs reproduction"
+          git -C "$PHP_SRC_DIR" config user.email "actions@github.com"
+
+          fetched_head="$(git -C "$PHP_SRC_DIR" rev-parse "refs/remotes/origin/pr-$PHP_SRC_PR")"
+          if [[ "$fetched_head" != "${{ steps.pr.outputs.head_sha }}" ]]; then
+            printf 'Expected PR head %s, fetched %s\n' "${{ steps.pr.outputs.head_sha }}" "$fetched_head" >&2
+            exit 1
+          fi
+
+      - name: Build managed PHP test runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          php <<'PHP'
+          <?php
+
+          $toolRoot = getcwd();
+
+          require $toolRoot . '/vendor/autoload.php';
+
+          use InternalsCS\Console\StreamConsoleIo;
+          use InternalsCS\PhpSrc\PhpBuild;
+          use InternalsCS\PhpSrc\PhpBuildPaths;
+          use InternalsCS\PhpSrc\PhpSrcRoot;
+
+          (new PhpBuild())->ensure(
+              root: PhpSrcRoot::fromPath(getenv('PHP_SRC_DIR')),
+              paths: PhpBuildPaths::default($toolRoot),
+              force: true,
+              io: new StreamConsoleIo(),
+          );
+          PHP
+
+          {
+            printf 'INTERNALS_CS_TEST_PHP_EXECUTABLE=%s/var/php-test-runtime/php\n' "$GITHUB_WORKSPACE"
+            printf 'INTERNALS_CS_TEST_PHP_CGI_EXECUTABLE=%s/var/php-test-runtime/php-cgi\n' "$GITHUB_WORKSPACE"
+          } >> "$GITHUB_ENV"
+
+      - name: Reproduce generated php-src commits
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          printf 'y\n' | bin/contribute --php-src-dir "$PHP_SRC_DIR"
+
+      - name: Compare generated tree with php-src PR
+        id: compare
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          compare_ref="refs/remotes/origin/pr-$PHP_SRC_PR"
+          generated_head="$(git -C "$PHP_SRC_DIR" rev-parse HEAD)"
+          generated_tree="$(git -C "$PHP_SRC_DIR" rev-parse HEAD^{tree})"
+          pr_tree="$(git -C "$PHP_SRC_DIR" rev-parse "$compare_ref^{tree}")"
+
+          {
+            printf '## php-src PR reproduction\n\n'
+            printf '| Item | Value |\n'
+            printf '|---|---|\n'
+            printf '| Tool commit | `%s` |\n' "$GITHUB_SHA"
+            printf '| php-src PR | `%s#%s` |\n' "$PHP_SRC_REPO" "$PHP_SRC_PR"
+            printf '| Base | `%s` |\n' "${{ steps.pr.outputs.base_ref }}"
+            printf '| PR head | `%s` |\n' "${{ steps.pr.outputs.head_sha }}"
+            printf '| Generated head | `%s` |\n\n' "$generated_head"
+            printf '### Generated commits\n\n'
+            git -C "$PHP_SRC_DIR" log --oneline --reverse "refs/remotes/upstream/${{ steps.pr.outputs.base_ref }}..HEAD"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$generated_tree" == "$pr_tree" ]]; then
+            printf '\nGenerated tree matches php-src PR head.\n' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git -C "$PHP_SRC_DIR" diff --stat HEAD "$compare_ref" | tee "$RUNNER_TEMP/reproduction.diffstat"
+          git -C "$PHP_SRC_DIR" diff --name-status HEAD "$compare_ref" | tee "$RUNNER_TEMP/reproduction.name-status"
+          git -C "$PHP_SRC_DIR" diff --binary HEAD "$compare_ref" > "$RUNNER_TEMP/reproduction.diff"
+
+          {
+            printf '\nGenerated tree does not match php-src PR head.\n\n'
+            printf '### Diff stat\n\n```text\n'
+            cat "$RUNNER_TEMP/reproduction.diffstat"
+            printf '```\n'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit 1
+
+      - name: Push generated branch
+        if: ${{ always() && inputs.push_generated_branch && steps.compare.outcome != 'skipped' }}
+        shell: bash
+        env:
+          PHP_SRC_PUSH_TOKEN: ${{ secrets.PHP_SRC_PUSH_TOKEN }}
+          GENERATED_REMOTE: ${{ inputs.generated_remote }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${PHP_SRC_PUSH_TOKEN:-}" ]]; then
+            printf 'PHP_SRC_PUSH_TOKEN is required when push_generated_branch is true.\n' >&2
+            exit 1
+          fi
+
+          branch="ci/reproduce-pr-$PHP_SRC_PR-$GITHUB_RUN_ID"
+          git -C "$PHP_SRC_DIR" remote add generated "https://x-access-token:$PHP_SRC_PUSH_TOKEN@github.com/$GENERATED_REMOTE.git"
+          git -C "$PHP_SRC_DIR" push --force generated "HEAD:refs/heads/$branch"
+
+          {
+            printf '\n### Generated branch\n\n'
+            printf '`%s:%s`\n' "$GENERATED_REMOTE" "$branch"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload reproduction diff
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: php-src-pr-reproduction-diff
+          path: |
+            ${{ runner.temp }}/reproduction.diff
+            ${{ runner.temp }}/reproduction.diffstat
+            ${{ runner.temp }}/reproduction.name-status
+          if-no-files-found: ignore
