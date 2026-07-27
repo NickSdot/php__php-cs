@@ -64,12 +64,36 @@ jobs:
             autoconf \
             bison \
             build-essential \
+            freetds-dev \
+            gettext \
             libicu-dev \
+            libbz2-dev \
+            libcurl4-openssl-dev \
+            libavif-dev \
+            libdb-dev \
+            libffi-dev \
+            libfreetype-dev \
+            libgd-dev \
+            libgmp-dev \
+            libjpeg-dev \
             libldap2-dev \
+            libonig-dev \
+            libpng-dev \
+            libpq-dev \
+            libreadline-dev \
+            libsodium-dev \
+            libsnmp-dev \
             libsqlite3-dev \
+            libssl-dev \
+            libtidy-dev \
+            libwebp-dev \
             libxml2-dev \
+            libxpm-dev \
+            libzip-dev \
             pkg-config \
-            re2c
+            re2c \
+            unixodbc-dev \
+            zlib1g-dev
 
       - name: Resolve php-src PR
         id: pr
