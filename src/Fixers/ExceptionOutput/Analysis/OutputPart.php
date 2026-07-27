@@ -6,6 +6,7 @@ namespace InternalsCS\Fixers\ExceptionOutput\Analysis;
 
 final readonly class OutputPart
 {
+    private const string NEWLINE_MARKER = '\n';
     public const string SOURCE_INTERPOLATED_STRING = 'interpolated_string';
 
     private function __construct(
@@ -13,20 +14,28 @@ final readonly class OutputPart
         public string $value = '',
         public ?string $variable = null,
         public ?string $source = null,
+        public ?string $newlineSource = null,
     ) {}
 
     public static function literal(string $value, ?string $source = null): self
     {
-        if ("\n" === $value || "\r\n" === $value || "\r" === $value) {
-            return self::newline();
+        $newlineSource = match ($value) {
+            "\r\n" => '"\r\n"',
+            "\n" => '"\n"',
+            "\r" => '"\r"',
+            default => null,
+        };
+
+        if (null !== $newlineSource) {
+            return new self(OutputPartKind::Newline, self::NEWLINE_MARKER, newlineSource: $newlineSource);
         }
 
         return new self(OutputPartKind::Literal, $value, source: $source);
     }
 
-    public static function newline(): self
+    public static function phpEol(): self
     {
-        return new self(OutputPartKind::Newline, '\n');
+        return new self(OutputPartKind::Newline, self::NEWLINE_MARKER, newlineSource: 'PHP_EOL');
     }
 
     public static function otherVariable(string $variable, ?string $source = null): self

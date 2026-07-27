@@ -36,6 +36,7 @@ use function array_push;
 use function array_values;
 use function count;
 use function is_string;
+use function mb_strlen;
 use function mb_substr;
 use function str_replace;
 use function str_starts_with;
@@ -278,9 +279,19 @@ final readonly class OutputRewritePlanner
         }
 
         $output = $this->statements->fromStatement($firstStatement, $code, $offsetDelta);
-        $previousEdit = $this->previousTrailingNewlineEdit($previous, $code, $offsetDelta);
 
-        if (null === $output || null === $previousEdit || !$this->leadingSeparator->matches($output, $catchVariable)) {
+        if (null === $output) {
+            return [];
+        }
+
+        $previousEdit = $this->previousTrailingNewlineEdit(
+            $previous,
+            $code,
+            $offsetDelta,
+            $this->builder->firstNewlineSource($output->parts),
+        );
+
+        if (null === $previousEdit || !$this->leadingSeparator->matches($output, $catchVariable)) {
             return [];
         }
 
@@ -295,7 +306,7 @@ final readonly class OutputRewritePlanner
         ];
     }
 
-    private function previousTrailingNewlineEdit(Stmt $statement, string $code, int $offsetDelta): ?TextEdit
+    private function previousTrailingNewlineEdit(Stmt $statement, string $code, int $offsetDelta, string $newlineSource): ?TextEdit
     {
         if (!$statement instanceof Stmt\Echo_) {
             return null;
@@ -308,9 +319,8 @@ final readonly class OutputRewritePlanner
         }
 
         $source = mb_substr($code, $output->startOffset, $output->endOffset - $output->startOffset, '8bit');
-        $replacement = $this->builder->appendNewlineSegmentToEcho($source);
 
-        if (null === $replacement) {
+        if (null === $replacement = $this->builder->appendNewlineToEcho($source, $newlineSource)) {
             return null;
         }
 
@@ -389,8 +399,9 @@ final readonly class OutputRewritePlanner
 
         $output = $this->statements->fromStatement($lastStatement, $code, $offsetDelta);
         $followingReplacement = $this->followingWithoutLeadingNewline($following);
+        $followingOutput = $this->statements->fromStatement($following, $code, $offsetDelta);
 
-        if (null === $output || null === $followingReplacement || !$this->isSafeTrailingCatchOutput($output, $catchVariable)) {
+        if (null === $output || null === $followingOutput || null === $followingReplacement || !$this->isSafeTrailingCatchOutput($output, $catchVariable)) {
             return [];
         }
 
@@ -406,7 +417,11 @@ final readonly class OutputRewritePlanner
                 startOffset: $output->startOffset,
                 endOffset: $output->endOffset,
                 line: $output->line,
-                replacement: new OutputStatementBuilder()->build($catchVariable, $output->parts),
+                replacement: $this->builder->build(
+                    $catchVariable,
+                    $output->parts,
+                    newlineSource: $this->builder->firstNewlineSource($followingOutput->parts)
+                ),
             ),
             new TextEdit(
                 startOffset: $followingStart,
@@ -444,24 +459,38 @@ final readonly class OutputRewritePlanner
 
         $expr = $statement->exprs[0];
 
-        if ($expr instanceof Expr\ConstFetch && 'PHP_EOL' === $expr->name->toString()) {
+        if ($expr instanceof Expr\ConstFetch && OutputStatementBuilder::PHP_EOL_SOURCE === $expr->name->toString()) {
             return '';
         }
 
-        if (!$expr instanceof Scalar\String_ || !str_starts_with($expr->value, "\n")) {
+        if (!$expr instanceof Scalar\String_) {
             return null;
         }
 
-        $remaining = mb_substr($expr->value, 1);
+        if (null === $lineEnding = $this->leadingLineEnding($expr->value)) {
+            return null;
+        }
+
+        $remaining = mb_substr($expr->value, mb_strlen($lineEnding, '8bit'), null, '8bit');
 
         return '' === $remaining ? '' : 'echo "' . $this->doubleQuoted($remaining) . '";';
+    }
+
+    private function leadingLineEnding(string $value): ?string
+    {
+        return match (true) {
+            str_starts_with($value, "\r\n") => "\r\n",
+            str_starts_with($value, "\n") => "\n",
+            str_starts_with($value, "\r") => "\r",
+            default => null,
+        };
     }
 
     private function doubleQuoted(string $value): string
     {
         return str_replace(
             ["\\", "\n", "\r", "\t", '"', '$'],
-            ["\\\\", "\\n", "\\r", "\\t", '\\"', '\\$'],
+            ["\\\\", '\n', '\r', '\t', '\\"', '\\$'],
             $value,
         );
     }

@@ -87,7 +87,7 @@ final readonly class OutputExpressionParser
         }
 
         if ($this->isPhpEol($expr)) {
-            return [OutputPart::newline()];
+            return [OutputPart::phpEol()];
         }
 
         $part = $this->exceptionClassPart($expr);
