@@ -22,6 +22,23 @@ RESET=0
 DRY=0
 NO_RUN=0
 TARGET_ARGS=()
+WORKTREE_ROOT=""
+
+cleanup_parallel_worktrees() {
+    [[ -n "$WORKTREE_ROOT" && -d "$WORKTREE_ROOT" ]] || return
+
+    local worktree
+    if [[ -d "$WORKTREE_ROOT/worktrees" ]]; then
+        while IFS= read -r worktree; do
+            [[ -n "$worktree" ]] || continue
+            git -C "$PHP_SRC_DIR" worktree remove --force "$worktree" >/dev/null 2>&1 || true
+        done < <(find "$WORKTREE_ROOT/worktrees" -mindepth 1 -maxdepth 1 -type d 2>/dev/null)
+    fi
+
+    rm -rf "$WORKTREE_ROOT"
+}
+
+trap cleanup_parallel_worktrees EXIT
 
 die() {
     printf 'error: %s\n' "$*" >&2
@@ -51,6 +68,9 @@ No target means ext/*, Zend, tests, and sapi/*.
 
 Every run confirms the php-src branch first. Normal runs require a clean tracked
 php-src working tree.
+
+Multiple targets run in parallel in isolated worktrees. Commits are still created
+serially in target order.
 
 If the current branch has no open PR, --lfg creates a draft PR. In that case the
 base branch is selected interactively when it cannot be inferred.
@@ -90,9 +110,7 @@ main() {
 
     ensure_tracked_clean
 
-    for target in ${targets[@]+"${targets[@]}"}; do
-        run_target "$target"
-    done
+    run_targets "${targets[@]}"
 
     after_local_changes run
 }
@@ -236,6 +254,19 @@ normalise_target() {
     printf '%s\n' "$target"
 }
 
+run_targets() {
+    if (($# == 0)); then
+        return
+    fi
+
+    if (($# == 1)); then
+        run_target "$1"
+        return
+    fi
+
+    run_targets_parallel "$@"
+}
+
 run_target() {
     local target="$1"
     local subject="$target: $COMMIT_SUFFIX"
@@ -262,22 +293,244 @@ run_target() {
     git -C "$PHP_SRC_DIR" commit -m "$subject"
 }
 
+run_targets_parallel() {
+    local targets=("$@")
+    local target_count="${#targets[@]}"
+    local jobs
+    local base
+    local index=0
+    local target
+    local slug
+    local worktree
+    local pids=()
+    local failed=0
+
+    jobs="$(parallel_jobs)"
+    base="$(git -C "$PHP_SRC_DIR" rev-parse HEAD)"
+    WORKTREE_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/php-src-cs-contribute.XXXXXX")"
+    mkdir -p "$WORKTREE_ROOT/worktrees" "$WORKTREE_ROOT/logs" "$WORKTREE_ROOT/patches" "$WORKTREE_ROOT/results"
+
+    configure_test_runtime_for_parallel
+
+    printf '\nRunning %d targets in parallel with %d jobs.\n' "$target_count" "$jobs"
+
+    for target in "${targets[@]}"; do
+        index=$((index + 1))
+        slug="$(target_slug "$index" "$target")"
+        worktree="$WORKTREE_ROOT/worktrees/$slug"
+
+        while (( "$(running_parallel_jobs)" >= jobs )); do
+            sleep 0.2
+        done
+
+        run_target_worker \
+            "$target" \
+            "$worktree" \
+            "$WORKTREE_ROOT/results/$slug" \
+            "$WORKTREE_ROOT/patches/$slug.patch" \
+            "$WORKTREE_ROOT/logs/$slug.log" \
+            "$base" &
+        pids+=("$!")
+    done
+
+    for pid in "${pids[@]}"; do
+        if ! wait "$pid"; then
+            failed=1
+        fi
+    done
+
+    if (( failed )); then
+        print_parallel_failures
+        die 'one or more parallel target runs failed'
+    fi
+
+    apply_parallel_results "${targets[@]}"
+}
+
+run_target_worker() {
+    local target="$1"
+    local worktree="$2"
+    local result_file="$3"
+    local patch_file="$4"
+    local log_file="$5"
+    local base="$6"
+    local status='failed'
+
+    printf 'Started %s\n' "$target"
+
+    if ! git -C "$PHP_SRC_DIR" worktree add --detach "$worktree" "$base" > "$log_file" 2>&1; then
+        printf 'failed\t%s\t%s\t%s\n' "$target" "$patch_file" "$log_file" > "$result_file"
+        printf 'Failed %s\n' "$target"
+        return 1
+    fi
+
+    {
+        printf '$ php %q fix --php-src-dir %q %q\n' \
+            "$TOOL_ROOT/bin/php-src-cs.php" \
+            "$worktree" \
+            "$worktree/$target"
+        php "$TOOL_ROOT/bin/php-src-cs.php" fix \
+            --php-src-dir "$worktree" \
+            "$worktree/$target"
+    } >> "$log_file" 2>&1 || {
+        git -C "$PHP_SRC_DIR" worktree remove --force "$worktree" >/dev/null 2>&1 || true
+        printf 'failed\t%s\t%s\t%s\n' "$target" "$patch_file" "$log_file" > "$result_file"
+        printf 'Failed %s\n' "$target"
+        return 1
+    }
+
+    if ! ensure_changes_are_within_target_in_dir "$worktree" "$target" >> "$log_file" 2>&1; then
+        git -C "$PHP_SRC_DIR" worktree remove --force "$worktree" >/dev/null 2>&1 || true
+        printf 'failed\t%s\t%s\t%s\n' "$target" "$patch_file" "$log_file" > "$result_file"
+        printf 'Failed %s\n' "$target"
+        return 1
+    fi
+
+    if git -C "$worktree" diff --quiet -- "$target"; then
+        status='nochange'
+    else
+        git -C "$worktree" diff --binary -- "$target" > "$patch_file"
+        status='changed'
+    fi
+
+    git -C "$PHP_SRC_DIR" worktree remove --force "$worktree" >/dev/null 2>&1 || true
+
+    printf '%s\t%s\t%s\t%s\n' "$status" "$target" "$patch_file" "$log_file" > "$result_file"
+    printf 'Finished %s (%s)\n' "$target" "$status"
+}
+
+apply_parallel_results() {
+    local index=0
+    local target
+    local slug
+    local result_file
+    local status
+    local result_target
+    local patch_file
+    local log_file
+    local subject
+
+    ensure_tracked_clean
+
+    for target in "$@"; do
+        index=$((index + 1))
+        slug="$(target_slug "$index" "$target")"
+        result_file="$WORKTREE_ROOT/results/$slug"
+
+        IFS=$'\t' read -r status result_target patch_file log_file < "$result_file"
+        [[ "$result_target" == "$target" ]] || die "parallel result target mismatch: expected $target, got $result_target"
+
+        printf '\n==> %s\n' "$target"
+
+        if [[ "$status" == nochange ]]; then
+            printf 'No tracked changes for %s; no commit created.\n' "$target"
+            continue
+        fi
+
+        [[ "$status" == changed ]] || die "unexpected parallel target status for $target: $status"
+
+        cat "$log_file"
+        git -C "$PHP_SRC_DIR" apply --index "$patch_file"
+        ensure_changes_are_within_target "$target"
+
+        if git -C "$PHP_SRC_DIR" diff --cached --quiet; then
+            printf 'No staged changes for %s; no commit created.\n' "$target"
+            continue
+        fi
+
+        subject="$target: $COMMIT_SUFFIX"
+        git -C "$PHP_SRC_DIR" commit -m "$subject"
+    done
+}
+
+print_parallel_failures() {
+    local result_file
+    local status
+    local target
+    local patch_file
+    local log_file
+
+    while IFS= read -r result_file; do
+        IFS=$'\t' read -r status target patch_file log_file < "$result_file"
+        [[ "$status" == failed ]] || continue
+
+        printf '\n==> %s failed\n' "$target" >&2
+        cat "$log_file" >&2 || true
+    done < <(find "$WORKTREE_ROOT/results" -mindepth 1 -maxdepth 1 -type f | sort)
+}
+
+parallel_jobs() {
+    local jobs
+    jobs="$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)"
+
+    if [[ "$jobs" =~ ^[0-9]+$ && "$jobs" -gt 0 ]]; then
+        printf '%s\n' "$jobs"
+        return
+    fi
+
+    printf '4\n'
+}
+
+running_parallel_jobs() {
+    jobs -rp | wc -l | tr -d '[:space:]'
+}
+
+target_slug() {
+    local index="$1"
+    local target="$2"
+    local slug
+
+    slug="$(printf '%s' "$target" | tr '/[:space:]' '___' | tr -cd 'A-Za-z0-9._-')"
+    printf '%03d-%s\n' "$index" "$slug"
+}
+
+configure_test_runtime_for_parallel() {
+    if [[ -x "${INTERNALS_CS_TEST_PHP_EXECUTABLE:-}" ]]; then
+        return
+    fi
+
+    if [[ -x "$PHP_SRC_DIR/sapi/cli/php" ]]; then
+        export INTERNALS_CS_TEST_PHP_EXECUTABLE="$PHP_SRC_DIR/sapi/cli/php"
+
+        if [[ -x "$PHP_SRC_DIR/sapi/cgi/php-cgi" ]]; then
+            export INTERNALS_CS_TEST_PHP_CGI_EXECUTABLE="$PHP_SRC_DIR/sapi/cgi/php-cgi"
+        fi
+
+        return
+    fi
+
+    if [[ -x "$TOOL_ROOT/var/php-test-runtime/php" ]]; then
+        export INTERNALS_CS_TEST_PHP_EXECUTABLE="$TOOL_ROOT/var/php-test-runtime/php"
+
+        if [[ -x "$TOOL_ROOT/var/php-test-runtime/php-cgi" ]]; then
+            export INTERNALS_CS_TEST_PHP_CGI_EXECUTABLE="$TOOL_ROOT/var/php-test-runtime/php-cgi"
+        fi
+    fi
+}
+
 has_tracked_changes() {
     ! git -C "$PHP_SRC_DIR" diff --quiet || ! git -C "$PHP_SRC_DIR" diff --cached --quiet
 }
 
 ensure_changes_are_within_target() {
-    local target="$1"
+    ensure_changes_are_within_target_in_dir "$PHP_SRC_DIR" "$1" \
+        || die "fixer changed a path outside current target $1"
+}
+
+ensure_changes_are_within_target_in_dir() {
+    local php_src_dir="$1"
+    local target="$2"
     local path
 
     while IFS= read -r path; do
         [[ -z "$path" ]] && continue
 
         if [[ "$path" != "$target" && "$path" != "$target/"* ]]; then
-            git -C "$PHP_SRC_DIR" status --short --untracked-files=no >&2
-            die "fixer changed a path outside current target $target: $path"
+            git -C "$php_src_dir" status --short --untracked-files=no >&2
+            printf 'fixer changed a path outside current target %s: %s\n' "$target" "$path" >&2
+            return 1
         fi
-    done < <(git -C "$PHP_SRC_DIR" diff --name-only && git -C "$PHP_SRC_DIR" diff --cached --name-only)
+    done < <(git -C "$php_src_dir" diff --name-only && git -C "$php_src_dir" diff --cached --name-only)
 }
 
 reset_generated_commits() {
