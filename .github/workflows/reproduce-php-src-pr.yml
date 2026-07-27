@@ -86,6 +86,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Check out php-src base and PR head
+        id: php_src
         shell: bash
         run: |
           set -euo pipefail
@@ -95,22 +96,40 @@ jobs:
           git -C "$PHP_SRC_DIR" remote add origin "https://github.com/$PHP_SRC_REPO.git"
           git -C "$PHP_SRC_DIR" remote add upstream "https://github.com/$PHP_SRC_REPO.git"
 
-          git -C "$PHP_SRC_DIR" fetch --no-tags --depth=1 origin \
-            "${{ steps.pr.outputs.base_ref }}:refs/remotes/origin/${{ steps.pr.outputs.base_ref }}"
-          git -C "$PHP_SRC_DIR" fetch --no-tags --depth=1 upstream \
+          git -C "$PHP_SRC_DIR" fetch --no-tags --depth=256 upstream \
             "${{ steps.pr.outputs.base_ref }}:refs/remotes/upstream/${{ steps.pr.outputs.base_ref }}"
-          git -C "$PHP_SRC_DIR" fetch --no-tags --depth=1 origin \
+          git -C "$PHP_SRC_DIR" fetch --no-tags --depth=256 origin \
             "pull/$PHP_SRC_PR/head:refs/remotes/origin/pr-$PHP_SRC_PR"
-
-          git -C "$PHP_SRC_DIR" checkout -B reproduce "refs/remotes/upstream/${{ steps.pr.outputs.base_ref }}"
-          git -C "$PHP_SRC_DIR" config user.name "php-src-cs reproduction"
-          git -C "$PHP_SRC_DIR" config user.email "actions@github.com"
 
           fetched_head="$(git -C "$PHP_SRC_DIR" rev-parse "refs/remotes/origin/pr-$PHP_SRC_PR")"
           if [[ "$fetched_head" != "${{ steps.pr.outputs.head_sha }}" ]]; then
             printf 'Expected PR head %s, fetched %s\n' "${{ steps.pr.outputs.head_sha }}" "$fetched_head" >&2
             exit 1
           fi
+
+          depth=256
+          while ! merge_base="$(git -C "$PHP_SRC_DIR" merge-base \
+            "refs/remotes/upstream/${{ steps.pr.outputs.base_ref }}" \
+            "refs/remotes/origin/pr-$PHP_SRC_PR")"; do
+            if (( depth >= 8192 )); then
+              printf 'Could not find merge-base for %s and PR %s.\n' "${{ steps.pr.outputs.base_ref }}" "$PHP_SRC_PR" >&2
+              exit 1
+            fi
+
+            git -C "$PHP_SRC_DIR" fetch --no-tags --deepen="$depth" upstream \
+              "${{ steps.pr.outputs.base_ref }}:refs/remotes/upstream/${{ steps.pr.outputs.base_ref }}"
+            git -C "$PHP_SRC_DIR" fetch --no-tags --deepen="$depth" origin \
+              "pull/$PHP_SRC_PR/head:refs/remotes/origin/pr-$PHP_SRC_PR"
+
+            depth=$((depth * 2))
+          done
+
+          git -C "$PHP_SRC_DIR" update-ref "refs/remotes/upstream/${{ steps.pr.outputs.base_ref }}" "$merge_base"
+          git -C "$PHP_SRC_DIR" checkout -B reproduce "$merge_base"
+          git -C "$PHP_SRC_DIR" config user.name "php-src-cs reproduction"
+          git -C "$PHP_SRC_DIR" config user.email "actions@github.com"
+
+          printf 'merge_base=%s\n' "$merge_base" >> "$GITHUB_OUTPUT"
 
       - name: Build managed PHP test runtime
         shell: bash
@@ -166,7 +185,8 @@ jobs:
             printf '|---|---|\n'
             printf '| Tool commit | `%s` |\n' "$GITHUB_SHA"
             printf '| php-src PR | `%s#%s` |\n' "$PHP_SRC_REPO" "$PHP_SRC_PR"
-            printf '| Base | `%s` |\n' "${{ steps.pr.outputs.base_ref }}"
+            printf '| Base branch | `%s` |\n' "${{ steps.pr.outputs.base_ref }}"
+            printf '| Reproduction base | `%s` |\n' "${{ steps.php_src.outputs.merge_base }}"
             printf '| PR head | `%s` |\n' "${{ steps.pr.outputs.head_sha }}"
             printf '| Generated head | `%s` |\n\n' "$generated_head"
             printf '### Generated commits\n\n'
@@ -174,7 +194,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [[ "$generated_tree" == "$pr_tree" ]]; then
-            printf '\nGenerated tree matches php-src PR head.\n' >> "$GITHUB_STEP_SUMMARY"
+            printf '\nGenerated tree matches php-src PR head from the same base.\n' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
@@ -183,7 +203,7 @@ jobs:
           git -C "$PHP_SRC_DIR" diff --binary HEAD "$compare_ref" > "$RUNNER_TEMP/reproduction.diff"
 
           {
-            printf '\nGenerated tree does not match php-src PR head.\n\n'
+            printf '\nGenerated tree does not match php-src PR head from the same base.\n\n'
             printf '### Diff stat\n\n```text\n'
             cat "$RUNNER_TEMP/reproduction.diffstat"
             printf '```\n'
