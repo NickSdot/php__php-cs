@@ -18,7 +18,7 @@ use function str_starts_with;
 final readonly class SourceVerifier implements FixtureSourceVerifier
 {
     public function __construct(
-        private FixtureSourceVerifier $runVerifier = new FixtureSourceRunVerifier(),
+        private FixtureSourceRunVerifier $runVerifier = new FixtureSourceRunVerifier(),
         private FixtureCaseName $caseName = new FixtureCaseName(),
     ) {}
 
@@ -54,7 +54,7 @@ final readonly class SourceVerifier implements FixtureSourceVerifier
             }
         }
 
-        return true;
+        return $this->runVerifier->canRewrite($source, $verification);
     }
 
     private function isManualFixture(FixtureSource $source): bool

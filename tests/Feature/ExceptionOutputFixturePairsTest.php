@@ -104,20 +104,6 @@ final class ExceptionOutputFixturePairsTest extends TestCase
         self::assertSame([], $badFixtures);
     }
 
-    public function testFixturesCoverFinalNewlineRewrite(): void
-    {
-        $finalNewline = new FinalNewline();
-        $fixtureDir = self::fixturesDir() . '/ext_phar_tests_phar_metadata_write4';
-
-        $old = file_get_contents($fixtureDir . '/old.phpt');
-        $new = file_get_contents($fixtureDir . '/new.phpt');
-
-        self::assertIsString($old);
-        self::assertIsString($new);
-        self::assertFalse($finalNewline->isNormalized($old));
-        self::assertTrue($finalNewline->isNormalized($new));
-    }
-
     #[DataProvider('fixtureDirectories')]
     public function testFixturePairShapeIsConsistent(string $case, string $fixtureDir): void
     {

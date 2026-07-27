@@ -32,6 +32,8 @@ final class FixtureGenerationResult
 
     public int $createdOld = 0;
 
+    public int $removedFixtures = 0;
+
     public int $verifiedPairs = 0;
 
     public int $updatedPairs = 0;
@@ -39,6 +41,9 @@ final class FixtureGenerationResult
     public int $stalePairs = 0;
 
     public int $oldOnly = 0;
+
+    /** @var list<string> */
+    public array $removedFixtureCases = [];
 
     /** @var list<string> */
     public array $updatedPairCases = [];

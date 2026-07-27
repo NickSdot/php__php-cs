@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixture;
 
+use function array_diff_key;
 use function count;
 
 final readonly class FixtureSelection
@@ -30,6 +31,12 @@ final readonly class FixtureSelection
     public function duplicateCandidateWindows(int $candidateWindows): int
     {
         return $candidateWindows - $this->flavourCount();
+    }
+
+    /** @return array<string, list<FixtureCandidate>> */
+    public function uncoveredFlavours(): array
+    {
+        return array_diff_key($this->flavours, $this->fixtureByFlavour());
     }
 
     /** @return array<string, FixtureSource> */

@@ -35,6 +35,7 @@ final readonly class GenerateRunPrinter
         }
 
         $io->out('Created ' . $result->createdOld . " old.phpt fixtures\n");
+        $io->out('Removed ' . $result->removedFixtures . " rejected fixtures\n");
         $io->out('Verified ' . $result->verifiedPairs . " existing fixture pairs\n");
         $io->out('Updated ' . $result->updatedPairs . " new.phpt/ran.diff pairs\n");
         $io->out('Kept ' . $result->stalePairs . " stale new.phpt/ran.diff pairs\n");

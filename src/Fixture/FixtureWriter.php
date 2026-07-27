@@ -6,7 +6,9 @@ namespace InternalsCS\Fixture;
 
 use InternalsCS\Support\FileSystem;
 
+use function is_dir;
 use function is_file;
+use function rmdir;
 
 final readonly class FixtureWriter
 {
@@ -31,6 +33,26 @@ final readonly class FixtureWriter
             oldOnly: true,
             failure: null,
         );
+    }
+
+    public function remove(FixtureSource $source, string $fixturesDir): bool
+    {
+        $fixtureDir = $fixturesDir . DIRECTORY_SEPARATOR . $this->caseName->fromFixtureSource($source);
+
+        if (!is_dir($fixtureDir)) {
+            return false;
+        }
+
+        $fixtureFiles = new FixturePairFiles($fixtureDir);
+        $this->files->deleteFileIfExists($fixtureFiles->oldPath(), 'old fixture');
+        $this->files->deleteFileIfExists($fixtureFiles->newPath(), 'new fixture');
+        $this->files->deleteFileIfExists($fixtureFiles->diffPath(), 'fixture diff');
+
+        if (!rmdir($fixtureDir)) {
+            throw new \RuntimeException('Cannot delete rejected fixture directory: ' . $fixtureDir);
+        }
+
+        return true;
     }
 
     private function ensureOldFixture(FixtureSource $source, FixturePairFiles $fixtureFiles): bool

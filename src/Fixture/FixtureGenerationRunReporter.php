@@ -42,7 +42,7 @@ final readonly class FixtureGenerationRunReporter
             ),
             '## Run',
             ...$this->table->render(
-                ['Fixer', 'Input files', 'Flavours', 'Selected', 'Created old', 'Verified', 'Updated', 'Stale', 'Old-only', 'Failures'],
+                ['Fixer', 'Input files', 'Flavours', 'Selected', 'Created old', 'Removed', 'Verified', 'Updated', 'Stale', 'Old-only', 'Failures'],
                 $this->runRows($runs),
             ),
             '## Details',
@@ -72,6 +72,7 @@ final readonly class FixtureGenerationRunReporter
                 $result->candidateFlavours,
                 $result->selectedFixtures,
                 $result->createdOld,
+                $result->removedFixtures,
                 $result->verifiedPairs,
                 $result->updatedPairs,
                 $result->stalePairs,

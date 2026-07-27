@@ -251,6 +251,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
                     ['Duplicate flavour groups', count($duplicateGroups)],
                     ['Selected fixture files', $result->selectedFixtures],
                     ['Created old fixtures', $result->createdOld],
+                    ['Removed rejected fixtures', $result->removedFixtures],
                     ['Verified fixture pairs', $result->verifiedPairs],
                     ['Updated fixture pairs', $result->updatedPairs],
                     ['Stale fixture pairs', $result->stalePairs],
@@ -511,14 +512,21 @@ final readonly class FixtureReportWriter implements FixtureReporter
             '# Fixture refresh',
             '',
             'Refresh-only run: ' . ($result->refreshOnly ? 'yes' : 'no'),
+            'Rejected fixtures removed: ' . $result->removedFixtures,
             'Updated new/diff pairs: ' . $result->updatedPairs,
             'Stale existing new/diff pairs kept: ' . $result->stalePairs,
             'Old-only fixture files: ' . $result->oldOnly,
             'Failures: ' . count($result->failures),
             '',
-            '## Updated pairs',
+            '## Removed rejected fixtures',
             '',
         ];
+
+        $this->appendList($lines, $result->removedFixtureCases);
+
+        $lines[] = '';
+        $lines[] = '## Updated pairs';
+        $lines[] = '';
 
         $this->appendList($lines, $result->updatedPairCases);
 
