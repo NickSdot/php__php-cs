@@ -135,10 +135,13 @@ jobs:
             exit 1
           fi
 
+          commit_name="$(git -C "$PHP_SRC_DIR" show -s --format=%an "refs/remotes/pr/${{ steps.pr.outputs.head_ref }}")"
+          commit_email="$(git -C "$PHP_SRC_DIR" show -s --format=%ae "refs/remotes/pr/${{ steps.pr.outputs.head_ref }}")"
+
           base_sha="$(git -C "$PHP_SRC_DIR" rev-parse "refs/remotes/upstream/${{ steps.pr.outputs.base_ref }}")"
           git -C "$PHP_SRC_DIR" checkout -B "${{ steps.pr.outputs.head_ref }}" "$base_sha"
-          git -C "$PHP_SRC_DIR" config user.name "php-src-cs reproduction"
-          git -C "$PHP_SRC_DIR" config user.email "actions@github.com"
+          git -C "$PHP_SRC_DIR" config user.name "$commit_name"
+          git -C "$PHP_SRC_DIR" config user.email "$commit_email"
 
           printf 'base_sha=%s\n' "$base_sha" >> "$GITHUB_OUTPUT"
 
@@ -174,10 +177,38 @@ jobs:
 
       - name: Reproduce generated php-src commits
         shell: bash
+        env:
+          PHP_SRC_PUSH_TOKEN: ${{ secrets.PHP_SRC_PUSH_TOKEN }}
         run: |
           set -euo pipefail
 
-          printf 'y\n' | bin/contribute --php-src-dir "$PHP_SRC_DIR"
+          contribute_args=(--php-src-dir "$PHP_SRC_DIR")
+
+          if [[ "${{ inputs.push_generated_branch }}" == "true" ]]; then
+            if [[ -z "${PHP_SRC_PUSH_TOKEN:-}" ]]; then
+              printf 'PHP_SRC_PUSH_TOKEN is required when push_generated_branch is true.\n' >&2
+              exit 1
+            fi
+
+            git -C "$PHP_SRC_DIR" remote add generated "https://github.com/${{ steps.pr.outputs.head_repo }}.git"
+            git -C "$PHP_SRC_DIR" remote set-url --push generated "https://x-access-token:$PHP_SRC_PUSH_TOKEN@github.com/${{ steps.pr.outputs.head_repo }}.git"
+            git -C "$PHP_SRC_DIR" fetch --no-tags --depth=1 generated \
+              "${{ steps.pr.outputs.head_ref }}:refs/remotes/generated/${{ steps.pr.outputs.head_ref }}"
+
+            fetched_push_head="$(git -C "$PHP_SRC_DIR" rev-parse "refs/remotes/generated/${{ steps.pr.outputs.head_ref }}")"
+            if [[ "$fetched_push_head" != "${{ steps.pr.outputs.head_sha }}" ]]; then
+              printf 'Expected push target %s, fetched %s\n' "${{ steps.pr.outputs.head_sha }}" "$fetched_push_head" >&2
+              exit 1
+            fi
+
+            git -C "$PHP_SRC_DIR" config remote.pushDefault generated
+            git -C "$PHP_SRC_DIR" branch --set-upstream-to="generated/${{ steps.pr.outputs.head_ref }}" "${{ steps.pr.outputs.head_ref }}"
+
+            export GH_TOKEN="$PHP_SRC_PUSH_TOKEN"
+            contribute_args+=(--lfg)
+          fi
+
+          printf 'y\n' | bin/contribute "${contribute_args[@]}"
 
       - name: Summarise generated php-src branch
         id: generated
@@ -213,30 +244,6 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           printf 'generated_head=%s\n' "$generated_head" >> "$GITHUB_OUTPUT"
-
-      - name: Push generated result to PR branch
-        if: ${{ inputs.push_generated_branch }}
-        shell: bash
-        env:
-          PHP_SRC_PUSH_TOKEN: ${{ secrets.PHP_SRC_PUSH_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          if [[ -z "${PHP_SRC_PUSH_TOKEN:-}" ]]; then
-            printf 'PHP_SRC_PUSH_TOKEN is required when push_generated_branch is true.\n' >&2
-            exit 1
-          fi
-
-          git -C "$PHP_SRC_DIR" remote add generated "https://x-access-token:$PHP_SRC_PUSH_TOKEN@github.com/${{ steps.pr.outputs.head_repo }}.git"
-          git -C "$PHP_SRC_DIR" push \
-            --force-with-lease="refs/heads/${{ steps.pr.outputs.head_ref }}:${{ steps.pr.outputs.head_sha }}" \
-            generated \
-            "HEAD:refs/heads/${{ steps.pr.outputs.head_ref }}"
-
-          {
-            printf '\n### Updated PR branch\n\n'
-            printf '`%s:%s`\n' "${{ steps.pr.outputs.head_repo }}" "${{ steps.pr.outputs.head_ref }}"
-          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload generated diff
         if: ${{ always() }}
