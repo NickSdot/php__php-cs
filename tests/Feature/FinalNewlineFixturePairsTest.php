@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use InternalsCS\Console\Application;
 use InternalsCS\Console\ConsoleIo;
+use InternalsCS\Fixture\FixturePairFiles;
 use InternalsCS\Support\UnifiedDiff;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -37,6 +38,10 @@ final class FinalNewlineFixturePairsTest extends TestCase
         sort($dirs);
 
         foreach ($dirs as $dir) {
+            if (!new FixturePairFiles($dir)->containsFixtureFiles()) {
+                continue;
+            }
+
             $case = basename($dir);
             yield $case => [$case, $dir];
         }
