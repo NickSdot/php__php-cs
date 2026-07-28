@@ -218,11 +218,14 @@ jobs:
 
           generated_head="$(git -C "$PHP_SRC_DIR" rev-parse HEAD)"
           old_pr_ref="refs/remotes/pr/${{ steps.pr.outputs.head_ref }}"
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          summary_file="$RUNNER_TEMP/php-src-generation-summary.md"
 
           {
             printf '## php-src PR generation\n\n'
             printf '| Item | Value |\n'
             printf '|---|---|\n'
+            printf '| Workflow run | %s |\n' "$run_url"
             printf '| Tool commit | `%s` |\n' "$GITHUB_SHA"
             printf '| php-src PR | `%s#%s` |\n' "$PHP_SRC_REPO" "$PHP_SRC_PR"
             printf '| Base branch | `%s` |\n' "${{ steps.pr.outputs.base_ref }}"
@@ -231,7 +234,10 @@ jobs:
             printf '| Generated head | `%s` |\n\n' "$generated_head"
             printf '### Generated commits\n\n'
             git -C "$PHP_SRC_DIR" log --oneline --reverse "${{ steps.php_src.outputs.base_sha }}..HEAD"
-          } >> "$GITHUB_STEP_SUMMARY"
+          } > "$summary_file"
+
+          cat "$summary_file"
+          cat "$summary_file" >> "$GITHUB_STEP_SUMMARY"
 
           git -C "$PHP_SRC_DIR" diff --stat "$old_pr_ref" HEAD | tee "$RUNNER_TEMP/generated-vs-current-pr.diffstat"
           git -C "$PHP_SRC_DIR" diff --name-status "$old_pr_ref" HEAD | tee "$RUNNER_TEMP/generated-vs-current-pr.name-status"
@@ -241,7 +247,11 @@ jobs:
             printf '\n### Diff from previous PR head\n\n```text\n'
             cat "$RUNNER_TEMP/generated-vs-current-pr.diffstat"
             printf '```\n'
-          } >> "$GITHUB_STEP_SUMMARY"
+          } > "$RUNNER_TEMP/php-src-generation-diff-summary.md"
+
+          cat "$RUNNER_TEMP/php-src-generation-diff-summary.md"
+          cat "$RUNNER_TEMP/php-src-generation-diff-summary.md" >> "$summary_file"
+          cat "$RUNNER_TEMP/php-src-generation-diff-summary.md" >> "$GITHUB_STEP_SUMMARY"
 
           printf 'generated_head=%s\n' "$generated_head" >> "$GITHUB_OUTPUT"
 
@@ -251,6 +261,7 @@ jobs:
         with:
           name: php-src-generated-vs-current-pr-diff
           path: |
+            ${{ runner.temp }}/php-src-generation-summary.md
             ${{ runner.temp }}/generated-vs-current-pr.diff
             ${{ runner.temp }}/generated-vs-current-pr.diffstat
             ${{ runner.temp }}/generated-vs-current-pr.name-status
