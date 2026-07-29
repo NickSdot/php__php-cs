@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -5,9 +5,8 @@
+ try {
+     throw new \TypeError('fixture message');
+ } catch (\TypeError $e) {
+-    echo "\n", $e->getMessage(), "\n";
++    echo "\n", $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-
+-fixture message
++TypeError: fixture message

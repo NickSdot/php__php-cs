@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace InternalsCS\Fixers\ExceptionOutput\Analysis;
 
 use InternalsCS\PhpAst;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 
 use function array_values;
 use function count;
+use function is_string;
 use function mb_substr;
 use function mb_trim;
 use function usort;
@@ -32,9 +34,21 @@ final readonly class StatementWindowFinder
         $windows = [];
 
         foreach ($this->ast->catchBlocks($parsed->statements) as $catch) {
+            $catchVariable = $this->catchVariable($catch);
+
+            if (null === $catchVariable) {
+                continue;
+            }
+
             $windows = [
                 ...$windows,
-                ...$this->windowsForStatements(array_values($catch->stmts), $code, $parsed->offsetDelta),
+                ...$this->windowsForStatements(
+                    statements: array_values($catch->stmts),
+                    code: $code,
+                    offsetDelta: $parsed->offsetDelta,
+                    catchVariable: $catchVariable,
+                    catchTypes: $this->catchTypes($catch),
+                ),
             ];
         }
 
@@ -45,26 +59,27 @@ final readonly class StatementWindowFinder
 
     /**
      * @param list<Stmt> $statements
+     * @param list<string> $catchTypes
      * @return list<Window>
      */
-    private function windowsForStatements(array $statements, string $code, int $offsetDelta): array
+    private function windowsForStatements(array $statements, string $code, int $offsetDelta, string $catchVariable, array $catchTypes): array
     {
         $windows = [];
 
         for ($i = 0; $i < count($statements); $i++) {
             $statement = $statements[$i];
-            $window = $this->window($statement, $code, $offsetDelta);
+            $window = $this->window($statement, $code, $offsetDelta, $catchVariable, $catchTypes);
 
             if (null === $window) {
                 $windows = [
                     ...$windows,
-                    ...$this->windowsForChildStatements($statement, $code, $offsetDelta),
+                    ...$this->windowsForChildStatements($statement, $code, $offsetDelta, $catchVariable, $catchTypes),
                 ];
                 continue;
             }
 
             $nextStatement = $statements[$i + 1] ?? null;
-            $nextWindow = null === $nextStatement ? null : $this->window($nextStatement, $code, $offsetDelta);
+            $nextWindow = null === $nextStatement ? null : $this->window($nextStatement, $code, $offsetDelta, $catchVariable, $catchTypes);
             $adjacent = null === $nextWindow ? null : $this->adjacentWindow($window, $nextWindow, $code);
 
             if (null !== $adjacent) {
@@ -81,15 +96,18 @@ final readonly class StatementWindowFinder
         return $windows;
     }
 
-    /** @return list<Window> */
-    private function windowsForChildStatements(Stmt $statement, string $code, int $offsetDelta): array
+    /**
+     * @param list<string> $catchTypes
+     * @return list<Window>
+     */
+    private function windowsForChildStatements(Stmt $statement, string $code, int $offsetDelta, string $catchVariable, array $catchTypes): array
     {
         $windows = [];
 
         foreach ($this->ast->childStatementLists($statement) as $statements) {
             $windows = [
                 ...$windows,
-                ...$this->windowsForStatements($statements, $code, $offsetDelta),
+                ...$this->windowsForStatements($statements, $code, $offsetDelta, $catchVariable, $catchTypes),
             ];
         }
 
@@ -122,10 +140,13 @@ final readonly class StatementWindowFinder
                 ],
                 shape: 'adjacent(' . $current->parts->shape . ',' . $next->parts->shape . ')',
             ),
+            catchVariable: $current->catchVariable,
+            catchTypes: $current->catchTypes,
         );
     }
 
-    private function window(Stmt $statement, string $code, int $offsetDelta): ?Window
+    /** @param list<string> $catchTypes */
+    private function window(Stmt $statement, string $code, int $offsetDelta, string $catchVariable, array $catchTypes): ?Window
     {
         $start = $this->ast->filePosition($statement, 'startFilePos', $offsetDelta);
         $end = $this->ast->filePosition($statement, 'endFilePos', $offsetDelta);
@@ -146,6 +167,29 @@ final readonly class StatementWindowFinder
             startLine: $statement->getStartLine(),
             statement: mb_trim(mb_substr($code, $start, $end - $start + 1, '8bit')),
             parts: $parts,
+            catchVariable: $catchVariable,
+            catchTypes: $catchTypes,
         );
+    }
+
+    private function catchVariable(Stmt\Catch_ $catch): ?string
+    {
+        if (!$catch->var instanceof Expr\Variable || !is_string($catch->var->name)) {
+            return null;
+        }
+
+        return $catch->var->name;
+    }
+
+    /** @return list<string> */
+    private function catchTypes(Stmt\Catch_ $catch): array
+    {
+        $types = [];
+
+        foreach ($catch->types as $type) {
+            $types[] = $type->toString();
+        }
+
+        return $types;
     }
 }

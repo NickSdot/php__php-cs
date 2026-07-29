@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new \AssertionError('fixture message');
+ } catch (\AssertionError $e) {
+-    echo 'assert(): ', $e->getMessage(), ' failed', PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+ }
+ ?>
+ --EXPECTF--
+-assert(): fixture message failed
++AssertionError: fixture message

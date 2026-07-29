@@ -1,0 +1,15 @@
+--- old.phpt
++++ new.phpt
+@@ -6,9 +6,10 @@
+ try {
+     throw new \RuntimeException('fixture message');
+ } catch (\Exception $e) {
+-    var_dump($e->getMessage(), $msg);
++    echo $e::class, ': ', $e->getMessage(), "\n";
++    var_dump($msg);
+ }
+ ?>
+ --EXPECTF--
+-string(15) "fixture message"
++RuntimeException: fixture message
+ string(7) "fixture"

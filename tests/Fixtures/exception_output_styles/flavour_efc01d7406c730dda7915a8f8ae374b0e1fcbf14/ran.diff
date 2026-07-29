@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -7,8 +7,8 @@
+ try {
+     throw new \DOMException('fixture message');
+ } catch (\DOMException $e) {
+-    echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
++    echo "($ns_readable, \"$qname\"): ", $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-(fixture, "fixture"): fixture message
++(fixture, "fixture"): DOMException: fixture message

@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -6,8 +6,8 @@
+ try {
+     throw new \ValueError('fixture message');
+ } catch (\ValueError $e) {
+-    echo $label, ": ", $e->getMessage(), PHP_EOL;
++    echo $label, ': ', $e::class, ': ', $e->getMessage(), PHP_EOL;
+ }
+ ?>
+ --EXPECTF--
+-fixture: fixture message
++fixture: ValueError: fixture message

@@ -11,4 +11,6 @@ interface FixtureCandidate
     public string $relativePath { get; }
 
     public string $fixtureKey { get; }
+
+    public string $fixtureCaseKey { get; }
 }

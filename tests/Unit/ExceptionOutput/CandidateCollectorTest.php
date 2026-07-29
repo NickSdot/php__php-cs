@@ -117,6 +117,20 @@ final class CandidateCollectorTest extends TestCase
         self::assertSame(ClassificationSafety::DescriptiveContext, $candidates[0]->classification->safety);
     }
 
+    public function testNonStructuralLiteralTextDoesNotSplitFixtureCases(): void
+    {
+        $root = $this->makeTempDir();
+        $first = $this->writePhpt($root, 'first.phpt', 'echo "Serialization failed: " . $e->getMessage() . "\n";');
+        $second = $this->writePhpt($root, 'second.phpt', 'echo "Object-based creation failed as expected: " . $e->getMessage() . "\n";');
+
+        $candidates = $this->collect($root, $first, $second);
+
+        self::assertCount(2, $candidates);
+        self::assertSame(ClassificationSafety::DescriptiveContext, $candidates[0]->classification->safety);
+        self::assertNotSame($candidates[0]->fixtureKey, $candidates[1]->fixtureKey);
+        self::assertSame($candidates[0]->fixtureCaseKey, $candidates[1]->fixtureCaseKey);
+    }
+
     public function testCaughtExceptionAndAssertLabelsAreTrash(): void
     {
         $root = $this->makeTempDir();
@@ -147,13 +161,13 @@ final class CandidateCollectorTest extends TestCase
         }
     }
 
-    public function testTrashLabelsKeepDistinctFingerprints(): void
+    public function testTrashLabelsUseSharedSemanticFingerprint(): void
     {
         $root = $this->makeTempDir();
         $generic = $this->writePhpt($root, 'generic.phpt', 'echo "Exception: " . $e->getMessage() . "\n";');
         $error = $this->writePhpt($root, 'error.phpt', 'echo "[Error] " . $e->getMessage() . "\n";');
-        $ok = $this->writePhpt($root, 'ok.phpt', 'echo "Ok - " . $e->getMessage() . PHP_EOL;');
-        $test = $this->writePhpt($root, 'test.phpt', 'echo "TEST:" . $e->getMessage() . PHP_EOL;');
+        $ok = $this->writePhpt($root, 'ok.phpt', 'echo "Ok - " . $e->getMessage() . "\n";');
+        $test = $this->writePhpt($root, 'test.phpt', 'echo "TEST:" . $e->getMessage() . "\n";');
 
         $candidates = $this->collect($root, $generic, $error, $ok, $test);
 
@@ -166,6 +180,22 @@ final class CandidateCollectorTest extends TestCase
         self::assertNotSame($candidates[0]->fixtureKey, $candidates[1]->fixtureKey);
         self::assertNotSame($candidates[0]->fixtureKey, $candidates[2]->fixtureKey);
         self::assertNotSame($candidates[0]->fixtureKey, $candidates[3]->fixtureKey);
+        self::assertSame($candidates[0]->fixtureCaseKey, $candidates[1]->fixtureCaseKey);
+        self::assertSame($candidates[0]->fixtureCaseKey, $candidates[2]->fixtureCaseKey);
+        self::assertSame($candidates[0]->fixtureCaseKey, $candidates[3]->fixtureCaseKey);
+    }
+
+    public function testNewlineSourceSplitsConcreteAndSemanticFlavours(): void
+    {
+        $root = $this->makeTempDir();
+        $literal = $this->writePhpt($root, 'literal.phpt', 'echo $e->getMessage() . "\n";');
+        $phpEol = $this->writePhpt($root, 'php-eol.phpt', 'echo $e->getMessage() . PHP_EOL;');
+
+        $candidates = $this->collect($root, $literal, $phpEol);
+
+        self::assertCount(2, $candidates);
+        self::assertNotSame($candidates[0]->fixtureKey, $candidates[1]->fixtureKey);
+        self::assertNotSame($candidates[0]->fixtureCaseKey, $candidates[1]->fixtureCaseKey);
     }
 
     public function testMarkerPrefixesAreFixable(): void
@@ -267,6 +297,21 @@ final class CandidateCollectorTest extends TestCase
         self::assertSame('echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();', $candidates[0]->statement);
     }
 
+    public function testProductionCollectionIgnoresTraceOutputWithoutExpectedTraceEvidence(): void
+    {
+        $root = $this->makeTempDir();
+        $source = $this->writePhptWithExpected(
+            $root,
+            'trace.phpt',
+            'echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();',
+            "Done\n",
+        );
+
+        $candidates = new CandidateCollector()->collect(new SourceFile($source, $root));
+
+        self::assertSame([], $candidates);
+    }
+
     private function writePhpt(string $root, string $name, string $statement): string
     {
         return $this->writePhptWithExpected($root, $name, $statement, '');
@@ -339,7 +384,7 @@ final class CandidateCollectorTest extends TestCase
     private function collect(string $root, string ...$files): array
     {
         $candidates = [];
-        $collector = new CandidateCollector();
+        $collector = new CandidateCollector(requireExpectedOutputEvidence: false);
 
         foreach ($files as $file) {
             array_push($candidates, ...$collector->collect(new SourceFile($file, $root)));

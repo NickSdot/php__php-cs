@@ -12,5 +12,8 @@ final readonly class Window
         public int $startLine,
         public string $statement,
         public OutputParts $parts,
+        public ?string $catchVariable = null,
+        /** @var list<string> */
+        public array $catchTypes = [],
     ) {}
 }

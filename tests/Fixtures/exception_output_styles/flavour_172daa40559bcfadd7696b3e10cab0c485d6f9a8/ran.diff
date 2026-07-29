@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -6,8 +6,8 @@
+ try {
+     throw new \SoapFault('fixture fault', 'fixture message');
+ } catch (\SoapFault $e) {
+-    echo "$name: {$e->getMessage()}\n";
++    echo "$name: ", $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-fixture: fixture message
++fixture: SoapFault: fixture message

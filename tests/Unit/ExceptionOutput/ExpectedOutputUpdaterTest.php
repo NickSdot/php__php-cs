@@ -228,6 +228,28 @@ final class ExpectedOutputUpdaterTest extends TestCase
         self::assertSame("unexpected: ReflectionException: fixture message\n", $update->output);
     }
 
+    public function testUpdatesUnexpectedCatchDiagnosticWithoutDuplicatingCatchType(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECTF',
+            "ldap_mod_del: UNEXPECTED ValueError: fixture message\n",
+            "ldap_mod_del: UNEXPECTED: ValueError: fixture message\n",
+        );
+
+        self::assertSame("ldap_mod_del: UNEXPECTED: ValueError: fixture message\n", $update->output);
+    }
+
+    public function testUpdatesCodeMessageDashFileLineWrapper(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECTF',
+            "0: fixture message - %s(%d)\n",
+            "Error: 0: fixture message in /tmp/old.phpt on line 5\n",
+        );
+
+        self::assertSame("Error: 0: fixture message in %s on line %d\n", $update->output);
+    }
+
     public function testUpdatesExceptionThrownForContextLabel(): void
     {
         $update = new ExpectedOutputUpdater()->update(
@@ -667,6 +689,17 @@ final class ExpectedOutputUpdaterTest extends TestCase
         );
 
         self::assertSame("SoapFault: fixture message\n", $update->output);
+    }
+
+    public function testUpdatesLowercaseExceptionClassLabel(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECTF',
+            "\texception fixture message\n",
+            "\texception com_exception: fixture message\n",
+        );
+
+        self::assertSame("\texception com_exception: fixture message\n", $update->output);
     }
 
     public function testUpdatesWholeLineExpectfRegexAfterClassPrefix(): void

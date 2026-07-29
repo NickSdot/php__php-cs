@@ -13,7 +13,6 @@ use InternalsCS\PhpSrcTestStyle\PhptFile;
 
 use function dirname;
 use function is_file;
-use function str_starts_with;
 
 final readonly class SourceVerifier implements FixtureSourceVerifier
 {
@@ -28,10 +27,6 @@ final readonly class SourceVerifier implements FixtureSourceVerifier
     ): bool {
         if (!$this->runVerifier->canSelect($source, $verification)) {
             return false;
-        }
-
-        if ($this->isManualFixture($source)) {
-            return true;
         }
 
         if ($this->fixtureExists($source, $verification->fixturesDir)) {
@@ -55,11 +50,6 @@ final readonly class SourceVerifier implements FixtureSourceVerifier
         }
 
         return $this->runVerifier->canRewrite($source, $verification);
-    }
-
-    private function isManualFixture(FixtureSource $source): bool
-    {
-        return str_starts_with($source->relativePath, 'manual_');
     }
 
     private function fixtureExists(FixtureSource $source, string $fixturesDir): bool

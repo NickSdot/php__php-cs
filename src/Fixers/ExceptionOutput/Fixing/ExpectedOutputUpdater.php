@@ -616,6 +616,10 @@ final readonly class ExpectedOutputUpdater
             $candidates[] = 'unexpected: ' . $matches[1];
         }
 
+        if (1 === preg_match('/^(.*\bunexpected)\s+[A-Za-z_\\\\][A-Za-z0-9_\\\\]*(?:Exception|Error|Throwable|SoapFault):\s*(.*)$/i', $line, $matches)) {
+            $candidates[] = $matches[1] . ': ' . $matches[2];
+        }
+
         return $candidates;
     }
 
@@ -697,6 +701,10 @@ final readonly class ExpectedOutputUpdater
         $class = $actual['class'];
         $candidateBody = $this->candidateBody($candidate, $prefix);
         $code = $actual['code'];
+
+        if (null !== $actual['file'] && null !== $actual['line'] && null !== $code && 1 === preg_match('/^((?:[+-]?\d+|%d|%i)): (.*) - %s\(%d\)$/', $candidateBody, $matches)) {
+            return $prefix . $class . ': ' . $matches[1] . ': ' . $this->normalisedFileLineMessage($matches[2], $actual['message']);
+        }
 
         if (null !== $actual['file'] && null !== $actual['line'] && null !== $code && 1 === preg_match('/^((?:[+-]?\d+|%d|%i)): (.*)%s\(%d\)$/', $candidateBody, $matches)) {
             return $prefix . $class . ': ' . $matches[1] . ': ' . $this->normalisedFileLineMessage($matches[2], $actual['message']);
@@ -879,6 +887,10 @@ final readonly class ExpectedOutputUpdater
             $classMessage . ' in ' . $actual['file'] . ' on line ' . $actual['line'],
             $actual['prefix'] . $message . ' in ' . $actual['file'] . ' on line ' . $actual['line'],
             $actual['prefix'] . $classMessage . ' in ' . $actual['file'] . ' on line ' . $actual['line'],
+            $message . ' - ' . $actual['file'] . '(' . $actual['line'] . ')',
+            $classMessage . ' - ' . $actual['file'] . '(' . $actual['line'] . ')',
+            $actual['prefix'] . $message . ' - ' . $actual['file'] . '(' . $actual['line'] . ')',
+            $actual['prefix'] . $classMessage . ' - ' . $actual['file'] . '(' . $actual['line'] . ')',
             $message . ' at ' . $actual['file'] . ':' . $actual['line'],
             $classMessage . ' at ' . $actual['file'] . ':' . $actual['line'],
             $actual['prefix'] . $message . ' at ' . $actual['file'] . ':' . $actual['line'],
@@ -914,7 +926,7 @@ final readonly class ExpectedOutputUpdater
 
     private function isLikelyExceptionClass(string $class): bool
     {
-        return 1 === preg_match('/(?:Exception|Error|Throwable|SoapFault)$/', $class);
+        return 1 === preg_match('/(?:Exception|Error|Throwable|SoapFault)$/i', $class);
     }
 
     private function expectfLineMatches(string $expected, string $actual): bool

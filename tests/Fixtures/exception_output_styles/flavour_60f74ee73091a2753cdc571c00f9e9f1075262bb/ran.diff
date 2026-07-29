@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -5,9 +5,8 @@
+ try {
+     throw new \ArgumentCountError('fixture message');
+ } catch (\ArgumentCountError $e) {
+-    var_dump('ERROR 1', $e->getMessage());
++    echo 'ERROR 1: ', $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-string(7) "ERROR 1"
+-string(15) "fixture message"
++ERROR 1: ArgumentCountError: fixture message

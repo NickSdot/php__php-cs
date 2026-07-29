@@ -1,0 +1,15 @@
+--- old.phpt
++++ new.phpt
+@@ -5,10 +5,10 @@
+ try {
+     throw new \RuntimeException('fixture message');
+ } catch (\Exception $e) {
+-    var_dump($e->getMessage());
++    echo $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ following inline output
+ --EXPECT--
+-string(15) "fixture message"
++RuntimeException: fixture message
+ following inline output

@@ -6,6 +6,7 @@ namespace InternalsCS;
 
 use InternalsCS\PhpSrcTestStyle\PhptFixer;
 
+use function array_all;
 use function array_column;
 use function array_unique;
 use function array_values;

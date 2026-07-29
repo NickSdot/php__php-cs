@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -6,9 +6,8 @@
+ try {
+     throw new \ValueError('fixture message');
+ } catch (\ValueError $exception) {
+-    echo $option . ": " . $exception->getMessage() . "\n\n";
++    echo $option, ': ', $exception::class, ': ', $exception->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-fixture: fixture message
+-
++fixture: ValueError: fixture message

@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new \Error('fixture message');
+ } catch (\Error $e) {
+-    echo '[' . get_class($e) . '] ' . $e->getMessage() . "\n";
++    echo $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-[Error] fixture message
++Error: fixture message

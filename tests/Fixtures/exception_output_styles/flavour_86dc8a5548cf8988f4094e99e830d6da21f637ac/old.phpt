@@ -1,0 +1,12 @@
+--TEST--
+Exception output: flavour_86dc8a5548cf8988f4094e99e830d6da21f637ac
+--FILE--
+<?php
+try {
+    throw new \Error('fixture message');
+} catch (\Error $e) {
+    echo $e->getMessage() . " on line " . $e->getLine() . "\n";
+}
+?>
+--EXPECTF--
+fixture message on line %d

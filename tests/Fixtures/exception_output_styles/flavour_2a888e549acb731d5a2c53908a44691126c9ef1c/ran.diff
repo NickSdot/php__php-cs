@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new \ArgumentCountError('fixture message');
+ } catch (\ArgumentCountError $e) {
+-    print('Error found: '.$e->getMessage());
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+ }
+ ?>
+ --EXPECTF--
+-Error found: fixture message
++ArgumentCountError: fixture message

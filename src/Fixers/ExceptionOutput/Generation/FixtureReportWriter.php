@@ -24,9 +24,7 @@ use function implode;
 use function ksort;
 use function mb_rtrim;
 use function preg_replace;
-use function str_ends_with;
 use function str_replace;
-use function str_starts_with;
 use function strcmp;
 use function usort;
 
@@ -182,7 +180,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
 
     private function selectedCandidate(FixtureSource $fixture, string $flavourKey): ?Candidate
     {
-        foreach ($fixture->candidates as $candidate) {
+        foreach ($fixture->coveredCandidates as $candidate) {
             if ($candidate->fixtureKey === $flavourKey) {
                 return $this->candidate($candidate);
             }
@@ -346,10 +344,6 @@ final readonly class FixtureReportWriter implements FixtureReporter
             default => 'invalid_fixture_shape',
         };
 
-        if ($this->isManualFixture($candidate)) {
-            $detail = 'manual_' . $detail;
-        }
-
         return $detail . '; ' . $candidate->relativePath . ':' . $candidate->line;
     }
 
@@ -357,7 +351,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
     {
         return match ($state) {
             'handled' => 'done',
-            'old_only', 'stale_pair', 'unselected' => 'open',
+            'old_only', 'stale_pair', 'missing', 'unselected' => 'open',
             'ignored' => 'ignored',
             default => 'invalid',
         };
@@ -479,7 +473,7 @@ final readonly class FixtureReportWriter implements FixtureReporter
             $lines[] = '  first line: ' . $firstCandidate->line;
             $lines[] = '  flavours covered: ' . count($fixture->flavourKeys());
 
-            foreach ($fixture->candidates as $candidate) {
+            foreach ($fixture->coveredCandidates as $candidate) {
                 $candidate = $this->candidate($candidate);
                 $lines[] = '    - line ' . $candidate->line . ': ' . $candidate->classification->family->value . ' ' . $candidate->fixtureKey;
             }
@@ -488,12 +482,6 @@ final readonly class FixtureReportWriter implements FixtureReporter
         }
 
         return implode("\n", $lines);
-    }
-
-    private function isManualFixture(Candidate $candidate): bool
-    {
-        return str_starts_with($candidate->relativePath, 'manual_')
-            && str_ends_with($candidate->relativePath, '/old.phpt');
     }
 
     private function renderFailures(FixtureGenerationResult $result, string $fixturesDir): string

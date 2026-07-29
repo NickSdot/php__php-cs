@@ -8,6 +8,7 @@ use InternalsCS\Console\ConsoleIo;
 use InternalsCS\Fixers\ExceptionOutput\Generation\CandidateCollector;
 use InternalsCS\Fixers\ExceptionOutput\Generation\FixtureReportWriter;
 use InternalsCS\Fixers\ExceptionOutput\Generation\SourceVerifier;
+use InternalsCS\Fixture\FixtureCaseName;
 use InternalsCS\Fixture\FixtureDiscovery;
 use InternalsCS\Fixture\FixtureGenerationOptions;
 use InternalsCS\Fixture\FixtureGenerationResult;
@@ -15,7 +16,10 @@ use InternalsCS\Fixture\FixtureGenerator;
 use InternalsCS\Fixture\FixtureOriginalRunner;
 use InternalsCS\Fixture\FixtureReporter;
 use InternalsCS\Fixture\FixtureRewriteRunner;
+use InternalsCS\Fixture\FixtureSource;
+use InternalsCS\Fixture\FixtureSourceReducer;
 use InternalsCS\Fixture\FixtureSourceRunVerifier;
+use InternalsCS\Fixture\FixtureSourceVerification;
 use InternalsCS\Fixture\FixtureSourceVerifier;
 use InternalsCS\PhpSrc\PhpSrcRoot;
 use InternalsCS\SourceFile;
@@ -23,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 
 use function basename;
 use function bin2hex;
+use function count;
 use function dirname;
 use function escapeshellarg;
 use function exec;
@@ -34,7 +39,9 @@ use function is_file;
 use function mkdir;
 use function preg_match;
 use function random_bytes;
+use function rename;
 use function str_contains;
+use function str_ends_with;
 use function str_replace;
 use function sys_get_temp_dir;
 
@@ -69,7 +76,35 @@ final class FixtureGeneratorTest extends TestCase
         self::assertSame([], glob($fixtures . '/*', GLOB_ONLYDIR));
     }
 
-    public function testDryRunSelectsOneFixtureFileForMultipleFlavoursInTheSameSource(): void
+    public function testDryRunSelectsOneFixtureForMultipleConcreteFlavoursInSameFixtureCase(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($phpSrc);
+        file_put_contents($phpSrc . '/run-tests.php', '<?php');
+
+        $this->writeSourcePhpt($phpSrc, 'a.phpt', 'echo "Serialization failed: " . $e->getMessage() . "\n";');
+        $this->writeSourcePhpt($phpSrc, 'b.phpt', 'echo "Object-based creation failed as expected: " . $e->getMessage() . "\n";');
+
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $fixtures,
+            runner: new NoopFixtureRewriteRunner(),
+            write: false,
+            refreshOnly: false,
+        );
+
+        self::assertSame(2, $result->candidateFiles);
+        self::assertSame(2, $result->candidateWindows);
+        self::assertSame(2, $result->candidateFlavours);
+        self::assertSame(0, $result->duplicateCandidates);
+        self::assertSame(1, $result->selectedFixtures);
+    }
+
+    public function testDryRunIgnoresNoOpExceptionOutputWindows(): void
     {
         $root = $this->makeTempDir();
         $fixtures = $root . '/fixtures';
@@ -93,8 +128,8 @@ final class FixtureGeneratorTest extends TestCase
         );
 
         self::assertSame(1, $result->candidateFiles);
-        self::assertSame(2, $result->candidateWindows);
-        self::assertSame(2, $result->candidateFlavours);
+        self::assertSame(1, $result->candidateWindows);
+        self::assertSame(1, $result->candidateFlavours);
         self::assertSame(1, $result->selectedFixtures);
     }
 
@@ -180,6 +215,37 @@ final class FixtureGeneratorTest extends TestCase
         self::assertStringContainsString('source.phpt', (string) file_get_contents($reports . '/stats.md'));
     }
 
+    public function testRefreshOnlyReportsConcreteFlavoursCoveredBySharedFixtureCase(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+
+        $this->writeSourcePhpt($phpSrc, 'a.phpt', 'echo "Serialization failed: " . $e->getMessage() . "\n";');
+        $this->writeSourcePhpt($phpSrc, 'b.phpt', 'echo "Object-based creation failed as expected: " . $e->getMessage() . "\n";');
+        $this->writeFixturePhpt($fixtures, 'echo "Serialization failed: " . $e->getMessage() . "\n";');
+
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
+            runner: new ChangedFixtureRewriteRunner("new\n"),
+            write: true,
+            refreshOnly: true,
+            sourceVerifier: new ExistingFixtureOnlyVerifier(),
+        );
+
+        self::assertSame(2, $result->candidateFlavours);
+        self::assertSame(1, $result->selectedFixtures);
+        self::assertMatchesRegularExpression('/\| done\s+\|\s+2\s+\|/', (string) file_get_contents($reports . '/stats.md'));
+        self::assertMatchesRegularExpression('/\| open\s+\|\s+0\s+\|/', (string) file_get_contents($reports . '/stats.md'));
+        self::assertStringContainsString('flavours covered: 2', (string) file_get_contents($reports . '/fixtures.txt'));
+    }
+
     public function testWriteRunReportsPostRefreshHandledFixtureState(): void
     {
         $root = $this->makeTempDir();
@@ -189,11 +255,10 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($fixtures);
         mkdir($reports);
         mkdir($phpSrc);
-        mkdir($fixtures . '/source');
         file_put_contents($phpSrc . '/run-tests.php', '<?php');
 
         $sourcePath = $this->writeSourcePhpt($phpSrc, 'source.phpt', 'echo $e->getMessage(), "\n";');
-        file_put_contents($fixtures . '/source/old.phpt', (string) file_get_contents($sourcePath));
+        $this->writeFixtureFromFile($fixtures, $sourcePath);
 
         $this->generateOne(
             phpSrc: $phpSrc,
@@ -223,13 +288,12 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($fixtures);
         mkdir($reports);
         mkdir($phpSrc);
-        mkdir($fixtures . '/source');
         file_put_contents($phpSrc . '/run-tests.php', '<?php');
 
         $sourcePath = $this->writeSourcePhpt($phpSrc, 'source.phpt', 'echo $e->getMessage(), "\n";');
-        file_put_contents($fixtures . '/source/old.phpt', (string) file_get_contents($sourcePath));
-        file_put_contents($fixtures . '/source/new.phpt', "new\n");
-        file_put_contents($fixtures . '/source/ran.diff', "diff\n");
+        $case = $this->writeFixtureFromFile($fixtures, $sourcePath);
+        file_put_contents($fixtures . '/' . $case . '/new.phpt', "new\n");
+        file_put_contents($fixtures . '/' . $case . '/ran.diff', "diff\n");
 
         $this->generateOne(
             phpSrc: $phpSrc,
@@ -244,7 +308,34 @@ final class FixtureGeneratorTest extends TestCase
             '/\| open\s+\|\s+1\s+\|/',
             (string) file_get_contents($reports . '/stats.md'),
         );
-        self::assertStringContainsString('stale_pair_kept; source.phpt:8', (string) file_get_contents($reports . '/stats.md'));
+        self::assertStringContainsString('stale_pair_kept; ' . $case . '/old.phpt:8', (string) file_get_contents($reports . '/stats.md'));
+    }
+
+    public function testWriteRunPrefersExistingFixtureOverMatchingSourceCandidate(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+
+        $statement = 'echo $e->getMessage(), "\n";';
+        $this->writeSourcePhpt($phpSrc, 'source.phpt', $statement);
+        $case = $this->writeFixturePhpt($fixtures, $statement);
+
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
+            runner: new NoopFixtureRewriteRunner(),
+            write: true,
+            refreshOnly: false,
+        );
+
+        self::assertSame(1, $result->selectedFixtures);
+        self::assertStringContainsString($case, (string) file_get_contents($reports . '/stats.md'));
     }
 
     public function testWriteRunRejectsSourceThatNeedsExternalFileAndSelectsNextSource(): void
@@ -256,16 +347,14 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($fixtures);
         mkdir($reports);
         mkdir($phpSrc);
-        mkdir($fixtures . '/a');
-
         file_put_contents($phpSrc . '/dependency.inc', '<?php');
         $rejectedSource = $this->writeSourcePhptWithStatements($phpSrc, 'a.phpt', [
             "require __DIR__ . '/dependency.inc';",
             'echo $e->getMessage(), "\n";',
         ]);
-        file_put_contents($fixtures . '/a/old.phpt', (string) file_get_contents($rejectedSource));
-        file_put_contents($fixtures . '/a/new.phpt', "new\n");
-        file_put_contents($fixtures . '/a/ran.diff', "diff\n");
+        $case = $this->writeFixtureFromFile($fixtures, $rejectedSource);
+        file_put_contents($fixtures . '/' . $case . '/new.phpt', "new\n");
+        file_put_contents($fixtures . '/' . $case . '/ran.diff', "diff\n");
         $this->writeSourcePhpt($phpSrc, 'b.phpt', 'echo $e->getMessage(), "\n";');
 
         $result = $this->generateOne(
@@ -291,9 +380,10 @@ final class FixtureGeneratorTest extends TestCase
         self::assertStringContainsString('b.phpt', (string) file_get_contents($oldFixtures[0]));
         self::assertStringContainsString('b.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
         self::assertStringNotContainsString('a.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
-        self::assertDirectoryDoesNotExist($fixtures . '/a');
-        self::assertSame(1, $result->removedFixtures);
-        self::assertSame(['a'], $result->removedFixtureCases);
+        self::assertDirectoryExists($fixtures . '/' . $case);
+        self::assertStringContainsString('b.phpt', (string) file_get_contents($fixtures . '/' . $case . '/old.phpt'));
+        self::assertSame(0, $result->removedFixtures);
+        self::assertSame([], $result->removedFixtureCases);
     }
 
     public function testWriteRunRejectsSourceThatNeedsOriginalFilenameAndSelectsNextSource(): void
@@ -379,16 +469,14 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($fixtures);
         mkdir($reports);
         mkdir($phpSrc);
-        mkdir($fixtures . '/a');
-
         file_put_contents($phpSrc . '/dependency.inc', '<?php');
         $source = $this->writeSourcePhptWithStatements($phpSrc, 'a.phpt', [
             "require __DIR__ . '/dependency.inc';",
             'echo $e->getMessage(), "\n";',
         ]);
-        file_put_contents($fixtures . '/a/old.phpt', (string) file_get_contents($source));
-        file_put_contents($fixtures . '/a/new.phpt', "new\n");
-        file_put_contents($fixtures . '/a/ran.diff', "diff\n");
+        $case = $this->writeFixtureFromFile($fixtures, $source);
+        file_put_contents($fixtures . '/' . $case . '/new.phpt', "new\n");
+        file_put_contents($fixtures . '/' . $case . '/ran.diff', "diff\n");
         file_put_contents($reports . '/stats.md', "unchanged\n");
 
         $result = $this->generateOne(
@@ -411,13 +499,13 @@ final class FixtureGeneratorTest extends TestCase
         self::assertCount(1, $result->failures);
         self::assertStringContainsString('no verified fixture source for flavour', $result->failures[0]);
         self::assertSame(0, $result->removedFixtures);
-        self::assertFileExists($fixtures . '/a/old.phpt');
-        self::assertFileExists($fixtures . '/a/new.phpt');
-        self::assertFileExists($fixtures . '/a/ran.diff');
+        self::assertFileExists($fixtures . '/' . $case . '/old.phpt');
+        self::assertFileExists($fixtures . '/' . $case . '/new.phpt');
+        self::assertFileExists($fixtures . '/' . $case . '/ran.diff');
         self::assertSame("unchanged\n", file_get_contents($reports . '/stats.md'));
     }
 
-    public function testWriteRunUsesVerifiedExistingFixtureAsFallbackSource(): void
+    public function testWriteRunRemovesExistingReducerFixtureWithoutSourceFlavour(): void
     {
         $root = $this->makeTempDir();
         $fixtures = $root . '/fixtures';
@@ -426,15 +514,9 @@ final class FixtureGeneratorTest extends TestCase
         mkdir($fixtures);
         mkdir($reports);
         mkdir($phpSrc);
-        mkdir($fixtures . '/legacy');
-
-        $source = $this->writeSourcePhpt(
-            $fixtures . '/legacy',
-            'old.phpt',
-            'echo $e->getMessage(), "\n";',
-        );
-        file_put_contents($fixtures . '/legacy/new.phpt', (string) file_get_contents($source));
-        file_put_contents($fixtures . '/legacy/ran.diff', '');
+        $case = $this->writeFixturePhpt($fixtures, 'echo $e->getMessage(), "\n";');
+        file_put_contents($fixtures . '/' . $case . '/new.phpt', (string) file_get_contents($fixtures . '/' . $case . '/old.phpt'));
+        file_put_contents($fixtures . '/' . $case . '/ran.diff', '');
 
         $result = $this->generateOne(
             phpSrc: $phpSrc,
@@ -443,15 +525,16 @@ final class FixtureGeneratorTest extends TestCase
             runner: new FixtureRunnerStub(),
             write: true,
             refreshOnly: false,
+            sourceReducer: new FixedFixtureSourceReducer("unused\n"),
         );
 
         self::assertFalse($result->failed());
-        self::assertSame(1, $result->selectedFixtures);
-        self::assertSame(1, $result->stalePairs);
-        self::assertStringContainsString('legacy/old.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
+        self::assertSame(0, $result->selectedFixtures);
+        self::assertSame(1, $result->removedFixtures);
+        self::assertDirectoryDoesNotExist($fixtures . '/' . $case);
     }
 
-    public function testWriteRunUsesManualFixtureWhenNoSourceRepresentativeRuns(): void
+    public function testWriteRunUsesExistingFixtureWhenNoSourceRepresentativeRuns(): void
     {
         $root = $this->makeTempDir();
         $fixtures = $root . '/fixtures';
@@ -465,7 +548,7 @@ final class FixtureGeneratorTest extends TestCase
 
         $statement = 'echo "[009] ".$e->getMessage()."\n";';
         $this->writeSourcePhpt($phpSrc, 'a.phpt', $statement);
-        $this->writeManualPhpt($fixtures, 'manual_001', $statement);
+        $case = $this->writeFixturePhpt($fixtures, $statement);
 
         $this->generateOne(
             phpSrc: $phpSrc,
@@ -482,9 +565,9 @@ final class FixtureGeneratorTest extends TestCase
             runtime: $runtime,
         );
 
-        self::assertFileExists($fixtures . '/manual_001/old.phpt');
-        self::assertStringContainsString('manual_001/old.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
-        self::assertStringContainsString('manual_old_only_fixture', (string) file_get_contents($reports . '/stats.md'));
+        self::assertFileExists($fixtures . '/' . $case . '/old.phpt');
+        self::assertStringContainsString($case . '/old.phpt', (string) file_get_contents($reports . '/fixtures.txt'));
+        self::assertStringContainsString('old_only_fixture', (string) file_get_contents($reports . '/stats.md'));
         self::assertStringNotContainsString('no_selected_runnable_dir', (string) file_get_contents($reports . '/stats.md'));
     }
 
@@ -567,6 +650,74 @@ final class FixtureGeneratorTest extends TestCase
         self::assertSame(1, $result->updatedPairs);
     }
 
+    public function testWriteRunUsesReducedFixtureBeforeSourceVerifier(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+        $this->writeSourcePhpt($phpSrc, 'source.phpt', 'echo $e->getMessage(), "\n";');
+
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
+            runner: new ChangedFixtureRewriteRunner("new\n"),
+            write: true,
+            refreshOnly: false,
+            sourceVerifier: new RejectingFixtureSourceVerifier(),
+            sourceReducer: new FixedFixtureSourceReducer("reduced old\n"),
+        );
+
+        $oldFixtures = glob($fixtures . '/*/old.phpt');
+
+        self::assertIsArray($oldFixtures);
+        self::assertCount(1, $oldFixtures);
+        self::assertFalse($result->failed());
+        self::assertSame("reduced old\n", file_get_contents($oldFixtures[0]));
+    }
+
+    public function testWriteRunCachesReducedFixtureContentsByFixtureCase(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+
+        $this->writeSourcePhptWithStatements($phpSrc, 'source.phpt', [
+            'echo "first: ", $e->getMessage(), "\n";',
+            'echo "second: " . $e->getMessage() . "\n";',
+        ]);
+
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
+            runner: new ChangedFixtureRewriteRunner("new\n"),
+            write: true,
+            refreshOnly: false,
+            sourceReducer: new CaseNameFixtureSourceReducer(),
+        );
+
+        $oldFixtures = glob($fixtures . '/*/old.phpt');
+
+        self::assertIsArray($oldFixtures);
+        self::assertCount(2, $oldFixtures);
+        self::assertFalse($result->failed());
+
+        foreach ($oldFixtures as $oldFixture) {
+            $case = basename(dirname($oldFixture));
+
+            self::assertSame("fixture: $case\n", file_get_contents($oldFixture));
+        }
+    }
+
     private function writeSourcePhpt(string $root, string $name, string $statement): string
     {
         return $this->writeSourcePhptWithStatements($root, $name, [$statement]);
@@ -604,13 +755,15 @@ final class FixtureGeneratorTest extends TestCase
         return $path;
     }
 
-    private function writeManualPhpt(string $fixtures, string $case, string $statement): void
+    private function writeFixturePhpt(string $fixtures, string $statement): string
     {
-        mkdir($fixtures . '/' . $case);
+        $seedCase = 'seed_' . bin2hex(random_bytes(4));
+        $seedDir = $fixtures . '/' . $seedCase;
+        mkdir($seedDir);
 
         $contents = <<<PHPT
             --TEST--
-            Manual exception-output fixture
+            Exception-output fixture
             --FILE--
             <?php
             try {
@@ -623,7 +776,29 @@ final class FixtureGeneratorTest extends TestCase
 
             PHPT;
 
-        file_put_contents($fixtures . '/' . $case . '/old.phpt', $contents);
+        $oldPath = $seedDir . '/old.phpt';
+        file_put_contents($oldPath, $contents);
+
+        $candidates = new CandidateCollector(requireExpectedOutputEvidence: false)->collect(new SourceFile($oldPath, $fixtures));
+        self::assertCount(1, $candidates);
+
+        $case = new FixtureCaseName()->fromCandidate($candidates[0]);
+        $fixtureDir = $fixtures . '/' . $case;
+        rename($seedDir, $fixtureDir);
+
+        return $case;
+    }
+
+    private function writeFixtureFromFile(string $fixtures, string $sourcePath): string
+    {
+        $candidates = new CandidateCollector(requireExpectedOutputEvidence: false)->collect(new SourceFile($sourcePath, dirname($sourcePath)));
+        self::assertGreaterThanOrEqual(1, count($candidates));
+
+        $case = new FixtureCaseName()->fromCandidate($candidates[0]);
+        mkdir($fixtures . '/' . $case);
+        file_put_contents($fixtures . '/' . $case . '/old.phpt', (string) file_get_contents($sourcePath));
+
+        return $case;
     }
 
     /** @param list<string> $statements */
@@ -651,6 +826,7 @@ final class FixtureGeneratorTest extends TestCase
         bool $allowDirty = true,
         ?FixtureReporter $reporter = null,
         ?FixtureSourceVerifier $sourceVerifier = null,
+        ?FixtureSourceReducer $sourceReducer = null,
     ): FixtureGenerationResult {
         $runtime ??= $phpSrc;
         $this->ensurePhpSrcRoot($phpSrc);
@@ -670,6 +846,7 @@ final class FixtureGeneratorTest extends TestCase
                 runner: $runner,
                 reporter: $reporter ?? new FixtureReportWriter(),
                 sourceVerifier: $sourceVerifier ?? new FixtureSourceRunVerifier(),
+                sourceReducer: $sourceReducer,
             ),
         ]);
 
@@ -703,7 +880,8 @@ final readonly class TestFixtureDiscovery implements FixtureDiscovery
         private FixtureRewriteRunner $runner,
         private FixtureReporter $reporter,
         private FixtureSourceVerifier $sourceVerifier,
-        private CandidateCollector $candidates = new CandidateCollector(),
+        private CandidateCollector $candidates = new CandidateCollector(requireExpectedOutputEvidence: false),
+        private ?FixtureSourceReducer $sourceReducer = null,
     ) {}
 
     public function fixerName(): string
@@ -741,6 +919,11 @@ final readonly class TestFixtureDiscovery implements FixtureDiscovery
         return $this->sourceVerifier;
     }
 
+    public function sourceReducer(): ?FixtureSourceReducer
+    {
+        return $this->sourceReducer;
+    }
+
     public function checkRuntime(ConsoleIo $io): bool
     {
         return true;
@@ -754,6 +937,42 @@ final readonly class TestFixtureDiscovery implements FixtureDiscovery
     public function rewriteRunner(PhpSrcRoot $phpTestRuntimeRoot): FixtureRewriteRunner
     {
         return $this->runner;
+    }
+}
+
+final readonly class FixedFixtureSourceReducer implements FixtureSourceReducer
+{
+    public function __construct(
+        private string $contents,
+    ) {}
+
+    public function reduce(FixtureSource $source, FixtureRewriteRunner $runner): string
+    {
+        return $this->contents;
+    }
+}
+
+final readonly class CaseNameFixtureSourceReducer implements FixtureSourceReducer
+{
+    public function reduce(FixtureSource $source, FixtureRewriteRunner $runner): string
+    {
+        return 'fixture: ' . new FixtureCaseName()->fromFixtureSource($source) . "\n";
+    }
+}
+
+final readonly class RejectingFixtureSourceVerifier implements FixtureSourceVerifier
+{
+    public function canSelect(FixtureSource $source, FixtureSourceVerification $verification): bool
+    {
+        return false;
+    }
+}
+
+final readonly class ExistingFixtureOnlyVerifier implements FixtureSourceVerifier
+{
+    public function canSelect(FixtureSource $source, FixtureSourceVerification $verification): bool
+    {
+        return str_ends_with($source->relativePath, '/old.phpt');
     }
 }
 

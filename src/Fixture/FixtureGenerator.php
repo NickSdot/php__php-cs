@@ -10,8 +10,11 @@ use InternalsCS\Support\GitStatus;
 
 use function array_any;
 use function array_fill_keys;
+use function array_key_exists;
 use function array_keys;
+use function basename;
 use function count;
+use function dirname;
 use function glob;
 use function is_dir;
 use function str_ends_with;
@@ -36,7 +39,10 @@ final readonly class FixtureGenerator
         $sourceFiles = $sourceDirty ? [] : $this->sourceFiles($options, $discoveries);
         $candidatesByFixer = $sourceDirty
             ? $this->emptyCandidateMap($discoveries)
-            : $this->candidatesByFixer($discoveries, $sourceFiles, $options->fixturesRoot);
+            : $this->candidatesByFixer($discoveries, $sourceFiles);
+        $fixtureCandidatesByFixer = $sourceDirty
+            ? $this->emptyCandidateMap($discoveries)
+            : $this->fixtureCandidatesByFixer($discoveries, $options->fixturesRoot, $candidatesByFixer);
         $sourceFileCount = count($sourceFiles);
         $runs = [];
 
@@ -47,6 +53,7 @@ final readonly class FixtureGenerator
                 options: $options,
                 sourceFileCount: $sourceFileCount,
                 candidates: $candidatesByFixer[$discovery->fixerName()],
+                fixtureCandidates: $fixtureCandidatesByFixer[$discovery->fixerName()],
             );
 
             $run = new FixtureGenerationRun(
@@ -105,27 +112,62 @@ final readonly class FixtureGenerator
      * @param list<SourceFile> $sourceFiles
      * @return array<string, list<FixtureCandidate>>
      */
-    private function candidatesByFixer(array $discoveries, array $sourceFiles, string $fixturesRoot): array
+    private function candidatesByFixer(array $discoveries, array $sourceFiles): array
     {
         $candidates = $this->emptyCandidateMap($discoveries);
 
         foreach ($sourceFiles as $sourceFile) {
             foreach ($discoveries as $discovery) {
                 foreach ($discovery->candidates($sourceFile) as $candidate) {
-                    $candidates[$discovery->fixerName()][] = $candidate;
-                }
-            }
-        }
-
-        foreach ($discoveries as $discovery) {
-            foreach ($this->fixtureSources($discovery, $fixturesRoot) as $fixtureSource) {
-                foreach ($discovery->candidates($fixtureSource) as $candidate) {
-                    $candidates[$discovery->fixerName()][] = $candidate;
+                    $fixer = $discovery->fixerName();
+                    $candidates[$fixer][] = $candidate;
                 }
             }
         }
 
         return $candidates;
+    }
+
+    /**
+     * @param list<FixtureDiscovery> $discoveries
+     * @param array<string, list<FixtureCandidate>> $sourceCandidates
+     * @return array<string, list<FixtureCandidate>>
+     */
+    private function fixtureCandidatesByFixer(array $discoveries, string $fixturesRoot, array $sourceCandidates): array
+    {
+        $candidates = $this->emptyCandidateMap($discoveries);
+
+        foreach ($discoveries as $discovery) {
+            $fixer = $discovery->fixerName();
+            $sourceCases = $this->fixtureCases($sourceCandidates[$fixer]);
+
+            foreach ($this->fixtureSources($discovery, $fixturesRoot) as $fixtureSource) {
+                foreach ($discovery->candidates($fixtureSource) as $candidate) {
+                    if (!isset($sourceCases[$candidate->fixtureCaseKey])) {
+                        continue;
+                    }
+
+                    $candidates[$fixer][] = $candidate;
+                }
+            }
+        }
+
+        return $candidates;
+    }
+
+    /**
+     * @param list<FixtureCandidate> $candidates
+     * @return array<string, true>
+     */
+    private function fixtureCases(array $candidates): array
+    {
+        $cases = [];
+
+        foreach ($candidates as $candidate) {
+            $cases[$candidate->fixtureCaseKey] = true;
+        }
+
+        return $cases;
     }
 
     /**
@@ -212,7 +254,8 @@ final readonly class FixtureGenerator
             return $this->dirtySource($result, $job);
         }
 
-        $selection = $this->select($result, $job);
+        $oldFixtureContentsByCase = [];
+        $selection = $this->select($result, $job, $oldFixtureContentsByCase);
 
         if (!$job->write || $result->failed()) {
             return $result;
@@ -221,7 +264,12 @@ final readonly class FixtureGenerator
         $writeResults = [];
 
         foreach ($selection->fixtures as $fixture) {
-            $writeResult = $this->writer->write($fixture, $job->fixturesDir);
+            $case = $this->caseName->fromFixtureSource($fixture);
+            $writeResult = $this->writer->write(
+                source: $fixture,
+                fixturesDir: $job->fixturesDir,
+                oldContents: $oldFixtureContentsByCase[$case] ?? null,
+            );
             $writeResults[$fixture->relativePath] = $writeResult;
 
             if (null !== $writeResult->failure && !$writeResult->oldOnly) {
@@ -279,12 +327,15 @@ final readonly class FixtureGenerator
         return $result;
     }
 
-    private function select(FixtureGenerationResult $result, FixtureGenerationJob $job): FixtureSelection
+    /** @param array<string, string|null> $oldFixtureContentsByCase */
+    private function select(FixtureGenerationResult $result, FixtureGenerationJob $job, array &$oldFixtureContentsByCase = []): FixtureSelection
     {
-        $sourceFilter = $this->sourceFilter($job);
+        $sourceFilter = $this->sourceFilter($job, $oldFixtureContentsByCase);
         $selection = $this->selector->select(
             candidates: $job->candidates,
             canSelect: $sourceFilter,
+            splitSourceCandidatesByFixtureCase: !$job->refreshOnly && null !== $job->sourceReducer,
+            fixtureCandidates: $job->fixtureCandidates,
         );
 
         $result->scannedFiles = $job->sourceFileCount;
@@ -311,7 +362,7 @@ final readonly class FixtureGenerator
         }
 
         if ($job->write && !$job->refreshOnly && null !== $sourceFilter) {
-            $this->removeRejectedFixtures($result, $job, $sourceFilter);
+            $this->removeRejectedFixtures($result, $job, $sourceFilter, $selection);
         }
 
         return $selection;
@@ -322,8 +373,27 @@ final readonly class FixtureGenerator
         FixtureGenerationResult $result,
         FixtureGenerationJob $job,
         callable $canSelect,
+        FixtureSelection $selection,
     ): void {
+        $selectedCases = array_fill_keys($this->selectedFixtureCases($selection), true);
+
         foreach ($this->existingGeneratedFixtureSources($job) as $source) {
+            $case = $this->fixtureSourceCase($source, $job->fixturesDir);
+
+            if (isset($selectedCases[$case])) {
+                continue;
+            }
+
+            if (null !== $job->sourceReducer) {
+                if (!$this->writer->remove($source, $job->fixturesDir)) {
+                    continue;
+                }
+
+                $result->removedFixtures++;
+                $result->removedFixtureCases[] = $case;
+                continue;
+            }
+
             if ($canSelect($source)) {
                 continue;
             }
@@ -332,22 +402,54 @@ final readonly class FixtureGenerator
                 continue;
             }
 
-            $case = $this->caseName->fromFixtureSource($source);
             $result->removedFixtures++;
             $result->removedFixtureCases[] = $case;
         }
+    }
+
+    private function fixtureSourceCase(FixtureSource $source, string $fixturesDir): string
+    {
+        if (
+            str_starts_with($source->sourcePath, $fixturesDir . DIRECTORY_SEPARATOR)
+            && str_ends_with($source->sourcePath, DIRECTORY_SEPARATOR . 'old.phpt')
+        ) {
+            return basename(dirname($source->sourcePath));
+        }
+
+        return $this->caseName->fromFixtureSource($source);
+    }
+
+    /** @return list<string> */
+    private function selectedFixtureCases(FixtureSelection $selection): array
+    {
+        $cases = [];
+
+        foreach ($selection->fixtures as $fixture) {
+            $cases[] = $this->caseName->fromFixtureSource($fixture);
+        }
+
+        return $cases;
     }
 
     /** @return list<FixtureSource> */
     private function existingGeneratedFixtureSources(FixtureGenerationJob $job): array
     {
         $candidatesBySource = [];
+        $files = glob($job->fixturesDir . '/*/old.phpt');
+
+        if (false === $files) {
+            return [];
+        }
+
+        foreach ($files as $file) {
+            $source = new SourceFile($file, $job->fixturesDir);
+
+            foreach ($job->discovery->candidates($source) as $candidate) {
+                $candidatesBySource[$candidate->relativePath][] = $candidate;
+            }
+        }
 
         foreach ($job->candidates as $candidate) {
-            if ($this->isExistingFixtureCandidate($candidate, $job)) {
-                continue;
-            }
-
             $fixtureDir = $job->fixturesDir
                 . DIRECTORY_SEPARATOR
                 . $this->caseName->fromCandidate($candidate);
@@ -368,12 +470,10 @@ final readonly class FixtureGenerator
         return $sources;
     }
 
-    private function isExistingFixtureCandidate(
-        FixtureCandidate $candidate,
-        FixtureGenerationJob $job,
-    ): bool {
-        return str_starts_with($candidate->sourcePath, $job->fixturesDir . DIRECTORY_SEPARATOR)
-            && str_ends_with($candidate->relativePath, '/old.phpt');
+    private function isExistingFixtureSource(FixtureSource $source, FixtureGenerationJob $job): bool
+    {
+        return str_starts_with($source->sourcePath, $job->fixturesDir . DIRECTORY_SEPARATOR)
+            && str_ends_with($source->relativePath, '/old.phpt');
     }
 
     private function refreshFixtures(
@@ -459,27 +559,64 @@ final readonly class FixtureGenerator
         return count($files);
     }
 
-    /** @return (callable(FixtureSource): bool)|null */
-    private function sourceFilter(FixtureGenerationJob $job): ?callable
+    /**
+     * @param array<string, string|null> $oldFixtureContentsByCase
+     * @return (callable(FixtureSource): bool)|null
+     */
+    private function sourceFilter(FixtureGenerationJob $job, array &$oldFixtureContentsByCase): ?callable
     {
         if (!$job->write) {
             return null;
         }
 
-        $results = [];
-        $verifier = $job->discovery->sourceVerifier();
-        $verification = new FixtureSourceVerification(
-            fixturesDir: $job->fixturesDir,
-            runner: $job->runner,
+        $verifiedSources = [];
+
+        return function (FixtureSource $source) use (&$oldFixtureContentsByCase, &$verifiedSources, $job): bool {
+            if ($this->shouldReduceSource($source, $job)) {
+                return $this->reduceFixtureSource($source, $job, $oldFixtureContentsByCase);
+            }
+
+            return $this->verifyFixtureSource($source, $job, $verifiedSources);
+        };
+    }
+
+    private function shouldReduceSource(FixtureSource $source, FixtureGenerationJob $job): bool
+    {
+        return !$job->refreshOnly
+            && null !== $job->sourceReducer
+            && !$this->isExistingFixtureSource($source, $job);
+    }
+
+    /** @param array<string, string|null> $oldFixtureContentsByCase */
+    private function reduceFixtureSource(FixtureSource $source, FixtureGenerationJob $job, array &$oldFixtureContentsByCase): bool
+    {
+        if (null === $job->sourceReducer) {
+            return false;
+        }
+
+        $case = $this->caseName->fromFixtureSource($source);
+
+        if (!array_key_exists($case, $oldFixtureContentsByCase)) {
+            $oldFixtureContentsByCase[$case] = $job->sourceReducer->reduce(
+                source: $source,
+                runner: $job->runner,
+            );
+        }
+
+        return null !== $oldFixtureContentsByCase[$case];
+    }
+
+    /** @param array<string, bool> $verifiedSources */
+    private function verifyFixtureSource(FixtureSource $source, FixtureGenerationJob $job, array &$verifiedSources): bool
+    {
+        $verifiedSources[$source->relativePath] ??= $job->discovery->sourceVerifier()->canSelect(
+            source: $source,
+            verification: new FixtureSourceVerification(
+                fixturesDir: $job->fixturesDir,
+                runner: $job->runner,
+            ),
         );
 
-        return function (FixtureSource $source) use (&$results, $verifier, $verification): bool {
-            $results[$source->relativePath] ??= $verifier->canSelect(
-                source: $source,
-                verification: $verification,
-            );
-
-            return $results[$source->relativePath];
-        };
+        return $verifiedSources[$source->relativePath];
     }
 }

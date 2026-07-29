@@ -6,14 +6,15 @@ namespace InternalsCS\Fixers\ExceptionOutput;
 
 use InternalsCS\Console\ConsoleIo;
 use InternalsCS\Fixers\ExceptionOutput\Generation\CandidateCollector;
+use InternalsCS\Fixers\ExceptionOutput\Generation\ExceptionOutputFixtureRewriteRunner;
 use InternalsCS\Fixers\ExceptionOutput\Generation\FixtureReportWriter;
 use InternalsCS\Fixers\ExceptionOutput\Generation\SourceVerifier;
 use InternalsCS\Fixture\FixtureDiscovery;
 use InternalsCS\Fixture\FixtureReporter;
 use InternalsCS\Fixture\FixtureRewriteRunner;
+use InternalsCS\Fixture\FixtureSourceReducer;
 use InternalsCS\Fixture\FixtureSourceVerifier;
 use InternalsCS\PhpSrc\PhpSrcRoot;
-use InternalsCS\PhpSrcTestStyle\PhptFixtureRewriteRunner;
 use InternalsCS\SourceFile;
 
 use function function_exists;
@@ -61,6 +62,11 @@ final readonly class ExceptionOutputFixtureDiscovery implements FixtureDiscovery
         return $this->sourceVerifier;
     }
 
+    public function sourceReducer(): FixtureSourceReducer
+    {
+        return new Generation\MinimalFixtureSourceReducer();
+    }
+
     public function checkRuntime(ConsoleIo $io): bool
     {
         if (function_exists('token_get_all')) {
@@ -79,9 +85,6 @@ final readonly class ExceptionOutputFixtureDiscovery implements FixtureDiscovery
 
     public function rewriteRunner(PhpSrcRoot $phpTestRuntimeRoot): FixtureRewriteRunner
     {
-        return new PhptFixtureRewriteRunner(
-            phpSrcDir: $phpTestRuntimeRoot->path,
-            fixerClasses: [ExceptionOutputFixer::class],
-        );
+        return new ExceptionOutputFixtureRewriteRunner($phpTestRuntimeRoot->path);
     }
 }

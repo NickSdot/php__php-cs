@@ -6,12 +6,14 @@ namespace Tests\Unit;
 
 use InternalsCS\Console\ConsoleIo;
 use InternalsCS\Fixers\FinalNewline\Generation\CandidateCollector;
+use InternalsCS\Fixers\FinalNewline\Generation\MinimalFixtureSourceReducer;
 use InternalsCS\Fixture\FixtureDiscovery;
 use InternalsCS\Fixture\FixtureGenerationOptions;
 use InternalsCS\Fixture\FixtureGenerator;
 use InternalsCS\Fixture\FixtureReporter;
 use InternalsCS\Fixture\FixtureRewriteRunner;
 use InternalsCS\Fixture\FixtureSource;
+use InternalsCS\Fixture\FixtureSourceReducer;
 use InternalsCS\Fixture\FixtureSourceVerification;
 use InternalsCS\Fixture\FixtureSourceVerifier;
 use InternalsCS\PhpSrc\PhpSrcRoot;
@@ -19,7 +21,9 @@ use InternalsCS\SourceFile;
 use PHPUnit\Framework\TestCase;
 
 use function bin2hex;
+use function file_get_contents;
 use function file_put_contents;
+use function hash;
 use function is_file;
 use function mkdir;
 use function random_bytes;
@@ -72,15 +76,21 @@ final class FinalNewlineFixtureGenerationTest extends TestCase
             write: true,
             refreshOnly: false,
         ), [
-            new FinalNewlineTestDiscovery(new FinalNewlineChangedFixtureRewriteRunner("--TEST--\nmissing\n--FILE--\n<?php\n")),
+            new FinalNewlineTestDiscovery(
+                runner: new FinalNewlineChangedFixtureRewriteRunner("--TEST--\nmissing\n--FILE--\n<?php\n"),
+                sourceReducer: new MinimalFixtureSourceReducer(),
+            ),
         ]);
 
         self::assertCount(1, $result->runs);
         self::assertSame(1, $result->runs[0]->result->createdOld);
         self::assertSame(1, $result->runs[0]->result->updatedPairs);
-        self::assertTrue(is_file($fixtures . '/missing/old.phpt'));
-        self::assertTrue(is_file($fixtures . '/missing/new.phpt'));
-        self::assertTrue(is_file($fixtures . '/missing/ran.diff'));
+        $case = 'flavour_' . hash('sha1', 'missing-final-newline');
+
+        self::assertTrue(is_file($fixtures . '/' . $case . '/old.phpt'));
+        self::assertTrue(is_file($fixtures . '/' . $case . '/new.phpt'));
+        self::assertTrue(is_file($fixtures . '/' . $case . '/ran.diff'));
+        self::assertSame("--TEST--\nFinal newline: missing\n--FILE--\n<?php\n--EXPECT--", file_get_contents($fixtures . '/' . $case . '/old.phpt'));
     }
 
     private function makeTempDir(): string
@@ -97,6 +107,7 @@ final readonly class FinalNewlineTestDiscovery implements FixtureDiscovery
     public function __construct(
         private FixtureRewriteRunner $runner,
         private CandidateCollector $candidates = new CandidateCollector(),
+        private ?FixtureSourceReducer $sourceReducer = null,
     ) {}
 
     public function fixerName(): string
@@ -132,6 +143,11 @@ final readonly class FinalNewlineTestDiscovery implements FixtureDiscovery
     public function sourceVerifier(): FixtureSourceVerifier
     {
         return new FinalNewlineTestSourceVerifier();
+    }
+
+    public function sourceReducer(): ?FixtureSourceReducer
+    {
+        return $this->sourceReducer;
     }
 
     public function checkRuntime(ConsoleIo $io): bool

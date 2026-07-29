@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -5,9 +5,8 @@
+ try {
+     throw new \Error('fixture message');
+ } catch (\Error $ex) {
+-    echo "{$ex->getCode()}: {$ex->getMessage()} - {$ex->getFile()}({$ex->getLine()})\n\n";
++    echo $ex::class, ': ', $ex->getCode(), ': ', $ex->getMessage(), ' in ', $ex->getFile(), ' on line ', $ex->getLine(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-%d: fixture message - %s(%d)
+-
++Error: %d: fixture message in %s on line %d

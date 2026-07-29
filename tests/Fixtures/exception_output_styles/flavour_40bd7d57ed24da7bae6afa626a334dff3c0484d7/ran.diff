@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new \UnhandledMatchError('fixture message');
+ } catch (\UnhandledMatchError $e) {
+-    print $e->getMessage() . PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+ }
+ ?>
+ --EXPECTF--
+-fixture message
++UnhandledMatchError: fixture message

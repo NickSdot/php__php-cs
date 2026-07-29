@@ -1,10 +1,15 @@
 # Fixture refresh
 
-Refresh-only run: no
+Refresh-only run: yes
+Rejected fixtures removed: 0
 Updated new/diff pairs: 0
 Stale existing new/diff pairs kept: 0
 Old-only fixture files: 0
 Failures: 0
+
+## Removed rejected fixtures
+
+- none
 
 ## Updated pairs
 

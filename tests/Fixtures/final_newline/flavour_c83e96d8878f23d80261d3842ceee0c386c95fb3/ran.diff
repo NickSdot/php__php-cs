@@ -1,0 +1,7 @@
+--- old.phpt
++++ new.phpt
+@@ -3,4 +3,3 @@
+ --FILE--
+ <?php
+ --EXPECT--
+-

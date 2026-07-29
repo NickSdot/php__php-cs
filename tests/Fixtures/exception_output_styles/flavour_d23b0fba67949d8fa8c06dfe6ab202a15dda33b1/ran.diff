@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new \ValueError('fixture message');
+ } catch (\ValueError $e) {
+-    print('Error found: '.$e->getMessage().".\n");
++    echo $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-Error found: fixture message.
++ValueError: fixture message

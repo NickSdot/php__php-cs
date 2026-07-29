@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new \RuntimeException('fixture message');
+ } catch (\Exception $e) {
+-    echo 'Caught exception with message "', $e->getMessage(), '"', "\n";
++    echo $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-Caught exception with message "fixture message"
++RuntimeException: fixture message

@@ -16,10 +16,12 @@ use InternalsCS\Fixture\FixtureSource;
 use InternalsCS\Fixture\FixtureWriter;
 use PHPUnit\Framework\TestCase;
 
+use function basename;
 use function bin2hex;
 use function dirname;
 use function file_get_contents;
 use function file_put_contents;
+use function hash;
 use function mkdir;
 use function random_bytes;
 use function sys_get_temp_dir;
@@ -44,7 +46,7 @@ final class FixtureWriterTest extends TestCase
         self::assertSame($contents, file_get_contents($this->oldPath($fixtures, $candidate)));
     }
 
-    public function testExistingOldFixtureIsNeverUpdatedFromSource(): void
+    public function testSelectedExistingOldFixtureIsNeverUpdated(): void
     {
         $root = $this->makeTempDir();
         $source = $root . '/Zend/tests/example.phpt';
@@ -55,45 +57,60 @@ final class FixtureWriterTest extends TestCase
         file_put_contents($source, "source\n");
 
         $candidate = $this->candidate($source, 'Zend/tests/example.phpt');
-        $fixtureDir = $fixtures . '/' . new FixtureCaseName()->fromSourcePath($candidate->relativePath);
+        $fixtureDir = $fixtures . '/' . new FixtureCaseName()->fromCandidate($candidate);
         mkdir($fixtureDir, recursive: true);
         file_put_contents($fixtureDir . '/old.phpt', "different\n");
 
-        $result = new FixtureWriter()->write(new FixtureSource([$candidate]), $fixtures);
+        $fixtureCandidate = $this->candidate($fixtureDir . '/old.phpt', basename($fixtureDir) . '/old.phpt');
+        $result = new FixtureWriter()->write(new FixtureSource([$fixtureCandidate]), $fixtures);
 
         self::assertFalse($result->createdOld);
         self::assertNull($result->failure);
         self::assertSame("different\n", file_get_contents($fixtureDir . '/old.phpt'));
     }
 
-    public function testFixtureCaseNamesPreserveLeadingUnderscoreSegments(): void
+    public function testExistingHashFixtureIsUpdatedWhenDifferentSourceIsSelected(): void
     {
         $root = $this->makeTempDir();
-        $source = $root . '/Zend/tests/asymmetric_visibility/__unset.phpt';
+        $source = $root . '/Zend/tests/example.phpt';
         $fixtures = $root . '/fixtures';
         mkdir(dirname($source), recursive: true);
         mkdir($fixtures);
 
         file_put_contents($source, "source\n");
 
-        $candidate = $this->candidate($source, 'Zend/tests/asymmetric_visibility/__unset.phpt');
+        $candidate = $this->candidate($source, 'Zend/tests/example.phpt');
+        $fixtureDir = $fixtures . '/' . new FixtureCaseName()->fromCandidate($candidate);
+        mkdir($fixtureDir, recursive: true);
+        file_put_contents($fixtureDir . '/old.phpt', "different\n");
 
-        new FixtureWriter()->write(new FixtureSource([$candidate]), $fixtures);
+        $result = new FixtureWriter()->write(new FixtureSource([$candidate]), $fixtures);
 
-        self::assertFileExists($this->oldPath($fixtures, $candidate));
+        self::assertTrue($result->createdOld);
+        self::assertNull($result->failure);
+        self::assertSame("source\n", file_get_contents($fixtureDir . '/old.phpt'));
     }
 
-    public function testFixtureCaseNameIsOnlyTheSourcePathSlug(): void
+    public function testGeneratedFixtureCaseNameIsTheFlavourHash(): void
     {
         $source = '/tmp/php-src/Zend/tests/example.phpt';
         $candidate = $this->candidate($source, 'Zend/tests/example.phpt');
 
-        self::assertSame('Zend_tests_example', new FixtureCaseName()->fromCandidate($candidate));
+        self::assertSame(
+            'flavour_' . hash('sha1', $candidate->fixtureKey),
+            new FixtureCaseName()->fromCandidate($candidate),
+        );
     }
 
-    public function testManualOldFixtureCaseNameIsTheManualFixtureDirectory(): void
+    public function testFixtureSourceCaseNameIsTheFlavourHash(): void
     {
-        self::assertSame('manual_001', new FixtureCaseName()->fromSourcePath('manual_001/old.phpt'));
+        $source = '/tmp/fixtures/old_name/old.phpt';
+        $candidate = $this->candidate($source, 'old_name/old.phpt');
+
+        self::assertSame(
+            'flavour_' . hash('sha1', $candidate->fixtureKey),
+            new FixtureCaseName()->fromFixtureSource(new FixtureSource([$candidate])),
+        );
     }
 
     private function candidate(string $source, string $relativePath): Candidate
@@ -117,7 +134,7 @@ final class FixtureWriterTest extends TestCase
 
     private function oldPath(string $fixtures, Candidate $candidate): string
     {
-        return $fixtures . '/' . new FixtureCaseName()->fromSourcePath($candidate->relativePath) . '/old.phpt';
+        return $fixtures . '/' . new FixtureCaseName()->fromCandidate($candidate) . '/old.phpt';
     }
 
     private function makeTempDir(): string

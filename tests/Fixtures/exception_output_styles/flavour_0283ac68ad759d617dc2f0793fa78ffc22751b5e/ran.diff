@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new \ReflectionException('fixture message');
+ } catch (\ReflectionException $e) {
+-    echo "Expected exception for class-based reflection: " . $e->getMessage() . "\n";
++    echo 'class-based reflection: ', $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-Expected exception for class-based reflection: fixture message
++class-based reflection: ReflectionException: fixture message

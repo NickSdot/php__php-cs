@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new \DOMException('fixture message');
+ } catch (\DOMException $e) {
+-    echo $e->getCode(), ": ", $e->getMessage(), "\n";
++    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-%d: fixture message
++DOMException: %d: fixture message

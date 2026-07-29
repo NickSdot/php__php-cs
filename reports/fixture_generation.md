@@ -4,14 +4,14 @@
 
 | Metric                    | Value |
 |---------------------------|-------|
-| Scanned source files once | 21658 |
+| Scanned source files once | 22331 |
 
 ## Run
 
-| Fixer            | Input files | Flavours | Selected | Created old | Verified | Updated | Stale | Old-only | Failures |
-|------------------|-------------|----------|----------|-------------|----------|---------|-------|----------|----------|
-| exception-output | 21658       | 122      | 102      | 0           | 107      | 0       | 0     | 0        | 0        |
-| final-newline    | 21658       | 2        | 2        | 0           | 3        | 0       | 0     | 0        | 0        |
+| Fixer            | Input files | Flavours | Selected | Created old | Removed | Verified | Updated | Stale | Old-only | Failures |
+|------------------|-------------|----------|----------|-------------|---------|----------|---------|-------|----------|----------|
+| exception-output | 22331       | 117      | 79       | 0           | 0       | 79       | 0       | 0     | 0        | 0        |
+| final-newline    | 22331       | 2        | 2        | 0           | 0       | 2        | 0       | 0     | 0        | 0        |
 
 ## Details
 

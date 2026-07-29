@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -5,9 +5,8 @@
+ try {
+     throw new \PDOException('fixture message');
+ } catch (\PDOException $e) {
+-    echo $e->getMessage()."\n\n";
++    echo $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-fixture message
+-
++PDOException: fixture message

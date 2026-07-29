@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -6,9 +6,8 @@
+ try {
+     throw new \ReflectionException('fixture message');
+ } catch (\ReflectionException $e) {
+-    echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
++    echo "Property $property from class: ", $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-Property fixture from class: EXCEPTION - fixture message
+-
++Property fixture from class: ReflectionException: fixture message

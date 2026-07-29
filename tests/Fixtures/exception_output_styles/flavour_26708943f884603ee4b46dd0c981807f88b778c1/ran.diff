@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -6,8 +6,8 @@
+ try {
+     throw new \com_exception('fixture message');
+ } catch (\com_exception $e) {
+-    echo "\texception " . $e->getMessage();
++    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+ }
+ ?>
+ --EXPECTF--
+-	exception fixture message
++com_exception: fixture message

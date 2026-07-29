@@ -26,6 +26,8 @@ interface FixtureDiscovery
 
     public function sourceVerifier(): FixtureSourceVerifier;
 
+    public function sourceReducer(): ?FixtureSourceReducer;
+
     public function checkRuntime(ConsoleIo $io): bool;
 
     public function requiresPhpTestRuntime(): bool;

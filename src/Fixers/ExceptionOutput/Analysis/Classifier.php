@@ -16,13 +16,17 @@ final readonly class Classifier
         $parts = $window->parts;
         $family = $this->family($parts);
         $safety = $this->safety($parts);
-        $payload = $family->value . '|' . $parts->fingerprintPayload($this->trash);
-        $fingerprint = new Fingerprint($family, $payload);
+        $fingerprint = new Fingerprint($family, $family->value . '|' . $parts->fingerprintPayload($this->trash));
+        $fixtureFingerprint = new Fingerprint(
+            $family,
+            $family->value . '|' . $safety->value . '|' . $parts->fixtureFingerprintPayload($this->trash),
+        );
 
         return new Classification(
             family: $family,
             safety: $safety,
             fingerprint: $fingerprint,
+            fixtureFingerprint: $fixtureFingerprint,
         );
     }
 

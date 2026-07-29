@@ -4,41 +4,34 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixture;
 
-use function dirname;
-use function mb_trim;
-use function preg_replace;
-use function str_ends_with;
-use function str_replace;
+use function count;
+use function hash;
+use function implode;
+use function sort;
 
 final readonly class FixtureCaseName
 {
     public function fromCandidate(FixtureCandidate $candidate): string
     {
-        return $this->fromSourcePath($candidate->relativePath);
+        return $this->fromFixtureCaseKeys([$candidate->fixtureCaseKey]);
     }
 
     public function fromFixtureSource(FixtureSource $source): string
     {
-        return $this->fromSourcePath($source->relativePath);
+        return $this->fromFixtureCaseKeys($source->fixtureCaseKeys());
     }
 
-    public function fromSourcePath(string $sourcePath): string
+    /** @param list<string> $fixtureCaseKeys */
+    private function fromFixtureCaseKeys(array $fixtureCaseKeys): string
     {
-        $sourcePath = str_replace('\\', '/', $sourcePath);
-
-        if (str_ends_with($sourcePath, '/old.phpt')) {
-            return $this->slug(dirname($sourcePath));
+        if ([] === $fixtureCaseKeys) {
+            throw new \LogicException('Cannot name a fixture source without fixture case keys');
         }
 
-        $base = preg_replace('~\.[A-Za-z0-9]+$~', '', $sourcePath);
+        sort($fixtureCaseKeys);
 
-        return $this->slug((string) $base);
-    }
+        $prefix = 1 === count($fixtureCaseKeys) ? 'flavour' : 'flavours';
 
-    private function slug(string $value): string
-    {
-        $base = preg_replace('~[^A-Za-z0-9_]+~', '_', $value);
-
-        return mb_trim((string) $base, '_');
+        return $prefix . '_' . hash('sha1', implode("\n", $fixtureCaseKeys));
     }
 }

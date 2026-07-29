@@ -39,6 +39,10 @@ final readonly class ExpectedOutputEvidence
             return true;
         }
 
+        if ($parts->has(OutputPartKind::ExceptionTrace)) {
+            return 1 === preg_match('/^#\d+(?:\s|$)/m', $expectedOutput);
+        }
+
         return !str_contains($parts->shape, 'var_dump') && '' !== mb_trim($expectedOutput);
     }
 
@@ -67,11 +71,11 @@ final readonly class ExpectedOutputEvidence
             return false;
         }
 
-        if (!str_contains($expectedOutput, 'Exception') && !str_contains($expectedOutput, 'Error')) {
+        if (1 !== preg_match('/exception|error/i', $expectedOutput)) {
             return false;
         }
 
-        return 1 === preg_match('/^(?:string|%s|%S)\((?:\d+|%d)\) "[A-Za-z_\\\\][A-Za-z0-9_\\\\]*(?:Exception|Error|Throwable|SoapFault)"$/m', $expectedOutput);
+        return 1 === preg_match('/^(?:string|%s|%S)\((?:\d+|%d)\) "[A-Za-z_\\\\][A-Za-z0-9_\\\\]*(?:Exception|Error|Throwable|SoapFault)"$/mi', $expectedOutput);
     }
 
     private function hasDumpedExceptionMessageEvidence(string $expectedOutput, OutputParts $parts): bool

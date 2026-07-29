@@ -9,6 +9,7 @@ use InternalsCS\Fixers\FinalNewline\Generation\CandidateCollector;
 use InternalsCS\Fixture\FixtureDiscovery;
 use InternalsCS\Fixture\FixtureReporter;
 use InternalsCS\Fixture\FixtureRewriteRunner;
+use InternalsCS\Fixture\FixtureSourceReducer;
 use InternalsCS\Fixture\FixtureSourceRunVerifier;
 use InternalsCS\Fixture\FixtureSourceVerifier;
 use InternalsCS\PhpSrc\PhpSrcRoot;
@@ -55,6 +56,11 @@ final readonly class FinalNewlineFixtureDiscovery implements FixtureDiscovery
     public function sourceVerifier(): FixtureSourceVerifier
     {
         return $this->sourceVerifier;
+    }
+
+    public function sourceReducer(): FixtureSourceReducer
+    {
+        return new Generation\MinimalFixtureSourceReducer();
     }
 
     public function checkRuntime(ConsoleIo $io): bool

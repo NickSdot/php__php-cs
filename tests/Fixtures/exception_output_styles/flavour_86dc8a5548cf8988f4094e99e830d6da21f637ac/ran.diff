@@ -1,0 +1,13 @@
+--- old.phpt
++++ new.phpt
+@@ -5,8 +5,8 @@
+ try {
+     throw new \Error('fixture message');
+ } catch (\Error $e) {
+-    echo $e->getMessage() . " on line " . $e->getLine() . "\n";
++    echo $e::class, ': ', $e->getMessage(), ' on line ', $e->getLine(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-fixture message on line %d
++Error: fixture message on line %d
