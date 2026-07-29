@@ -670,7 +670,7 @@ update_pr_description() {
     gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json body --jq .body > "$current_file"
     merge_pr_body "$current_file" "$body_file" "$merged_file"
     sync_pr_base_if_needed
-    gh pr edit "$PR_NUMBER" --repo "$PR_REPO" --body-file "$merged_file"
+    update_pr_body "$merged_file"
 }
 
 write_new_pr_body() {
@@ -954,7 +954,21 @@ sync_pr_base_if_needed() {
         return
     fi
 
-    gh pr edit "$PR_NUMBER" --repo "$PR_REPO" --base "$RESOLVED_BASE_NAME"
+    gh api \
+        --method PATCH \
+        "repos/$PR_REPO/pulls/$PR_NUMBER" \
+        -f "base=$RESOLVED_BASE_NAME" \
+        --silent
+}
+
+update_pr_body() {
+    local body_file="$1"
+
+    gh api \
+        --method PATCH \
+        "repos/$PR_REPO/pulls/$PR_NUMBER" \
+        -F "body=@$body_file" \
+        --silent
 }
 
 infer_pr_repo() {
