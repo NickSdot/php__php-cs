@@ -1,0 +1,16 @@
+--- old.phpt
++++ new.phpt
+@@ -5,11 +5,11 @@
+ try {
+     throw new \RuntimeException('fixture message');
+ } catch (\Exception $e) {
+-    print $e->getMessage();
++    echo $e::class, ': ', $e->getMessage();
+     print_r($e->getTrace());
+ }
+ ?>
+ --EXPECTF--
+-fixture messageArray
++RuntimeException: fixture messageArray
+ (
+ )

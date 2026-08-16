@@ -153,12 +153,16 @@ final readonly class MinimalFixtureSourceReducer implements FixtureSourceReducer
         $code = "<?php\n"
             . $this->classDefinition($candidate)
             . implode('', $this->variableAssignments($statement, $exceptionVariables, $catch))
+            . $this->previousOutput($candidate->fixtureContext)
             . "try {\n"
-            . "    throw $throwExpression;\n"
+            . $this->tryStatement($candidate->fixtureContext, $throwExpression)
             . "} catch ($catchType \$$catch) {\n"
             . implode('', $this->exceptionAssignments($exceptionVariables, $catch))
             . $this->indentStatement($statement)
-            . "\n}\n"
+            . "\n"
+            . $this->followingTrace($candidate->fixtureContext, $catch)
+            . "}\n"
+            . $this->followingOutput($candidate->fixtureContext)
             . "?>\n"
             . $inlineOutput;
 
@@ -168,6 +172,34 @@ final readonly class MinimalFixtureSourceReducer implements FixtureSourceReducer
             . $code
             . "--$expectedSection--\n"
             . $this->expectedOutputFor($code, 'EXPECTF' === $expectedSection);
+    }
+
+    private function previousOutput(FixtureContext $context): string
+    {
+        return PreviousSeparatorContext::None === $context->previousSeparator
+            ? ''
+            : "echo 'preceding output';\n";
+    }
+
+    private function tryStatement(FixtureContext $context, string $throwExpression): string
+    {
+        return PreviousSeparatorContext::BlockedByTryOutput === $context->previousSeparator
+            ? "    var_dump(throw $throwExpression);\n"
+            : "    throw $throwExpression;\n";
+    }
+
+    private function followingTrace(FixtureContext $context, string $catchVariable): string
+    {
+        return $context->followingTraceOutput
+            ? "    print_r(\$" . $catchVariable . "->getTrace());\n"
+            : '';
+    }
+
+    private function followingOutput(FixtureContext $context): string
+    {
+        return $context->followingNewlineMoved
+            ? "echo \"\\nfollowing output\\n\";\n"
+            : '';
     }
 
     private function throwExpression(Candidate $candidate): string

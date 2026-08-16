@@ -151,6 +151,83 @@ final class MinimalFixtureSourceReducerTest extends TestCase
             self::assertStringContainsString("--EXPECTF--\n$fixtureExpected", $fixture);
         }
     }
+
+    public function testPreservesMovableLeadingSeparatorContext(): void
+    {
+        $fixture = $this->reduceContextualSource(<<<'PHP'
+            echo 'preceding output';
+            try {
+                throw new ValueError('broken');
+            } catch (ValueError $e) {
+                echo "\n", $e->getMessage(), "\n";
+            }
+            PHP, "preceding output\nbroken\n");
+
+        self::assertStringContainsString("echo 'preceding output';\ntry {", $fixture);
+        self::assertStringContainsString("    throw new \\ValueError('fixture message');", $fixture);
+        self::assertStringNotContainsString('var_dump(throw', $fixture);
+    }
+
+    public function testPreservesTryOutputThatBlocksLeadingSeparatorMove(): void
+    {
+        $fixture = $this->reduceContextualSource(<<<'PHP'
+            echo 'preceding output';
+            try {
+                var_dump(strpos('test', 't', []));
+            } catch (TypeError $e) {
+                echo "\n", $e->getMessage(), "\n";
+            }
+            PHP, "preceding output\nbroken\n");
+
+        self::assertStringContainsString("echo 'preceding output';\ntry {", $fixture);
+        self::assertStringContainsString("    var_dump(throw new \\TypeError('fixture message'));", $fixture);
+    }
+
+    public function testPreservesFollowingTraceThatControlsMessageNewline(): void
+    {
+        $fixture = $this->reduceContextualSource(<<<'PHP'
+            try {
+                throw new RuntimeException('broken');
+            } catch (RuntimeException $e) {
+                echo $e->getMessage();
+                print_r($e->getTrace());
+            }
+            PHP, "brokenArray\n(\n)\n");
+
+        self::assertStringContainsString("    echo \$e->getMessage();\n    print_r(\$e->getTrace());", $fixture);
+    }
+
+    public function testPreservesRelativeIndentationBetweenAdjacentStatements(): void
+    {
+        $fixture = $this->reduceContextualSource(<<<'PHP'
+            try {
+                throw new RuntimeException('broken');
+            } catch (RuntimeException $e) {
+                var_dump(get_class($e));
+                echo $e->getMessage(), "\n";
+            }
+            PHP, "string(16) \"RuntimeException\"\nbroken\n");
+
+        self::assertStringContainsString(
+            "    var_dump(get_class(\$e));\n        echo \$e->getMessage(), \"\\n\";",
+            $fixture,
+        );
+    }
+
+    private function reduceContextualSource(string $code, string $expected): string
+    {
+        $root = sys_get_temp_dir() . '/exception-output-reducer-' . bin2hex(random_bytes(6));
+        mkdir($root);
+
+        $sourcePath = $root . '/source.phpt';
+        file_put_contents($sourcePath, "--TEST--\nContextual source\n--FILE--\n<?php\n$code\n--EXPECT--\n$expected");
+
+        $candidates = new CandidateCollector()->collect(new SourceFile($sourcePath, $root));
+        $candidate = $candidates[0] ?? throw new \LogicException('Expected one candidate');
+        $fixture = new MinimalFixtureSourceReducer()->reduce(new FixtureSource([$candidate]), new ChangedFixtureRewriteRunner());
+
+        return $fixture ?? throw new \LogicException('Expected a reduced fixture');
+    }
 }
 
 final readonly class ChangedFixtureRewriteRunner implements FixtureRewriteRunner

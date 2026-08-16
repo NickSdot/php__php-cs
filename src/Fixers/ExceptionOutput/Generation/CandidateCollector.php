@@ -9,6 +9,7 @@ use InternalsCS\Fixers\ExceptionOutput\Analysis\StatementWindowFinder;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\OutputRewritePlanner;
 use InternalsCS\PhpSrcTestStyle\PhptSections;
 use InternalsCS\SourceFile;
+use InternalsCS\TextEdit;
 
 use function mb_substr;
 use function str_contains;
@@ -21,6 +22,7 @@ final readonly class CandidateCollector
         private Classifier $classifier = new Classifier(),
         private ExpectedOutputShape $expectedOutput = new ExpectedOutputShape(),
         private OutputRewritePlanner $planner = new OutputRewritePlanner(),
+        private FixtureContextAnalyzer $fixtureContext = new FixtureContextAnalyzer(),
         private bool $requireExpectedOutputEvidence = true,
     ) {}
 
@@ -38,7 +40,8 @@ final readonly class CandidateCollector
         }
 
         $expected = $this->sections->expected($source->contents);
-        $rewriteWindows = $this->rewriteWindows($code->contents);
+        $plans = $this->planner->plans($code->contents);
+        $rewriteWindows = $this->rewriteWindows($code->contents, $plans);
         $candidates = [];
 
         foreach ($this->windows->find($code->contents) as $window) {
@@ -60,6 +63,7 @@ final readonly class CandidateCollector
                 fixtureCaseKey: $classification->fixtureFingerprint->id . $this->expectedOutput->key($window, $code, $expected),
                 catchVariable: $window->catchVariable ?? 'e',
                 catchTypes: $window->catchTypes,
+                fixtureContext: $this->fixtureContext->analyze($code->contents, $window, $plans),
             );
 
             if ($this->requireExpectedOutputEvidence && (null === $expected || !$candidate->isRepresentedInExpectedOutput($expected->contents))) {
@@ -72,12 +76,15 @@ final readonly class CandidateCollector
         return $candidates;
     }
 
-    /** @return array<string, true> */
-    private function rewriteWindows(string $code): array
+    /**
+     * @param list<TextEdit> $plans
+     * @return array<string, true>
+     */
+    private function rewriteWindows(string $code, array $plans): array
     {
         $windows = [];
 
-        foreach ($this->planner->plans($code) as $plan) {
+        foreach ($plans as $plan) {
             $current = mb_substr($code, $plan->startOffset, $plan->endOffset - $plan->startOffset, '8bit');
 
             if ($current === $plan->replacement) {

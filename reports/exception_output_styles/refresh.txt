@@ -1,9 +1,9 @@
 # Fixture refresh
 
-Refresh-only run: yes
+Refresh-only run: no
 Rejected fixtures removed: 0
 Updated new/diff pairs: 0
-Stale existing new/diff pairs kept: 0
+Stale existing new/diff pairs kept: 1
 Old-only fixture files: 0
 Failures: 0
 
@@ -19,7 +19,7 @@ Failures: 0
 
 These existing new.phpt/ran.diff pairs were kept, but the current fixer did not reproduce a change from old.phpt.
 
-- none
+- flavour_a510151856e80d24e9678300613debb134eab7c9
 
 ## Old-only fixtures
 

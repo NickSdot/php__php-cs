@@ -198,6 +198,80 @@ final class CandidateCollectorTest extends TestCase
         self::assertNotSame($candidates[0]->fixtureCaseKey, $candidates[1]->fixtureCaseKey);
     }
 
+    public function testContextThatChangesLeadingSeparatorHandlingSplitsFixtureCases(): void
+    {
+        $root = $this->makeTempDir();
+        $movable = $this->writeRawPhpt($root, 'movable.phpt', <<<'PHP'
+            <?php
+            echo 'prefix';
+            try {
+                throw new TypeError('broken');
+            } catch (TypeError $e) {
+                echo "\n", $e->getMessage(), "\n";
+            }
+            PHP);
+        $blocked = $this->writeRawPhpt($root, 'blocked.phpt', <<<'PHP'
+            <?php
+            echo 'prefix';
+            try {
+                var_dump(strpos('test', 't', []));
+            } catch (TypeError $e) {
+                echo "\n", $e->getMessage(), "\n";
+            }
+            PHP);
+
+        $collector = new CandidateCollector(requireExpectedOutputEvidence: false);
+        $movableCandidate = $collector->collect(new SourceFile($movable, $root))[0] ?? throw new \LogicException('Expected movable candidate');
+        $blockedCandidate = $collector->collect(new SourceFile($blocked, $root))[0] ?? throw new \LogicException('Expected blocked candidate');
+
+        self::assertNotSame($movableCandidate->fixtureKey, $blockedCandidate->fixtureKey);
+        self::assertNotSame($movableCandidate->fixtureCaseKey, $blockedCandidate->fixtureCaseKey);
+        self::assertStringContainsString('previous-moved', $movableCandidate->fixtureCaseKey);
+        self::assertStringContainsString('previous-blocked-by-try-output', $blockedCandidate->fixtureCaseKey);
+    }
+
+    public function testCollectsContextForTryCatchNestedInsideCatch(): void
+    {
+        $root = $this->makeTempDir();
+        $source = $this->writeRawPhpt($root, 'nested.phpt', <<<'PHP'
+            <?php
+            try {
+                throw new RuntimeException('outer');
+            } catch (RuntimeException $outer) {
+                echo 'prefix';
+                try {
+                    throw new TypeError('inner');
+                } catch (TypeError $inner) {
+                    echo "\n", $inner->getMessage(), "\n";
+                }
+            }
+            PHP);
+
+        $candidates = new CandidateCollector(requireExpectedOutputEvidence: false)->collect(new SourceFile($source, $root));
+
+        self::assertCount(1, $candidates);
+        self::assertStringContainsString('previous-moved', $candidates[0]->fixtureCaseKey);
+    }
+
+    public function testAdjacentMessageAndNewlineStatementsFormOneCandidate(): void
+    {
+        $root = $this->makeTempDir();
+        $source = $this->writeRawPhpt($root, 'adjacent-newline.phpt', <<<'PHP'
+            <?php
+            try {
+                throw new RuntimeException('broken');
+            } catch (RuntimeException $e) {
+                echo $e->getMessage();
+                echo "\n";
+            }
+            PHP);
+
+        $candidates = new CandidateCollector(requireExpectedOutputEvidence: false)->collect(new SourceFile($source, $root));
+
+        self::assertCount(1, $candidates);
+        self::assertSame("echo \$e->getMessage();\n    echo \"\\n\";", $candidates[0]->statement);
+    }
+
     public function testMarkerPrefixesAreFixable(): void
     {
         $root = $this->makeTempDir();

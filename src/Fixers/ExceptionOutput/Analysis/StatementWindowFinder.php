@@ -8,6 +8,7 @@ use InternalsCS\PhpAst;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 
+use function array_all;
 use function array_values;
 use function count;
 use function is_string;
@@ -116,18 +117,35 @@ final readonly class StatementWindowFinder
 
     private function adjacentWindow(Window $current, Window $next, string $code): ?Window
     {
-        if (!$current->parts->has(OutputPartKind::ExceptionClass)) {
+        if (!$this->isMessageThenNewline($current, $next) && !$this->isClassThenMessage($current, $next)) {
             return null;
         }
 
-        if ($current->parts->has(OutputPartKind::ExceptionMessage)) {
-            return null;
+        return $this->combinedWindow($current, $next, $code);
+    }
+
+    private function isClassThenMessage(Window $current, Window $next): bool
+    {
+        return $current->parts->has(OutputPartKind::ExceptionClass)
+            && !$current->parts->has(OutputPartKind::ExceptionMessage)
+            && $next->parts->has(OutputPartKind::ExceptionMessage);
+    }
+
+    private function isMessageThenNewline(Window $current, Window $next): bool
+    {
+        if (!$current->parts->has(OutputPartKind::ExceptionMessage) || $current->parts->has(OutputPartKind::Newline)) {
+            return false;
         }
 
-        if (!$next->parts->has(OutputPartKind::ExceptionMessage)) {
-            return null;
+        if ([] === $next->parts->parts) {
+            return false;
         }
 
+        return array_all($next->parts->parts, fn($part) => OutputPartKind::Newline === $part->kind);
+    }
+
+    private function combinedWindow(Window $current, Window $next, string $code): Window
+    {
         return new Window(
             startOffset: $current->startOffset,
             endOffset: $next->endOffset,

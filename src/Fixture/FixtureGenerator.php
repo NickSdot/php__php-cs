@@ -17,6 +17,7 @@ use function count;
 use function dirname;
 use function glob;
 use function is_dir;
+use function preg_match;
 use function str_ends_with;
 use function str_starts_with;
 
@@ -386,6 +387,11 @@ final readonly class FixtureGenerator
             }
 
             if (null !== $job->sourceReducer) {
+
+                if ($this->isGeneratedFixtureCaseName($case)) {
+                    continue;
+                }
+
                 if (!$this->writer->remove($source, $job->fixturesDir)) {
                     continue;
                 }
@@ -430,6 +436,11 @@ final readonly class FixtureGenerator
         }
 
         return $cases;
+    }
+
+    private function isGeneratedFixtureCaseName(string $case): bool
+    {
+        return 1 === preg_match('/^flavours?_[0-9a-f]{40}$/', $case);
     }
 
     /** @return list<FixtureSource> */

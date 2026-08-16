@@ -61,6 +61,7 @@ final readonly class PhpAst
 
             foreach ($statement->catches as $catch) {
                 $catches[] = $catch;
+                array_push($catches, ...$this->catchBlocks(array_values($catch->stmts)));
             }
 
             array_push($catches, ...$this->catchBlocks(array_values($statement->stmts)));

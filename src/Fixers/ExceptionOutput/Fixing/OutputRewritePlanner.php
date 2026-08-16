@@ -53,6 +53,8 @@ final readonly class OutputRewritePlanner
         private PhpAst $ast = new PhpAst(),
         private OutputStatementBuilder $builder = new OutputStatementBuilder(),
         private LeadingSeparatorOutput $leadingSeparator = new LeadingSeparatorOutput(),
+        private OutputStatementPresence $outputPresence = new OutputStatementPresence(),
+        private PreviousOutputNewlinePlanner $previousNewline = new PreviousOutputNewlinePlanner(),
         ?array $rules = null,
     ) {
         $this->rules = $rules ?? self::defaultRules();
@@ -212,7 +214,7 @@ final readonly class OutputRewritePlanner
                 continue;
             }
 
-            if (null !== $previous && !$this->containsOutputStatement(array_values($statement->stmts), $code, $offsetDelta)) {
+            if (null !== $previous && !$this->outputPresence->contains(array_values($statement->stmts), $code, $offsetDelta)) {
                 foreach ($statement->catches as $catch) {
                     array_push($plans, ...$this->previousSeparatorPlansForCatch($catch, $previous, $code, $offsetDelta));
                 }
@@ -230,24 +232,6 @@ final readonly class OutputRewritePlanner
         }
 
         return $plans;
-    }
-
-    /** @param list<Stmt> $statements */
-    private function containsOutputStatement(array $statements, string $code, int $offsetDelta): bool
-    {
-        foreach ($statements as $statement) {
-            if (null !== $this->statements->fromStatement($statement, $code, $offsetDelta)) {
-                return true;
-            }
-
-            foreach ($this->ast->childStatementLists($statement) as $children) {
-                if ($this->containsOutputStatement($children, $code, $offsetDelta)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     /** @return list<TextEdit> */
@@ -284,7 +268,7 @@ final readonly class OutputRewritePlanner
             return [];
         }
 
-        $previousEdit = $this->previousTrailingNewlineEdit($previous, $code, $offsetDelta);
+        $previousEdit = $this->previousNewline->plan($previous, $code, $offsetDelta);
 
         if (null === $previousEdit || !$this->leadingSeparator->matches($output, $catchVariable)) {
             return [];
@@ -299,32 +283,6 @@ final readonly class OutputRewritePlanner
                 replacement: $this->builder->build($catchVariable, $output->parts),
             ),
         ];
-    }
-
-    private function previousTrailingNewlineEdit(Stmt $statement, string $code, int $offsetDelta): ?TextEdit
-    {
-        if (!$statement instanceof Stmt\Echo_) {
-            return null;
-        }
-
-        $output = $this->statements->fromStatement($statement, $code, $offsetDelta);
-
-        if (null === $output || $output->parts->has(OutputPartKind::Newline)) {
-            return null;
-        }
-
-        $source = mb_substr($code, $output->startOffset, $output->endOffset - $output->startOffset, '8bit');
-
-        if (null === $replacement = $this->builder->appendNewlineToEcho($source)) {
-            return null;
-        }
-
-        return new TextEdit(
-            startOffset: $output->startOffset,
-            endOffset: $output->endOffset,
-            line: $output->line,
-            replacement: $replacement,
-        );
     }
 
     /**

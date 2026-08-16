@@ -11,6 +11,8 @@ use InternalsCS\Fixture\FixtureCandidate;
 
 final readonly class Candidate implements FixtureCandidate
 {
+    public string $fixtureKey;
+
     public string $fixtureCaseKey;
 
     public function __construct(
@@ -19,15 +21,19 @@ final readonly class Candidate implements FixtureCandidate
         public int $line,
         public string $statement,
         public OutputParts $parts,
-        public string $fixtureKey,
+        string $fixtureKey,
         public Classification $classification,
         ?string $fixtureCaseKey = null,
         public string $catchVariable = 'e',
         /** @var list<string> */
         public array $catchTypes = [],
+        public FixtureContext $fixtureContext = new FixtureContext(),
         private ExpectedOutputEvidence $evidence = new ExpectedOutputEvidence(),
     ) {
-        $this->fixtureCaseKey = $fixtureCaseKey ?? $fixtureKey;
+        $contextKey = $fixtureContext->key();
+
+        $this->fixtureKey = $fixtureKey . $contextKey;
+        $this->fixtureCaseKey = ($fixtureCaseKey ?? $fixtureKey) . $contextKey;
     }
 
     public function isRepresentedInExpectedOutput(string $expectedOutput): bool

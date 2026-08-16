@@ -505,7 +505,7 @@ final class FixtureGeneratorTest extends TestCase
         self::assertSame("unchanged\n", file_get_contents($reports . '/stats.md'));
     }
 
-    public function testWriteRunRemovesExistingReducerFixtureWithoutSourceFlavour(): void
+    public function testWriteRunKeepsExistingReducerFixtureWithoutSourceFlavour(): void
     {
         $root = $this->makeTempDir();
         $fixtures = $root . '/fixtures';
@@ -530,8 +530,9 @@ final class FixtureGeneratorTest extends TestCase
 
         self::assertFalse($result->failed());
         self::assertSame(0, $result->selectedFixtures);
-        self::assertSame(1, $result->removedFixtures);
-        self::assertDirectoryDoesNotExist($fixtures . '/' . $case);
+        self::assertSame(0, $result->removedFixtures);
+        self::assertDirectoryExists($fixtures . '/' . $case);
+        self::assertSame(1, $result->stalePairs);
     }
 
     public function testWriteRunCopiesReplacementFixtureBeforeRemovingObsoleteCase(): void

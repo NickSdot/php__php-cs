@@ -1,0 +1,14 @@
+--- old.phpt
++++ new.phpt
+@@ -5,9 +5,8 @@
+ try {
+     throw new \mysqli_sql_exception('fixture message');
+ } catch (\mysqli_sql_exception $e) {
+-    echo $e->getMessage();
+-        echo "\n";
++    echo $e::class, ': ', $e->getMessage(), "\n";
+ }
+ ?>
+ --EXPECTF--
+-fixture message
++mysqli_sql_exception: fixture message
