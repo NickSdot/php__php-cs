@@ -6,6 +6,8 @@ COMMIT_SUFFIX="applied fixers to improve test robustness"
 DEFAULT_PR_TITLE="Apply fixers to improve test robustness"
 DEFAULT_PR_REPO="php/php-src"
 DEFAULT_PHP_SRC_DIR="../php__php-src"
+# Extraction PRs that cannot be discovered from their title or container-PR link.
+ADDITIONAL_EXTRACTION_PRS=(23179)
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 TOOL_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
@@ -23,9 +25,10 @@ DRY=0
 NO_RUN=0
 TARGET_ARGS=()
 WORKTREE_ROOT=""
+PARALLEL_RUN_COMPLETE=0
 
 cleanup_parallel_worktrees() {
-    [[ -n "$WORKTREE_ROOT" && -d "$WORKTREE_ROOT" ]] || return
+    [[ -n "$WORKTREE_ROOT" && -d "$WORKTREE_ROOT" ]] || return 0
 
     local worktree
     if [[ -d "$WORKTREE_ROOT/worktrees" ]]; then
@@ -35,7 +38,11 @@ cleanup_parallel_worktrees() {
         done < <(find "$WORKTREE_ROOT/worktrees" -mindepth 1 -maxdepth 1 -type d 2>/dev/null)
     fi
 
-    rm -rf "$WORKTREE_ROOT"
+    if (( PARALLEL_RUN_COMPLETE )); then
+        rm -rf "$WORKTREE_ROOT"
+    else
+        printf '\nParallel run state preserved after failure: %s\n' "$WORKTREE_ROOT" >&2
+    fi
 }
 
 trap cleanup_parallel_worktrees EXIT
@@ -75,7 +82,7 @@ serially in target order.
 If the current branch has no open PR, --lfg creates a draft PR. In that case the
 base branch is selected interactively when it cannot be inferred.
 
-PR updates replace only the table between:
+PR updates replace only the tables between:
   <!-- pr:targets:start -->
   <!-- pr:targets:end -->
 USAGE
@@ -83,6 +90,7 @@ USAGE
 
 main() {
     parse_args "$@"
+    resolve_container_pr_from_environment
     resolve_php_src_dir
     require_php_src_checkout
     confirm_current_branch
@@ -158,6 +166,29 @@ parse_args() {
         esac
         shift || true
     done
+}
+
+resolve_container_pr_from_environment() {
+    if [[ -n "$PR_NUMBER" || -n "$PR_REPO" ]]; then
+        return
+    fi
+
+    if [[ -z "${PHP_SRC_PR:-}" && -z "${PHP_SRC_REPO:-}" ]]; then
+        return
+    fi
+
+    local repo="${PHP_SRC_REPO:-$DEFAULT_PR_REPO}"
+    local number="${PHP_SRC_PR:-}"
+
+    [[ -n "$number" ]] \
+        || die 'PHP_SRC_REPO is set but PHP_SRC_PR is missing'
+    [[ "$repo" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] \
+        || die "invalid PHP_SRC_REPO: $repo"
+    [[ "$number" =~ ^[1-9][0-9]*$ ]] \
+        || die "invalid PHP_SRC_PR: $number"
+
+    PR_REPO="$repo"
+    PR_NUMBER="$number"
 }
 
 resolve_php_src_dir() {
@@ -345,6 +376,7 @@ run_targets_parallel() {
     fi
 
     apply_parallel_results "${targets[@]}"
+    PARALLEL_RUN_COMPLETE=1
 }
 
 run_target_worker() {
@@ -355,12 +387,12 @@ run_target_worker() {
     local log_file="$5"
     local base="$6"
     local status='failed'
+    local temporary_patch="$patch_file.tmp"
 
     printf 'Started %s\n' "$target"
 
     if ! git -C "$PHP_SRC_DIR" worktree add --detach "$worktree" "$base" > "$log_file" 2>&1; then
-        printf 'failed\t%s\t%s\t%s\n' "$target" "$patch_file" "$log_file" > "$result_file"
-        printf 'Failed %s\n' "$target"
+        fail_target_worker "$target" "$worktree" "$result_file" "$patch_file" "$log_file"
         return 1
     fi
 
@@ -373,23 +405,37 @@ run_target_worker() {
             --php-src-dir "$worktree" \
             "$worktree/$target"
     } >> "$log_file" 2>&1 || {
-        git -C "$PHP_SRC_DIR" worktree remove --force "$worktree" >/dev/null 2>&1 || true
-        printf 'failed\t%s\t%s\t%s\n' "$target" "$patch_file" "$log_file" > "$result_file"
-        printf 'Failed %s\n' "$target"
+        fail_target_worker "$target" "$worktree" "$result_file" "$patch_file" "$log_file"
         return 1
     }
 
     if ! ensure_changes_are_within_target_in_dir "$worktree" "$target" >> "$log_file" 2>&1; then
-        git -C "$PHP_SRC_DIR" worktree remove --force "$worktree" >/dev/null 2>&1 || true
-        printf 'failed\t%s\t%s\t%s\n' "$target" "$patch_file" "$log_file" > "$result_file"
-        printf 'Failed %s\n' "$target"
+        fail_target_worker "$target" "$worktree" "$result_file" "$patch_file" "$log_file"
         return 1
     fi
 
     if git -C "$worktree" diff --quiet -- "$target"; then
         status='nochange'
     else
-        git -C "$worktree" diff --binary -- "$target" > "$patch_file"
+        if ! git -C "$worktree" diff --binary --no-ext-diff --full-index -- "$target" > "$temporary_patch"; then
+            fail_target_worker "$target" "$worktree" "$result_file" "$patch_file" "$log_file" \
+                "Could not create patch for $target."
+            return 1
+        fi
+
+        if [[ ! -s "$temporary_patch" ]]; then
+            fail_target_worker "$target" "$worktree" "$result_file" "$patch_file" "$log_file" \
+                "Generated patch for $target is empty despite a non-empty git diff."
+            return 1
+        fi
+
+        if ! git -C "$PHP_SRC_DIR" apply --check --whitespace=nowarn "$temporary_patch" >> "$log_file" 2>&1; then
+            fail_target_worker "$target" "$worktree" "$result_file" "$patch_file" "$log_file" \
+                "Generated patch for $target does not apply to the parallel-run base."
+            return 1
+        fi
+
+        mv "$temporary_patch" "$patch_file"
         status='changed'
     fi
 
@@ -397,6 +443,20 @@ run_target_worker() {
 
     printf '%s\t%s\t%s\t%s\n' "$status" "$target" "$patch_file" "$log_file" > "$result_file"
     printf 'Finished %s (%s)\n' "$target" "$status"
+}
+
+fail_target_worker() {
+    local target="$1"
+    local worktree="$2"
+    local result_file="$3"
+    local patch_file="$4"
+    local log_file="$5"
+    local message="${6:-}"
+
+    [[ -z "$message" ]] || printf '%s\n' "$message" >> "$log_file"
+    git -C "$PHP_SRC_DIR" worktree remove --force "$worktree" >/dev/null 2>&1 || true
+    printf 'failed\t%s\t%s\t%s\n' "$target" "$patch_file" "$log_file" > "$result_file"
+    printf 'Failed %s\n' "$target"
 }
 
 apply_parallel_results() {
@@ -430,7 +490,10 @@ apply_parallel_results() {
         [[ "$status" == changed ]] || die "unexpected parallel target status for $target: $status"
 
         cat "$log_file"
-        git -C "$PHP_SRC_DIR" apply --index "$patch_file"
+        [[ -s "$patch_file" ]] || die "parallel patch for $target is empty: $patch_file"
+        git -C "$PHP_SRC_DIR" apply --check --index --whitespace=nowarn "$patch_file" \
+            || die "parallel patch for $target no longer applies: $patch_file"
+        git -C "$PHP_SRC_DIR" apply --index --whitespace=nowarn "$patch_file"
         ensure_changes_are_within_target "$target"
 
         if git -C "$PHP_SRC_DIR" diff --cached --quiet; then
@@ -611,7 +674,7 @@ preview_pr_description() {
         return
     fi
 
-    gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json body --jq .body > "$current_file"
+    fetch_pr_body "$current_file"
     merge_pr_body "$current_file" "$body_file" "$merged_file"
 
     printf '\n--dry passed; skipped push and PR edit.\n'
@@ -667,7 +730,7 @@ update_pr_description() {
         return
     fi
 
-    gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json body --jq .body > "$current_file"
+    fetch_pr_body "$current_file"
     merge_pr_body "$current_file" "$body_file" "$merged_file"
     sync_pr_base_if_needed
     update_pr_body "$merged_file"
@@ -785,8 +848,12 @@ generate_pr_body() {
     resolve_base_context
 
     local commits_file
+    local extracted_prs_file
     commits_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-commits.XXXXXX")"
+    extracted_prs_file="$(mktemp "${TMPDIR:-/tmp}/php-src-cs-extracted-prs.XXXXXX")"
     git -C "$PHP_SRC_DIR" log --reverse --format='%H%x09%s' "$RESOLVED_BASE_REF..HEAD" > "$commits_file"
+
+    discover_extracted_prs "$extracted_prs_file"
 
     local targets=()
     local target
@@ -794,22 +861,244 @@ generate_pr_body() {
     while IFS= read -r target; do
         [[ -n "$target" ]] || continue
         targets+=("$target")
-    done < <(committed_targets "$commits_file")
+    done < <(pending_targets "$commits_file" "$extracted_prs_file")
 
     ((${#targets[@]})) || die "no generated target commits found between $RESOLVED_BASE_REF and HEAD"
 
     {
         write_pr_generation_provenance
-        printf '| Target | Commit | Files |\n'
-        printf '|---|---|---:|\n'
+        printf '### Pending Targets (%d)\n\n' "${#targets[@]}"
+        printf '| Target | Commit | Files | Extraction PR |\n'
+        printf '|---|---|---:|---|\n'
 
         for target in "${targets[@]}"; do
-            printf '| %s | %s | %s |\n' \
+            printf '| %s | %s | %s | %s |\n' \
                 "$target" \
                 "$(commit_cell_for_target "$target" "$commits_file")" \
-                "$(affected_files_cell_for_target "$target" "$commits_file")"
+                "$(affected_files_cell_for_target "$target" "$commits_file")" \
+                "$(pending_pr_cell_for_target "$target" "$extracted_prs_file")"
         done
+
+        write_merged_pr_table "$extracted_prs_file"
     } > "$output_file"
+}
+
+discover_extracted_prs() {
+    local output_file="$1"
+    : > "$output_file"
+
+    if ! command -v gh >/dev/null 2>&1; then
+        printf 'warning: gh is unavailable; extraction PR status will be omitted\n' >&2
+        return
+    fi
+
+    if ! resolve_existing_pr_context; then
+        printf 'No open container PR found; extraction PR status will be omitted.\n' >&2
+        return
+    fi
+
+    local container_url="https://github.com/$PR_REPO/pull/$PR_NUMBER"
+    local number
+    local state
+    local merged_at
+    local title
+    local title_lower
+    local pr_state
+    local target
+    local candidates
+    local targets
+
+    candidates="$(
+        {
+            extracted_pr_candidates "\"$container_url\" repo:$PR_REPO is:pr"
+            extracted_pr_candidates "\"$COMMIT_SUFFIX\" in:title repo:$PR_REPO is:pr"
+            additional_extraction_pr_candidates
+        } | LC_ALL=C sort -t $'\t' -k1,1n -u
+    )" || die 'could not discover extraction PRs'
+
+    while IFS=$'\t' read -r number state merged_at title; do
+        [[ -n "$number" ]] || continue
+
+        title_lower="$(printf '%s' "$title" | tr '[:upper:]' '[:lower:]')"
+        if [[ "$title_lower" != *"$COMMIT_SUFFIX"* ]] \
+            && ! is_additional_extraction_pr "$number"; then
+            continue
+        fi
+
+        if [[ "$state" == open ]]; then
+            pr_state=open
+        elif [[ "$merged_at" != - ]]; then
+            pr_state=merged
+        elif closed_pr_landed_on_base "$number" "$title"; then
+            pr_state=landed
+        else
+            continue
+        fi
+
+        targets="$(extracted_pr_targets "$number" | LC_ALL=C sort -u)" \
+            || die "could not inspect extraction PR #$number"
+        while IFS= read -r target; do
+            [[ -n "$target" ]] || continue
+            printf '%s\t%s\t%s\n' "$target" "$pr_state" "$number" >> "$output_file"
+        done <<< "$targets"
+    done <<< "$candidates"
+
+    LC_ALL=C sort \
+        -t $'\t' \
+        -k1,1 \
+        -k2,2 \
+        -k3,3n \
+        -u \
+        -o "$output_file" \
+        "$output_file"
+}
+
+extracted_pr_candidates() {
+    local query="$1"
+
+    gh api \
+        --paginate \
+        --method GET \
+        search/issues \
+        -f "q=$query" \
+        -f per_page=100 \
+        --jq '.items[] | [.number, .state, (.pull_request.merged_at // "-"), .title] | @tsv'
+}
+
+additional_extraction_pr_candidates() {
+    local number
+
+    for number in "${ADDITIONAL_EXTRACTION_PRS[@]}"; do
+        gh api \
+            --method GET \
+            "repos/$PR_REPO/pulls/$number" \
+            --jq '[.number, .state, (.merged_at // "-"), .title] | @tsv'
+    done
+}
+
+is_additional_extraction_pr() {
+    local wanted="$1"
+    local number
+
+    for number in "${ADDITIONAL_EXTRACTION_PRS[@]}"; do
+        [[ "$number" == "$wanted" ]] && return 0
+    done
+
+    return 1
+}
+
+closed_pr_landed_on_base() {
+    local pr_number="$1"
+    local title="$2"
+    local pr_patch_id
+    local hash
+    local subject
+    local commit_patch_id
+
+    pr_patch_id="$(
+        gh api \
+            -H 'Accept: application/vnd.github.v3.diff' \
+            "repos/$PR_REPO/pulls/$pr_number" \
+            | git patch-id --stable \
+            | awk 'NR == 1 { print $1 }'
+    )" || return 1
+    [[ -n "$pr_patch_id" ]] || return 1
+
+    while IFS=$'\t' read -r hash subject; do
+        [[ "$subject" == "$title" ]] || continue
+
+        commit_patch_id="$(
+            git -C "$PHP_SRC_DIR" show --pretty=email --no-ext-diff "$hash" \
+                | git patch-id --stable \
+                | awk 'NR == 1 { print $1 }'
+        )"
+
+        [[ "$commit_patch_id" == "$pr_patch_id" ]] && return 0
+    done < <(
+        git -C "$PHP_SRC_DIR" log \
+            --fixed-strings \
+            --grep="$title" \
+            --format='%H%x09%s' \
+            "$RESOLVED_BASE_REF"
+    )
+
+    return 1
+}
+
+extracted_pr_targets() {
+    local pr_number="$1"
+
+    # $parts is a jq variable.
+    # shellcheck disable=SC2016
+    gh api \
+        --paginate \
+        --method GET \
+        "repos/$PR_REPO/pulls/$pr_number/files" \
+        -f per_page=100 \
+        --jq '.[] | .filename | split("/") as $parts |
+            if ($parts[0] == "ext" or $parts[0] == "sapi") and ($parts | length) > 2 then
+                $parts[0:2] | join("/")
+            elif $parts[0] == "Zend" then "Zend"
+            elif $parts[0] == "tests" then "tests"
+            else empty
+            end'
+}
+
+pending_pr_cell_for_target() {
+    local target="$1"
+    local extracted_prs_file="$2"
+    local refs
+
+    refs="$(pr_refs_for_target "$target" "$extracted_prs_file" open)"
+    printf '%s' "${refs:-Not yet extracted}"
+}
+
+write_merged_pr_table() {
+    local extracted_prs_file="$1"
+    local targets=()
+    local target
+    local refs
+    local merged_count
+
+    while IFS= read -r target; do
+        [[ -n "$target" ]] && targets+=("$target")
+    done < <(
+        awk -F $'\t' '$2 == "merged" || $2 == "landed" { print $1 }' "$extracted_prs_file" \
+            | LC_ALL=C sort -u
+    )
+
+    merged_count="${#targets[@]}"
+    (( merged_count )) || return
+
+    printf '\n### Merged Targets (%s)\n\n' "$merged_count"
+    printf '| Target | Merged / landed PR |\n'
+    printf '|---|---|\n'
+
+    for target in "${targets[@]}"; do
+        refs="$(pr_refs_for_target "$target" "$extracted_prs_file" merged landed)"
+        printf '| %s | %s |\n' "$target" "$refs"
+    done
+}
+
+pr_refs_for_target() {
+    local wanted_target="$1"
+    local extracted_prs_file="$2"
+    shift 2
+
+    local wanted_state
+    local target
+    local state
+    local number
+    local separator=''
+
+    for wanted_state in "$@"; do
+        while IFS=$'\t' read -r target state number; do
+            [[ "$target" == "$wanted_target" && "$state" == "$wanted_state" ]] || continue
+            printf '%s#%s' "$separator" "$number"
+            [[ "$state" == landed ]] && printf ' (cherry-picked)'
+            separator=', '
+        done < "$extracted_prs_file"
+    done
 }
 
 resolve_base_context() {
@@ -867,6 +1156,19 @@ ref_exists() {
 
 resolve_existing_pr_context() {
     if [[ -n "$PR_NUMBER" && -n "$PR_REPO" ]]; then
+        if [[ -n "$EXISTING_PR_BASE_NAME" ]]; then
+            return
+        fi
+
+        local explicit_line
+        explicit_line="$(
+            gh pr view "$PR_NUMBER" \
+                --repo "$PR_REPO" \
+                --json number,url,baseRefName \
+                --jq '[.url, (.number|tostring), .baseRefName] | @tsv'
+        )" || return 1
+
+        populate_pr_context "$explicit_line"
         return
     fi
 
@@ -969,6 +1271,12 @@ update_pr_body() {
         "repos/$PR_REPO/pulls/$PR_NUMBER" \
         -F "body=@$body_file" \
         --silent
+}
+
+fetch_pr_body() {
+    local output_file="$1"
+
+    gh api "repos/$PR_REPO/pulls/$PR_NUMBER" --jq '.body // ""' > "$output_file"
 }
 
 infer_pr_repo() {
@@ -1226,57 +1534,89 @@ is_base_candidate() {
 
 committed_targets() {
     local commits_file="$1"
-    local hash subject target
     local suffix=": $COMMIT_SUFFIX"
 
-    while IFS=$'\t' read -r hash subject; do
-        target="${subject%"$suffix"}"
-        [[ "$target" == "$subject" ]] && continue
-        printf '%s\n' "$target"
-    done < "$commits_file"
+    awk -F $'\t' -v suffix="$suffix" '
+        {
+            subject = $2
+            suffix_start = length(subject) - length(suffix) + 1
+            if (suffix_start < 1 || substr(subject, suffix_start) != suffix) {
+                next
+            }
+
+            target = substr(subject, 1, suffix_start - 1)
+            if (!seen[target]++) {
+                print target
+            }
+        }
+    ' "$commits_file"
+}
+
+pending_targets() {
+    local commits_file="$1"
+    local extracted_prs_file="$2"
+
+    {
+        committed_targets "$commits_file"
+        awk -F $'\t' '$2 == "open" { print $1 }' "$extracted_prs_file"
+    } | LC_ALL=C sort -f -u
 }
 
 commit_cell_for_target() {
     local target="$1"
     local commits_file="$2"
-
     local hash
-    if ! hash="$(commit_hash_for_target "$target" "$commits_file")"; then
-        printf ''
-        return
-    fi
+    local separator=''
+    local found=0
 
-    printf '%s' "${hash:0:12}"
+    while IFS= read -r hash; do
+        [[ -n "$hash" ]] || continue
+        printf '%s%s' "$separator" "${hash:0:12}"
+        separator=', '
+        found=1
+    done < <(commit_hashes_for_target "$target" "$commits_file")
+
+    (( found )) || printf '—'
 }
 
 affected_files_cell_for_target() {
     local target="$1"
     local commits_file="$2"
 
+    local hashes=()
     local hash
-    if ! hash="$(commit_hash_for_target "$target" "$commits_file")"; then
-        printf ''
+
+    while IFS= read -r hash; do
+        [[ -n "$hash" ]] && hashes+=("$hash")
+    done < <(commit_hashes_for_target "$target" "$commits_file")
+
+    if ((${#hashes[@]} == 0)); then
+        printf '—'
         return
     fi
 
-    git -C "$PHP_SRC_DIR" diff-tree --no-commit-id --name-only -r "$hash" -- \
+    for hash in "${hashes[@]}"; do
+        git -C "$PHP_SRC_DIR" diff-tree --no-commit-id --name-only -r "$hash" --
+    done \
+        | LC_ALL=C sort -u \
         | wc -l \
         | tr -d '[:space:]'
 }
 
-commit_hash_for_target() {
+commit_hashes_for_target() {
     local target="$1"
     local commits_file="$2"
     local hash subject
+    local found=0
 
     while IFS=$'\t' read -r hash subject; do
         if [[ "$subject" == "$target: $COMMIT_SUFFIX" ]]; then
             printf '%s\n' "$hash"
-            return
+            found=1
         fi
     done < "$commits_file"
 
-    return 1
+    (( found ))
 }
 
 main "$@"

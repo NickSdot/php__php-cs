@@ -55,13 +55,14 @@ Important behaviour:
 - runs all fixers target-by-target;
 - creates one commit per changed target;
 - infers the PR, base branch, repository, and push remote from the current branch;
+- accepts an explicit container PR via `PHP_SRC_REPO` and `PHP_SRC_PR`;
 - with no targets, uses `ext/*`, `Zend`, `tests`, and `sapi/*`;
 - if there is no open PR, asks for the base branch when needed;
 - with `--lfg --dry`, prints the PR body that would be submitted or used for a new draft PR;
 - with `--lfg`, pushes and updates the PR body, or creates a draft PR;
 - with `--nah`, resets contiguous generated commits at `HEAD`.
 
-PR body updates replace only the table between:
+PR body updates replace only the tables between:
 
 ```markdown
 <!-- pr:targets:start -->
