@@ -6,6 +6,7 @@ namespace Tests\Unit\ExceptionOutput;
 
 use InternalsCS\Fixers\ExceptionOutput\Fixing\OutputRewritePlanner;
 use InternalsCS\TextEdit;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function mb_substr;
@@ -906,24 +907,94 @@ final class OutputRewritePlannerTest extends TestCase
         self::assertStringNotContainsString('ho $e->getMessage()', $fixed);
     }
 
-    public function testPlansSameStatementMessageTraceRewrite(): void
+    #[DataProvider('sameStatementMessageTraceOutputs')]
+    public function testPlansSameStatementMessageTraceRewrite(string $echoStatement, string $newlineSource): void
     {
-        $code = <<<'PHP'
+        $code = str_replace('{ECHO}', $echoStatement, <<<'PHP'
             <?php
             try {
                 throw new Exception('x');
             } catch (Exception $e) {
-                echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();
+                {ECHO}
             }
-            PHP;
+            PHP);
 
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
         self::assertSame(
-            "echo '  ', \$e::class . ': ' . \$e->getMessage(), \"\\n\", \$e->getTraceAsString();",
+            "echo '  ', \$e::class . ': ' . \$e->getMessage(), $newlineSource, \$e->getTraceAsString();",
             $plans[0]->replacement,
         );
+    }
+
+    /** @return iterable<string, array{string, string}> */
+    public static function sameStatementMessageTraceOutputs(): iterable
+    {
+        yield 'comma literal newline' => ['echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();', '"\n"'];
+        yield 'comma PHP_EOL' => ['echo "  ", $e->getMessage(), PHP_EOL, $e->getTraceAsString();', 'PHP_EOL'];
+        yield 'comma fully-qualified PHP_EOL' => ['echo "  ", $e->getMessage(), \PHP_EOL, $e->getTraceAsString();', 'PHP_EOL'];
+        yield 'concat PHP_EOL' => ['echo "  " . $e->getMessage() . PHP_EOL . $e->getTraceAsString();', 'PHP_EOL'];
+        yield 'concat fully-qualified PHP_EOL' => ['echo "  " . $e->getMessage() . \PHP_EOL . $e->getTraceAsString();', 'PHP_EOL'];
+    }
+
+    #[DataProvider('classMessageTraceOutputs')]
+    public function testDoesNotDropTraceFromClassMessageTraceOutput(string $echoStatement): void
+    {
+        $code = str_replace('{ECHO}', $echoStatement, <<<'PHP'
+            <?php
+            try {
+                throw new Exception('x');
+            } catch (Throwable $e) {
+                echo "$algo: problem with serialization {$serial}\n";
+                {ECHO}
+            }
+            PHP);
+
+        $plans = new OutputRewritePlanner()->plans($code);
+
+        self::assertSame([], $plans);
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function classMessageTraceOutputs(): iterable
+    {
+        yield 'comma PHP_EOL' => ['echo "  ", $e::class . ": " . $e->getMessage(), PHP_EOL, $e->getTraceAsString();'];
+        yield 'comma fully-qualified PHP_EOL' => ['echo "  ", $e::class . ": " . $e->getMessage(), \PHP_EOL, $e->getTraceAsString();'];
+        yield 'concat PHP_EOL' => ['echo "  " . $e::class . ": " . $e->getMessage() . PHP_EOL . $e->getTraceAsString();'];
+        yield 'concat fully-qualified PHP_EOL' => ['echo "  " . $e::class . ": " . $e->getMessage() . \PHP_EOL . $e->getTraceAsString();'];
+    }
+
+    public function testDoesNotDropTraceFromContextLabelOutput(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new Exception('x');
+            } catch (Throwable $e) {
+                echo "Unexpected exception: ", $e->getMessage(), "\n", $e->getTraceAsString();
+            }
+            PHP;
+
+        $plans = new OutputRewritePlanner()->plans($code);
+
+        self::assertSame([], $plans);
+    }
+
+    public function testDoesNotDropTraceFromLocationOutput(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new Exception('x');
+            } catch (Throwable $e) {
+                echo "Caught {$e->getMessage()} at {$e->getFile()}:{$e->getLine()}\n", $e->getTraceAsString();
+            }
+            PHP;
+
+        $plans = new OutputRewritePlanner()->plans($code);
+
+        self::assertSame([], $plans);
     }
 
     public function testPlansDescriptiveDynamicContextRewrite(): void

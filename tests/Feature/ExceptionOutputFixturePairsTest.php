@@ -6,8 +6,10 @@ namespace Tests\Feature;
 
 use InternalsCS\Console\Application;
 use InternalsCS\Console\ConsoleIo;
+use InternalsCS\Fixers\ExceptionOutput\Fixing\OutputRewritePlanner;
 use InternalsCS\Fixers\FinalNewline\FinalNewline;
 use InternalsCS\Fixture\FixturePairFiles;
+use InternalsCS\PhpSrcTestStyle\PhptFile;
 use InternalsCS\Support\UnifiedDiff;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -102,6 +104,41 @@ final class ExceptionOutputFixturePairsTest extends TestCase
         }
 
         self::assertSame([], $badFixtures);
+    }
+
+    public function testEmptyDiffFixturePairsDoNotProduceRewritePlans(): void
+    {
+        $dirs = glob(self::fixturesDir() . '/*', GLOB_ONLYDIR);
+
+        if (false === $dirs) {
+            $dirs = [];
+        }
+
+        sort($dirs);
+
+        $planner = new OutputRewritePlanner();
+        $emptyDiffFixtures = [];
+
+        foreach ($dirs as $dir) {
+            if (!new FixturePairFiles($dir)->containsFixtureFiles()) {
+                continue;
+            }
+
+            if ('' !== file_get_contents($dir . '/ran.diff')) {
+                continue;
+            }
+
+            $case = basename($dir);
+            $emptyDiffFixtures[] = $case;
+            $phpt = new PhptFile($dir . '/old.phpt', $dir);
+            $code = $phpt->getSection('FILE') ?? $phpt->getSection('FILEEOF');
+
+            self::assertSame(file_get_contents($dir . '/old.phpt'), file_get_contents($dir . '/new.phpt'), $case);
+            self::assertIsString($code, $case);
+            self::assertSame([], $planner->plans($code), $case);
+        }
+
+        self::assertContains('flavour_a510151856e80d24e9678300613debb134eab7c9', $emptyDiffFixtures);
     }
 
     #[DataProvider('fixtureDirectories')]

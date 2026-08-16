@@ -30,7 +30,7 @@ final readonly class SameStatementTraceOutputRule implements RewriteRule
     {
         $statement = $context->statement;
 
-        if (!$this->safety->canRewrite($statement, $context->catchVariable, OutputFamily::MessageOnly)) {
+        if (!$this->safety->canRewriteTraceOutput($statement, $context->catchVariable, OutputFamily::MessageOnly)) {
             return null;
         }
 

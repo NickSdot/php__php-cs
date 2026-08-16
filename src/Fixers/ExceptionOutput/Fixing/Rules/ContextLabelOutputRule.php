@@ -40,6 +40,10 @@ final readonly class ContextLabelOutputRule implements RewriteRule
             return null;
         }
 
+        if (!$this->safety->canBuildStandardOutput($statement->parts)) {
+            return null;
+        }
+
         if (null === $this->parts->exceptionMessageOffset($statement->parts->parts, $context->catchVariable)) {
             return null;
         }

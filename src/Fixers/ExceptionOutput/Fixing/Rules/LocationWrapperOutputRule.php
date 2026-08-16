@@ -47,6 +47,10 @@ final readonly class LocationWrapperOutputRule implements RewriteRule
             return null;
         }
 
+        if (!$this->safety->canBuildStandardOutput($statement->parts)) {
+            return null;
+        }
+
         if (!$this->safety->usesOnlyVariable($statement->parts, $context->catchVariable)) {
             return null;
         }

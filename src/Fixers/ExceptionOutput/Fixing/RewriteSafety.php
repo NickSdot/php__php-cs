@@ -15,6 +15,17 @@ final readonly class RewriteSafety
 {
     public function canRewrite(Statement $statement, string $catchVariable, OutputFamily ...$families): bool
     {
+        return $this->canRewriteStatement($statement, $catchVariable, false, $families);
+    }
+
+    public function canRewriteTraceOutput(Statement $statement, string $catchVariable, OutputFamily ...$families): bool
+    {
+        return $this->canRewriteStatement($statement, $catchVariable, true, $families);
+    }
+
+    /** @param array<array-key, OutputFamily> $families */
+    private function canRewriteStatement(Statement $statement, string $catchVariable, bool $allowTrace, array $families): bool
+    {
         $classification = $statement->classification;
 
         if (ClassificationSafety::Fixable !== $classification->safety) {
@@ -25,7 +36,7 @@ final readonly class RewriteSafety
             return false;
         }
 
-        return $this->canRewriteMessageOutput($statement->parts, $catchVariable);
+        return $this->canRewriteMessageOutput($statement->parts, $catchVariable, $allowTrace);
     }
 
     public function isClassOnlyOutput(Statement $statement, string $catchVariable): bool
@@ -52,16 +63,29 @@ final readonly class RewriteSafety
             return false;
         }
 
+        if (!$this->canBuildStandardOutput($parts)) {
+            return false;
+        }
+
         return $this->usesOnlyVariable($parts, $catchVariable);
     }
 
-    private function canRewriteMessageOutput(OutputParts $parts, string $catchVariable): bool
+    public function canBuildStandardOutput(OutputParts $parts): bool
+    {
+        return !$parts->has(OutputPartKind::ExceptionTrace);
+    }
+
+    private function canRewriteMessageOutput(OutputParts $parts, string $catchVariable, bool $allowTrace = false): bool
     {
         if ($parts->hasUnknown()) {
             return false;
         }
 
         if (!$parts->has(OutputPartKind::ExceptionMessage)) {
+            return false;
+        }
+
+        if (!$allowTrace && !$this->canBuildStandardOutput($parts)) {
             return false;
         }
 
