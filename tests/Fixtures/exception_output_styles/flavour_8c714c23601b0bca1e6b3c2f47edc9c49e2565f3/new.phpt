@@ -6,7 +6,7 @@ $label = 'fixture';
 try {
     throw new \ValueError('fixture message');
 } catch (\ValueError $e) {
-    echo $label, ': ', $e::class, ': ', $e->getMessage(), PHP_EOL;
+    echo $label, ': ', $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECTF--

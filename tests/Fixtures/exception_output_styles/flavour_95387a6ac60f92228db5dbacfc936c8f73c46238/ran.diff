@@ -5,7 +5,7 @@
      throw new \Error('fixture message');
  } catch (\Error $e) {
 -    echo get_class($e) . ': ' . $e->getCode() . ', ' . $e->getMessage() . \PHP_EOL;
-+    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), "\n";
  }
  ?>
  --EXPECTF--

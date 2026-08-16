@@ -5,7 +5,7 @@
      throw new \ArgumentCountError('fixture message');
  } catch (\ArgumentCountError $e) {
 -    print('Error found: '.$e->getMessage());
-+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>
  --EXPECTF--

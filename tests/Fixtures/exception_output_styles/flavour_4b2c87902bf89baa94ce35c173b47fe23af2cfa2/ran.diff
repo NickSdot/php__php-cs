@@ -5,7 +5,7 @@
      throw new \RuntimeException('fixture message');
  } catch (\Exception $e) {
 -    echo "Compare Exception: " . $e->getMessage() . PHP_EOL;
-+    echo 'Compare: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo 'Compare: ', $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>
  --EXPECTF--

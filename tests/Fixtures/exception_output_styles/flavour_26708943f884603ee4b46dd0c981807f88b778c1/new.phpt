@@ -6,7 +6,7 @@ if (!class_exists('com_exception')) { class com_exception extends \RuntimeExcept
 try {
     throw new \com_exception('fixture message');
 } catch (\com_exception $e) {
-    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECTF--

@@ -33,7 +33,7 @@ final readonly class LeadingSeparatorOutputRule implements RewriteRule
             replacement: $this->builder->buildWithPrefixSegments(
                 $context->catchVariable,
                 $statement->parts,
-                [$this->builder->firstNewlineSource($statement->parts)],
+                [OutputStatementBuilder::NEWLINE_SEGMENT],
             ),
         ));
     }

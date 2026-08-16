@@ -255,7 +255,8 @@ final readonly class FixtureGenerator
         }
 
         $oldFixtureContentsByCase = [];
-        $selection = $this->select($result, $job, $oldFixtureContentsByCase);
+        $sourceFilter = $this->sourceFilter($job, $oldFixtureContentsByCase);
+        $selection = $this->select($result, $job, $sourceFilter);
 
         if (!$job->write || $result->failed()) {
             return $result;
@@ -283,6 +284,10 @@ final readonly class FixtureGenerator
             $result->oldOnly += $writeResult->oldOnly ? 1 : 0;
         }
 
+        if (null !== $sourceFilter) {
+            $this->removeRejectedFixtures($result, $job, $sourceFilter, $selection);
+        }
+
         $this->refreshFixtures($result, $job, $selection);
         $this->writeDiscoveryReports($result, $job, $selection, $writeResults);
 
@@ -304,7 +309,8 @@ final readonly class FixtureGenerator
             return $result;
         }
 
-        $selection = $this->select($result, $job);
+        $oldFixtureContentsByCase = [];
+        $selection = $this->select($result, $job, $this->sourceFilter($job, $oldFixtureContentsByCase));
 
         $this->refreshFixtures($result, $job, $selection);
         $this->writeDiscoveryReports($result, $job, $selection, []);
@@ -327,10 +333,9 @@ final readonly class FixtureGenerator
         return $result;
     }
 
-    /** @param array<string, string|null> $oldFixtureContentsByCase */
-    private function select(FixtureGenerationResult $result, FixtureGenerationJob $job, array &$oldFixtureContentsByCase = []): FixtureSelection
+    /** @param (callable(FixtureSource): bool)|null $sourceFilter */
+    private function select(FixtureGenerationResult $result, FixtureGenerationJob $job, ?callable $sourceFilter): FixtureSelection
     {
-        $sourceFilter = $this->sourceFilter($job, $oldFixtureContentsByCase);
         $selection = $this->selector->select(
             candidates: $job->candidates,
             canSelect: $sourceFilter,
@@ -359,10 +364,6 @@ final readonly class FixtureGenerator
             }
 
             return $selection;
-        }
-
-        if ($job->write && !$job->refreshOnly && null !== $sourceFilter) {
-            $this->removeRejectedFixtures($result, $job, $sourceFilter, $selection);
         }
 
         return $selection;

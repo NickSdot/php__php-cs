@@ -104,7 +104,7 @@ final class FixtureGeneratorTest extends TestCase
         self::assertSame(1, $result->selectedFixtures);
     }
 
-    public function testDryRunIgnoresNoOpExceptionOutputWindows(): void
+    public function testDryRunIncludesNonCanonicalExceptionOutputWindows(): void
     {
         $root = $this->makeTempDir();
         $fixtures = $root . '/fixtures';
@@ -128,9 +128,9 @@ final class FixtureGeneratorTest extends TestCase
         );
 
         self::assertSame(1, $result->candidateFiles);
-        self::assertSame(1, $result->candidateWindows);
-        self::assertSame(1, $result->candidateFlavours);
-        self::assertSame(1, $result->selectedFixtures);
+        self::assertSame(2, $result->candidateWindows);
+        self::assertSame(2, $result->candidateFlavours);
+        self::assertSame(2, $result->selectedFixtures);
     }
 
     public function testDirtySourceRefreshesExistingFixturesWithoutUpdatingDiscoveryReports(): void
@@ -532,6 +532,39 @@ final class FixtureGeneratorTest extends TestCase
         self::assertSame(0, $result->selectedFixtures);
         self::assertSame(1, $result->removedFixtures);
         self::assertDirectoryDoesNotExist($fixtures . '/' . $case);
+    }
+
+    public function testWriteRunCopiesReplacementFixtureBeforeRemovingObsoleteCase(): void
+    {
+        $root = $this->makeTempDir();
+        $fixtures = $root . '/fixtures';
+        $reports = $root . '/reports';
+        $phpSrc = $root . '/php-src';
+        mkdir($fixtures);
+        mkdir($reports);
+        mkdir($phpSrc);
+
+        $statement = 'echo $e::class, \': \', $e->getMessage(), PHP_EOL;';
+        $this->writeSourcePhpt($phpSrc, 'source.phpt', $statement);
+        $case = $this->writeFixturePhpt($fixtures, $statement);
+        $obsoleteCase = 'obsolete_' . $case;
+        rename($fixtures . '/' . $case, $fixtures . '/' . $obsoleteCase);
+
+        $result = $this->generateOne(
+            phpSrc: $phpSrc,
+            fixtures: $fixtures,
+            reports: $reports,
+            runner: new ChangedFixtureRewriteRunner("new\n"),
+            write: true,
+            refreshOnly: false,
+            sourceReducer: new FixedFixtureSourceReducer("reduced old\n"),
+        );
+
+        self::assertFalse($result->failed());
+        self::assertFileExists($fixtures . '/' . $case . '/old.phpt');
+        self::assertDirectoryDoesNotExist($fixtures . '/' . $obsoleteCase);
+        self::assertSame(1, $result->removedFixtures);
+        self::assertSame([$obsoleteCase], $result->removedFixtureCases);
     }
 
     public function testWriteRunUsesExistingFixtureWhenNoSourceRepresentativeRuns(): void

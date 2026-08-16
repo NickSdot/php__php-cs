@@ -5,7 +5,7 @@ Exception output: flavour_bfbf06a823d9a93af3f71495cd5e93b7e20e986a
 try {
     throw new \TypeError('fixture message');
 } catch (\TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECTF--

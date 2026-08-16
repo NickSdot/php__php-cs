@@ -50,14 +50,12 @@ final readonly class AdjacentMessageThenNewlineOutputRule implements RewriteRule
             return null;
         }
 
-        $newlineSource = $this->builder->firstNewlineSource($newline->parts);
-
         return new RewriteResult(
             edit: new TextEdit(
                 startOffset: $message->startOffset,
                 endOffset: $newline->endOffset,
                 line: $message->line,
-                replacement: $this->builder->build($context->catchVariable, $message->parts, newlineSource: $newlineSource),
+                replacement: $this->builder->build($context->catchVariable, $message->parts),
             ),
             consumedStatements: 2,
         );

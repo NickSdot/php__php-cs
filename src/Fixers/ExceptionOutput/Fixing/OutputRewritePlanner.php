@@ -284,12 +284,7 @@ final readonly class OutputRewritePlanner
             return [];
         }
 
-        $previousEdit = $this->previousTrailingNewlineEdit(
-            $previous,
-            $code,
-            $offsetDelta,
-            $this->builder->firstNewlineSource($output->parts),
-        );
+        $previousEdit = $this->previousTrailingNewlineEdit($previous, $code, $offsetDelta);
 
         if (null === $previousEdit || !$this->leadingSeparator->matches($output, $catchVariable)) {
             return [];
@@ -306,7 +301,7 @@ final readonly class OutputRewritePlanner
         ];
     }
 
-    private function previousTrailingNewlineEdit(Stmt $statement, string $code, int $offsetDelta, string $newlineSource): ?TextEdit
+    private function previousTrailingNewlineEdit(Stmt $statement, string $code, int $offsetDelta): ?TextEdit
     {
         if (!$statement instanceof Stmt\Echo_) {
             return null;
@@ -320,7 +315,7 @@ final readonly class OutputRewritePlanner
 
         $source = mb_substr($code, $output->startOffset, $output->endOffset - $output->startOffset, '8bit');
 
-        if (null === $replacement = $this->builder->appendNewlineToEcho($source, $newlineSource)) {
+        if (null === $replacement = $this->builder->appendNewlineToEcho($source)) {
             return null;
         }
 
@@ -399,9 +394,8 @@ final readonly class OutputRewritePlanner
 
         $output = $this->statements->fromStatement($lastStatement, $code, $offsetDelta);
         $followingReplacement = $this->followingWithoutLeadingNewline($following);
-        $followingOutput = $this->statements->fromStatement($following, $code, $offsetDelta);
 
-        if (null === $output || null === $followingOutput || null === $followingReplacement || !$this->isSafeTrailingCatchOutput($output, $catchVariable)) {
+        if (null === $output || null === $followingReplacement || !$this->isSafeTrailingCatchOutput($output, $catchVariable)) {
             return [];
         }
 
@@ -417,11 +411,7 @@ final readonly class OutputRewritePlanner
                 startOffset: $output->startOffset,
                 endOffset: $output->endOffset,
                 line: $output->line,
-                replacement: $this->builder->build(
-                    $catchVariable,
-                    $output->parts,
-                    newlineSource: $this->builder->firstNewlineSource($followingOutput->parts)
-                ),
+                replacement: $this->builder->build($catchVariable, $output->parts),
             ),
             new TextEdit(
                 startOffset: $followingStart,
@@ -459,7 +449,7 @@ final readonly class OutputRewritePlanner
 
         $expr = $statement->exprs[0];
 
-        if ($expr instanceof Expr\ConstFetch && OutputStatementBuilder::PHP_EOL_SOURCE === $expr->name->toString()) {
+        if ($expr instanceof Expr\ConstFetch && 'PHP_EOL' === $expr->name->toString()) {
             return '';
         }
 

@@ -5,7 +5,7 @@
      throw new \com_exception('fixture message');
  } catch (\com_exception $e) {
 -    echo "\texception " . $e->getMessage();
-+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>
  --EXPECTF--

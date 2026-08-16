@@ -5,7 +5,7 @@
      throw new \RuntimeException('fixture message');
  } catch (\Throwable $exception) {
 -    echo $exception->getMessage();
-+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
++    echo $exception::class, ': ', $exception->getMessage(), "\n";
  }
  ?>
  following inline output

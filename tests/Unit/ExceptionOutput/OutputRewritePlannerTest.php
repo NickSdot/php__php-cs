@@ -63,7 +63,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansLocationRewriteWithoutDroppingLine(): void
@@ -171,7 +171,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getCode(), ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getCode(), ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansVarDumpCodeMessageRewriteAfterMessage(): void
@@ -224,7 +224,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansHtmlBreakSuffixRewriteWithFollowingNewlineOutput(): void
@@ -452,7 +452,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$method, ': ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$method, ': ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansDynamicParenthesizedContextPrefixRewrite(): void
@@ -554,7 +554,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'ldap_modify: UNEXPECTED: ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'ldap_modify: UNEXPECTED: ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansDescriptivePrefixRewriteWithoutDroppingContext(): void
@@ -605,7 +605,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo 'Compare: ', \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo 'Compare: ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansParenthesizedClassLabelRewrite(): void
@@ -676,7 +676,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansLeadingSeparatorRewrite(): void
@@ -693,7 +693,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo PHP_EOL, \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \"\\n\", \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansMovesLeadingSeparatorToPreviousLiteralEcho(): void
@@ -751,8 +751,8 @@ final class OutputRewritePlannerTest extends TestCase
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(2, $plans);
-        self::assertStringContainsString("echo bcdiv(\"20.56\", \"4\"), PHP_EOL;", $fixed);
-        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo bcdiv(\"20.56\", \"4\"), \"\\n\";", $fixed);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $fixed);
         self::assertStringNotContainsString("echo PHP_EOL, \$e::class", $fixed);
     }
 
@@ -839,7 +839,7 @@ final class OutputRewritePlannerTest extends TestCase
         $fixed = self::applyPlans($code, $plans);
 
         self::assertCount(3, $plans);
-        self::assertStringContainsString("echo \$exception::class, ': ', \$exception->getMessage(), PHP_EOL;", $fixed);
+        self::assertStringContainsString("echo \$exception::class, ': ', \$exception->getMessage(), \"\\n\";", $fixed);
         self::assertStringNotContainsString('echo PHP_EOL;', $fixed);
     }
 
@@ -880,7 +880,7 @@ final class OutputRewritePlannerTest extends TestCase
         $plans = new OutputRewritePlanner()->plans($code);
 
         self::assertCount(1, $plans);
-        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), PHP_EOL;", $plans[0]->replacement);
+        self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
     public function testPlansRewriteAfterUtf8BytesBeforeCatchOutput(): void
@@ -908,7 +908,7 @@ final class OutputRewritePlannerTest extends TestCase
     }
 
     #[DataProvider('sameStatementMessageTraceOutputs')]
-    public function testPlansSameStatementMessageTraceRewrite(string $echoStatement, string $newlineSource): void
+    public function testPlansSameStatementMessageTraceRewrite(string $echoStatement): void
     {
         $code = str_replace('{ECHO}', $echoStatement, <<<'PHP'
             <?php
@@ -923,19 +923,21 @@ final class OutputRewritePlannerTest extends TestCase
 
         self::assertCount(1, $plans);
         self::assertSame(
-            "echo '  ', \$e::class . ': ' . \$e->getMessage(), $newlineSource, \$e->getTraceAsString();",
+            "echo '  ', \$e::class . ': ' . \$e->getMessage(), \"\\n\", \$e->getTraceAsString();",
             $plans[0]->replacement,
         );
     }
 
-    /** @return iterable<string, array{string, string}> */
+    /** @return iterable<string, array{string}> */
     public static function sameStatementMessageTraceOutputs(): iterable
     {
-        yield 'comma literal newline' => ['echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();', '"\n"'];
-        yield 'comma PHP_EOL' => ['echo "  ", $e->getMessage(), PHP_EOL, $e->getTraceAsString();', 'PHP_EOL'];
-        yield 'comma fully-qualified PHP_EOL' => ['echo "  ", $e->getMessage(), \PHP_EOL, $e->getTraceAsString();', 'PHP_EOL'];
-        yield 'concat PHP_EOL' => ['echo "  " . $e->getMessage() . PHP_EOL . $e->getTraceAsString();', 'PHP_EOL'];
-        yield 'concat fully-qualified PHP_EOL' => ['echo "  " . $e->getMessage() . \PHP_EOL . $e->getTraceAsString();', 'PHP_EOL'];
+        yield 'comma literal newline' => ['echo "  ", $e->getMessage(), "\n", $e->getTraceAsString();'];
+        yield 'comma literal CRLF' => ['echo "  ", $e->getMessage(), "\r\n", $e->getTraceAsString();'];
+        yield 'comma literal CR' => ['echo "  ", $e->getMessage(), "\r", $e->getTraceAsString();'];
+        yield 'comma PHP_EOL' => ['echo "  ", $e->getMessage(), PHP_EOL, $e->getTraceAsString();'];
+        yield 'comma fully-qualified PHP_EOL' => ['echo "  ", $e->getMessage(), \PHP_EOL, $e->getTraceAsString();'];
+        yield 'concat PHP_EOL' => ['echo "  " . $e->getMessage() . PHP_EOL . $e->getTraceAsString();'];
+        yield 'concat fully-qualified PHP_EOL' => ['echo "  " . $e->getMessage() . \PHP_EOL . $e->getTraceAsString();'];
     }
 
     #[DataProvider('classMessageTraceOutputs')]

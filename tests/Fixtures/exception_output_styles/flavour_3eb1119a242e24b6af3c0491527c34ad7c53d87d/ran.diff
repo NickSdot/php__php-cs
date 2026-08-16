@@ -5,7 +5,7 @@
      throw new \ValueError('fixture message');
  } catch (\ValueError $e) {
 -    echo \PHP_EOL . $e->getMessage() . \PHP_EOL;
-+    echo PHP_EOL, $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo "\n", $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>
  --EXPECTF--

@@ -44,11 +44,7 @@ final readonly class SameStatementTraceOutputRule implements RewriteRule
             startOffset: $statement->startOffset,
             endOffset: $statement->endOffset,
             line: $statement->line,
-            replacement: $this->builder->buildSameStatementTrace(
-                $context->catchVariable,
-                $prefix,
-                $this->builder->firstNewlineSource($statement->parts)
-            ),
+            replacement: $this->builder->buildSameStatementTrace($context->catchVariable, $prefix),
         ));
     }
 

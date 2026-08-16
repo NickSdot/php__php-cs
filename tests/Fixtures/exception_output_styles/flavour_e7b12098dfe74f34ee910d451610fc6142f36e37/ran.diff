@@ -5,7 +5,7 @@
      throw new \AssertionError('fixture message');
  } catch (\AssertionError $e) {
 -    echo $e->getMessage(), PHP_EOL;
-+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
++    echo $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>
  --EXPECTF--
