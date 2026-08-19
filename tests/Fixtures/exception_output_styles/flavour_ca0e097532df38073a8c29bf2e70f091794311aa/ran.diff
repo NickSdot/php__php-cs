@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -5,8 +5,8 @@
+@@ -4,9 +4,9 @@
+ <?php
  try {
      throw new \TypeError('fixture message');
- } catch (\TypeError $e) {
+-} catch (\TypeError $e) {
 -    echo "*** Caught ", $e->getMessage(), " in ", $e->getFile(), " on line ", $e->getLine(), PHP_EOL;
++} catch (\Throwable $e) {
 +    echo $e::class, ': ', $e->getMessage(), ' in ', $e->getFile(), ' on line ', $e->getLine(), "\n";
  }
  ?>

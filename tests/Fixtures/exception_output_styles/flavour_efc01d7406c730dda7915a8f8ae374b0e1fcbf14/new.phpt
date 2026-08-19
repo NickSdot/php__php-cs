@@ -6,7 +6,7 @@ $ns_readable = 'fixture';
 $qname = 'fixture';
 try {
     throw new \DOMException('fixture message');
-} catch (\DOMException $e) {
+} catch (\Throwable $e) {
     echo "($ns_readable, \"$qname\"): ", $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>

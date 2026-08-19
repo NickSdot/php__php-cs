@@ -1,11 +1,13 @@
 --- old.phpt
 +++ new.phpt
-@@ -5,9 +5,8 @@
+@@ -4,10 +4,9 @@
+ <?php
  try {
      throw new \Error('fixture message');
- } catch (\Error $ex) {
+-} catch (\Error $ex) {
 -    var_dump($ex->getMessage());
 -        echo "\n";
++} catch (\Throwable $ex) {
 +    echo $ex::class, ': ', $ex->getMessage(), "\n";
  }
  ?>

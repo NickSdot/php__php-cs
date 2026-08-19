@@ -1087,6 +1087,84 @@ final class OutputRewritePlannerTest extends TestCase
         self::assertSame("echo \$rf->getName(), ': ', \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
+    public function testPlansThrowableCatchAlongsideOutputRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new TypeError('x');
+            } catch (TypeError $e) {
+                echo $e->getMessage(), "\n";
+            }
+            PHP;
+
+        $plan = new OutputRewritePlanner()->plan($code);
+        $fixed = self::applyPlans($code, $plan->all());
+
+        self::assertCount(1, $plan->outputEdits);
+        self::assertCount(1, $plan->catchTypeEdits);
+        self::assertStringContainsString('} catch (\Throwable $e) {', $fixed);
+        self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $fixed);
+    }
+
+    public function testDoesNotPlanAlreadyQualifiedThrowableCatch(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new TypeError('x');
+            } catch (\Throwable $e) {
+                echo $e->getMessage(), "\n";
+            }
+            PHP;
+
+        $plan = new OutputRewritePlanner()->plan($code);
+
+        self::assertCount(1, $plan->outputEdits);
+        self::assertSame([], $plan->catchTypeEdits);
+    }
+
+    public function testDoesNotRemoveCommentsBetweenCatchTypes(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new TypeError('x');
+            } catch (Exception /* keep this distinction */ | Error $e) {
+                echo $e->getMessage(), "\n";
+            }
+            PHP;
+
+        $plan = new OutputRewritePlanner()->plan($code);
+
+        self::assertCount(1, $plan->outputEdits);
+        self::assertSame([], $plan->catchTypeEdits);
+    }
+
+    public function testNormalizesOnlyTheCatchOwningANestedRewrite(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new RuntimeException('outer');
+            } catch (RuntimeException $e) {
+                try {
+                    throw new ValueError('inner');
+                } catch (ValueError $e) {
+                    echo $e->getMessage(), "\n";
+                }
+            }
+            PHP;
+
+        $plan = new OutputRewritePlanner()->plan($code);
+        $fixed = self::applyPlans($code, $plan->all());
+
+        self::assertCount(1, $plan->outputEdits);
+        self::assertCount(1, $plan->catchTypeEdits);
+        self::assertStringContainsString('} catch (RuntimeException $e) {', $fixed);
+        self::assertStringContainsString('} catch (\Throwable $e) {', $fixed);
+    }
+
     /** @param list<TextEdit> $plans */
     private static function applyPlans(string $code, array $plans): string
     {

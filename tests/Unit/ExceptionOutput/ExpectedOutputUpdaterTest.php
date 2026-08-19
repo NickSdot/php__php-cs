@@ -344,6 +344,23 @@ final class ExpectedOutputUpdaterTest extends TestCase
         );
     }
 
+    public function testDoesNotAcceptAnUnexpectedThrowableAsAFormattingChange(): void
+    {
+        $differentClass = new ExpectedOutputUpdater()->update(
+            'EXPECT',
+            "TypeError: intended\n",
+            "ValueError: unexpected\n",
+        );
+        $differentMessage = new ExpectedOutputUpdater()->update(
+            'EXPECT',
+            "TypeError: intended\n",
+            "TypeError: unexpected\n",
+        );
+
+        self::assertNull($differentClass->output);
+        self::assertNull($differentMessage->output);
+    }
+
     public function testUpdatesPreservedPrefixClassLabelWithSpacedColon(): void
     {
         $update = new ExpectedOutputUpdater()->update(

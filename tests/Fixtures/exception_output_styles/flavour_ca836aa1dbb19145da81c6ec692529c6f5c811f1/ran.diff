@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -5,8 +5,8 @@
+@@ -4,9 +4,9 @@
+ <?php
  try {
      throw new \ValueError('fixture message');
- } catch (\ValueError $e) {
+-} catch (\ValueError $e) {
 -    echo '[009] '.$e->getMessage()."\n";
++} catch (\Throwable $e) {
 +    echo '[009] ', $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

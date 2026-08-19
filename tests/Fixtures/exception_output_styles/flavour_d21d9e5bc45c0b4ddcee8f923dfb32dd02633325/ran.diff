@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -5,8 +5,8 @@
+@@ -4,9 +4,9 @@
+ <?php
  try {
      throw new \DOMException('fixture message');
- } catch (\DOMException $e) {
+-} catch (\DOMException $e) {
 -    echo $e->getCode(), ": ", $e->getMessage(), "\n";
++} catch (\Throwable $e) {
 +    echo $e::class, ': ', $e->getCode(), ': ', $e->getMessage(), "\n";
  }
  ?>

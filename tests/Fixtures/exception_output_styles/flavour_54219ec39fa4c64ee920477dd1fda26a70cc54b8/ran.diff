@@ -1,11 +1,13 @@
 --- old.phpt
 +++ new.phpt
-@@ -5,9 +5,8 @@
+@@ -4,10 +4,9 @@
+ <?php
  try {
      throw new \mysqli_sql_exception('fixture message');
- } catch (\mysqli_sql_exception $e) {
+-} catch (\mysqli_sql_exception $e) {
 -    echo $e->getMessage();
 -        echo "\n";
++} catch (\Throwable $e) {
 +    echo $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

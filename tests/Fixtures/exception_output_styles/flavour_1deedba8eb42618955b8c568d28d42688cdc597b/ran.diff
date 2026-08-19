@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -6,9 +6,8 @@
+@@ -5,10 +5,9 @@
+ $option = 'fixture';
  try {
      throw new \ValueError('fixture message');
- } catch (\ValueError $exception) {
+-} catch (\ValueError $exception) {
 -    echo $option . ": " . $exception->getMessage() . "\n\n";
++} catch (\Throwable $exception) {
 +    echo $option, ': ', $exception::class, ': ', $exception->getMessage(), "\n";
  }
  ?>

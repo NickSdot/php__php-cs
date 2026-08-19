@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -6,8 +6,8 @@
+@@ -5,9 +5,9 @@
+ $rf = new class { public function getName(): string { return 'fixture'; } };
  try {
      throw new \Error('fixture message');
- } catch (\Error $e) {
+-} catch (\Error $e) {
 -    echo "{$rf->getName()}: {$e->getMessage()}\n";
++} catch (\Throwable $e) {
 +    echo $rf->getName(), ': ', $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

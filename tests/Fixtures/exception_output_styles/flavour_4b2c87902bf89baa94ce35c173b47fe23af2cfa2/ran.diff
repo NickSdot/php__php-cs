@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -5,8 +5,8 @@
+@@ -4,9 +4,9 @@
+ <?php
  try {
      throw new \RuntimeException('fixture message');
- } catch (\Exception $e) {
+-} catch (\Exception $e) {
 -    echo "Compare Exception: " . $e->getMessage() . PHP_EOL;
++} catch (\Throwable $e) {
 +    echo 'Compare: ', $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

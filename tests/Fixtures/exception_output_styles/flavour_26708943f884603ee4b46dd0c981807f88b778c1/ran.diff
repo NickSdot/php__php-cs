@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -6,8 +6,8 @@
+@@ -5,9 +5,9 @@
+ if (!class_exists('com_exception')) { class com_exception extends \RuntimeException {} }
  try {
      throw new \com_exception('fixture message');
- } catch (\com_exception $e) {
+-} catch (\com_exception $e) {
 -    echo "\texception " . $e->getMessage();
++} catch (\Throwable $e) {
 +    echo $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

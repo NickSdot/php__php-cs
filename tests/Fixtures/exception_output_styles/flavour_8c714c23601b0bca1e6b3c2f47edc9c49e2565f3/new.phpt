@@ -5,7 +5,7 @@ Exception output: flavour_8c714c23601b0bca1e6b3c2f47edc9c49e2565f3
 $label = 'fixture';
 try {
     throw new \ValueError('fixture message');
-} catch (\ValueError $e) {
+} catch (\Throwable $e) {
     echo $label, ': ', $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>

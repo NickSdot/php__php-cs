@@ -55,6 +55,7 @@ final readonly class OutputRewritePlanner
         private LeadingSeparatorOutput $leadingSeparator = new LeadingSeparatorOutput(),
         private OutputStatementPresence $outputPresence = new OutputStatementPresence(),
         private PreviousOutputNewlinePlanner $previousNewline = new PreviousOutputNewlinePlanner(),
+        private CatchTypeRewritePlanner $catchTypeRewrites = new CatchTypeRewritePlanner(),
         ?array $rules = null,
     ) {
         $this->rules = $rules ?? self::defaultRules();
@@ -63,13 +64,19 @@ final readonly class OutputRewritePlanner
     /** @return list<TextEdit> */
     public function plans(string $code, ?string $expectedOutput = null): array
     {
+        return $this->plan($code, $expectedOutput)->outputEdits;
+    }
+
+    public function plan(string $code, ?string $expectedOutput = null): OutputRewritePlan
+    {
         $parsed = $this->ast->parse($code);
 
         if (null === $parsed) {
-            return [];
+            return new OutputRewritePlan([], []);
         }
 
         $plans = [];
+        $catchTypePlans = [];
         $scope = new RewriteScope($code, $parsed->offsetDelta, $expectedOutput);
 
         foreach ($this->ast->catchBlocks($parsed->statements) as $catch) {
@@ -79,12 +86,24 @@ final readonly class OutputRewritePlanner
                 continue;
             }
 
-            array_push($plans, ...$this->plansForStatements(
+            $catchPlans = $this->plansForStatements(
                 statements: array_values($catch->stmts),
                 catchVariable: $catchVariable,
                 catchTypes: $this->catchTypes($catch),
                 scope: $scope,
-            ));
+            );
+
+            if ([] === $catchPlans) {
+                continue;
+            }
+
+            array_push($plans, ...$catchPlans);
+
+            $catchTypePlan = $this->catchTypeRewrites->plan($catch, $scope);
+
+            if (null !== $catchTypePlan) {
+                $catchTypePlans[] = $catchTypePlan;
+            }
         }
 
         $previousSeparatorPlans = $this->previousSeparatorPlans($parsed->statements, $code, $parsed->offsetDelta);
@@ -97,7 +116,7 @@ final readonly class OutputRewritePlanner
 
         usort($plans, fn(TextEdit $a, TextEdit $b): int => $a->startOffset <=> $b->startOffset);
 
-        return $plans;
+        return new OutputRewritePlan($plans, $catchTypePlans);
     }
 
     /** @return list<RewriteRule> */
@@ -179,12 +198,19 @@ final readonly class OutputRewritePlanner
         array $catchTypes,
         RewriteScope $scope,
     ): array {
-        return $this->plansForStatements(
-            statements: $this->ast->childStatements($statement),
-            catchVariable: $catchVariable,
-            catchTypes: $catchTypes,
-            scope: $scope,
-        );
+
+        $plans = [];
+
+        foreach ($this->ast->childStatementLists($statement) as $statements) {
+            array_push($plans, ...$this->plansForStatements(
+                statements: $statements,
+                catchVariable: $catchVariable,
+                catchTypes: $catchTypes,
+                scope: $scope,
+            ));
+        }
+
+        return $plans;
     }
 
     private function rewrite(RewriteContext $context): ?RewriteResult

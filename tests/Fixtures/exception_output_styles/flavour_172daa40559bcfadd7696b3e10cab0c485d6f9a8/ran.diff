@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -6,8 +6,8 @@
+@@ -5,9 +5,9 @@
+ $name = 'fixture';
  try {
      throw new \SoapFault('fixture fault', 'fixture message');
- } catch (\SoapFault $e) {
+-} catch (\SoapFault $e) {
 -    echo "$name: {$e->getMessage()}\n";
++} catch (\Throwable $e) {
 +    echo "$name: ", $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

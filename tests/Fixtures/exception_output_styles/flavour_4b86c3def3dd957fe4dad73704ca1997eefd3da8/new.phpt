@@ -4,7 +4,7 @@ Exception output: flavour_4b86c3def3dd957fe4dad73704ca1997eefd3da8
 <?php
 try {
     throw new \Error('fixture message');
-} catch (\Error $e) {
+} catch (\Throwable $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>

@@ -53,7 +53,7 @@ final class ExceptionOutputFixer extends PhptFixer
             ? null
             : $file->getSection($expectedSection);
 
-        $plans = $this->planner->plans($code, $expectedOutput);
+        $plans = $this->planner->plan($code, $expectedOutput)->all();
 
         if ([] === $plans) {
             return false;

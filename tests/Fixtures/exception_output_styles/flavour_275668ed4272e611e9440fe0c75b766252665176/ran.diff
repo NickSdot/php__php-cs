@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -6,9 +6,8 @@
+@@ -5,10 +5,9 @@
+ $property = 'fixture';
  try {
      throw new \ReflectionException('fixture message');
- } catch (\ReflectionException $e) {
+-} catch (\ReflectionException $e) {
 -    echo "Property $property from class: EXCEPTION - " . $e->getMessage() . "\n\n";
++} catch (\Throwable $e) {
 +    echo "Property $property from class: ", $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

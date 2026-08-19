@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -5,9 +5,8 @@
+@@ -4,10 +4,9 @@
+ <?php
  try {
      throw new \ValueError('fixture message');
- } catch (\ValueError $e) {
+-} catch (\ValueError $e) {
 -    echo \PHP_EOL . $e->getMessage() . \PHP_EOL;
++} catch (\Throwable $e) {
 +    echo "\n", $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

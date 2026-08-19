@@ -4,7 +4,7 @@ Exception output: flavour_60f74ee73091a2753cdc571c00f9e9f1075262bb
 <?php
 try {
     throw new \ArgumentCountError('fixture message');
-} catch (\ArgumentCountError $e) {
+} catch (\Throwable $e) {
     echo 'ERROR 1: ', $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>

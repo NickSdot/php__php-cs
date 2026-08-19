@@ -4,7 +4,7 @@ Exception output: flavour_4b2c87902bf89baa94ce35c173b47fe23af2cfa2
 <?php
 try {
     throw new \RuntimeException('fixture message');
-} catch (\Exception $e) {
+} catch (\Throwable $e) {
     echo 'Compare: ', $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>

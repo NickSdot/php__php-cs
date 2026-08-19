@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -6,8 +6,8 @@
+@@ -5,9 +5,9 @@
+ $label = 'fixture';
  try {
      throw new \ValueError('fixture message');
- } catch (\ValueError $e) {
+-} catch (\ValueError $e) {
 -    echo $label, ": ", $e->getMessage(), PHP_EOL;
++} catch (\Throwable $e) {
 +    echo $label, ': ', $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

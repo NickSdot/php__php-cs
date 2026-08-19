@@ -5,7 +5,7 @@ Exception output: flavour_affbb59ba04d6175bcc9c2a1b8e072596c128475
 echo 'preceding output';
 try {
     var_dump(throw new \TypeError('fixture message'));
-} catch (\TypeError $e) {
+} catch (\Throwable $e) {
     echo "\n", $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>

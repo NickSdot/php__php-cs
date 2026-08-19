@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -5,9 +5,8 @@
+@@ -4,10 +4,9 @@
+ <?php
  try {
      throw new \ArgumentCountError('fixture message');
- } catch (\ArgumentCountError $e) {
+-} catch (\ArgumentCountError $e) {
 -    var_dump('ERROR 1', $e->getMessage());
++} catch (\Throwable $e) {
 +    echo 'ERROR 1: ', $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

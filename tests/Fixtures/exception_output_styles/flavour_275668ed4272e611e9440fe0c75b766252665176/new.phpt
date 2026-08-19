@@ -5,7 +5,7 @@ Exception output: flavour_275668ed4272e611e9440fe0c75b766252665176
 $property = 'fixture';
 try {
     throw new \ReflectionException('fixture message');
-} catch (\ReflectionException $e) {
+} catch (\Throwable $e) {
     echo "Property $property from class: ", $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>

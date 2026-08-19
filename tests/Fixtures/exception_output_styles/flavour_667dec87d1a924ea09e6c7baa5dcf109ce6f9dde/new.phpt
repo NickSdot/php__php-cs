@@ -4,7 +4,7 @@ Exception output: flavour_667dec87d1a924ea09e6c7baa5dcf109ce6f9dde
 <?php
 try {
     throw new \PDOException('fixture message');
-} catch (\PDOException $e) {
+} catch (\Throwable $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>

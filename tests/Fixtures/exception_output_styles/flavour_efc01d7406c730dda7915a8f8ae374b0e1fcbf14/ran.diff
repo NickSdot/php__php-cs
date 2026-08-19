@@ -1,10 +1,12 @@
 --- old.phpt
 +++ new.phpt
-@@ -7,8 +7,8 @@
+@@ -6,9 +6,9 @@
+ $qname = 'fixture';
  try {
      throw new \DOMException('fixture message');
- } catch (\DOMException $e) {
+-} catch (\DOMException $e) {
 -    echo "($ns_readable, \"$qname\"): {$e->getMessage()}\n";
++} catch (\Throwable $e) {
 +    echo "($ns_readable, \"$qname\"): ", $e::class, ': ', $e->getMessage(), "\n";
  }
  ?>

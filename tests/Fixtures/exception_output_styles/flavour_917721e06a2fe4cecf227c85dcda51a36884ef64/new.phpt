@@ -5,7 +5,7 @@ Exception output: flavour_917721e06a2fe4cecf227c85dcda51a36884ef64
 $rf = new class { public function getName(): string { return 'fixture'; } };
 try {
     throw new \Error('fixture message');
-} catch (\Error $e) {
+} catch (\Throwable $e) {
     echo $rf->getName(), ': ', $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
