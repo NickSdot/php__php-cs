@@ -1050,7 +1050,7 @@ pending_pr_cell_for_target() {
     local refs
 
     refs="$(pr_refs_for_target "$target" "$extracted_prs_file" open)"
-    printf '%s' "${refs:-Not yet extracted}"
+    printf '%s' "${refs:-Pending}"
 }
 
 write_merged_pr_table() {
