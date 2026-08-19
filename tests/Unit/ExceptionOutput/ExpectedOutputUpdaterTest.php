@@ -330,6 +330,20 @@ final class ExpectedOutputUpdaterTest extends TestCase
         self::assertSame("AssertionError: \nAssertionError: \nAssertionError:\n", $update->output);
     }
 
+    public function testUpdatesQuotedEmptyClassMessageWrapperStyle(): void
+    {
+        $update = new ExpectedOutputUpdater()->update(
+            'EXPECT',
+            "AssertionError: ''\nAssertionError: ''\nAssertionError: ''\n",
+            "AssertionError: \"\"\nAssertionError: \"\"\nAssertionError: \"\"\n",
+        );
+
+        self::assertSame(
+            "AssertionError: \"\"\nAssertionError: \"\"\nAssertionError: \"\"\n",
+            $update->output,
+        );
+    }
+
     public function testUpdatesPreservedPrefixClassLabelWithSpacedColon(): void
     {
         $update = new ExpectedOutputUpdater()->update(

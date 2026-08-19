@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace InternalsCS\Fixers\ExceptionOutput\Generation;
 
 use InternalsCS\Fixers\ExceptionOutput\Analysis\Classifier;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputExpectationAnalyzer;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\StatementWindowFinder;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\OutputRewritePlanner;
 use InternalsCS\PhpSrcTestStyle\PhptSections;
@@ -22,6 +23,7 @@ final readonly class CandidateCollector
         private Classifier $classifier = new Classifier(),
         private ExpectedOutputShape $expectedOutput = new ExpectedOutputShape(),
         private OutputRewritePlanner $planner = new OutputRewritePlanner(),
+        private OutputExpectationAnalyzer $expectations = new OutputExpectationAnalyzer(),
         private FixtureContextAnalyzer $fixtureContext = new FixtureContextAnalyzer(),
         private bool $requireExpectedOutputEvidence = true,
     ) {}
@@ -40,7 +42,7 @@ final readonly class CandidateCollector
         }
 
         $expected = $this->sections->expected($source->contents);
-        $plans = $this->planner->plans($code->contents);
+        $plans = $this->planner->plans($code->contents, $expected?->contents);
         $rewriteWindows = $this->rewriteWindows($code->contents, $plans);
         $candidates = [];
 
@@ -50,6 +52,11 @@ final readonly class CandidateCollector
             }
 
             $classification = $this->classifier->classify($window);
+
+            $expectation = $this->expectations->analyze($window->parts, $expected?->contents);
+            $expectationKey = $this->expectedOutput->expectationKey($expectation);
+            $expectedShapeKey = $this->expectedOutput->key($window, $code, $expected);
+
             $line = $code->startLine + $window->startLine - 1;
 
             $candidate = new Candidate(
@@ -58,12 +65,13 @@ final readonly class CandidateCollector
                 line: $line,
                 statement: $window->statement,
                 parts: $window->parts,
-                fixtureKey: $classification->fingerprint->id . $this->expectedOutput->key($window, $code, $expected),
+                fixtureKey: $classification->fingerprint->id . $expectedShapeKey . $expectationKey,
                 classification: $classification,
-                fixtureCaseKey: $classification->fixtureFingerprint->id . $this->expectedOutput->key($window, $code, $expected),
+                fixtureCaseKey: $classification->fixtureFingerprint->id . $expectedShapeKey . $expectationKey,
                 catchVariable: $window->catchVariable ?? 'e',
                 catchTypes: $window->catchTypes,
                 fixtureContext: $this->fixtureContext->analyze($code->contents, $window, $plans),
+                expectation: $expectation,
             );
 
             if ($this->requireExpectedOutputEvidence && (null === $expected || !$candidate->isRepresentedInExpectedOutput($expected->contents))) {

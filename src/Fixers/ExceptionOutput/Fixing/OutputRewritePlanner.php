@@ -61,7 +61,7 @@ final readonly class OutputRewritePlanner
     }
 
     /** @return list<TextEdit> */
-    public function plans(string $code): array
+    public function plans(string $code, ?string $expectedOutput = null): array
     {
         $parsed = $this->ast->parse($code);
 
@@ -70,6 +70,7 @@ final readonly class OutputRewritePlanner
         }
 
         $plans = [];
+        $scope = new RewriteScope($code, $parsed->offsetDelta, $expectedOutput);
 
         foreach ($this->ast->catchBlocks($parsed->statements) as $catch) {
             $catchVariable = $this->catchVariable($catch);
@@ -82,8 +83,7 @@ final readonly class OutputRewritePlanner
                 statements: array_values($catch->stmts),
                 catchVariable: $catchVariable,
                 catchTypes: $this->catchTypes($catch),
-                code: $code,
-                offsetDelta: $parsed->offsetDelta,
+                scope: $scope,
             ));
         }
 
@@ -130,26 +130,31 @@ final readonly class OutputRewritePlanner
      * @param list<string> $catchTypes
      * @return list<TextEdit>
      */
-    private function plansForStatements(array $statements, string $catchVariable, array $catchTypes, string $code, int $offsetDelta): array
-    {
+    private function plansForStatements(
+        array $statements,
+        string $catchVariable,
+        array $catchTypes,
+        RewriteScope $scope,
+    ): array {
         $plans = [];
 
         for ($i = 0; $i < count($statements); $i++) {
             $statement = $statements[$i];
             $nextStatement = $statements[$i + 1] ?? null;
-            $output = $this->statements->fromStatement($statement, $code, $offsetDelta);
+            $output = $this->statements->fromStatement($statement, $scope->code, $scope->offsetDelta);
 
             if (null === $output) {
-                array_push($plans, ...$this->plansForChildStatements($statement, $catchVariable, $catchTypes, $code, $offsetDelta));
+                array_push($plans, ...$this->plansForChildStatements($statement, $catchVariable, $catchTypes, $scope));
                 continue;
             }
 
-            $nextOutput = null === $nextStatement ? null : $this->statements->fromStatement($nextStatement, $code, $offsetDelta);
+            $nextOutput = null === $nextStatement ? null : $this->statements->fromStatement($nextStatement, $scope->code, $scope->offsetDelta);
             $result = $this->rewrite(new RewriteContext(
                 catchVariable: $catchVariable,
                 catchTypes: $catchTypes,
                 statement: $output,
                 nextStatement: $nextOutput,
+                expectation: $scope->expectation($output->parts),
             ));
 
             if (null !== $result) {
@@ -158,7 +163,7 @@ final readonly class OutputRewritePlanner
                 continue;
             }
 
-            array_push($plans, ...$this->plansForChildStatements($statement, $catchVariable, $catchTypes, $code, $offsetDelta));
+            array_push($plans, ...$this->plansForChildStatements($statement, $catchVariable, $catchTypes, $scope));
         }
 
         return $plans;
@@ -172,15 +177,13 @@ final readonly class OutputRewritePlanner
         Stmt $statement,
         string $catchVariable,
         array $catchTypes,
-        string $code,
-        int $offsetDelta,
+        RewriteScope $scope,
     ): array {
         return $this->plansForStatements(
             statements: $this->ast->childStatements($statement),
             catchVariable: $catchVariable,
             catchTypes: $catchTypes,
-            code: $code,
-            offsetDelta: $offsetDelta,
+            scope: $scope,
         );
     }
 

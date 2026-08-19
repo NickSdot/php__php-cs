@@ -206,11 +206,15 @@ final readonly class MinimalFixtureSourceReducer implements FixtureSourceReducer
     {
         $class = $this->throwClass($candidate);
 
+        $message = $candidate->expectation->isEmpty(OutputPartKind::ExceptionMessage)
+            ? ''
+            : 'fixture message';
+
         if ('\\SoapFault' === $class) {
-            return "new \\SoapFault('fixture fault', 'fixture message')";
+            return "new \\SoapFault('fixture fault', '$message')";
         }
 
-        return "new $class('fixture message')";
+        return "new $class('$message')";
     }
 
     private function classDefinition(Candidate $candidate): string

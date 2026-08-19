@@ -1,14 +1,14 @@
 # Selected source-file fixtures
 
-flavour_3b948714f3ccb19b83baca973120e79724b2dfe6/old.phpt
+flavour_71aee91c0dc4ea6819a7c6951486bd03748bb438/old.phpt
   state: handled
-  fixture: flavour_3b948714f3ccb19b83baca973120e79724b2dfe6
+  fixture: flavour_71aee91c0dc4ea6819a7c6951486bd03748bb438
   first line: 8
   flavours covered: 1
-    - line 8: class_message class_message:7c26878f3c15276262c66a0d4977ff90f4a26de8
-    - line 9: class_message class_message:7c26878f3c15276262c66a0d4977ff90f4a26de8
-    - line 14: class_message class_message:7c26878f3c15276262c66a0d4977ff90f4a26de8
-    - line 19: class_message class_message:7c26878f3c15276262c66a0d4977ff90f4a26de8
+    - line 8: class_message class_message:7c26878f3c15276262c66a0d4977ff90f4a26de8|expected:exception-message:empty
+    - line 9: class_message class_message:7c26878f3c15276262c66a0d4977ff90f4a26de8|expected:exception-message:empty
+    - line 14: class_message class_message:7c26878f3c15276262c66a0d4977ff90f4a26de8|expected:exception-message:empty
+    - line 19: class_message class_message:7c26878f3c15276262c66a0d4977ff90f4a26de8|expected:exception-message:empty
 
 flavour_4b86c3def3dd957fe4dad73704ca1997eefd3da8/old.phpt
   state: handled

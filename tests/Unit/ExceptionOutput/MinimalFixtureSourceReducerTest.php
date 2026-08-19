@@ -183,6 +183,20 @@ final class MinimalFixtureSourceReducerTest extends TestCase
         self::assertStringContainsString("    var_dump(throw new \\TypeError('fixture message'));", $fixture);
     }
 
+    public function testPreservesExpectedEmptyQuotedMessage(): void
+    {
+        $fixture = $this->reduceContextualSource(<<<'PHP'
+            try {
+                throw new AssertionError('');
+            } catch (AssertionError $e) {
+                echo $e::class, ": '", $e->getMessage(), "'\n";
+            }
+            PHP, "AssertionError: ''\n");
+
+        self::assertStringContainsString("throw new \\AssertionError('');", $fixture);
+        self::assertStringContainsString("--EXPECTF--\nAssertionError: ''\n", $fixture);
+    }
+
     public function testPreservesFollowingTraceThatControlsMessageNewline(): void
     {
         $fixture = $this->reduceContextualSource(<<<'PHP'

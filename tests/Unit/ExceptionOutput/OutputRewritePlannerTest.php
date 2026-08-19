@@ -523,6 +523,26 @@ final class OutputRewritePlannerTest extends TestCase
         self::assertSame("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $plans[0]->replacement);
     }
 
+    public function testCanonicalizesQuotedEmptyMessage(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            try {
+                throw new AssertionError('');
+            } catch (AssertionError $e) {
+                echo $e::class, ": '", $e->getMessage(), "'\n";
+            }
+            PHP;
+
+        $plans = new OutputRewritePlanner()->plans($code, "AssertionError: ''\n");
+
+        self::assertCount(1, $plans);
+        self::assertSame(
+            "echo \$e::class, ': \"', \$e->getMessage(), '\"', \"\\n\";",
+            $plans[0]->replacement,
+        );
+    }
+
     public function testPlansCatchTypeLabelRewrite(): void
     {
         $code = <<<'PHP'

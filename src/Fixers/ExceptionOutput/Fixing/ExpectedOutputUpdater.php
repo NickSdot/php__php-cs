@@ -668,6 +668,12 @@ final readonly class ExpectedOutputUpdater
         }
 
         if (1 === preg_match('/^([A-Za-z_\\\\][A-Za-z0-9_\\\\]*): ([\'"])(.*)\2$/', $line, $matches) && $this->isLikelyExceptionClass($matches[1])) {
+
+            if ('' === $matches[3]) {
+                $alternateWrapper = '\'' === $matches[2] ? '"' : '\'';
+                $candidates[] = $matches[1] . ': ' . $alternateWrapper . $alternateWrapper;
+            }
+
             $candidates[] = $matches[1] . ': ' . $matches[3];
             $candidates[] = $matches[3];
         }

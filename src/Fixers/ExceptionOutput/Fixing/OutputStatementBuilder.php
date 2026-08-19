@@ -76,6 +76,19 @@ final readonly class OutputStatementBuilder
         return mb_substr($trimmed, 0, -1, '8bit') . ', ' . self::NEWLINE_SEGMENT . ';' . $tail;
     }
 
+    public function buildEmptyQuotedMessage(string $variable): string
+    {
+        $segments = [
+            '$' . $variable . '::class',
+            $this->literalSegment(': "'),
+            '$' . $variable . '->getMessage()',
+            $this->literalSegment('"'),
+            self::NEWLINE_SEGMENT,
+        ];
+
+        return 'echo ' . implode(', ', $segments) . ';';
+    }
+
     public function buildSameStatementTrace(string $variable, string $prefix): string
     {
         return 'echo '
@@ -150,4 +163,5 @@ final readonly class OutputStatementBuilder
             $value,
         );
     }
+
 }

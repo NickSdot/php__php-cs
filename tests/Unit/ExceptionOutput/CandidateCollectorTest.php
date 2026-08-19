@@ -6,6 +6,7 @@ namespace Tests\Unit\ExceptionOutput;
 
 use InternalsCS\Fixers\ExceptionOutput\Analysis\ClassificationSafety;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputFamily;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\Fixers\ExceptionOutput\Generation\CandidateCollector;
 use InternalsCS\SourceFile;
 use PHPUnit\Framework\TestCase;
@@ -68,6 +69,22 @@ final class CandidateCollectorTest extends TestCase
 
         self::assertCount(2, $candidates);
         self::assertSame($candidates[0]->fixtureKey, $candidates[1]->fixtureKey);
+    }
+
+    public function testQuotedEmptyMessageSplitsFixtureCase(): void
+    {
+        $statement = 'echo $e::class, ": \'", $e->getMessage(), "\'\\n";';
+
+        $root = $this->makeTempDir();
+        $empty = $this->writePhptWithExpected($root, 'empty.phpt', $statement, "RuntimeException: ''\n");
+        $nonEmpty = $this->writePhptWithExpected($root, 'non-empty.phpt', $statement, "RuntimeException: 'broken'\n");
+
+        $candidates = $this->collect($root, $empty, $nonEmpty);
+
+        self::assertCount(2, $candidates);
+        self::assertSame('', $candidates[0]->expectation->value(OutputPartKind::ExceptionMessage));
+        self::assertSame('broken', $candidates[1]->expectation->value(OutputPartKind::ExceptionMessage));
+        self::assertNotSame($candidates[0]->fixtureCaseKey, $candidates[1]->fixtureCaseKey);
     }
 
     public function testMixedConcatCommaAndPureCommaEchoAreDifferentFlavours(): void

@@ -5,32 +5,29 @@ declare(strict_types=1);
 namespace InternalsCS\Fixers\ExceptionOutput\Fixing\Rules;
 
 use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputFamily;
-use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputPart;
-use InternalsCS\Fixers\ExceptionOutput\Fixing\OutputPartMatcher;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\OutputStatementBuilder;
+use InternalsCS\Fixers\ExceptionOutput\Fixing\QuotedClassMessageOutput;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\RewriteContext;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\RewriteRule;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\RewriteSafety;
 use InternalsCS\RewriteResult;
 use InternalsCS\TextEdit;
 
-use function count;
-use function in_array;
-use function mb_trim;
-
 final readonly class QuotedClassMessageOutputRule implements RewriteRule
 {
     public function __construct(
         private RewriteSafety $safety = new RewriteSafety(),
         private OutputStatementBuilder $builder = new OutputStatementBuilder(),
-        private OutputPartMatcher $parts = new OutputPartMatcher(),
+        private QuotedClassMessageOutput $quotedOutput = new QuotedClassMessageOutput(),
     ) {}
 
     public function rewrite(RewriteContext $context): ?RewriteResult
     {
         $statement = $context->statement;
+        $wrapper = $this->quotedOutput->wrapper($statement->parts, $context->catchVariable);
 
-        if (!$this->isQuotedClassMessage($statement->parts->parts, $context->catchVariable)) {
+        if (null === $wrapper) {
             return null;
         }
 
@@ -46,54 +43,15 @@ final readonly class QuotedClassMessageOutputRule implements RewriteRule
             return null;
         }
 
+        $replacement = $context->expectation->isEmpty(OutputPartKind::ExceptionMessage)
+            ? $this->builder->buildEmptyQuotedMessage($context->catchVariable)
+            : $this->builder->build($context->catchVariable, $statement->parts);
+
         return new RewriteResult(new TextEdit(
             startOffset: $statement->startOffset,
             endOffset: $statement->endOffset,
             line: $statement->line,
-            replacement: $this->builder->build($context->catchVariable, $statement->parts),
+            replacement: $replacement,
         ));
-    }
-
-    /** @param list<OutputPart> $parts */
-    private function isQuotedClassMessage(array $parts, string $catchVariable): bool
-    {
-        if (count($parts) < 4) {
-            return false;
-        }
-
-        if (!$this->parts->isExceptionClass($parts[0], $catchVariable)) {
-            return false;
-        }
-
-        if (!in_array($parts[1]->value, [': \'', ': "'], true)) {
-            return false;
-        }
-
-        if (!$this->parts->isExceptionMessage($parts[2], $catchVariable)) {
-            return false;
-        }
-
-        for ($i = 3; $i < count($parts); $i++) {
-            if ($this->isClosingQuoteOrNewline($parts[$i])) {
-                continue;
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    private function isClosingQuoteOrNewline(OutputPart $part): bool
-    {
-        if ($this->parts->isNewline($part)) {
-            return true;
-        }
-
-        if (!$this->parts->isLiteral($part)) {
-            return false;
-        }
-
-        return in_array(mb_trim($part->value), ['\'', '"'], true);
     }
 }

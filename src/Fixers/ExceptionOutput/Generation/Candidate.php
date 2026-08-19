@@ -6,6 +6,7 @@ namespace InternalsCS\Fixers\ExceptionOutput\Generation;
 
 use InternalsCS\Fixers\ExceptionOutput\Analysis\Classification;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\ExpectedOutputEvidence;
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputExpectation;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputParts;
 use InternalsCS\Fixture\FixtureCandidate;
 
@@ -28,6 +29,7 @@ final readonly class Candidate implements FixtureCandidate
         /** @var list<string> */
         public array $catchTypes = [],
         public FixtureContext $fixtureContext = new FixtureContext(),
+        public OutputExpectation $expectation = new OutputExpectation(),
         private ExpectedOutputEvidence $evidence = new ExpectedOutputEvidence(),
     ) {
         $contextKey = $fixtureContext->key();

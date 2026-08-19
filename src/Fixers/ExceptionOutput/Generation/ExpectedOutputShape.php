@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace InternalsCS\Fixers\ExceptionOutput\Generation;
 
+use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputExpectation;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\OutputPartKind;
 use InternalsCS\Fixers\ExceptionOutput\Analysis\Window;
 use InternalsCS\PhpAst;
@@ -12,6 +13,7 @@ use PhpParser\Node\Stmt;
 
 use function mb_strtolower;
 use function mb_trim;
+use function str_replace;
 
 final readonly class ExpectedOutputShape
 {
@@ -38,6 +40,19 @@ final readonly class ExpectedOutputShape
         }
 
         return '|expected:' . mb_strtolower($expected->name) . ':following-inline-output';
+    }
+
+    public function expectationKey(OutputExpectation $expectation): string
+    {
+        $key = '';
+
+        foreach ($expectation->values() as $kind => $value) {
+            if ('' === $value) {
+                $key .= '|expected:' . str_replace('_', '-', $kind) . ':empty';
+            }
+        }
+
+        return $key;
     }
 
     private function hasFollowingInlineOutput(string $code, Window $window): bool
