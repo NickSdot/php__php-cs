@@ -1096,7 +1096,7 @@ write_merged_pr_table() {
     )
 
     merged_count="${#targets[@]}"
-    (( merged_count )) || return
+    (( merged_count )) || return 0
 
     printf '\n### Merged Targets (%s)\n\n' "$merged_count"
     printf '| Target | Merged / landed PR |\n'
@@ -1134,15 +1134,19 @@ resolve_base_context() {
         return
     fi
 
-    local base_ref
-    if base_ref="$(infer_local_base_ref)"; then
-        printf 'detected base: %s\n' "$base_ref" >&2
-        RESOLVED_BASE_REF="$base_ref"
-        RESOLVED_BASE_NAME="$(base_name_from_ref "$base_ref")"
-        return
+    if [[ -n "$PR_NUMBER" && -n "$PR_REPO" && -z "$RESOLVED_BASE_NAME" ]]; then
+        resolve_existing_pr_context || true
     fi
 
+    local base_ref
     if [[ -z "$RESOLVED_BASE_NAME" ]]; then
+        if base_ref="$(infer_local_base_ref)"; then
+            printf 'detected base: %s\n' "$base_ref" >&2
+            RESOLVED_BASE_REF="$base_ref"
+            RESOLVED_BASE_NAME="$(base_name_from_ref "$base_ref")"
+            return
+        fi
+
         resolve_existing_pr_context || true
     fi
 
