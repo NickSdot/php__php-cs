@@ -38,6 +38,7 @@ use function count;
 use function is_string;
 use function mb_strlen;
 use function mb_substr;
+use function spl_object_id;
 use function str_replace;
 use function str_starts_with;
 use function usort;
@@ -77,6 +78,9 @@ final readonly class OutputRewritePlanner
 
         $plans = [];
         $catchTypePlans = [];
+
+        $namespacedCatches = $this->namespacedCatchIds($parsed->statements);
+
         $scope = new RewriteScope($code, $parsed->offsetDelta, $expectedOutput);
 
         foreach ($this->ast->catchBlocks($parsed->statements) as $catch) {
@@ -99,7 +103,11 @@ final readonly class OutputRewritePlanner
 
             array_push($plans, ...$catchPlans);
 
-            $catchTypePlan = $this->catchTypeRewrites->plan($catch, $scope);
+            $catchTypePlan = $this->catchTypeRewrites->plan(
+                catch: $catch,
+                scope: $scope,
+                namespaced: isset($namespacedCatches[spl_object_id($catch)]),
+            );
 
             if (null !== $catchTypePlan) {
                 $catchTypePlans[] = $catchTypePlan;
@@ -117,6 +125,28 @@ final readonly class OutputRewritePlanner
         usort($plans, fn(TextEdit $a, TextEdit $b): int => $a->startOffset <=> $b->startOffset);
 
         return new OutputRewritePlan($plans, $catchTypePlans);
+    }
+
+    /**
+     * @param list<Stmt> $statements
+     * @return array<int, true>
+     */
+    private function namespacedCatchIds(array $statements): array
+    {
+        $ids = [];
+
+        foreach ($statements as $statement) {
+
+            if (!$statement instanceof Stmt\Namespace_) {
+                continue;
+            }
+
+            foreach ($this->ast->catchBlocks(array_values($statement->stmts)) as $catch) {
+                $ids[spl_object_id($catch)] = true;
+            }
+        }
+
+        return $ids;
     }
 
     /** @return list<RewriteRule> */

@@ -194,7 +194,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          contribute_args=(--php-src-dir "$PHP_SRC_DIR")
+          contribute_args=(--php-src-dir "$PHP_SRC_DIR" --skip-normalization-only)
 
           if [[ "${{ inputs.push_generated_branch }}" == "true" ]]; then
             if [[ -z "${PHP_SRC_PUSH_TOKEN:-}" ]]; then

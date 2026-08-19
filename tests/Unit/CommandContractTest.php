@@ -46,6 +46,7 @@ final class CommandContractTest extends TestCase
         self::assertStringContainsString('php bin/php-src-cs.php fix --php-src-dir DIR', $fixIo->stdout);
         self::assertStringNotContainsString('--fixer', $fixIo->stdout);
         self::assertStringNotContainsString('--force-php-binary-rebuild', $fixIo->stdout);
+        self::assertStringContainsString('--skip-normalization-only', $fixIo->stdout);
         self::assertStringContainsString('php bin/php-src-cs.php generate --php-src-dir DIR', $generateIo->stdout);
         self::assertStringNotContainsString('Targets:', $generateIo->stdout);
         self::assertStringNotContainsString('--target-dir', $generateIo->stdout);

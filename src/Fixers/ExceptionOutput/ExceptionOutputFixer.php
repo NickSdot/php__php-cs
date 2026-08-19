@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace InternalsCS\Fixers\ExceptionOutput;
 
 use InternalsCS\Fixers\ExceptionOutput\Fixing\ExpectedOutputUpdater;
+use InternalsCS\Fixers\ExceptionOutput\Fixing\OutputRewriteImpact;
 use InternalsCS\Fixers\ExceptionOutput\Fixing\OutputRewritePlanner;
 use InternalsCS\PhpSrcTestStyle\PhptFixer;
 
@@ -21,6 +22,8 @@ final class ExceptionOutputFixer extends PhptFixer
     public function __construct(
         private readonly OutputRewritePlanner $planner = new OutputRewritePlanner(),
         private readonly ExpectedOutputUpdater $expectedOutput = new ExpectedOutputUpdater(),
+        private readonly OutputRewriteImpact $impact = new OutputRewriteImpact(),
+        private readonly bool $skipNormalizationOnly = false,
     ) {}
 
     public function name(): string
@@ -53,7 +56,13 @@ final class ExceptionOutputFixer extends PhptFixer
             ? null
             : $file->getSection($expectedSection);
 
-        $plans = $this->planner->plan($code, $expectedOutput)->all();
+        $plan = $this->planner->plan($code, $expectedOutput);
+
+        if ($this->skipNormalizationOnly && $this->impact->isNormalizationOnly($code, $plan)) {
+            return false;
+        }
+
+        $plans = $plan->all();
 
         if ([] === $plans) {
             return false;
@@ -62,18 +71,18 @@ final class ExceptionOutputFixer extends PhptFixer
         usort($plans, fn($a, $b): int => $b->startOffset <=> $a->startOffset);
         $changed = false;
 
-        foreach ($plans as $plan) {
-            $current = mb_substr($code, $plan->startOffset, $plan->endOffset - $plan->startOffset, '8bit');
+        foreach ($plans as $edit) {
+            $current = mb_substr($code, $edit->startOffset, $edit->endOffset - $edit->startOffset, '8bit');
 
-            if ($current === $plan->replacement) {
+            if ($current === $edit->replacement) {
                 continue;
             }
 
-            $code = mb_substr($code, 0, $plan->startOffset, '8bit')
-                . $plan->replacement
-                . mb_substr($code, $plan->endOffset, null, '8bit');
+            $code = mb_substr($code, 0, $edit->startOffset, '8bit')
+                . $edit->replacement
+                . mb_substr($code, $edit->endOffset, null, '8bit');
 
-            $this->markLine($plan->line);
+            $this->markLine($edit->line);
             $changed = true;
         }
 

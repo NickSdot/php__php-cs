@@ -11,6 +11,7 @@ use InternalsCS\FixRunEntry;
 use InternalsCS\FixRunReportWriter;
 use InternalsCS\FixRunResult;
 use InternalsCS\FixerRegistry;
+use InternalsCS\FixerRunOptions;
 use InternalsCS\FixerRunner;
 use InternalsCS\PhpSrc\PhpSrcRoot;
 use InternalsCS\PhpSrcTestStyle\PhptTestRuntimeResolver;
@@ -84,6 +85,7 @@ final readonly class FixCommand implements Command
         $phpSrcDir = null;
         $check = false;
         $print = false;
+        $skipNormalizationOnly = false;
         $fixers = [];
         $targets = [];
 
@@ -102,6 +104,11 @@ final readonly class FixCommand implements Command
 
             if ('--print' === $arg) {
                 $print = true;
+                continue;
+            }
+
+            if ('--skip-normalization-only' === $arg) {
+                $skipNormalizationOnly = true;
                 continue;
             }
 
@@ -147,6 +154,7 @@ final readonly class FixCommand implements Command
             phpSrcRoot: PhpSrcRoot::fromPath($phpSrcDir),
             targets: $targets,
             fixerClasses: $this->fixerClasses($fixers),
+            runOptions: new FixerRunOptions(skipNormalizationOnly: $skipNormalizationOnly),
             check: $check,
             print: $print,
         );
@@ -158,7 +166,7 @@ final readonly class FixCommand implements Command
             $this->announceRuntime($options->phpSrcRoot, $io);
         }
 
-        $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses);
+        $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses, $options->runOptions);
         $files = $runner->collectFiles($options->targets);
 
         return $runner->run(
@@ -187,7 +195,7 @@ final readonly class FixCommand implements Command
     {
         $this->announceRuntime($options->phpSrcRoot, new StderrConsoleIo($io));
 
-        $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses);
+        $runner = new FixerRunner($options->phpSrcRoot->path, $options->fixerClasses, $options->runOptions);
 
         return $runner->print($runner->collectFiles($options->targets));
     }
@@ -263,6 +271,8 @@ final readonly class FixCommand implements Command
               --php-src-dir DIR  Required php-src checkout.
               --check            Report changes without writing.
               --print            Print rewritten content for exactly one PHPT file.
+              --skip-normalization-only
+                                 Skip files changed only by catch-type, quote, or newline normalization.
               -h, --help         Show this help.
 
             Paths are relative to php-src, or absolute paths inside it.

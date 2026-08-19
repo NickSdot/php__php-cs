@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace InternalsCS\Command;
 
 use InternalsCS\Fixer;
+use InternalsCS\FixerRunOptions;
 use InternalsCS\PhpSrc\PhpSrcRoot;
 
 final readonly class FixOptions
@@ -17,6 +18,7 @@ final readonly class FixOptions
         public PhpSrcRoot $phpSrcRoot,
         public array $targets,
         public array $fixerClasses,
+        public FixerRunOptions $runOptions,
         public bool $check,
         public bool $print,
     ) {}

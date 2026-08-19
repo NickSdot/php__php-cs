@@ -11,16 +11,15 @@ use PhpParser\Node\Stmt;
 use function count;
 use function mb_substr;
 use function preg_match;
+use function str_starts_with;
 
 final readonly class CatchTypeRewritePlanner
 {
-    private const string REPLACEMENT = '\\Throwable';
-
     public function __construct(
         private PhpAst $ast = new PhpAst(),
     ) {}
 
-    public function plan(Stmt\Catch_ $catch, RewriteScope $scope): ?TextEdit
+    public function plan(Stmt\Catch_ $catch, RewriteScope $scope, bool $namespaced): ?TextEdit
     {
         $first = $catch->types[0] ?? null;
         $last = $catch->types[count($catch->types) - 1] ?? null;
@@ -38,7 +37,11 @@ final readonly class CatchTypeRewritePlanner
 
         $current = mb_substr($scope->code, $start, $end - $start + 1, '8bit');
 
-        if (self::REPLACEMENT === $current || $this->containsComment($current)) {
+        $replacement = $namespaced || str_starts_with($current, '\\')
+            ? '\\Throwable'
+            : 'Throwable';
+
+        if ($replacement === $current || $this->containsComment($current)) {
             return null;
         }
 
@@ -46,7 +49,7 @@ final readonly class CatchTypeRewritePlanner
             startOffset: $start,
             endOffset: $end + 1,
             line: $first->getStartLine(),
-            replacement: self::REPLACEMENT,
+            replacement: $replacement,
         );
     }
 

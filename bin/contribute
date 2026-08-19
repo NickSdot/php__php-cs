@@ -23,6 +23,7 @@ LFG=0
 RESET=0
 DRY=0
 NO_RUN=0
+SKIP_NORMALIZATION_ONLY=0
 TARGET_ARGS=()
 WORKTREE_ROOT=""
 PARALLEL_RUN_COMPLETE=0
@@ -65,6 +66,8 @@ gets one commit:
 Options:
   --php-src-dir DIR  php-src checkout. Default: $PHP_SRC_DIR or ../php__php-src.
   --no-run           Use existing generated commits at HEAD.
+  --skip-normalization-only
+                     Skip PHPTs changed only by catch-type, quote, or newline normalization.
   --lfg              Push and update the PR body, or create a draft PR.
   --nah              Reset contiguous generated commits at HEAD.
   --dry              Preview only.
@@ -139,6 +142,9 @@ parse_args() {
                 ;;
             --no-run)
                 NO_RUN=1
+                ;;
+            --skip-normalization-only)
+                SKIP_NORMALIZATION_ONLY=1
                 ;;
             --lfg)
                 LFG=1
@@ -303,9 +309,7 @@ run_target() {
     local subject="$target: $COMMIT_SUFFIX"
 
     printf '\n==> %s\n' "$target"
-    php "$TOOL_ROOT/bin/php-src-cs.php" fix \
-        --php-src-dir "$PHP_SRC_DIR" \
-        "$PHP_SRC_DIR/$target"
+    run_fixers "$PHP_SRC_DIR" "$target"
 
     if ! has_tracked_changes; then
         printf 'No tracked changes for %s; no commit created.\n' "$target"
@@ -397,13 +401,8 @@ run_target_worker() {
     fi
 
     {
-        printf '$ php %q fix --php-src-dir %q %q\n' \
-            "$TOOL_ROOT/bin/php-src-cs.php" \
-            "$worktree" \
-            "$worktree/$target"
-        php "$TOOL_ROOT/bin/php-src-cs.php" fix \
-            --php-src-dir "$worktree" \
-            "$worktree/$target"
+        print_fix_command "$worktree" "$target"
+        run_fixers "$worktree" "$target"
     } >> "$log_file" 2>&1 || {
         fail_target_worker "$target" "$worktree" "$result_file" "$patch_file" "$log_file"
         return 1
@@ -443,6 +442,35 @@ run_target_worker() {
 
     printf '%s\t%s\t%s\t%s\n' "$status" "$target" "$patch_file" "$log_file" > "$result_file"
     printf 'Finished %s (%s)\n' "$target" "$status"
+}
+
+run_fixers() {
+    local php_src_dir="$1"
+    local target="$2"
+    local args=(fix --php-src-dir "$php_src_dir")
+
+    if (( SKIP_NORMALIZATION_ONLY )); then
+        args+=(--skip-normalization-only)
+    fi
+
+    args+=("$php_src_dir/$target")
+    php "$TOOL_ROOT/bin/php-src-cs.php" "${args[@]}"
+}
+
+print_fix_command() {
+    local php_src_dir="$1"
+    local target="$2"
+    local args=(fix --php-src-dir "$php_src_dir")
+
+    if (( SKIP_NORMALIZATION_ONLY )); then
+        args+=(--skip-normalization-only)
+    fi
+
+    args+=("$php_src_dir/$target")
+
+    printf '$ php %q' "$TOOL_ROOT/bin/php-src-cs.php"
+    printf ' %q' "${args[@]}"
+    printf '\n'
 }
 
 fail_target_worker() {

@@ -1103,8 +1103,29 @@ final class OutputRewritePlannerTest extends TestCase
 
         self::assertCount(1, $plan->outputEdits);
         self::assertCount(1, $plan->catchTypeEdits);
-        self::assertStringContainsString('} catch (\Throwable $e) {', $fixed);
+        self::assertStringContainsString('} catch (Throwable $e) {', $fixed);
         self::assertStringContainsString("echo \$e::class, ': ', \$e->getMessage(), \"\\n\";", $fixed);
+    }
+
+    public function testQualifiesThrowableInsideANamespace(): void
+    {
+        $code = <<<'PHP'
+            <?php
+            namespace Example;
+
+            use TypeError;
+
+            try {
+                throw new TypeError('x');
+            } catch (TypeError $e) {
+                echo $e->getMessage(), "\n";
+            }
+            PHP;
+
+        $plan = new OutputRewritePlanner()->plan($code);
+        $fixed = self::applyPlans($code, $plan->all());
+
+        self::assertStringContainsString('} catch (\Throwable $e) {', $fixed);
     }
 
     public function testDoesNotPlanAlreadyQualifiedThrowableCatch(): void
@@ -1162,7 +1183,7 @@ final class OutputRewritePlannerTest extends TestCase
         self::assertCount(1, $plan->outputEdits);
         self::assertCount(1, $plan->catchTypeEdits);
         self::assertStringContainsString('} catch (RuntimeException $e) {', $fixed);
-        self::assertStringContainsString('} catch (\Throwable $e) {', $fixed);
+        self::assertStringContainsString('} catch (Throwable $e) {', $fixed);
     }
 
     /** @param list<TextEdit> $plans */

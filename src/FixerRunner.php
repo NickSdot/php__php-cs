@@ -24,7 +24,12 @@ use function str_starts_with;
 final readonly class FixerRunner
 {
     /** @param list<class-string<Fixer>> $fixerClasses */
-    public function __construct(private string $rootDir, private array $fixerClasses) {}
+    public function __construct(
+        private string $rootDir,
+        private array $fixerClasses,
+        private FixerRunOptions $options = new FixerRunOptions(),
+        private FixerFactory $factory = new FixerFactory(),
+    ) {}
 
     /**
      * @param list<string> $paths
@@ -88,7 +93,8 @@ final readonly class FixerRunner
             $source = new SourceFile($path, $this->rootDir);
 
             foreach ($this->fixerClasses as $fixerClass) {
-                $fixer = new $fixerClass();
+
+                $fixer = $this->factory->create($fixerClass, $this->options);
 
                 if (!$fixer->supports($source)) {
                     continue;
@@ -151,8 +157,9 @@ final readonly class FixerRunner
             $collected = [];
 
             foreach ($files as $path) {
+
                 $source = new SourceFile($path, $this->rootDir);
-                $fixer = new $fixerClass();
+                $fixer = $this->factory->create($fixerClass, $this->options);
 
                 if (!$fixer->supports($source) || !$fixer->collect($source)) {
                     continue;
@@ -239,7 +246,8 @@ final readonly class FixerRunner
 
         try {
             foreach ($this->fixerClasses as $fixerClass) {
-                $fixer = new $fixerClass();
+
+                $fixer = $this->factory->create($fixerClass, $this->options);
 
                 if (!$fixer->supports($source)) {
                     continue;
